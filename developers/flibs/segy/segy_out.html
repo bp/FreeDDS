@@ -1,0 +1,21 @@
+
+    <h2>segy_out - open a segy file for writing</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <p>
+      <b>integer segy_out(</b><i>filename, buf, nsmp, ntrc</i><b>)
+    </b><dl><dd>
+        <b>character*(*) </b><i>filename</i><br>
+        <b>real(900) </b><i>buf</i><br>
+        <b>integer </b><i>nsmp</i><br>
+        <b>integer </b><i>ntrc</i><br>
+        </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    The routine, "<b>segy_out</b>", creates an output segy file with the
+    name, <i>filename</i>.  The <i>buf</i> must contain the segy line header,
+    <i>nsmp</i> must have the number of samples in each trace, and <i>ntrc</i>
+    must be the number of traces/record.  The returned value is the file
+    descriptor which can be used in the <b>segy_write</b> routine.
+    </p>

@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_addaxis)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","addaxis")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_key - DDS definition value search</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_key(</b><i>alias</i><b>)
+      </b><dl><dd>
+        <b>character*(*) </b><i>alias
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    The current input definition is scanned for tokens,
+    delimited by white space.
+    The function returns an integer key corresponding to a token
+    that matches an <i>alias</i> name.
+
+    <p>
+      This function can be used to search definition values
+      for keyword options and flags.
+      It can also be used to count the number of tokens (array elements).
+
+    <p>
+      NOTE: It is preferred to use <a href="scank.html">fdds_scank</a>.
+
+    <h2>INPUT</h2>
+    An input definitions must already be selected.
+    This is done by executing 
+    <a href="scanf.html">fdds_scanf.</a>
+
+    <p>
+      <i>Alias</i> lists one or more names, delimited by white space.
+      They are used to search the current input definition.
+      The search begins at the first character in the value.
+      The search stops at the first character of the first token
+      that matches any <i>alias</i>.
+
+    <p>
+      If <i>alias</i> names are not specified, tokens are counted.
+      Tokens in the definition value are delimited by white space.
+
+    <h2>OUTPUT</h2>
+    The return value is the index, starting from 1,
+    of the token corresponding to an <i>alias</i> name.
+    The token can be retrieved with 
+    <a href="scanf.html">fdds_scanf,</a>
+    to determine the actual alias matched.
+    If no match is found, EOF is returned.
+
+    <p>
+      If <b>alias</b> names are not specified,
+      the return value is the number of tokens found.
+      This can be used to determine the array size required
+      for a list of numbers.
+      The current position is reset to the beginning of the value,
+      after counting the tokens
+      the value is ready to be retrieved by 
+      <a href="scanf.html">fdds_scanf.</a>
+
+    <h2>EXAMPLE</h2>
+    <pre>
+      integer no_print, pick_count
+      ...
+      ! check "print_option" for keyword
+      j = fdds_scanf('print_option', ' ')
+      print_option = fdds_key('verbose VERBOSE long')
+      
+      ! count the number of trace picks
+      j = fdds_scanf('trace_picks', ' ')
+      pick_count = fdds_key(' ')
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+      <a href="scanf.html#scanf">fdds_scanf</a>
+      <a href="scanf.html#scanv">fdds_scanv</a>
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

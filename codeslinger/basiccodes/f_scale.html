@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (access samples)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","f_scale.F")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+c***********************************************************************
+c
+c multiply data by a scalar, add a bias
+c
+c***********************************************************************
+
+      program f_scale
+
+      implicit none
+
+#include &lt;<a href="../resources/fdds.h.html">fdds.h</a>&gt;
+
+c For DDS functions. Arguments and return values
+      character prog*(7), Title*(80)
+      integer   ier, fd_in, fd_out
+
+      integer*8 ier8,izero8
+      parameter (izero8=0)
+
+c Data attributes
+      integer n1,n2,n3
+
+c User parameters
+      real    scalar, bias
+
+c Internal dynamic array
+      real    record(1)
+      pointer (ptr_record,record)
+
+c Internal loop counters
+      integer i3
+
+c-------------------------------------------------------------------
+c
+c Initialize the Title
+c
+      prog='f_scale'
+      Title=prog//': data_out= scalar*data_in + bias'
+
+c
+c Open input file
+c
+      fd_in=<a href="../fapishort/fddx_in.html">fddx_in</a>('in','stdin:',Title)
+
+c
+c Retrieve data characteristics
+c
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(1)','%d\0',n1)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(2)','%d\0',n2)
+      n3=<a href="../fapishort/fdds_axis_prod.html">fdds_axis_prod</a>(3)
+
+c
+c Retrieve command line and parfile parameters
+c
+      ier=<a href="../fapishort/fdds_dict.html">fdds_dict</a>('par:','scan')
+
+      scalar=1.0
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('scalar s','%f\0',scalar)
+
+      bias=0.0
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('bias b','%f\0',bias)
+
+c
+c Open the output
+c
+      fd_out=<a href="../fapishort/fddx_out.html">fddx_out</a>('out','stdout:',Title,fd_in)
+      ier8=<a href="../fapishort/fdds_lseek8.html">fdds_lseek8</a>(fd_out,0,izero8,SEEK_SET)
+
+c
+c Allocate data array
+c
+      ptr_record=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(n1*n2*SIZEOF_REAL))
+
+c
+c Loop over n3, read-scale-write
+c
+      do i3 = 1,n3
+         ier=<a href="../fapishort/fddx_read.html">fddx_read</a>(fd_in,record,n2)
+         call scale_and_bias(record, n1,n2, scalar,bias)
+         ier=<a href="../fapishort/fddx_write.html">fddx_write</a>(fd_out,record,n2)
+      enddo
+
+c
+c Clean up
+c
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_record)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+
+c
+c Stop
+c
+      stop
+      end
+
+
+
+
+c***********************************************************************
+c
+c Apply scalar and bias to data samples
+c
+c***********************************************************************
+
+      subroutine scale_and_bias(record, n1,n2, scalar,bias)
+
+      implicit none
+
+c Arguments
+      integer n1,n2
+      real    scalar,bias
+      real    record(n1,n2)
+
+c Locals
+      integer i1,i2
+
+c Go scale the data
+      do i2 = 1, n2
+         do i1 = 1, n1
+            record(i1,i2) = scalar*record(i1,i2) + bias
+         enddo
+      enddo
+
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

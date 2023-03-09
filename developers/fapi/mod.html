@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_mod)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","mod")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_mod - initialize DDS dictionary for modification</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_mod(</b><i>dict, alias, value, title, hist</i><b>)
+      </b><dl><dd>
+        <b>character*(*) </b><i>dict
+        </i><br>
+        <b>character*(*) </b><i>alias
+        </i><br>
+        <b>character*(*) </b><i>value
+        </i><br>
+        <b>character*(*) </b><i>title
+        </i><br>
+        <b>character*(*) </b><i>hist
+        </i></dl>
+
+    <p>
+      [ <A HREF="#description">Description</A> 
+      | <A HREF="#input">Input</A> 
+      | <A HREF="#output">Output</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>fdds_mod</b> initializes dictionaries to modify data.
+    End users may define the dictionary name via <i>alias</i>.
+    Programmers may provide a default dictionary name via <i>value</i>.
+    If the dictionary doesn't exist, it is created and initialized
+    using the <i>hist</i> dictionary. If it does exist, the <i>title</i>
+    and <i>bootstrap</i> (<b>par:</b>) dictionaries are
+    appended to it.
+
+      <a name="input"></a><h2>INPUT</h2>
+      <i>Alias</i> is a list of definition names, delimited by white space.
+      If a name is specified, the bootstrap dictionaries are searched.
+      If a definition is found, its value specifies a dictionary name.
+
+    <p>
+      <i>Value</i> provides a default name for the dictionary.
+      It is used if a name can't be retrieved via <i>alias</i>.
+
+      <i>Title</i> provides a brief description of the application program.
+      It is inserted into the processing history
+      to mark the beginning of parameters for a step.
+
+    <p>
+      <i>Hist</i> provides a dictionary name.
+      If specified, the dictionary should contain the processing history.
+      It is used to initialize output and modified dictionaries.
+ 
+      <a name="output"></a><h2>OUTPUT</h2>
+    The name(s) of the resulting dictionaries are returned in <i>dict</i>.
+    The function always "0".
+
+    <p>
+      The dictionaries returned by <b>fdds_mod</b> are open in "print" mode.
+      Modes are described in <a href="dict.html">fdds_dict</a>.
+
+      <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre>
+      character*1024 in, in, out, mod
+      character*100 title
+      title = 'XXX processing step'
+      ...
+      ! open input dictionary
+      j = fdds_in(in, 'in', 'stdin:', title)
+      ...
+      ! start new history (no input data)
+      j = fdds_in(in, ' ', ' ', title)
+      ...
+      ! open output dictionary
+      j = fdds_out(out, 'out', 'stdout:', in)
+      ...
+      ! modify (or create) dictionary
+      j = fdds_mod(mod, 'vel', ' ', title, in)
+      ...
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="dict.html">fdds_dict</a>
+<a href="in.html">fdds_in</a>
+<a href="out.html">fdds_out</a>
+<a href="mod.html">fdds_mod</a>
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+  
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

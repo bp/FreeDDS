@@ -1,0 +1,35 @@
+
+    <h2>cddx_V_requestTilty - read a Tilty parameter.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;cddx_vel.h&gt;</b>
+    <p>
+      <b>int cddx_V_requestTilty(</b><i>vel_tag, critical</i><b>)
+    </b><dl><dd>
+        <b>int</b><i> vel_tag</i><br>
+        <b>int</b><i> critical</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>cddx_V_requestTilty</b> reads a Tilty parameter. This is is the tilt angle in the y-direction for TTI velocities.<br>
+    </p>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>vel_tag</i>", specifies a velocity with which to associate this Tilty parameter.<br>
+      The keyword prefix for the users is "<i>tilty</i>". See also function <b>fddx_V_newElement</b>.
+    </p>
+    <p>
+      The parameter, "<i>critical</i>", specifies whether this parameter is critical.<br>
+      If "<i>critical</i>" is non-zero and <b>cddx_V_requestTilty</b> is unable to find a suitable Tilty parameter, then a DDS error is printed.<br>
+      NOTE that in the event of an error the program continues in order to allow for clean stopping of MPI codes.
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_V_requestTilty</b> returns a tag to the newly created Tilty parameter.<br>
+    If it is unable to create Tilty, then it will return -1.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

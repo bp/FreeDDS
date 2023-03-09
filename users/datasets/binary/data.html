@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Dataset (Binary - data)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","datasets","binary","data")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      "<code>data=</code>" defines the filename to the binary data. It is
+      defined by DDS when creating the dataset -- either as a default
+      filename or overridden by the user (see 
+      <a href="../iocontrol.html">I/O Control</a>). 
+      If the binary data is attached to a Dictionary, the value is
+      "<code>dict:</code>".  Some examples are:
+
+    <pre>
+data=<var>file_name</var>
+
+data=/data/project1/area_@
+
+comment= binary data filename is "line33-"
+data= line33-
+
+comment= binary data is attached to Dictionary
+data= dict:
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

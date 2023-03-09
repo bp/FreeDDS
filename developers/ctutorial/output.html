@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Tutorial (Output)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ctutorial","output")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Open Internal Output Buffer</h2>
+
+    <p>
+      Occassionally, a different output buffer must be used separately from
+      the input buffer because something like the output size of the first
+      axis or the SAMPLE_TYPE may have changed. So a new internal buffer
+      can be opened and modified.  For example if you need to change the
+      output to complex Samples and change the number of Samples: 
+      <pre>
+outbuf_dict = <a href="../capi/out.html">cdds_out</a>("", "", buf_dict);
+<a href="../capi/printf.html">cdds_printf</a>("fmt:SAMPLE_TYPE",
+          "typedef complex SAMPLE_TYPE;\n");
+<a href="../capi/printf.html">cdds_printf</a>("size.axis(1)", "%d\n", nout);
+            
+/* Open "outbuf" binary */
+outbuf_bin = <a href="../capi/open.html">cdds_open</a>(outbuf_dict, " ", " ", "m");
+    </pre>
+
+    <h2>Open External Output Dataset</h2>
+
+    <p>
+      Open the output dataset from the internal buffer by:
+
+    <pre>
+out_dict = <a href="../capi/out.html">cdds_out</a>("out", "stdout:", outbuf_dict);
+out_bin = <a href="../capi/open.html">cdds_open</a>(out_dict, "out_format", "out_data", "w+");
+    </pre>
+
+    <p>
+      If a file already exists and it just needs to be modified then use
+      <a href="../capi/mod.html">cdds_mod</a>.  If the dictionary already
+      exists, the title and "<b>par:</b>" dictionaries are appended to it
+      (like <a href="../capi/out.html">cdds_out</a>). If the dictionary
+      must be created, the history provided by the fifth argument is used
+      to initialize it (like <a href="../capi/in.html">cdds_in</a>). If a
+      dictionary is not specified by the user or default, a temporary
+      dictionary is created and a warning is issued. The resulting 
+      dictionary is left in "print" mode.
+
+    <pre>
+out_dict = <a href="../capi/mod.html">cdds_mod</a>("out", "", title, outbuf_dict);
+out_bin = <a href="../capi/open.html">cdds_open</a>(out_dict, "out_format", "out_data", "r+");
+    </pre>
+
+    <! -------------------------------------------------------------------->
+    <hr/>
+    <h2>Open Output From Scratch</h2>
+
+    <p>
+      If you need to generate an output dataset with no input dataset, then
+      you will need to create a dummy input dictionary first with:
+
+    <pre>
+dmy_dict = <a href="../capi/in.html">cdds_in</a>("", "", title);
+    </pre>
+
+    <p>
+      and then use this dummy input dictionary, <b>in_dict</b>, when opening
+      any output dictionaries.  You will need to define the actual format
+      for example by:
+
+    <pre>
+outbuf_dict = <a href="../capi/out.html">cdds_out</a>("", "", dmy_dict);
+<a href="../capi/printf.html">cdds_printf</a>("fmt:ASP_TRACE", "typedef struct {\n");
+<a href="../capi/printf.html">cdds_printf</a>("", "integer StaCor;\n");
+<a href="../capi/printf.html">cdds_printf</a>("", float SrcX;\n");
+<a href="../capi/printf.html">cdds_printf</a>("", SAMPLE_TYPE Samples[axis_size(1)];\n");
+<a href="../capi/printf.html">cdds_printf</a>("", } ASP_TRACE;\n");
+  
+<a href="../capi/printf.html">cdds_printf</a>("fmt:SAMPLE_TYPE", 
+          "typedef float SAMPLE_TYPE;\n");
+
+<a href="../capi/printf.html">cdds_printf</a>("axis", "t x y\n");
+<a href="../capi/printf.html">cdds_printf</a>("size.t", "%d\n", nt);
+<a href="../capi/printf.html">cdds_printf</a>("size.x", "%d\n", nx);
+<a href="../capi/printf.html">cdds_printf</a>("size.y", "%d\n", ny);
+<a href="../capi/printf.html">cdds_printf</a>("delta.t", "%f\n", si);
+<a href="../capi/printf.html">cdds_printf</a>("format", "asp\n");
+            
+/* Open "outbuf" binary */
+outbuf_bin = <a href="../capi/open.html">cdds_open</a>(outbuf_dict, "", "", "m");
+    </pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

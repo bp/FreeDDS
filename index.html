@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Home</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="styles.css" type="text/css" rel="stylesheet">
+    <script src="javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <style type="text/css">
+      thead {font-weight:bold;} 
+      td {text-align:left;}
+      img {border:0px none;}
+    </style>
+  </head>
+  <body background="images/Background.jpg">
+    <script type="text/javascript">header("home")</script>
+    <!*********************************************************************>
+
+    <center><h2>WELCOME TO DDS</h2></center>
+
+    <p>
+    The <u><b>D</b></u>ata <u><b>D</b></u>ictionary <u><b>S</b></u>ystem
+    is an I/O System (and much more) capable of handling multi-dimensional
+    seismic datasets (up to 9 dimensions; eg. 
+    <b>"axis= t offset shot x y"</b>) in various formats including
+    <a href="http://www.freeusp.org">usp</a> (BP Amoco's 
+    <u><b>U</b></u>n*x <u><b>S</b></u>eismic <u><b>P</b></u>rocessing), 
+    <a href="http://seg.org/publications/tech-stand/seg_y_rev0.pdf">segy</a>
+    (<u><b>S</b></u>ociety of <u><b>E</b></u>xploration 
+    <u><b>G</b></u>eophysicists SEG-Y format), 
+    <a href="http://seg.org/publications/tech-stand/seg_y_rev1.pdf">
+      segy1</a> (SEG's SEG-Y Rev 1.0 format),
+    <a href="http://sepwww.stanford.edu">sep</a> (<u><b>S</b></u>tanford 
+    <u><b>E</b></u>xploration <u><b>P</b></u>roject's format), 
+    <a href="http://www.cwp.mines.edu/cwpcodes/index.html">su</a>
+    (Colorado School of Mine's <u><b>S</b></u>eismic <u><b>U</b></u>n*x 
+    format) as well as other flexible trace definitions (with or without
+    trace headers) such as <b>fcube</b>.  DDS allows different processing
+    systems to be used together by piping directly together as well
+    as through actual emulation of different processing systems.
+
+    <p>
+      A DDS dataset normally consists of a Dictionary and Binary data. 
+      A DDS Dictionary is a text file consisting of free-form Definitions, 
+      each given by a Definition name, an equal symbol (&quot;=&quot;) and
+      a value which can be nearly anything without an &quot;=&quot;
+      character. The command line can be used to override any Dictionary
+      Definitions. Also, a &quot;par&quot; file containing command line
+      definitions can be specified on the command line by 
+      <b>par=</b><i>filename</i>.
+      
+    <p>
+      The Dictionary defines the Binary data format and contains any
+      accumulated processing history. The underlying data model for the
+      Dictionary uses data structural syntax similar to the &quot;C&quot;
+      programming language. The Binary data is normally in a separate file
+      from the Dictionary and is pointed to by the Dictionary. The Binary
+      can, however, be attached to the end of the Dictionary in order to
+      keep the dataset contained in a single physical file. Specific formats
+      like <b>usp</b> or <b>segy</b> are already predefined within DDS and
+      can therefore exist as a single binary file without the need for a 
+      Dictionary in which case they default to 3D data with 
+      <b>axis= t x y</b>.
+      
+    <p>
+      DDS also has multi-file support where multiple conformable files
+      can be arbitrarily merged for processing by simply creating a master
+      Dictionary file pointing to the various individual files.  It has
+      been used in production on many different systems including CM5, 
+      Cray, Sun, SGI, Linux, Lunix clusters (32 &amp; 64 bit); and even 
+      tested on several others.  It is currently used in production on 
+      large Terabyte datasets with MPI and OpenMP parallelization.
+      
+    <p>
+      DDS is being offered in open source by <b>BP America Inc</b> under 
+      <a href="http://www.freeusp.org/DDS">FreeDDS</a> along with a small
+      collection of seismic imaging programs and associated utilities. 
+
+    <hr/>
+    <div align='justify' style='font-size:10pt;color:#ff0000;
+      font-style:italic;'>
+      We reserve the rights to make changes to this Site &quot;for any 
+      reason or no reason at all&quot;, including the temporary or
+      permanent cessation of all or any portion of this Site.  Such
+      changes may be made without notice. You should visit this page
+      from time to time to review any changes.
+    </div>
+
+    <!--div align=center>
+       <a href="http://www.zipwise.com/geomap/">
+	       <img src="http://www.zipwise.com/images/geomap.jpg" alt="IP Geolocation" border="0">
+       </a>
+    </div-->
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

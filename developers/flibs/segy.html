@@ -1,0 +1,55 @@
+<p>These are Fortran non-dds I/O routines for a simple portable segy I/O interface.
+Here is a simple example on how to use these library routines:
+</p>
+
+<pre>
+
+
+      integer ier,nsmp,nout,ntrc,fdin,fdout,ntotal
+      real    lbuf(900)
+      real    buf(1)
+      pointer(ptr_buf,buf)
+
+#include &lt;segy.h&gt;
+
+      ier=segy_init(1)
+      fdin=segy_in('/data/line2/line2.segy',lbuf,nsmp,ntrc)
+
+      ntrc=100
+      nout=100
+      fdout=segy_out('tst.segy',lbuf,nout,ntrc)
+
+      ptr_buf=malloc(240+4*max(nsmp,nout))
+
+      nhdr=60
+      ntotal=0
+      do while(segy_read(fdin,buf,nsmp).eq.1)
+         ntotal=ntotal+1
+
+
+         do i=10,20
+            write(0,*) 'buf:',i,buf(nhdr+i)
+            buf(nhdr+i)=real(i)
+         enddo
+
+
+         if (segy_write(fdout,buf,nout).ne.1) stop 1
+      enddo
+
+      write(0,*) 'ntotal=',ntotal
+      end
+
+</pre>
+
+<p> And here is an example Makefile: </p>
+
+<pre>
+Name := tst
+FSrcs:= tst.F
+Libs := segy
+
+include ${DDSROOT}/etc/MakeVariables
+
+include ${DDSROOT}/etc/MakeRules
+
+</pre>

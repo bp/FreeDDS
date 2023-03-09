@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: News</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+    <style type="text/css">
+      p,li {text-align:justify;} 
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">header("home","news")</script>
+
+    <!*********************************************************************>
+    <center>
+      <h2><u>RSF School and Workshop, Vancouver 2006</u></h2>
+    </center>
+    <h4>These are some abstracts presented by Joe and Randy at the
+      Vancouver Workshop</h4>
+
+    <ul>
+      <li><b><u>
+            Joe Dellinger: DDS, A Seismic Processing Architecture
+          </u></b><br/>
+        The Data Dictionary System (DDS1) is a seismic processing 
+        architecture. It has proved its value for both research and 
+        production in seismic imaging inside Amoco and BP for more than
+        a decade. The software has been ported to more than a dozen 
+        hardware platforms and the data sets can be efficiently accessed
+        across any combination of them. A key (and at this time, unique) 
+        feature of DDS is its ability to read and write almost any data
+        format. This is primarily useful because it allows DDS to
+        inter-operate with other processing systems, allowing DDS to 
+        serve as a bridge between different processing environments. 
+        However, in the spirit of reproducible research, it also allows 
+        DDS to document data so that it can be read and understood into
+        the future. DDS was released by BP America in 2003 under an
+        open-source license. The goal of this paper is to reveal useful
+        innovations so that subsequent projects can benefit from DDS,
+        as DDS has benefited from concepts from earlier processing
+        systems. <br/><br/>
+
+
+      <li><b><u>
+            Randy Selzler: PSEIS, A Processing Architecture Blueprint 
+          </u></b><br/>
+        The Parallel Seismic Earth Imaging System (PSEIS1) is a software
+        package that is envisioned as a successor to DDS2. It will retain
+        the high efficiency that made DDS suitable for production 
+        processing at a leading HPC facility. Its flexibility will continue
+        to facilitate advanced research in seismic processing and imaging.
+        It will also continue to inter-operate with other processing
+        system in order to maximize total value. The new system provides
+        an alternative to MPI for parallel processing on 
+        distributed-memory machines. By tailoring it specifically for
+        seismic processing, applications will be easier to develop,
+        maintain and execute, while remaining efficient and scalable.
+        This scheme is described in a companion paper session �PSEIS,
+        Blueprint for Parallel Processing.� The system supports parallel 
+        I/O by slicing data set dimensions across independent file systems.
+        I/O can split headers and samples into separate file for special
+        processing. Two user interfaces are provided that complement 
+        each other. Power users can leverage existing skills with scripts
+        and casual users can benefit from the GUI. Object-Oriented 
+        technology is used to improve robustness, functionality and long
+        term cost. <br/><br/>
+
+      <li><b><u>
+            Randy Selzler: PSEIS, A Blueprint for Parallel Processing
+          </u></b><br/>
+        The Parallel Seismic Earth Imaging System (PSEIS1) is a software
+        package that is envisioned as a successor to DDS2. It provides
+        an alternative to MPI for parallel programming on distributed 
+        (and shared) memory machines. The objective is to make it easier
+        to develop, maintain and execute parallel applications that are
+        efficient and scalable. This is accomplished by integrating the
+        technology into the I/O architecture and by tailoring it
+        specifically to seismic processing. The new scheme provides
+        a strategy for fault-tolerant processing, check-point restarts,
+        persistent data storage, out-of-core solvers, data monitoring
+        and parallel debugging.<br/><br/>
+
+      <li><b><u>
+            Joe Dellinger: Vplot graphics language - past, present, and
+            future
+          </u></b><br/>
+        Vplot is the graphical language used by the Stanford Exploration
+        Project's "SEPlib" seismic processing system. Application programs
+        such as "Graph", "Wiggle", and "Grey" write out specifications for
+        plots in "vplot format". The appropriate vplot "pen" filter then
+        reads in the vplot file and produces the desired plot on the 
+        corresponding graphical device.<br/><br/> 
+
+        Vplot was originally created to allow consistent plotting on any
+        of a dozen or so different graphical devices, each of which could
+        only be accessed using its own unique and proprietary programming
+        interface. With so many devices (and now ones arriving every few
+        months!), writing a separate version of each plotting program for
+        each device would have been completely impractical. Today, 
+        however, that is exactly what we do: most graphical programs 
+        directly support "X", "postscript", and/or "bitmaps". <br/><br/>
+
+        Vplot is still in use today at least partly because the challenge
+        of supporting so many different incompatible devices imposed a 
+        discipline that produced a flexible and powerful internal 
+        programming logic. Even with the universe of plotting devices now
+        collapsed down to only 3, vplot has been useful enough in making
+        those 3 compatible to survive. 
+
+        In my talk I will explain the "vplot virtual device" and show how
+        it was meant to be used. I will show what I think are the "good
+        ideas" vplot contains that even today have not been replicated
+        in other systems. Foremost among these is the "4th canonical
+        graphical device", the "capture the changes I've made and turn
+        that back into a new figure" device ("vppen"). I will also show
+        useful features in vplot that should still be used, but have
+        been forgotten. <br/><br/>
+
+        Finally, I will discuss "where should we go from here". If we wish
+        to use vplot with Madagascar, now is our chance to update it! 
+        <br/><br/>
+
+    </ul>
+    
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

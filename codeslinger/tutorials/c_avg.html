@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (access samples)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","c_avg.c")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+/***********************************************************************
+ *
+ * Get the average value of a dataset
+ *
+ ***********************************************************************/
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;<a href="../resources/cdds.h.html">cdds.h</a>&gt;
+
+/* main */
+int main(int argc, char **argv)
+{
+
+/* For DDS functions. Arguments and return values */
+   char  *prog, *Title;
+   int   ier;
+   BIN_TAG fd_in;
+
+/* Data attributes */
+   int   n1,n2,n3;
+
+/* Internal dynamic array */
+   float *trace;
+
+/* Internal scalar values and loop counters */
+   int    i1,i2,i3;
+   float  data_avg;
+   double data_sum, denom;
+
+/*-------------------------------------------------------------------*/
+
+/* Initialize */
+   setargcv(argc, argv);
+   prog="c_avg";
+   Title="c_avg: Get the average value of a dataset";
+
+/* Open input file */
+   fd_in=<a href="../capishort/cddx_in.html">cddx_in</a>("in","stdin:",Title);
+
+/* Retrieve data characteristics */
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(1)","%d",&amp;n1);
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(2)","%d",&amp;n2);
+   n3=<a href="../capishort/cdds_axis_prod.html">cdds_axis_prod</a>(3);
+
+/* Allocate trace array */
+   trace=(float*)malloc(n1*sizeof(float));
+
+/* Initialize the sum */
+   data_sum=0.0;
+
+/* Loop over input data, accumulating the sum */
+   for (i3=0; i3&lt;n3; i3++) {
+      for (i2=0; i2&lt;n2; i2++) {
+         ier=<a href="../capishort/cddx_read.html">cddx_read</a>(fd_in,trace,1);
+         for (i1=0; i1&lt;n1; i1++) {
+            data_sum = data_sum + trace[i1];
+         }
+      }
+   }
+
+/* Compute the average */
+   denom = n1*n2*n3;
+   data_avg = data_sum/denom;
+
+/* Report the result */
+   printf("The average of input samples is %f\n",data_avg);
+
+/* Clean up */
+   free(trace);
+   ier=<a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+
+/* Exit */
+   exit(0);
+}
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

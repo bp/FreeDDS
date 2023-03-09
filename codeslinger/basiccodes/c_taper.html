@@ -1,0 +1,300 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (work around headers)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","c_taper.c")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+/***********************************************************************/
+/*                                                                     */
+/* taper the beginning and end of live data on axis 1                  */
+/*                                                                     */
+/***********************************************************************/
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;<a href="../resources/cdds.h.html">cdds.h</a>&gt;
+
+
+/* Macros */
+#define MIN(x,y)  ((x) &lt; (y) ? (x) : (y))
+#define MAX(x,y)  ((x) &gt; (y) ? (x) : (y))
+
+
+/* Function prototypes */
+void help(char *prog, char *Title);
+
+void apply_taper(float *record, int n1, int n2, int nhdr,
+                 float *taper, int ntaper, int cosine);
+
+
+/* main */
+int main(int argc, char **argv)
+{
+
+/* For DDS functions. Arguments and return values */
+   char  *prog, *Title;
+   int   ier;
+   BIN_TAG fd_in,fd_out;
+   long long ier_ll, izero_ll=0;
+
+/* Data attributes */
+   int   n1,n2,n3;
+   int   ismptag,nhdr;
+
+/* User parameters */
+   int    ntaper;
+   int    cosine,verbose;
+
+/* Internal dynamic array */
+   float  *record, *taper;
+
+/* Internal scalar values and loop counters */
+   int    i3;
+   int    remainder;
+
+/*-------------------------------------------------------------------*/
+
+/****************/
+/* Initialize   */
+/****************/
+   setargcv(argc, argv);
+   prog="c_taper";
+   Title="c_taper: taper the beginning and end of live data";
+
+
+/*****************************************************************/
+/* Open the print file and dump command-line help as requested   */
+/*****************************************************************/
+   ier=<a href="../capishort/cdds_openpr.html">cdds_openpr</a>(prog,"");
+   if (ier&gt;0) help(prog,Title);
+
+
+/***************************************************/
+/* Open input file                                 */
+/* Retrieve data characteristics when successful   */
+/***************************************************/
+   fd_in=<a href="../capishort/cddx_in2.html">cddx_in2</a>("in","stdin:",Title);
+   if (fd_in &lt; 0) {
+
+      <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Unable to open input data file!\n");
+
+   } else {
+
+      ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(1)","%d",&amp;n1);
+      ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(2)","%d",&amp;n2);
+      n3 =<a href="../capishort/cdds_axis_prod.html">cdds_axis_prod</a>(3);
+
+      ismptag=<a href="../capishort/cdds_member.html">cdds_member</a>(fd_in,0,"Samples");
+      nhdr   =<a href="../capishort/cdds_index.html">cdds_index</a>(fd_in,ismptag,DDS_FLOAT);
+
+   }
+
+
+/**************************************************/
+/* Retrieve command line and parfile parameters   */
+/**************************************************/
+   ier=<a href="../capishort/cdds_dict.html">cdds_dict</a>("par:","scan");
+
+   ntaper=10;
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("ntaper nt","%d",&amp;ntaper);
+
+   cosine=(<a href="../capishort/cdds_scank.html">cdds_scank</a>("cosine",DDS_TRUE_KEY)&gt;0);
+   verbose=(<a href="../capishort/cdds_scank.html">cdds_scank</a>("verbose",DDS_TRUE_KEY)&gt;0);
+
+
+/******************************************************/
+/* Set up the output dictionary ... Open with lseek8  */
+/******************************************************/
+   fd_out=<a href="../capishort/cddx_out.html">cddx_out</a>("out","stdout:",Title,fd_in);
+   if (fd_out &lt; 0) {
+      <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Unable to open output buffer dict!\n");
+   }
+
+   ier_ll=<a href="../capishort/cdds_lseek8.html">cdds_lseek8</a>(fd_out,0,izero_ll,SEEK_SET);
+   if ( ier_ll &lt; izero_ll) {
+      <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Unable to open output data file!\n");
+   }
+
+
+/**************************/
+/* Allocate data arrays   */
+/**************************/
+   taper=(float*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>(ntaper*sizeof(float));
+   record=(float*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>((n1+nhdr)*n2*sizeof(float));
+
+
+/*****************************/
+/* Check for set up errors   */
+/*****************************/
+   if (<a href="../capishort/cdds_errors.html">cdds_errors</a>()) {
+      <a href="../capishort/cdds_free.html">cdds_free</a>(taper);
+      <a href="../capishort/cdds_free.html">cdds_free</a>(record);
+      <a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+      <a href="../capishort/cdds_close.html">cdds_close</a>(fd_out);
+      <a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+      exit(0);
+   }
+
+
+/********************************************/
+/* Loop over input data, read-taper-write   */
+/********************************************/
+   for (i3=0; i3&lt;n3; i3++) {
+
+      remainder=(i3+1)%10;
+      if ( verbose &amp;&amp; !remainder) {
+         <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("Record %5d of %5d\n",i3+1,n3);
+      }
+
+      ier=<a href="../capishort/cddx_read.html">cddx_read</a>(fd_in,record,n2);
+      if (ier != n2) {
+         <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Reading record %d. %d traces read\n",i3+1,ier);
+         break;
+      }
+
+      apply_taper(record,n1,n2,nhdr, taper,ntaper, cosine);
+
+      ier=<a href="../capishort/cddx_write.html">cddx_write</a>(fd_out,record,n2);
+      if (ier != n2) {
+         <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Writing record %d. %d traces written\n",i3+1,ier);
+         break;
+      }
+
+   }
+
+
+/**************/
+/* Clean up   */
+/**************/
+   <a href="../capishort/cdds_free.html">cdds_free</a>(taper);
+   <a href="../capishort/cdds_free.html">cdds_free</a>(record);
+   <a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+   <a href="../capishort/cdds_close.html">cdds_close</a>(fd_out);
+   <a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+
+
+/**********/
+/* Exit   */
+/**********/
+   exit(0);
+}
+
+
+
+
+/* Function help */
+void help( char *prog, char *Title)
+{
+   fprintf(stderr,"\n");
+   fprintf(stderr," %s\n",Title);
+   fprintf(stderr,"\n");
+   fprintf(stderr," Parameter....Meaning........................Default\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  in=         input dictionary                stdin:\n");
+   fprintf(stderr,"  out=        output dictionary              stdout:\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  ntaper=     # of samples in taper               10\n");
+   fprintf(stderr,"  cosine=     use cosine taper (default: linear)  no\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  verbose=    verbose output                      no\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  USAGE: %s in=[in_dict] out=[out_dict] \\\n",prog);
+   fprintf(stderr,"                 [ ntaper=[nt] cosine=[y|n] \\\n");
+   fprintf(stderr,"                   verbose=[y|n] ]\n");
+   fprintf(stderr,"\n");
+
+   exit(0);
+}
+
+
+
+
+/* Function apply_taper */
+void apply_taper( record,n1,n2,nhdr, taper,ntaper, cosine )
+
+   int   n1,n2,nhdr, ntaper, cosine;
+   float *record, *taper;
+{
+   int   i1,i11,i1n, o2,i2, it;
+   float pi;
+
+/* Build the taper weights */
+   if (cosine) {
+     pi=acos(-1.0);
+     for (it=0; it&lt;ntaper; it++) {
+        taper[it] = 0.5+0.5*cos(pi*(ntaper-it)/ntaper);
+     }
+   } else {
+      for (it=0; it&lt;ntaper; it++) {
+         taper[it]= (float)(it)/ntaper;
+      }
+   }
+
+/* Go apply the taper */
+   for (i2=0; i2&lt;n2; i2++) {
+
+      /* offset to the beginning of the i2-th trace */
+      o2=i2*(nhdr+n1);
+
+      /* find the onset of data at the beginning of the trace */
+      i11 = -1;
+      i1  = nhdr;
+      while (i11&lt;0 &amp;&amp; i1&lt;nhdr+n1) {
+         if (record[o2+i1]!=0.0) i11=i1;
+         i1++;
+      }
+
+      /* apply the taper */
+      if (i11&gt;=0) {
+         it = -1;
+         for (i1=i11; i1&lt;MIN(i11+ntaper,nhdr+n1); i1++) {
+            it = it++;
+            record[o2+i1] = record[o2+i1] * taper[it];
+         }
+      }
+
+      /* find the offset of data at the end of the trace */
+      i1n = nhdr+n1;
+      i1  = nhdr+n1-1;
+      while ( i1n==nhdr+n1 &amp;&amp; i1&gt;nhdr) {
+         if (record[o2+i1]!=0.0) i1n=i1;
+         i1--;
+      }
+
+      /* apply the taper */
+      if (i1n&lt;nhdr+n1) {
+         it = ntaper;
+         for (i1=MAX(nhdr,i1n-ntaper+1); i1&lt;=i1n; i1++) {
+             it = it--;
+             record[o2+i1] = record[o2+i1] * taper[it];
+         }
+      }
+   }
+
+   return;
+
+}
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

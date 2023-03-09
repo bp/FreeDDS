@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Tutorial (Message Logging)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ctutorial","log")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      By default, errors are printed to "<b>stderr:</b>" and execution is
+      aborted, warnings are printed and debug conditions are printed.
+      These messages can be muted and/or sent to a log file and execution
+      can be aborted or continued.  Verbose messages and operator messages 
+      can also be muted and/or sent to a log file. Control of DDS message
+      printing and DDS program aborting are handled via the special "log:"
+      dictionary.  The available flags are listed below.  Their values can
+      either be "true" or "false".
+
+    <pre>
+<b><u>Control Flags   Default   Function                         </u></b>
+error_abort     true      abort program on error message  
+warn_abort      false     abort program on warning message
+debug_abort     false     abort program on debug message 
+error_print     true      print error messages to stderr  
+warn_print      true      print warning messages to stderr
+debug_print     true      print debug messages to stderr 
+verbose_print   (note)    print verbose messages to stderr 
+operator_print  true      print operator messages to stderr 
+error_log       false     print error messages to log:  
+warn_log        false     print warning messages to log:  
+debug_log       false     print debug messages to log: 
+verbose_log     false     print verbose messages to log: 
+operator_log    false     print operator messages to log: 
+
+NOTE: verbose_print default is "true" iff "dds_debug" is
+present on the command line or par file.
+    </pre>
+
+    <p>
+      To change any of these flags, write their new values to the "log:" 
+      dictionary.  Suspending the "log:" dictionary causes dds to
+      internally scan the dictionary and update the flags. Reseting the dictionary removes any accumulated log messages and resets all the
+      control flags to their default values.
+
+    <pre>
+<a href="../capi/dict.html">cdds_dict</a>("log:", "print");
+<a href="../capi/printf.html">cdds_printf</a>("error_abort", "false\n");
+<a href="../capi/printf.html">cdds_printf</a>("error_print", "false\n");
+<a href="../capi/printf.html">cdds_printf</a>("error_log", "true\n");
+<a href="../capi/dict.html">cdds_dict</a>("log:", "suspend");
+    </pre>
+
+    <p>
+      This can be useful in a "GUI" type program where the application can
+      accumulate messages into the "log:" dictionary and then later read,
+      display and clear the log of all these messages. For examples:
+
+    <pre>
+const char *defn, *value;
+...
+<a href="../capi/dict.html">cdds_dict</a>("log:", "scan");
+defn = <a href="../capi/newer.html">cdds_newer</a>("", "");
+while(defn) {
+   if (strstr(defn, "_msg")) {
+      ier = <a href="../capi/scant.html">cdds_scant</a>("", &amp;value);
+      while (ier &gt; 0) { 
+         printf(value);
+         ier = <a href="../capi/scant.html">cdds_scant</a>("", &amp;value);
+      }
+   }
+   defn = <a href="../capi/newer.html">cdds_newer</a>("", "");
+}
+<a href="../capi/dict.html">cdds_dict</a>("log:", "reset");
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

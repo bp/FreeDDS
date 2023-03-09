@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Convenience (cddx_read)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","cxapi","read")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("cxapi")</script>
+
+    <h2>cddx_read - read a DDS dataset</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b>
+    <p>
+      <b>int function cddx_read(</b><i>bin_tag, buffer, count</i><b>);
+      </b><dl><dd>
+        <b>BIN_TAG </b><i>bin_tag
+        </i><br>
+        <b>void </b><i>*buffer
+        </i><br>
+        <b>int </b><i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    Routine, <b>"cddx_read"</b>, reads "<i>count</i>" traces from the 
+    input dataset referenced by "<i>bin_tag</i>" into array "<i>buffer</i>".
+    The number of traces read is returned or &lt; 0 on error.  It does
+    the double buffering and mapping all internally.
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (work with headers)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","c_xyrange.c")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+/***********************************************************************/
+/*                                                                     */
+/* Get the range of values in user selected headers                    */
+/* Use source/receiver XY headers as defaults                          */
+/*                                                                     */
+/* An example of reasonably defensive and robust coding.               */
+/*                                                                     */
+/***********************************************************************/
+
+#include &lt;math.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;<a href="../resources/cdds.h.html">cdds.h</a>&gt;
+
+
+/* Macros */
+#define MIN(x,y)  ((x) &lt; (y) ? (x) : (y))
+#define MAX(x,y)  ((x) &gt; (y) ? (x) : (y))
+
+
+/* Function prototypes */
+void help(char *prog, char *Title);
+
+
+/* Main */
+int main(int argc, char **argv)
+{
+
+/* For DDS functions. Arguments and return values */
+   char  *prog, *Title;
+   int   ier;
+   BIN_TAG fd_in;
+
+/* Data attributes */
+   int   n1,n2,n3, ntrc_words;
+   FIELD_TAG iSrcX,iSrcY, iGrpX,iGrpY;
+
+/* Internal dynamic array */
+   float *record;
+
+/* Internal scalar values and loop counters */
+   char   *SrcX,*SrcY, *GrpX,*GrpY;
+   const char *defn;
+   int    i2,i3, ntr;
+   int    ier_sx,ier_sy, ier_gx,ier_gy;
+   double sx_min,sx_max,sx_here, sy_min,sy_max,sy_here;
+   double gx_min,gx_max,gx_here, gy_min,gy_max,gy_here;
+
+/*-------------------------------------------------------------------*/
+
+/****************/
+/* Initialize   */
+/****************/
+   setargcv(argc, argv);
+
+
+/************************/
+/* Set prog and Title   */
+/************************/
+   prog="c_xyrange";
+   Title="c_xyrange: Get the range of selected trace header words";
+
+
+/*****************************************************************/
+/* Open the print file and dump command-line help as requested   */
+/*****************************************************************/
+   ier=<a href="../capishort/cdds_openpr.html">cdds_openpr</a>(prog,"");
+   if (ier&gt;0) help(prog,Title);
+
+
+/*****************************************************/
+/* Retrieve alternate headers from user parameters   */
+/*****************************************************/
+   ier=<a href="../capishort/cdds_dict.html">cdds_dict</a>("par:","scan");
+
+   if ( ier=<a href="../capishort/cdds_scant.html">cdds_scant</a>("SrcX srcx",&amp;defn) &gt; 0 ) {
+      SrcX = (char*)malloc(ier+1);
+      strcpy(SrcX,defn);
+   } else {
+      SrcX="SrPtXC";
+   }
+
+   if ( ier=<a href="../capishort/cdds_scant.html">cdds_scant</a>("SrcY srcy",&amp;defn) &gt; 0 ) {
+      SrcY = (char*)malloc(ier+1);
+      strcpy(SrcY,defn);
+   } else {
+      SrcY="SrPtYC";
+   }
+
+   if ( ier=<a href="../capishort/cdds_scant.html">cdds_scant</a>("GrpX grpx",&amp;defn) &gt; 0 ) {
+      GrpX = (char*)malloc(ier+1);
+      strcpy(GrpX,defn);
+   } else {
+      GrpX="RcPtXC";
+   }
+
+   if ( ier=<a href="../capishort/cdds_scant.html">cdds_scant</a>("GrpY grpy",&amp;defn) &gt; 0 ) {
+      GrpY = (char*)malloc(ier+1);
+      strcpy(GrpY,defn);
+   } else {
+      GrpY="RcPtYC";
+   }
+
+
+/************************************************************************/
+/* Open input.  Retrieve data characteristics when open is successful   */
+/************************************************************************/
+   fd_in=<a href="../capishort/cddx_in2.html">cddx_in2</a>("in","stdin:",Title);
+
+   if (fd_in&lt;0) {
+
+      <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Opening input data\n");
+
+   } else {
+
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(1)","%d",&amp;n1);
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(2)","%d",&amp;n2);
+      n3=<a href="../capishort/cdds_axis_prod.html">cdds_axis_prod</a>(3);
+
+      ntrc_words=cdds_prec(fd_in,0)/sizeof(float);
+      if (ntrc_words&lt;=0)
+         <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Cannot determine trace length\n");
+
+      /* Go find the headers within the trace structure */
+      iSrcX=<a href="../capishort/cdds_member.html">cdds_member</a>(fd_in,0,SrcX);
+      iSrcY=<a href="../capishort/cdds_member.html">cdds_member</a>(fd_in,0,SrcY);
+      iGrpX=<a href="../capishort/cdds_member.html">cdds_member</a>(fd_in,0,GrpX);
+      iGrpY=<a href="../capishort/cdds_member.html">cdds_member</a>(fd_in,0,GrpY);
+
+      if (iSrcX == -1) <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Header %s is not available\n",SrcX);
+      if (iSrcY == -1) <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Header %s is not available\n",SrcY);
+      if (iGrpX == -1) <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Header %s is not available\n",GrpX);
+      if (iGrpY == -1) <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Header %s is not available\n",GrpY);
+
+   }
+
+
+/*********************************************/
+/* Check whether any errors were reported.   */
+/* If so, clean up and terminate now.        */
+/*********************************************/
+   if ( <a href="../capishort/cdds_errors.html">cdds_errors</a>()&gt;0) {
+      if (fd_in&gt;0) <a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+      <a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+      exit(0);
+   }
+
+
+/*****************************/
+/* Allocate array for data   */
+/*****************************/
+   record=(float*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>((ntrc_words)*n2*sizeof(float));
+
+
+/***********************************/
+/* Initialize the min/max values   */
+/***********************************/
+   sx_min= HUGE_VAL;
+   sx_max=-HUGE_VAL;
+
+   sy_min= HUGE_VAL;
+   sy_max=-HUGE_VAL;
+
+   gx_min= HUGE_VAL;
+   gx_max=-HUGE_VAL;
+
+   gy_min= HUGE_VAL;
+   gy_max=-HUGE_VAL;
+
+
+/**********************************************/
+/* Loop over input data, set min/max values   */
+/**********************************************/
+   for (i3=0; i3&lt;n3; i3++) {
+
+      ntr=<a href="../capishort/cddx_read.html">cddx_read</a>(fd_in,record,n2);
+
+      if (ntr != n2) {
+
+         <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Reading record %d: %d traces\n\0",i3,ntr);
+
+      } else {
+
+         for (i2=0; i2&lt;n2; i2++) {
+
+            ier_sx=<a href="../capishort/cdds_get.html">cdds_get</a>d(fd_in,iSrcX,&amp;record[i2*(ntrc_words)],&amp;sx_here,1);
+            ier_sy=<a href="../capishort/cdds_get.html">cdds_get</a>d(fd_in,iSrcY,&amp;record[i2*(ntrc_words)],&amp;sy_here,1);
+            ier_gx=<a href="../capishort/cdds_get.html">cdds_get</a>d(fd_in,iGrpX,&amp;record[i2*(ntrc_words)],&amp;gx_here,1);
+            ier_gy=<a href="../capishort/cdds_get.html">cdds_get</a>d(fd_in,iGrpY,&amp;record[i2*(ntrc_words)],&amp;gy_here,1);
+
+            if (ier_sx == 0) {
+               <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Failed to \"get\" header %s\n",SrcX);
+            } else {
+               sx_min=MIN(sx_min,sx_here);
+               sx_max=MAX(sx_max,sx_here);
+            }
+
+            if (ier_sy == 0) {
+               <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Failed to \"get\" header %s\n",SrcY);
+            } else {
+               sy_min=MIN(sy_min,sy_here);
+               sy_max=MAX(sy_max,sy_here);
+            }
+
+            if (ier_gx == 0) {
+               <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Failed to \"get\" header %s\n",GrpX);
+            } else {
+               gx_min=MIN(gx_min,gx_here);
+               gx_max=MAX(gx_max,gx_here);
+            }
+
+            if (ier_gy == 0) {
+               <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Failed to \"get\" header %s\n",GrpY);
+            } else {
+               gy_min=MIN(gy_min,gy_here);
+               gy_max=MAX(gy_max,gy_here);
+            }
+
+            if (<a href="../capishort/cdds_errors.html">cdds_errors</a>() != 0) {
+               <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Record %d, Trace %d\n",i3,i2);
+               break;
+            }
+         }
+
+      }
+
+      if (<a href="../capishort/cdds_errors.html">cdds_errors</a>() != 0) {
+         <a href="../capishort/cdds_free.html">cdds_free</a>(record);
+         <a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+         <a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+         exit(0);
+      }
+   }
+
+
+/***********************/
+/* Report the result   */
+/***********************/
+   <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("\n");
+   <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("Range for header %15s: %lg to %lg\n",SrcX,sx_min,sx_max);
+   <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("Range for header %15s: %lg to %lg\n",SrcY,sy_min,sy_max);
+   <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("Range for header %15s: %lg to %lg\n",GrpX,gx_min,gx_max);
+   <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("Range for header %15s: %lg to %lg\n",GrpY,gy_min,gy_max);
+   <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("\n");
+
+
+/**************/
+/* Clean up   */
+/**************/
+   <a href="../capishort/cdds_free.html">cdds_free</a>(record);
+   <a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+   <a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+
+
+/**********/
+/* Exit   */
+/**********/
+   exit(0);
+}
+
+
+
+
+/* Function help */
+void help( char *prog, char *Title)
+{
+   fprintf(stderr,"\n");
+   fprintf(stderr," %s\n",Title);
+   fprintf(stderr,"\n");
+   fprintf(stderr," Parameter....Meaning........................Default\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  in=[dict]   input dictionary                stdin:\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  SrcX=       Override for SrcX header        SrPtXC\n");
+   fprintf(stderr,"  SrcY=          \"      \"  SrcY   \"           SrPtYC\n");
+   fprintf(stderr,"  GrpX=          \"      \"  GrpX   \"           RcPtXC\n");
+   fprintf(stderr,"  GrpY=          \"      \"  GrpY   \"           RcPtYC\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  USAGE: %s in=[in_dict] \\\n",prog);
+   fprintf(stderr,"            [ SrcX=[SrcX] SrcY=[SrcY] GrpX=[GrpX] GrpY=[GrpY]\n");
+   fprintf(stderr,"\n");
+
+   exit(0);
+}
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

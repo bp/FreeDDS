@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_object)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","object")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_object - fetch a field tag within a DDS block</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+    <b>integer fdds_object(</b><i>bin_tag, field_tag, field_name</i><b>)</b>
+    <dl><dd>
+        <b>integer</b> <i>bin_tag </i><br>
+        <b>integer</b> <i>field_tag </i><br>
+	<b>character(DEFNNAME_MAX)</b> <i>field_name</i>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_object</b> returns the tag associated with the given 
+    <i>field_name</i> that is an object of the block associated with
+    the tag, <i>field_tag</i>.  If <i>field_tag</i> is zero, 
+    it defaults to the block which contains the SEQUENCE (trace type) 
+    associated with <i>bin_tag</i>. If <i>field_name</i> is blank,
+    the returned value will be the tag associated with the first member
+    of the structure.  The functions, <b>fdds_next, fdds_prev</b> and
+    <b>fdds_parent</b> allows traversing through the structure's objects.
+
+    <h2>INPUT</h2>
+    <i>bin_tag</i> is the tag associated with an open binary, previously
+    obtained from <a href="open.html">fdds_open</a>. It specifies a
+    particular binary stream.
+
+    <p>
+      <i>field_tag</i> is the tag associated with a particular field known 
+      by <i>bin_tag</i>.  A value of "0" always refers to the entire
+      trace field.
+
+    <p>
+      <i>field_name</i> is a string that names a member or object field
+      within <i>field_tag</i>.  If <i>field_name</i> is zero length or
+      blank, the returned tag defaults to the first member or object in 
+      the structure, <i>field_tag</i>.
+
+    <h2>OUTPUT</h2>
+    The return value is the field tag associate with the desired object 
+    or "-1" if none found.
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="member.html">fdds_member</a>  Fetch field tag
+<a href="next.html">fdds_next</a> Fetch next field tag
+<a href="prev.html">fdds_prev</a> Fetch previous field tag
+<a href="parent.html">fdds_parent</a> Fetch parent field tag
+<a href="prime.html">fdds_prime</a>  Fetch field prime tag
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

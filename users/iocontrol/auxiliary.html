@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users IO Data (Auxiliary)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","iocontrol","auxiliary")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      Application programs may use datasets auxiliary to the input and 
+      output datasets. Auxiliary data is controlled by definitions 
+      analogous to "<b>in</b>", and "<b>out</b>". The Dictionary for
+      auxiliary data may be defined by alias names like "<b>vel</b>",
+      "<b>Vp</b>", "<b>Vs</b>", "<b>geom</b>", or "<b>norm</b>".
+      An application may allow the end user to override the format and data
+      names. For example,
+
+    <pre>
+vel=Angola_vel
+vel_data=HAngola_vel_@
+vel_format=fcube
+    </pre>
+
+    <p>
+      may be accepted. Auxiliary Dictionaries and data typically do not
+      use "<code>stdin:</code>" and "<code>stdout:</code>" for defaults.
+      However, nothing prevents the user from using "<code>stdin:</code>" 
+      or "<code>stdout:</code>".
+
+    <pre>vel=stdin:</pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

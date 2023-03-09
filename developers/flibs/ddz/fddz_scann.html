@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>fddz_scann - Get the name of a definition found by fdds_scan*()</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "fdds.h"</b><br>
+    <b>#include "fddz.h"</b>
+    <p>
+      <b>integer function fddz_scann(</b><i>alias, defnname</i><b>)</b>
+      <dl><dd>
+        <b>character </b><i>alias*(*)</i><br>
+        <b>character </b><i>defnname*(*)</i><br>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"fddz_scann"</b> finds the <b>"name"</b> of the definition
+    that is found by any of the fdds_scan*() functions. This is used to give
+    applications a way around the "single alias name" restriction of convenience
+    routines <b>fddx_in*</b>, <b>fddx_mod*</b>, or <b>fddx_out*</b>.
+
+   <h2>OUTPUT</h2>
+   When a definition is found, <i>defnname</i> is set to the <b>"name"</b>
+   part of the definition and the length of the the name is returned.
+   <br><br>
+   When no definition is found, or if no dictionaries are in scan mode,
+   <i>defnname</i> is set to NULL and EOF (-1) is returned.
+
+   <h2> EXAMPLE</h2>
+   <pre>
+integer   ier, fd_in
+character defnname*(DEFNNAME_MAX), Title*(*)
+ ...
+c
+c Use convenience routines to open input with more than one alias
+c
+ier = fddz_scann('Vp Vz vel',defnname)
+fd_in = fddx_in (defnname,'stdin:',Title)
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2014)
+
+  </body>
+</html>

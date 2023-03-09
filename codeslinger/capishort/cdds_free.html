@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger "C" Api (cdds_free)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","cdds_free")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capishort")</script>
+
+    <h2>
+      cdds_free - free allocate memory
+    </h2>
+    <hr>
+
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+    <b>void cdds_free(</b><i>ptr</i><b>);
+    </b><dl><dt><dd>
+        <b>void *</b><i>ptr
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+      <b>cdds_free</b> frees allocated memory. If a NULL pointer is passed,
+      then no memory is freed. The DDS memory routines allow run time
+      memory checking. See standard man page for free(3).
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="cdds_malloc.html">cdds_malloc</a> Allocate memory
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

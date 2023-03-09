@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_get)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","get")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_get - get one field from a DDS type buffer</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_get</b><i>xx</i><b>(</b><i>bin, tag, in_buf, offset, out_array[, count]</i><b>)
+      </b><dl><dd>
+        <b>integer</b> <i>bin
+        </i><br>
+        <b>integer</b> <i>tag
+        </i><br>
+        <i>array</i> <i>in_buf(*)
+        </i><br>
+        <b>integer</b> <i>offset
+        </i><br>
+        <i>HostType</i> <i>out_array(*)
+        </i><br>
+        <b>integer</b> <i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    These functions get data from a type field and into an array variable.
+    The data is converted to the host array type,
+    from the type defined for the field.
+    The array type is implied by the function name suffix.
+
+    <h2>INPUT</h2>
+      The first two arguments describe an input field within a buffer.
+      <i>bin</i> is a binary tag, previously obtained from
+      <a href="open.html">fdds_open.</a>
+
+    <p>
+      <i>tag</i> identifies a specific field associated with <i>bin</i>
+      obtained from <a href="member.html">fdds_member.</a> Note that there is
+      a distinct difference between <i>tags</i> generated from different <i>bin</i>
+      values. This means that you should not be using a <i>tag</i> from the
+      <b>in_bin</b> for anything related to the <b>out_bin</b>. If <i>tag</i> is
+      zero, the default target (trace) is used.
+
+    <p>
+      <i>in_buf</i> is the buffer of data read for the entire target (or
+      trace).
+
+    <p>
+      <i>offset</i> is a byte offset into buffer from where the
+      <i>tag</i> is referenced (typically 0).
+
+    <p>
+      The last two arguments describe an output array.
+      The type of <i>out_array</i> is implied by the function name suffix.
+      The number of elements is specified by <i>count</i> (except for
+      character type where the maximum count is inherent).
+
+    <h2>OUTPUT</h2>
+    The <b>get</b> functions copy (or convert) data from one type field
+    into the output array. Vectors are truncated or padded,
+    depending upon the source and destination count.
+
+    <p>
+      The functions return value is count, or zero if an error occurred.
+
+    <p>
+      A simple byte copy is performed, if the binary formats are the same.
+      The <b>get</b><i>xx</i> functions convert between most numeric
+      representations.
+      The allowed combinations are implementation dependent.
+      The functions also convert between ascii and ebcdic character formats.
+      Byte fields can be copied, without conversion, into any array.
+      Conversion is not allowed between numeric and character types.
+      If conversion is not possible, an error is reported and
+      the output array is not changed.
+
+    <pre>
+<b><u>function   HostType   out_array pad</u></b>
+fdds_get     byte          --
+fdds_getcb   character    blank
+fdds_geti    integer      zero
+fdds_geti2   integer*2    zero
+fdds_getr    real         zero
+fdds_getff   real         zero (USP fake float)
+fdds_getd    real*8       zero
+fdds_getc    complex      zero
+    </pre>
+
+    C assignment rules are used to convert <b>float</b> fields to integer
+    and unsigned values. Character fields are assumed to be padded with
+    blanks. Trailing pad characters are ignored during <b>get</b>
+    processing they effectively shorten input character fields.
+    <b>fdds_getff</b> retrieve fake floats from consecutive 4-bytes.
+
+    <p>
+      NOTE: When <b>fdds_getr</b> is given a negative tag, then the
+      absolute value of the tag is instead passed to <b>fdds_getff</b>.
+      This is indicative of a request from <b>fdds_member</b> for one of
+      the Horzxx trace headers.
+
+    <h2>EXAMPLE</h2>
+    <pre>
+      integer :: in_bin, tag, ier
+      integer :: in_buf(*)
+      integer :: out_array(*)
+      ...
+      tag = fdds_member(in_bin,0,'TagName')
+      ...
+      ! Read in a single trace to in_buf
+      ier = fddx_read(in_bin, in_buf, 1)
+      ! Store 100 values from 'TagName' header into out_array (cast to integer if necessary)
+      ier = fdds_geti(in_bin, tag, in_buf, 0, out_array, 100)
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="put.html">fdds_put</a>
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

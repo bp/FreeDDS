@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Directories (host Lib Routines)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","dir","host","libsrc")
+    </script>
+    <!*********************************************************************>
+
+    These are the <u>C Source</u> files that make up the libchost.a and
+    libfhost.a libraries
+
+    <ul>
+      <li><b>ascii_ebcdic.c</b> - Routines for conversion between ascii and
+        ebcdic character. This is included in both libchost.a and libfhost.a.
+        <br /><br /></li>
+
+      <li><b>int8.c</b> - Routines for handling 8-bytes integers when it is
+        not available and thus "HOST_FAKE8" is set to fake the use of 8-byte
+        integer.  This is included in both libchost.a and libfhost.a.
+        <br /><br /></li>
+
+      <li><b>getargc.c</b> - "C" routines for handling command line arguments
+        and environmental variables.  This is included in libchost.a.
+        <br /><br /></li>
+
+      <li><b>getargf.c</b> - Fortran routines for handling commnand line
+        arguments and environmental variables. This is included in libfhost.a.
+        <br /><br /></li>
+
+      <li><b>lnblnk.c</b> - Fortran routine for "lnblnk" when not available
+        on some systems.  This is the routine for returning the length of a 
+        character string, ignoring any trailing blanks. This is included in libfhost.a.
+        <br /><br /></li>
+    </ul>
+    
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

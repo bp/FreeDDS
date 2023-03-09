@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (multiple inputs)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","cubic_interp")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+!...|....1....|....2....|....3....|....4....|....5....|....6....|....7....|....8
+!*******************************************************************************
+!
+! Routine:    cubic_interp
+! Purpose:    Performs cubic interpolation.
+!             Interpolates data1(), sampled at locations in table1(), to
+!             data2(), sampled at locations in table2(). table1() and table2()
+!             may have arbirary spacing.
+!
+!                      i      i    i   i      o    i  io   io     i     o
+! call cubic_interp (table1,data1,n1,table2,data2,n2,indx,coef,do_init,ier)
+!
+! Arguments:
+!     real     table1(n1)   Coordinates for data1() in ascending order
+!     real     data1(n1)    Input data values
+!     integer  n1           Length of vectors table1() and data1()
+!     real     table2(n2)   Coordinates tor data2() in ascending order
+!     real     data2(n2)    Resampled output data
+!     integer  n2           Length of vectors table2() and data2()
+!     integer  indx(n2)     Intermediate index vector
+!     real     coef(n2,4)   Vector of coefficients for interpolation
+!     integer  do_init      Initialization flag
+!                             use precomputed indx(),coef() if do_init == 0
+!                             otherwise recompute
+!     integer  ier          return 0 for no error, .ne. 0 if error found
+!
+! Error conditions:
+!      If n1 .lt. 4 or n2 .gt. 1, the routine is aborted with ier=1
+!
+!-------------------------------------------------------------------------------
+      subroutine cubic_interp &
+           (table1,data1,n1, table2,data2,n2, indx,coef,do_init, ier)
+
+      implicit none
+
+! Argument declarations
+      integer          :: n1, n2
+      integer          :: indx(n2)
+      integer          :: do_init, ier
+
+      real             :: table1(n1), data1(n1)
+      real             :: table2(n2), data2(n2)
+      real             :: coef(n2,4)
+
+! Local variables
+      integer          :: i, j, ii, i1, i2
+      integer          :: j1, j2, j3, j4
+      real,allocatable :: wrk2(:)
+      real             :: tblmin, tblmax
+      real             :: dx1, dx2, dx3, dx4
+      real             :: d12, d13, d14, d23, d34, d42
+
+!-------------------------------------------------------------------------------
+! Done with declarations
+!-------------------------------------------------------------------------------
+
+! Check if the problem is properly posed
+      if ( n1.lt.4 .or. n2.lt.1 ) then
+        ier = 1
+        return
+      endif
+
+! Do initialization as required
+      if (do_init .ne. 0) then
+
+        allocate(wrk2(n2))
+
+        ! Copy table2() into wrk2() handling values that are out of range
+        tblmin = table1(1)
+        tblmax = table1(n1)
+        wrk2(1:n2) = max(tblmin,min(table2(1:n2),tblmax))
+
+        ! Fill indx()
+        j = 3
+        do i = 1, n2
+          do 
+            if ( wrk2(i).le.table1(j) .or. j.ge.(n1-1) ) exit
+            j = j + 1
+            cycle
+          enddo
+          indx(i) = j - 2
+        enddo
+
+        ! Calculate values of coef()
+        do i = 1, n2
+          j1 = indx(i)
+          j2 = j1 + 1
+          j3 = j2 + 1
+          j4 = j3 + 1
+
+          dx1 = wrk2(i) - table1(j1)
+          dx2 = wrk2(i) - table1(j2)
+          dx3 = wrk2(i) - table1(j3)
+          dx4 = wrk2(i) - table1(j4)
+          d12 = table1(j1) - table1(j2)
+          d13 = table1(j1) - table1(j3)
+          d14 = table1(j1) - table1(j4)
+          d23 = table1(j2) - table1(j3)
+          d34 = table1(j3) - table1(j4)
+          d42 = table1(j4) - table1(j2)
+
+          coef(i,1) = dx2*dx3*dx4 / (d12*d13*d14)
+          coef(i,2) = dx1*dx3*dx4 / (d12*d23*d42)
+          coef(i,3) = dx1*dx2*dx4 / (d13*d23*d34)
+          coef(i,4) = dx1*dx2*dx3 / (d14*d42*d34)
+        enddo
+
+        deallocate(wrk2)
+
+      endif
+
+
+! Interpolate data1() onto data2()
+      do i = 1, n2
+        j = indx(i)
+        data2(i) =   coef(i,1)*data1(j)   &
+                   + coef(i,2)*data1(j+1) &
+                   + coef(i,3)*data1(j+2) &
+                   + coef(i,4)*data1(j+3)
+      enddo
+
+
+! All done
+
+      return
+      end subroutine cubic_interp
+ 
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (segy Mapping)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" 
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","segy","map")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      When converting from another format to <b>segy</b>, the Trace Headers 
+      get mapped over to the new format.  Any Trace Header fields that exist
+      in both formats with the same name ("Spare.Hdr.RecNum" is not the
+      same as "RecNum"), automatically get mapped by default.  All other
+      default map Definitions for mapping to <b>segy</b> are provided in 
+      "<code>${DDSROOT}/src/lib/dds3/segy.map.dds</code>". 
+      Each map Definition name is prefixed by "<code>map:*:segy.</code>"
+      (or the specific format can be substituted for the "<code>*</code>".
+      (See <a href="../../mapping.html">Mapping</a> for further detail).
+
+    <pre>
+segy mapping              usp expression
+------------------------- ------------------------
+map:usp:segy.Date=        datestruct(SGRDat)
+map:usp:segy.MuteEnd=     SGRNum
+map:usp:segy.DateType=    SGRAmp
+map:usp:segy.SrcStatic=   InStAp
+map:usp:segy.GrpStatic=   RcStAp
+map:usp:segy.SrcX=        SrPtXC
+map:usp:segy.SrcY=        SrPtYC
+map:usp:segy.GrpX=        RcPtXC
+map:usp:segy.GrpY=        RcPtYC
+map:usp:segy.SrcDepth=    ShtDep
+map:usp:segy.UpholeTmSrc= UphlTm
+map:usp:segy.HorzStack=   FoldNm
+map:usp:segy.CdpTrcNum=   TrcNum
+map:usp:segy.FieldRecNum= PrRcNm
+map:usp:segy.FieldTrcNum= PrTrNm
+map:usp:segy.SrcElev=     SrPtEl
+map:usp:segy.GrpElev=     GrpElv
+map:usp:segy.CdpNum=      DphInd
+map:usp:segy.GrpDatum=    RfSrEl
+map:usp:segy.TotalStatic= StaCor
+map:usp:segy.TrcIdCode=   (StaCor - 30000) ? 1 : 2
+
+
+segy mapping              asp expression
+------------------------- ------------------------
+map:asp:segy.Date=        datestruct(field(SGRDat,0))
+map:asp:segy.MuteEnd=     field(SGRNum, nop)
+map:asp:segy.DateType=    field(SGRAmp, nop)
+map:asp:segy.SrcStatic=   field(InStAp, nop)
+map:asp:segy.GrpStatic=   field(RcStAp, nop)
+map:asp:segy.SrcX=        field(SrPtXC, nop)
+map:asp:segy.SrcY=        field(SrPtYC, nop)
+map:asp:segy.GrpX=        field(RcPtXC, nop)
+map:asp:segy.GrpY=        field(RcPtYC, nop)
+map:asp:segy.SrcDepth=    field(ShtDep, nop)
+map:asp:segy.UpholeTmSrc= field(UphlTm, nop)
+map:asp:segy.HorzStack=   field(FoldNm, nop)
+map:asp:segy.CdpTrcNum=   field(TrcNum, nop)
+map:asp:segy.FieldRecNum= field(PrRcNm, nop)
+map:asp:segy.FieldTrcNum= field(PrTrNm, nop)
+map:asp:segy.SrcElev=     field(SrPtEl, nop)
+map:asp:segy.GrpElev=     field(GrpElv, nop)
+map:asp:segy.CdpNum=      field(DphInd, nop)
+map:asp:segy.GrpDatum=    field(RfSrEl, nop)
+map:asp:segy.TotalStatic= field(StaCor, nop)
+map:asp:segy.TrcIdCode=   (field(StaCor, 0) - 30000) ? field(TrcIdCode, 1) : 2
+map:asp:segy.ElevScaler=  field(ElevScaler, 1)
+map:asp:segy.XYScaler=    field(XYScaler, 1)
+
+
+segy mapping                      segy1 expression
+--------------------------------  ------------------------
+map:segy1:segy.Spare.Hdr.CDPBCX=  CDPBCX
+map:segy1:segy.Spare.Hdr.CDPBCY=  CDPBCY
+map:segy1:segy.Spare.Hdr.LinInd=  LinInd
+map:segy1:segy.Spare.Hdr.SrcLoc=  SrcLoc
+map:segy1:segy.CdpNum=            DphInd
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

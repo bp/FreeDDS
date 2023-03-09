@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_printv)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","printv")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_printv - append definition to dictionary
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>int cdds_printv(</b><i>alias, str</i><b>);
+      </b><dl><dt><dd>
+        <b>const char *</b><i>alias
+        </i><br>
+        <b>const char *</b><i>str
+        </i></dl>
+
+    <P>
+      [ <A HREF="#description">Description</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>cdds_printv</b> appends a definition to a dictionary. The
+    <i>print</i> dictionary must have been previously selected by 
+    <a href="dict.html">cdds_dict,</a> or related function.
+    The name of the definition is specified by <i>alias</i>.
+    If a null <i>alias</i> is specified (i.e. <b>NULL</b>, zero length
+    string, or a string that only contains white space) then the value
+    is appended to the current <i>print</i> definition.
+
+    <p/>
+      <b>cdds_printv</b> uses a string referenced by <i>str</i>.
+      It is taken literally, without special interpretation.
+      The string is appended to the existing value, if any.
+
+    <p/>
+      The function returns the number of characters in the string.
+      EOF is returned, if an error is detected or a <i>print</i> definition
+      does not exist.
+
+    <p/>
+      No function is provided to over write existing definitions;
+      history can't be changed.
+      An existing name can be appended again,
+      which effectively redefines its value.
+    <p/>
+      See <a href="scanf.html">cdds_scanf</a> for a description of
+      <i>alias</i> definitions.
+
+      <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre>
+int j;
+
+j = cdds_printv("foo", " red green blue\n");
+j = cdds_printv("scale", "95%\n");
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="dict.html">cdds_dict</a> Select DDS dictionary and mode
+<a href="printf.html">cdds_printf</a> Append definition to dictionary
+<a href="printt.html">cdds_printt</a> Append definition to dictionary
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_newer)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","newer")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_newer - find newer definition, given alias list
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>const char * cdds_newer(</b><i>alias</i><b>);
+      </b><dl><dt><dd>
+        <b>const char *</b><i>alias
+        </i></dl>
+    <h2>DESCRIPTION</h2>
+    This function finds the next newer definition in the "scanned" dictionaries (see 
+    <a href="dict.html">cdds_dict</a>).
+    The various 
+    <a href="scanf.html">scan</a>
+    routines can then be used to retrieve the definition's value(s).
+    After a call to  
+    <a href="dict.html">cdds_dict,</a>
+    <b>cdds_newer</b> will start from the beginning of the dictionary
+    (or first dictionary of several).
+    <h2>INPUT</h2>
+    <i>alias</i> is a list of definition names to search.  If the list
+    is empty, then the very next definition is found. 
+    <h2>OUTPUT</h2>
+    The name of the definition found will be returned.  If
+    <i>alias</i> is empty, it will be the name of the next definition.
+    If <i>alias</i> contains multiple definitions to search, name will 
+    be the name of the specific definition found.
+    A NULL value is returned if the <i>alias</i> definition is not found.
+    <h2>EXAMPLES</h2>
+    <dl><dt><dd>
+        <pre>
+          <b>
+            const char *defn, *value;
+            ...
+            cdds_dict(in_dict, "scan");
+            defn = cdds_newer("cmd_title cmd_name");
+            if (defn) cdds_scanv("", &amp;value);
+            ...
+            defn = cdds_newer("");
+            if (defn) fprintf(stderr, "defn=%s\n", defn);
+            ...
+          </b></pre>
+        <b></b></dl>
+    <h2>SEE ALSO</h2>
+    <pre>
+      <a href="dict.html">cdds_dict</a>  Select DDS Dictionary and mode
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

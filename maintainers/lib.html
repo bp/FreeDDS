@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Library Installation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("maintainers","lib")</script>
+    <!*********************************************************************>
+
+    <p>
+      This provides a more detailed set of instructions for maintaining the 
+      DDS libraries.  For quick, simple installation procedure on
+      a single platform, go to <a href='../download/lib.html'>Quick Library
+      Installation</a>.
+          
+    <ol>
+      <li>Execute "<code>make</code>" (or "<code>make</code>")
+        from this root DDS directory to build AND 
+        install "fhost", "chost", "gio", "dds_r3", "fftw" and
+        "fft" libraries for the local machine.  (You can alternately 
+        go into each of the src/lib directories, run "make" and "make
+        install"; just make sure you run a "make install" in the host
+        directory first.)<br><br>
+
+      <li>If you have downloaded and untarred the documentation under
+        the dds root, then either point your local brouser to 
+        "<code><var>${DDSROOT}</var>/doc/html/index.html</code>"
+        or make sure the "html" directory is under a subdirectory of the
+        web server directory. "PHP" will need to be operational for
+	the searching engine and man pages displaying.<br><br>
+
+      <li>After these libraries (and accompanied information) are 
+        inplace, then look at the <a href="apps.html">Applications Installation</a>
+        for building the DDS applications.  You should now have the following DDS 
+        libararies installed under ${DDSROOT}/lib/&lt;ARCHDIRS&gt;:
+        <ul>
+          <li><b>libdds_r3.a</b> - core DDS API routines
+          <li><b>libchost.a</b>  - host dependent routines for 'c'
+            programs
+          <li><b>libfhost.a</b>  - host dependent routines for
+            Fortran programs
+          <li><b>libgio.a</b>    - generalized buffered I/O routines
+            for DDS
+          <li><b>libfft.a</b>    - basic fft wrappers for different
+            platforms
+          <li><b>libfftw.a</b>   - fftw routines from fftw.org used
+            by fft wrappers
+            on platforms that do not have good fft's in place.
+        </ul>
+    </ol>
+    <p>
+      You probably will need to download the DDS documentation 
+      (or go to the DDS website) for both the use of DDS as well as 
+      the API calls for application developers.
+
+
+<pre>
+
+
+The makefiles automatically creates directories.
+This includes the TARCH directory and directories on remote hosts.
+
+Example make targets...
+
+   make                       # default target and default host.
+
+   make openbin.o             # specific target (default host).
+
+   make target=openbin.o      # ...same thing.
+
+   make source                # make indirect source files.
+                              #    This creates some ".c" and ".h"
+                              #    files from other source files.
+                              #    This may only work from "sun4".
+
+   make gssgi1                # make specific host (default targets).
+                              #    see sun4/gssgi1.LOG for status.
+                              #    Only works from a "sun4" host
+
+                              #    at the "apr" site.
+
+   make host=gssgi1           # ...same thing.
+
+   make host=gssgi1 openbin.o # make specific host and target.
+
+   make remotes               # make remote hosts, but not local.
+                              #    see sun4/*.LOG for status.
+
+   make all                   # make remote and local hosts.
+   make host=all              # make remote and local hosts.
+
+   make install               # install on local hosts.
+   make allinstall            # install remote and local hosts.
+   make host=all install      # install remote and local hosts.
+
+   make clean                 # remove $TARCH/*.o and lib*.a etc.
+
+   make host=all clean        # cleanup all hosts
+
+</pre>
+
+
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

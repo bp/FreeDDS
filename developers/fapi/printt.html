@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_printt)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","printt")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_printt - append definition to DDS dictionary</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+    <b>integer function fdds_printt(</b><i>alias, str</i><b>)</b>
+    <dl><dd>
+        <b>character*(*)</b> <i>alias </i><br>
+	<b>character*(*)</b> <i>str</i>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_printt</b> appends a definition to a dictionary.
+    The <i>print</i> dictionary must have been previously selected by
+    <a href="dict.html">fdds_dict</a>,  or related function.
+    The name of the definition is specified by <i>alias</i>.
+
+    <p>
+      One definition name may be specified by <i>alias</i>.
+      If specified, a new definition is appended to the <i>print</i> dictionary.
+      A new definition is not created, if a blank <i>alias</i> is specified.
+      In this case the value is appended to the current <i>print</i> definition.
+
+    <p>
+      If the <i>alias</i> definition name is prefixed with <b>"alias:"</b>
+      or <b>"?"</b>, a definition alias is appended to the dictionary.
+
+    <p>
+      <b>fdds_printt</b> uses a string referenced by <i>str</i>.
+      A token is created and appended to the existing value, if any.
+      The token is delimited by blanks and double quotes as needed.
+      Quotes are used only if the string is zero length, contains white
+      space, or has special characters ('<b>\</b>', '<b>=</b>', '<b>"</b>').
+      Escape characters '<b>\</b>' are automatically inserted, to preserve
+      special characters like ".
+
+    <h2>INPUT</h2>
+    <i>alias</i> identifies a new definition,
+    or continued processing of the value for the current one.
+
+    <h2>OUTPUT</h2>
+    The contents of the current output dictionary may be changed.
+
+    <p>
+      No function is provided to over write existing definitions --
+      history can't be changed. An existing name can be appended again,
+      which effectively redefines its value.
+
+    <p>
+      The return value is the number of characters written,
+      or negative (EOF) if an error occurred.
+      Zero is returned, if an output dictionaries is not open.
+
+    <h2>EXAMPLES</h2>
+    <pre>
+!     append "beta" definition to output dictionary
+      ier = fdds_printt('beta', 'this is a value\n')
+
+!     append an alias to undefine "gamma"
+      ier = fdds_printt($gamma',' \n')
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="printf.html">fdds_printf</a> Append a definition
+<a href="printv.html">fdds_printv</a> Append a definition
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

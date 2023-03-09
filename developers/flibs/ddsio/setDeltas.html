@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>setDeltas - Sets this data object's deltas</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>procedure setDeltas(</b><i>delta, irank</i><b>)</b>
+      <dl><dd>
+	<b>real(kind=DPR), intent(in)    :: </b><i>delta(:)</i><br>
+	<b>integer, optional, intent(in) :: </b><i>irank</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"setDeltas"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure sets the deltas of each rank of each file associated with this data
+      object using <i>delta(:)</i>.
+      <br><br>
+      If <i>irank</i> is specified, then only the first element of <i>delta</i> is used
+      to set the delta of rank <i>irank</i>.
+      <br><br>
+      NOTE: <b>"setDeltas"</b> only effects files in read mode. To set the size of a file
+      in write mode, use <b>data%setAttr('delta', deltas)</b>.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	
+	type(DdsObject) :: inData
+	
+	call inData%setDeltas([25.0, 25.0, 25.0])
+	
+	call inData%open('r', 'in')
+      </pre>
+      
+  </body>
+</html>

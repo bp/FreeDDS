@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_addaxis)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","addaxis")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_addaxis - add a new axis to a DDS dictionary.
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>int cdds_addaxis(</b><i>dict, num, name</i><b>);
+      </b><dl><dt><dd>
+        <b>const char *</b><i>dict
+        </i><br>
+        <b>int </b><i>num
+        </i><br>
+        <b>const char *</b><i>name
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    This function is used to add a new axis to the dictionary, "<i>dict</i>".
+    The new axis will have a name of "<i>name</i>" and will be 
+    the <i>num</i>'th axis (numbering from 1). 
+    The dictionary will be left opened in the "print" mode
+    for inclusion of any axis parameters such as size, delta and orgiin.
+    The name should not conflict with any other axis name.
+    The <i>num</i> value must be between 1 and 1 more than the current rank
+    and it cannot be create any more than <b>RANK_MAX</b> axes.   
+    <p>
+      The function returns a non-zero value if an error is detected,
+      and zero otherwise.
+    <h2>SEE ALSO</h2>
+    <pre>
+      <a href="rmaxis.html">cdds_rmaxis</a>  Remove axis
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

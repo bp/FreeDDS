@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (seek)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","seek")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Seek:</h2>
+
+    <pre>
+<b><u>Files:</u></b>
+    f_xxx.c      - Fortran API Routines
+                      f_isreg.c f_lseek.c f_lseek8.c f_fflush.c
+    c_xxx.c      - "C" API Routines
+                      c_isreg.c c_lseek.c c_lseek8.c c_fflush.c   
+    seektype.c   - Seek within binary data (non-sliced)
+    seekset.c    - Seek set within binary data (non-sliced)
+    seekcur.c    - Seek from current within binary data (non-sliced)
+    seekend.c    - Seek from end within binary data (non-sliced)
+    seekslice.c  - Seek within sliced binary data (called by cdds_lseek8)
+    seekheader.c - line header seek within binary data (called by cdds_lseek8)
+                   (BUT this is not allowed)
+    edittrace.c  - edit binary trace data, for read or write.  This is done to
+                   pad in dead traces or drop unwanted traces.  It also 
+                   synchronizes sort indexing when necessary.
+    editfinal.c  - edit final binary trace data for read (called by ddsReadCheck)
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

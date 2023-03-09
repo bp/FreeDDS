@@ -1,0 +1,56 @@
+
+    <h2>fddx_inp - open an input file for reading, mapping some compulsory and optional headers.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;pcddx.h&gt;</b>
+    <p>
+      <b>int cddx_inp(</b><i>alias, value, prog, node, buflen, numcotags, numoptags, hw, tags</i><b>)</b>
+    </p>
+    <dl><dd>
+        <b>const char * </b><i>alias</i><br>
+        <b>const char * </b><i>value</i><br>
+        <b>const char * </b><i>prog</i><br>
+        <b>int </b><i>node</i><br>
+        <b>int *</b><i>buflen</i><br>
+        <b>int </b><i>numcotags</i><br>
+        <b>int </b><i>numoptags</i><br>
+        <b>const char *</b><i>hw[DEFNNAME_MAX]</i><br>
+        <b>int *</b><i>tags</i><br>
+    </dd></dl>
+
+    <h2>DESCRIPTION</h2>
+    The function, "<b>cddx_inp</b>", opens an input file for reading, mapping some compulsory and optional headers.<br>
+    If the compulsory headers are not found, then an error is issued.<br>
+    If the optional headers are not found, then a warning is issued.
+
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>alias</i>", specifies the parameter name defining the input file.
+    </p><p>
+      The parameter, "<i>value</i>", specifies the default filename.
+    </p><p>
+      The parameter, "<i>prog</i>", specifies the program name.
+    </p><p>
+      The parameter, "<i>node</i>", specifies the MPI node number.
+    </p><p>
+      The parameter, "<i>numcotags</i>", specifies the number of compulsory trace header tags.<br>
+      If the compulsory headers are not found, then an error is issued.
+    </p><p>
+      The parameter, "<i>numoptags</i>", specifies the number of optional trace header tags.
+      If the optional headers are not found, then a warning is issued.
+    </p><p>
+      The parameter, "<i>hw</i>", specifies the array of compulsory headers, followed by the optional headers.
+
+    <h2>OUTPUT</h2>
+    <p>
+      The parameter, "<i>buflen</i>", specifies the trace buffer length. This is the number of floats needed to hold a single trace with headers.
+    </p><p>
+      The parameter, "<i>tags</i>", specifies the header tags (returned by cdds_member).
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_inp</b> returns the binary tag to the input file, if it was opened successfully, else returns -1.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_mod)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","mod")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_mod - initialize DDS dictionary for modification of binary data.
+    <hr></h2>
+
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>const char * cdds_mod(</b><i>alias, value, title, history</i><b>);
+      </b><dl><dt><dd>
+        <b>const char *</b><i>alias
+        </i><br>
+        <b>const char *</b><i>value
+        </i><br>
+        <b>const char *</b><i>title
+        </i><br>
+        <b>const char *</b><i>history
+        </i></dl>
+
+    <P>
+      [ <A HREF="#description">Description</A> 
+      | <A HREF="#input">Input</A> 
+      | <A HREF="#output">Output</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>cdds_mod</b> modifies an existing dictionary, or
+    initializes a new one if it does not exist. If the dictionary already
+    exists, the <i>title</i> definitions and "<b>par:</b>" dictionary
+    are appended to it. If the dictionary does not exist, it is initialized
+    with a copy of the <i>history</i> dictionary. One dictionary name is 
+    returned as the function value. The dictionary is selected for
+    <i>scan</i> mode, before <b>cdds_mod</b> returns. No dictionary is
+    selected for <i>print</i> mode.
+
+    <p/>
+      Applications may update the dictionary contents by appending
+      (<i>print</i>) definitions. The <b>cdds_open</b> function may also
+      update the dictionary. Changes are frozen, after the binary data is
+      opened.
+
+    <p/>
+      Note: This function changes the <i>scan</i> and <i>print</i>
+      dictionary selection.  It implicitly calls <b>cdds_dict</b> to select
+      new names and modes. After a dictionary is initialized, it may be
+      switched between <i>scan</i> and <i>print</i> modes by calling
+      <b>cdds_dict</b>.
+
+      <a name="input"></a><h2>INPUT</h2>
+    <b>cdds_mod</b> accepts a dictionary name either indirectly via 
+   <i>alias</i> or by default via <i>value</i>.
+
+    <p/>
+      Mutiple <i>definition</i> names, delimited by white space, may be
+      specified by <i>alias</i>. If specified, the "<b>par:</b>" dictionary
+      is searched. If a definition is found, its value is taken as a 
+      dictionary name. This feature is disabled, if a null <i>alias</i>
+      is specified (i.e. <b>NULL</b>, zero length string, or a string that
+      only contains white space).
+
+    <p/>
+      A default dictionary name may be specified by <i>value</i>. The
+      default is used if the "<b>par:</b>" dictionary does not define
+      <i>alias</i>, or a null <i>alias</i> is specified. If there is no
+      appropriate default, then a null <i>value</i> should be specified.
+      A temporary dictionary is created, if an explicit name is not
+      available.
+
+    <p/>
+      The <i>value</i> default is ignored in special cases. These
+      exceptions make it convenient to use DDS programs with
+      <i>standard</i> formats and non-DDS applications.
+      <b>cdds_mod</b> ignores the default, if <i>value</i> is 
+      "<b>stdin:</b>" or "<b>stdout:</b>".
+
+    <p/>
+      The <i>title</i> argument should provide a brief (one line)
+      description of the application program. The <i>title</i> is
+      accumulated in the history, along with other definitions (it is
+      not used if a new dictionary is being created). For example:
+
+    <pre>
+<i>...previous history</i>
+DDS_SENTRY= $Revision: 57 $ $Date: 2009-02-11 17:09:37 -0600 (Wed, 11 Feb 2009) $
+********************************************
+******************* TITLE ******************
+********************************************
+cmd_title=  "bridge, convert seismic data"
+cmd_name= /dist/Linux/2.6/mbs/prod/i686/bridge
+cmd_rev= 1.10
+cmd_user= DoeJohnw
+cmd_date= Mon Oct 23 10:24:20 2006
+cmd_host= machine2
+cmd_cwd= /data/line2
+cmd_pid= 6753
+alias:sep_in= in
+$size=
+$origin=
+$delta=
+$units=
+dds_history{= par:
+<i>...contents of par: dictionary</i>
+dds_history}= par:
+    </pre>
+
+    The <i>history</i> argument should name a dictionary that contains the
+    processing history. The history is copied when a new dictionary is
+    created, otherwise it is not used.
+
+    <a name="output"></a><h2>OUTPUT</h2>
+    A constant character pointer is returned containing the opened 
+    dictionary name and the dictionary is setup for printing definitions
+    if it is being created; otherwise it is setup for scaning.
+
+    <p/>
+      The dictionary is closed and the memory is freed when the associated
+      binary file is closed. However, if the memory for the output 
+      dictionary names must be freed then use  
+      <a href="free.html">cdds_free</a> instead of any other system
+      'free' routine.
+
+      <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre>
+const char *mod_dict;
+
+/* create/update velocity model dictionary */
+mod_dict = cdds_mod("vel", "model", "model update", in_dict);
+          </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="dict.html">cdds_dict</a> Select DDS dictionary and mode
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

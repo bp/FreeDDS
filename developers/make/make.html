@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers make setup</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","make","make")
+    </script>
+    <!*********************************************************************>
+  
+    <h2>make Usage</h2>
+
+    <p>These are the main make targets used for building DDS Applications.
+      For a more complete list run <a href="make/help.html">"make help"</a>"
+      to get online help information on the various targets that can be used. 
+
+    <ul>
+      <li>
+        Run "<code>make</code>" to build the DDS application.  If a 
+        startup script (with same name as the program name) does not exist
+        then one will be generated for you.<br/><br/></li>
+
+      <li>
+        Run "<code>make install</code>" to install the startup script into
+        <b>${DDS_DIST}/bin;</b> the manpage (same name as the program name
+        with the ".1" extension) if one exists; and the compiled binary into
+        it's appropriate path under <b>${DDS_DIST}</b> corresponding to the 
+        current architecture. If no manpage exists, a template will be 
+        automatically generated.  If the manppage is in the local working
+        directory, then it will be moved to the "man1" subdirectory,  That
+        makes it easier to check the manpage with "man -M . &lt;prog&gt;.
+        <br/><br/></li>
+
+      <li>
+        Run "<code>make clean</code>" to remove local binary and objects files.
+        <br/><br/></li>
+
+      <li>
+        Run "<code>make all</code>" build the application on multiple
+        machines (as defined by <b>${REMOTE_HOSTS}</b> or determined at
+        run-time) using "rsh".  Because this mechanism simply uses "rsh" to 
+        do the remote makes on other machines, make sure your ".rhosts" file
+        is setup correctly to do "rsh".  Test this by running something like 
+        <b>"rsh</b> <i>&lt;machine&gt;</i> <b>date"</b>. (You can override <b>"rsh"</b>
+        with <b>"ssh"</b> by defining <b>"DDSRSH=ssh"</b>.)<br /><br /></li>
+
+      <li>
+        Run "<code>make allinstall</code>" install the application on
+        multiple machines.<br/><br/></li>
+
+      <li>
+        Run "<code>make allclean</code>" to remove local binaries and objects files
+        for all machines.<br/><br/></li>
+    </ul>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

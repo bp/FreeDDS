@@ -1,0 +1,338 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Data Dictionaries (binary)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","dictionaries","binary")
+    </script>
+    <!*********************************************************************>
+
+   A good example of a binary dictionary is the SEGY line header.<br><br>
+   To see how DDS views these dictionaries, you need to convert it to a text
+   file by running any DDS application with parameter <b>out=</b> <i>out_dict</i>.
+   E.g.
+<pre>
+   <b>bridge in=</b> <i>shots0001_0200.segy</i> <b>out=</b> <i>data_dict</i>
+</pre>
+   The resulting output dictionary, <i>data_dict</i>, is a text file that
+   lists everything DDS knows about SEGY format and everything DDS finds in
+   the input line header. <i>data_dict</i> is also a text dictionary (an
+   elaborite one) that describes the binary file written by <b>bridge</b>.
+   By default, that file is named data_dict_@.
+
+   <p>
+   <hr>
+   <p>
+<pre>
+dds_history{= shots0001_0200.segy
+data= shots0001_0200.segy
+format= segy
+dds_history}= shots0001_0200.segy
+dds_history{= tmpDict_in1:
+DDS_SENTRY= $Revision: 3.2 $ $Date: 2003/09/30 11:59:51 $
+********************************************
+******************* TITLE ******************
+********************************************
+cmd_title=  "bridge, convert seismic data"
+cmd_name= /usr/local/FreeDDS/DDS. ... /x86_64/bridge
+cmd_rev= 43
+cmd_user= mjo
+cmd_date= Thu Apr 23 08:33:12 2009
+cmd_host= Momo
+cmd_cwd= /dat08/public/models/BPvel
+cmd_pid= 5433
+alias:sep_in= in
+$size=
+$origin=
+$delta=
+$units=
+dds_history{= par:
+cmd_args=
+in= shots0001_0200.segy
+out= data_dict
+dds_history}= par:
+
+fmt:SEGY_CHAR= typedef ebcdic1 SEGY_CHAR;
+
+fmt:SEGY_SHORT= typedef integer2 SEGY_SHORT;
+
+fmt:SEGY_INT= typedef integer4 SEGY_INT;
+
+fmt:SEGY_TRACE_SPARE= typedef struct {SEGY_CHAR SpareGAP[2];
+   SEGY_SHORT SrcPnt, SoPtNm, RecInd, ShotNum, RefStatSrc,
+      RefStatGrp, LinInd;
+   SEGY_INT SrRcMX, SrRcMY, CDPBCX, CDPBCY;
+   SEGY_SHORT DstUsg, SrRcAz, SrcLoc, RecNum, FlReFN, CdpStatic,
+      RfSrEl, DePtEl, FlDtEl;} SEGY_TRACE_SPARE;
+
+fmt:SEGY_TrcIdCode= typedef enum2 {SEGY_TrcIdCode_Seismic \= 1,
+      SEGY_TrcIdCode_Dead \= 2, SEGY_TrcIdCode_Dummy \= 3,
+      SEGY_TrcIdCode_TimeBrk \= 4, SEGY_TrcIdCode_Uphole \= 5,
+      SEGY_TrcIdCode_Sweep \= 6, SEGY_TrcIdCode_Timing \= 7,
+      SEGY_TrcIdCode_WaterBrk \= 8} SEGY_TrcIdCode;
+
+fmt:GREEN_PREFIX= typedef void GREEN_PREFIX;
+
+fmt:SAMPLE_TYPE= typedef float4ibm SAMPLE_TYPE;
+
+fmt:SEGY_ADJUST= typedef enum4 {SEGY_CARD_PAD \= 0, SEGY_BINARY_PAD
+       \= 0, SEGY_TRACE_PAD \= 0} SEGY_ADJUST;
+
+fmt:GREEN_SUFFIX= typedef void GREEN_SUFFIX;
+
+fmt:SEGY_TRACE= typedef align(1) struct {GREEN_PREFIX green_prefix;
+   SEGY_INT LineTrcNum, ReelTrcNum, FieldRecNum, FieldTrcNum,
+      SrcPtNum, CdpNum, CdpTrcNum;
+   SEGY_TrcIdCode TrcIdCode;
+   SEGY_SHORT VertStack, HorzStack, DataUse;
+   SEGY_INT DstSgn, GrpElev, SrcElev, SrcDepth, GrpDatum, SrcDatum,
+      WatDepthSrc, WatDepthGrp;
+   SEGY_SHORT ElevScaler, XYScaler;
+   SEGY_INT SrcX, SrcY, GrpX, GrpY;
+   SEGY_SHORT XYUnits, WeathVel, SubWeathVel, UpholeTmSrc,
+      UpholeTmGrp, SrcStatic, GrpStatic, TotalStatic, LagTmBreak,
+      LagTmSrc, LagTmSmpOne, MuteStart, MuteEnd, TrcNumSmp,
+      TrcSmpInt, GainType, GainConst, GainInit, CorrFlag,
+      SwpFreqStart, SwpFreqEnd, SwpLength, SwpType, SwpTprStart,
+      SwpTprEnd, SwpTprType, AntiAliasFreq, AntiAliasSlope,
+      NotchFreq, NotchSlope, LowCutFreq, HighCutFreq, LowCutSlope,
+      HighCutSlope;
+   struct {SEGY_SHORT DateYear, DateDay, DateHour, DateMin, DateSec;}
+      Date;
+   SEGY_SHORT DateType, TrcWeight, RollSwtch1, RollTrace1,
+      RollTraceN, RollGapSize, OverTravel;
+   union {unsigned1 I1[60];
+      integer2 I2[30];
+      integer4 I4[15];
+      float4 F4[15];
+      float4ibm F4ibm[15];
+      SEGY_TRACE_SPARE Hdr;} Spare;
+   SAMPLE_TYPE Samples[axis_size(1)];
+   unsigned1 segy_trace_pad[SEGY_TRACE_PAD];
+   GREEN_SUFFIX green_suffix;} SEGY_TRACE;
+
+fmt:SEGY_UnitsFlag= typedef enum2 {SEGY_UnitsFlag_meters \= 1,
+      SEGY_UnitsFlag_feet \= 2} SEGY_UnitsFlag;
+
+fmt:SEGY_FmtCode= typedef enum2 {SEGY_FmtCode_float4ibm \= 1,
+      SEGY_FmtCode_integer4 \= 2, SEGY_FmtCode_integer2 \= 3,
+      SEGY_FmtCode_integer2a \= 4, SEGY_FmtCode_float4 \= 5,
+      SEGY_FmtCode_integer1 \= 8} SEGY_FmtCode;
+
+fmt:SEGY_USHORT= typedef unsigned2 SEGY_USHORT;
+
+fmt:SEGY_BINARY= typedef struct {GREEN_PREFIX binary_green_prefix;
+   SEGY_INT JobNum, LineNum, ReelNum;
+   SEGY_USHORT NumTrc, NumAux, SmpInt, OrigSmpInt, NumSmp,
+      OrigNumSmp;
+   SEGY_FmtCode FmtCode;
+   SEGY_SHORT CdpFold, SortCode, VertSumFlag, SwpFreqStart,
+      SwpFreqEnd, SwpLength, SwpCode, SwpChan, SwpTprStart,
+      SwpTprEnd, SwpTprType, CorrFlag, GainFlag, AmpFlag;
+   SEGY_UnitsFlag UnitsFlag;
+   SEGY_SHORT PolarityFlag, VibLagFlag;
+   union {unsigned1 I1[240];
+      integer2 I2[120];
+      integer4 I4[60];
+      float4 F4[60];
+      float4ibm F4ibm[60];} SpareBin;
+   SEGY_SHORT SegyFmt, FixedLength, NumHdr, Unassigned;
+   union {unsigned1 I1[92];
+      integer2 I2[46];
+      integer4 I4[23];
+      float4 F4[23];
+      float4ibm F4ibm[23];} Spare2Bin;
+   unsigned1 segy_binary_pad[SEGY_BINARY_PAD];
+   GREEN_SUFFIX binary_green_suffix;} SEGY_BINARY;
+
+fmt:SEGY_CARD= typedef struct {GREEN_PREFIX card_green_prefix;
+   SEGY_CHAR card3200[40][80];
+   unsigned1 segy_card_pad[SEGY_CARD_PAD];
+   GREEN_SUFFIX card_green_suffix;} SEGY_CARD;
+
+fmt:SEGY_FLOAT= typedef float4ibm SEGY_FLOAT;
+
+fmt:PREAMBLE= typedef SEGY_CARD PREAMBLE;
+
+fmt:PREAMBLE2= typedef SEGY_BINARY PREAMBLE2;
+
+fmt:SEQUENCE= typedef SEGY_TRACE SEQUENCE;
+
+fmt:segy=   typedef SEGY_CARD PREAMBLE;
+   typedef SEGY_BINARY PREAMBLE2;
+   typedef SEGY_TRACE SEQUENCE;
+alias:fmt:SEGY_TRACE_PAD= fmt:SEGY_ADJUST
+alias:fmt:SEGY_BINARY_PAD= fmt:SEGY_ADJUST
+alias:fmt:SEGY_CARD_PAD= fmt:SEGY_ADJUST
+segy_card3200=
+ "C 1  shots0001_0200.segy"
+ "C 2  Input data: shoth 1 to 200"
+ "C 3  axis   t     x    shot"
+ "C 4  size   2001  1201 200"
+ "C 5  origin 0     0    1"
+ "C 6  delta  0.006 12.5 1"
+ "C 7  unit   sec   m    number"
+ "C 8  First trace(1) of each shot is max offset (x \= xshot - 15km)"
+ "C 9  Last trace(1201) of each shot is zero offset (x \= xshot - 0)"
+ "C 10 Shot interval is 50m | XYScaler\=-10 | ElevScaler\=-10"
+ "C 11"
+ "C 12 BP 2004 Velocity Benchmark"
+ "C 13"
+ "C 14 Read full disclaimer provided with the data."
+ "C 15"
+ "C 16 You accept the material as is and assume all responsability"
+ "C 17 for the results or use of the material. Any use which you"
+ "C 18 make of the materials is at your own risks."
+ "C 19"
+ "C 20 BP provides no warranties to you, expressed, implied or statutory,"
+ "C 21 including any implied warranties of fitness for a particular purpose."
+ "C 22"
+ "C 23 You agree that if you share any or all of this data with any other"
+ "C 24 person or organization, you will also include all of the associated"
+ "C 25 documentation originally included with the data and provided to you."
+ "C 26"
+ "C 27 In no event will BP be liable for any damages, including direct,"
+ "C 28 indirect, special, incidental or consequential damages arising out"
+ "C 29 of anyone's use of or inability to use these materials, or any copies"
+ "C 30 prepared from these materials, even if BP has been advised as to the"
+ "C 31 possibility of such damages."
+ "C 32"
+ "C 33 If you use this data in a publication or presentation, you must reference"
+ "C 34 that it was provided courtesy of BP, and acknowledge BP and Frederic"
+ "C 35 Billette."
+ "C 36"
+ "C 37 Contact"
+ "C 38 Frederic Billette"
+ "C 39 BP America"
+ "C 40 billetfj@bp.com"
+segy_ReelNum= 1
+segy_NumTrc= 1201
+segy_SmpInt= 6000
+segy_NumSmp= 2001
+segy_FmtCode= 1
+segy_UnitsFlag= 2
+segy_SpareBinI2=
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+segy_FixedLength= 1
+segy_Spare2BinI2=
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0 0 0 0 0
+ 0 0 0 0 0 0
+previous_history="C 1  shots0001_0200.segy"
+previous_history="C 2  Input data: shoth 1 to 200"
+previous_history="C 3  axis   t     x    shot"
+previous_history="C 4  size   2001  1201 200"
+previous_history="C 5  origin 0     0    1"
+previous_history="C 6  delta  0.006 12.5 1"
+previous_history="C 7  unit   sec   m    number"
+previous_history="C 8  First trace(1) of each shot is max offset (x \= xshot - 15km)"
+previous_history="C 9  Last trace(1201) of each shot is zero offset (x \= xshot - 0)"
+previous_history="C 10 Shot interval is 50m | XYScaler\=-10 | ElevScaler\=-10"
+previous_history="C 11"
+previous_history="C 12 BP 2004 Velocity Benchmark"
+previous_history="C 13"
+previous_history="C 14 Read full disclaimer provided with the data."
+previous_history="C 15"
+previous_history="C 16 You accept the material as is and assume all responsability"
+previous_history="C 17 for the results or use of the material. Any use which you"
+previous_history="C 18 make of the materials is at your own risks."
+previous_history="C 19"
+previous_history="C 20 BP provides no warranties to you, expressed, implied or statutory,"
+previous_history="C 21 including any implied warranties of fitness for a particular purpose."
+previous_history="C 22"
+previous_history="C 23 You agree that if you share any or all of this data with any other"
+previous_history="C 24 person or organization, you will also include all of the associated"
+previous_history="C 25 documentation originally included with the data and provided to you."
+previous_history="C 26"
+previous_history="C 27 In no event will BP be liable for any damages, including direct,"
+previous_history="C 28 indirect, special, incidental or consequential damages arising out"
+previous_history="C 29 of anyone's use of or inability to use these materials, or any copies"
+previous_history="C 30 prepared from these materials, even if BP has been advised as to the"
+previous_history="C 31 possibility of such damages."
+previous_history="C 32"
+previous_history="C 33 If you use this data in a publication or presentation, you must reference"
+previous_history="C 34 that it was provided courtesy of BP, and acknowledge BP and Frederic"
+previous_history="C 35 Billette."
+previous_history="C 36"
+previous_history="C 37 Contact"
+previous_history="C 38 Frederic Billette"
+previous_history="C 39 BP America"
+previous_history="C 40 billetfj@bp.com"
+axis=  t  x  y
+io_rank= 2
+size.t= 2001
+origin.t= 0.
+delta.t= 0.006
+units.t= sec
+sort.t= ?
+size.x= 1201
+origin.x= 0.
+delta.x= 1.
+units.x= feet
+sort.x= CdpTrcNum
+size.y= 200
+origin.y= 0.
+delta.y= 1.
+units.y= feet
+sort.y= FieldRecNum
+dds_history}= tmpDict_in1:
+$old_format=format
+format=segy
+data= /dat08/public/models/BPvel/data_dict_@
+
+fmt:SEGY_TrcIdCode= typedef enum2 {SEGY_TrcIdCode_Seismic \= 1,
+      SEGY_TrcIdCode_Dead \= 2, SEGY_TrcIdCode_Dummy \= 3,
+      SEGY_TrcIdCode_TimeBrk \= 4, SEGY_TrcIdCode_Uphole \= 5,
+      SEGY_TrcIdCode_Sweep \= 6, SEGY_TrcIdCode_Timing \= 7,
+      SEGY_TrcIdCode_WaterBrk \= 8} SEGY_TrcIdCode;
+
+fmt:SEGY_ADJUST= typedef enum4 {SEGY_CARD_PAD \= 0, SEGY_BINARY_PAD
+       \= 0, SEGY_TRACE_PAD \= 0} SEGY_ADJUST;
+
+fmt:SEGY_UnitsFlag= typedef enum2 {SEGY_UnitsFlag_meters \= 1,
+      SEGY_UnitsFlag_feet \= 2} SEGY_UnitsFlag;
+
+fmt:SEGY_FmtCode= typedef enum2 {SEGY_FmtCode_float4ibm \= 1,
+      SEGY_FmtCode_integer4 \= 2, SEGY_FmtCode_integer2 \= 3,
+      SEGY_FmtCode_integer2a \= 4, SEGY_FmtCode_float4 \= 5,
+      SEGY_FmtCode_integer1 \= 8} SEGY_FmtCode;
+
+fmt:SEGY_FLOAT= typedef float4 SEGY_FLOAT;
+
+alias:fmt:SEGY_TRACE_PAD= fmt:SEGY_ADJUST
+alias:fmt:SEGY_BINARY_PAD= fmt:SEGY_ADJUST
+alias:fmt:SEGY_CARD_PAD= fmt:SEGY_ADJUST
+map:*:segy.TrcNumSmp=2001
+map:*:segy.TrcSmpInt=6000
+map:in:out.TrcIdCode=  TrcIdCode
+map:in:out.ElevScaler= ElevScaler
+map:in:out.XYScaler=   XYScaler
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

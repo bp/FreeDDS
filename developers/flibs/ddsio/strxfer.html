@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>strxfer - Broadcasts a string to all nodes in this module's MPI communicator</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use MyMPI_mod</b>
+    <p>
+      <b>subroutine strxfer(</b><i>string</i><b>)</b>
+      <dl><dd>
+	<b>character(len=*), intent(inout) :: </b><i>string</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"strxfer"</b> is an MPI collective routine to broadcast a string from node 0 
+      to all other nodes in this module's MPI communicator.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	program test
+	
+	    use MyMPI_mod
+	    use dds, only : fdds_prtcon
+	
+	    integer :: ier
+	    character(len=99) :: string
+	
+	    call initMyMPI()
+	
+	    if (myid == 0) string='test string'
+	    call strxfer(string)
+	
+	    call finalMyMPI()
+	
+	end program test
+      </pre>
+      
+  </body>
+</html>

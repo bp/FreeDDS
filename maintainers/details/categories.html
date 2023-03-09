@@ -1,0 +1,212 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (Categories)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories")
+    </script>
+    <!*********************************************************************>
+
+    <h3>dds3 Library Categorization</h3>
+
+    <p>
+      All the libdds_r3.a sources are subdivided into these categories.
+    </p>
+      
+      
+    <center>
+      <table>
+        <thead style="text-decoration:underline;font-weight:bold;">
+          <tr><td>File</td><td>Purpose</td></tr>
+        </thead>
+        <tbody>
+          <tr><td>c_xxx.c</td><td>cdds_xxx "C" API Routines</td></tr>
+          <tr><td>f_xxx.c</td><td>fdds_xxx Fortran API Routines</td></tr>
+          <tr><td>cx_xxx.c</td><td>cddx_xxx "C" Convenience API Routines</td></tr>
+          <tr><td>fx_xxx.c</td><td>fddx_xxx Fortran Convenience API Routines</td></tr>
+          <tr><td>xxxyyy.c &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td><td>ddsXxxYyy Internal DDS Routines</td></tr>
+        </tbody>
+      </table>
+    </center>
+
+    <p>
+      Go to the <a href="../dir/doxygen/dds3/main.html">Doxygen</a> for automatically
+      generated documentation. Doxygen documentation was generated on a 
+      LX26x86_64-4 machine with the gnu compiler.
+
+    <pre>
+
+<a href="categories/init.html" style="font-family:monospace">init</a> (System Initialization)
+     f_init.c c_init.c primetypes.c global.c
+
+<a href="categories/dict.html" style="font-family:monospace">dict</a> (Dictionary Manipulation)
+     f_in.c c_in.c f_out.c c_out.c f_mod.c c_mod.c f_dict.c c_dict.c 
+     f_copy.c c_copy.c f_history.c c_history.c f_addaxis.c c_addaxis.c 
+     f_rmaxis.c c_rmaxis.c history.c title.c tmpdict.c dictnew.c 
+     dictinit.c dictcmd.c dictpar.c dictenv.c dictfd.c dictfile.c 
+     dictstdin.c dictstdout.c dictstderr.c dictlog.c dicttmp.c 
+     parload.c dictdevice.c dictaspfmt.c dictuspfmt.c dictsegyfmt.c 
+     dictsegy1fmt.c dictaspmap.c dictuspmap.c dictsegymap.c 
+     dictsegy1map.c dictdelete.c dictload.c 
+
+<a href="categories/scan.html" style="font-family:monospace">scan</a> (Definition Scanning)
+     f_scanv.c c_scanv.c f_scant.c c_scant.c f_scantn.c c_scantn.c 
+     f_scank.c c_scank.c f_scanf.c c_scanf.c f_newer.c c_newer.c 
+     f_axis_prod.c c_axis_prod.c f_switch.c c_switch.c 
+     f_key.c c_key.c key.c partag.c defnfind.c defnaxis.c aliasadd.c 
+     aliasdone.c aliasdrop.c aliaslist.c aliasname2.c aliasname3.c 
+     scanfc.c scanff.c scandone.c defnnewer.c
+
+<a href="categories/print.html" style="font-family:monospace">print</a> (Definition Printing)
+     f_print.c c_print.c f_printv.c c_printv.c f_printt.c c_printt.c 
+     f_printf.c c_printf.c defnnew.c printfc.c printff.c 
+     printdone.c readlog.c scanlog.c printlog.c vsmprintf.c
+     
+<a href="categories/open.html" style="font-family:monospace">open</a> (Open Binary Data)
+     f_open.c c_open.c f_datadefn.c c_datadefn.c openbin.c autofmt.c 
+     opennametest.c opennamemake.c openslice.c opennew.c openold.c 
+     opennewusp.c openoldusp.c opennewsegy.c openoldsegy.c opennewgen.c
+     openoldgen.c f_ptr.c cubelinker.c cubeprint.c cubescaninit.c 
+     cubescanbin.c cubescanaxis.c reformname.c cubeinc.c hdrdefchar.c 
+     hdrdeffloat.c hdrdefint.c hdrgetchar.c hdrgetfloat.c hdrgetint.c 
+     hdrmodchar.c hdrmodfloat.c hdrmodint.c hdrputchar.c hdrputfloat.c 
+     hdrputint.c linkmember.c tracetag.c binfreeze.c objecttag.c 
+     linkobject.c linkobjectsu.c linkobjectsu2.c compilefmt.c 
+     uncompilefmt.c openmap.c
+
+<a href="categories/close.html" style="font-family:monospace">close</a> (Close Binary Data)
+     f_close.c c_close.c closebin.c closeflush.c
+
+<a href="categories/seek.html" style="font-family:monospace">seek</a> (Random Access Seek)
+     f_isreg.c c_isreg.c f_lseek.c c_lseek.c f_lseek8.c c_lseek8.c 
+     f_fflush.c c_fflush.c seekslice.c seekheader.c seektype.c 
+     seekset.c seekcur.c seekend.c edittrace.c editfinal.c
+
+<a href="categories/read.html" style="font-family:monospace">read</a> (Read Binary Data)
+     f_readm.c c_readm.c f_read.c c_read.c readslicet.c readslice.c 
+     readgent.c readgen.c readuspl.c readuspt.c readsegyc.c readsegyb.c
+     readsegyt.c readcheck.c
+
+<a href="categories/write.html" style="font-family:monospace">write</a> (Write Binary Data)
+     f_writem.c c_writem.c f_write.c c_write.c writeslicet.c 
+     writeslice.c writegent.c writegen.c writeuspl.c writeuspt.c 
+     writesegyc.c writesegyb.c writesegyt.c writecheck.c
+
+<a href="categories/get.html" style="font-family:monospace">get</a> (Get Trace Header Values)
+     c_get.c c_getc.c c_getcb.c c_getcs.c c_getd.c c_getf.c c_getff.c 
+     c_geti.c c_getl.c c_gets.c c_getu.c c_getul.c c_getus.c f_get.c 
+     f_getc.c f_getcb.c f_getd.c f_getr.c f_getff.c f_geti.c f_geti2.c
+
+<a href="categories/put.html" style="font-family:monospace">put</a> (Put Trace Header Values)
+     c_put.c c_putcb.c c_putcs.c c_putd.c c_putf.c c_putff.c c_puti.c 
+     c_putl.c c_puts.c c_putu.c c_putul.c c_putus.c f_put.c f_putc.c 
+     f_putcb.c f_putd.c f_putr.c f_putff.c f_puti.c f_puti2.c
+     
+<a href="categories/media.html" style="font-family:monospace">media</a> (Media manipulation)
+     pathclean.c pathfast.c mediafind.c medianew.c mediascan.c 
+     mediadelete.c mediafirst.c mediachain.c mediaload.c mediaunload.c 
+     openestimate.c opennext.c openblock.c devicecode.c statgenus.c 
+     findddsfile.c fstatgenus.c fstatsize.c statid.c fstatid.c
+
+<a href="categories/mt.html" style="font-family:monospace">mt</a> (Magnetic Tape Operations)
+     mtbsf.c mteof.c mteom.c mtfsf.c mtrew.c mtstatus.c mtload.c 
+     mtunload.c mtweof.c
+
+<a href="categories/mem.html" style="font-family:monospace">mem</a> (Memory Allocation)
+     f_malloc8.c f_malloc.c c_malloc.c f_realloc8.c f_realloc.c 
+     c_realloc.c f_calloc8.c f_calloc.c c_calloc.c f_free.c c_free.c 
+     f_memuse.c c_memuse.c zalloc.c malloc.c realloc.c free.c
+     heapcheck.c alloca.c
+
+<a href="categories/str.html" style="font-family:monospace">str</a> (String Memory Allocation)
+     ftncpy.c strcat.c strcat2.c strcat3.c strcat4.c strcat5.c 
+     strcatn.c strcpy.c strcpyF.c strcpymin.c strcpycat2.c strcpycat3.c
+     strcpycat4.c strcpycat5.c strcpycat6.c strcpycat7.c strcpycat8.c 
+     strcpyn.c strcpynb.c strfree.c string.c stringn.c strset.c 
+     strsetmin.c strsetn.c token.c
+
+<a href="categories/msg.html" style="font-family:monospace">msg</a> (Messages and Error/Warning Tracking)
+     hint.c hinttype.c operator.c verbose.c warn.c error.c debug.c 
+     abort.c panic.c printstr.c binmessage.c ftnprt.f 
+     (Currently ftnprt.f is disabled by both defining dds_print_lu=-1
+      and not defining DDS_ALLOW_FORTRAN_PRINT)
+
+<a href="categories/sym.html" style="font-family:monospace">sym</a> (Flex/Bison Compilation symbols)
+     parser.tab.c  scanner.yy.c symconst.c symblockbegin.c 
+     symblockend.c symconsttype.c symdeclare.c symenumname.c 
+     symenumvalue.c symexpr0a.c symexpr1a.c symexpr1a1.c symexpr1a2.c 
+     symexpr1a3.c symexpr1a4.c symexpr2a.c symexpr2b.c symexpr2c.c 
+     symexpr2d.c symexpr3a.c symexprdone.c symlookup.c symlookupmem.c 
+     symmember.c symmemberbit.c symmemberedit.c symnullvalue.c 
+     symobjectlit.c symrelocvalue.c symsametype.c symtypearray.c 
+     symtypecast.c symtypecopy.c symtypedefeb.c symtypedefee.c 
+     symtypedefev.c symtypedefobj.c symtypedefsb.c symtypedefse.c 
+     symtypedefsm.c symtypemerge.c symtypequal.c symtypeshape.c 
+     symtypeshape2.c symtypespec.c symtypestore.c symtypesue.c 
+     symvalueptr.c symident.c
+
+<a href="categories/map.html" style="font-family:monospace">map</a> (Header Mapping)
+     f_map.c c_map.c f_openm.c c_openm.c mapcompile.c mapcompilesu.c 
+     mapcompilesu2.c mapassign.c evaluate.c dateconv.c
+
+<a href="categories/field.html" style="font-family:monospace">field</a> (Trace Header Format Manipulation)
+     f_align.c c_align.c f_count.c c_count.c f_genus.c c_genus.c 
+     f_index.c c_index.c f_member.c c_member.c f_object.c c_object.c 
+     f_name.c c_name.c f_next.c c_next.c f_offset.c c_offset.c 
+     f_parent.c c_parent.c f_prec.c c_prec.c f_prev.c c_prev.c 
+     f_prime.c c_prime.c
+
+<a href="categories/stack.html" style="font-family:monospace">stack</a> (Stack Manipulation)
+     stackinit.c stackpop.c stackptr.c stackpush.c stackpushchar.c 
+     stackpushptr.c stackset.c stackstr.c stackchar.c stackterm.c
+
+<a href="categories/table.html" style="font-family:monospace">table</a> (Hash Table Manipulation)
+     tablepushitem.c tableinit.c tablelookup.c tablepush.c 
+     tablepushstr.c tablepushchar.c tablerehash.c tableterm.c 
+     tableunhash.c hash.c primeup.c 
+
+<a href="categories/util.html" style="font-family:monospace">util</a> (Miscellaneous Utility Routines)
+     f_scale.c c_scale.c f_check.c c_check.c f_binfd.c c_binfd.c 
+     cmpdbl.c fake2float.c float2fake.c ieeeibm.c 
+
+<a href="categories/dump.html" style="font-family:monospace">dump</a> (Dump Binary Info)
+     dumpdatabuf.c dumpdatatype.c dumpdatablock.c dumpdataarray.c 
+     dumpdatadiff.c dumpdatavalue.c dumpdataopen.c dumpdatalist.c 
+     dumpglobal.c dumpblock.c dumpblockr.c dumpblockrs.c dumpexpr.c 
+     dumpitem.c dumpmember.c dumpobject.c dumpstack.c dumps.c
+     dumpsym.c dumpsymbol.c dumpsymflag.c dumptable.c dumpdeclare.c
+     dumppage.c  dumptype.c dumpreloc.c dumpbinary.c dumpbinsym.c
+     dumpmapin.c  dumpmapout.c
+ 
+<a href="categories/zip.html" style="font-family:monospace">zip</a> (ZIP Compressions Routines)
+     z_zip.c z_unzip.c z_deflate.c z_inflate.c
+     z_trees.c z_bits.c z_util.c
+
+<a href="categories/convenience.html" style="font-family:monospace">convenience</a> (Convenience API)
+     cx_in.c cx_in2.c cx_inhdr.c cx_index.c cx_out.c cx_outhdr.c 
+     cx_mod.c cx_mod2.c cx_dict.c cx_getdict.c cx_read.c cx_readfrom.c 
+     cx_readall.c cx_write.c cx_writeto.c cx_getbin.c cx_addaxis.c 
+     cx_rmaxis.c cx_wtime.c fx_in.c fx_in2.c fx_inhdr.c fx_index.c 
+     fx_out.c fx_outhdr.c fx_mod.c fx_mod2.c fx_dict.c fx_getdict.c 
+     fx_read.c fx_readfrom.c fx_readall.c fx_write.c fx_writeto.c 
+     fx_getbin.c fx_addaxis.c fx_rmaxis.c fx_wtime.c reservebin.c 
+     delayedopen.c
+
+<a href="categories/mp.html" style="font-family:monospace">mp</a> (Parallelization Routines)
+     f_initopenmp.c c_initopenmp.c f_initmpi.c c_initmpi.c
+
+<a href="categories/svn.html" style="font-family:monospace">svn</a> (Subversion Routines)
+     dmy_version.c (default dummy SVN_ID definition incase on is
+     not generated by an application)
+   </pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

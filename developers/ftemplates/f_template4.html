@@ -1,0 +1,769 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Templates (Template 4)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script type="text/javascript">
+      if (location.search.search("remove=") >= 0) {
+         var tmp = "position:absolute;left:-9999px;";
+      } else {
+         var tmp = "";
+      }
+      document.write("<style type='text/css'>.comment "
+         +"{color:#c00000;"+tmp+"}<\/style>");
+
+      function setRemoveOption() {
+         var tmp;
+         if (location.search.search("remove=") >= 0) {
+            tmp = "'Add Tutorial Comments'";
+         } else {
+            tmp = "'Remove Tutorial Comments'";
+         }
+         document.write("<center><form><input type='button' value="
+            +tmp+" onclick='toggleComments();'><\/form><\/center>");
+      }
+
+      function toggleComments() {
+         if (location.search.search("remove=") >= 0) {
+            document.location.search = "";
+         } else {
+            location = "?remove=";
+         }
+      }
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ftemplates","f_template4")
+    </script>
+    <!*********************************************************************>
+
+    <script type="text/javascript">setRemoveOption();</script>
+
+    <pre>
+
+c***********************************************************************
+c                                                                     
+c                  B P   A M E R I C A
+c          PROPRIETARY - TO BE MAINTAINED IN CONFIDENCE 
+c                        COPYRIGHTED 2008
+c***********************************************************************
+c
+c     Program to stack across any selected axis.
+c     Originally written by Jerry Ehlers.
+c     Parallel version written by Richard Clarke.
+c
+      program dstack
+      implicit none
+<span class="comment">c
+c     INCLUDE THE MPI API (Application Program Interface)
+</span>c
+#include &lt;mpif.h&gt;
+<span class="comment">c
+c     INCLUDE THE DDS API (Application Program Interface)
+c</span>
+#include &lt;fdds.h&gt;
+c
+      external Master_ReceiveResult
+      external Master_ReceiveFinalResults
+      external Slave_Work
+      external Slave_SendResult
+      external Slave_SendFinalResults
+      external Master_BroadcastResults
+      external online_help
+c
+      integer ier, nproc, np, node
+      integer numjobs,iverbose,debug
+      integer in_bin,out_bin,naxis,saxis
+      integer nsin,nsout,ntin,ntout
+      integer size(RANK_MAX)
+      character*(AXISNAME_MAX) axis(RANK_MAX)
+      character*80 title
+      logical norm
+c
+      real    work(1)
+      pointer(ptr_work,work)
+
+      data title/'dstack: Stack across selected axis'/
+c
+c     Initialize MPI and OpenMP, open printfile:
+c
+      ier=<a href="../flibs.php?lib=mpi&api=fddx_initmpix">fddx_initmpix</a>(nproc,np,node,'dstack',<a href="#onlinehelp">online_help</a>)
+c
+      call <a href="#openinput">OpenInput</a>(in_bin,naxis,axis,size,title)
+c
+      call <a href="#readparams">ReadParams</a>(node,naxis,axis,saxis,norm,iverbose)
+c
+c     only the master writes the output
+c
+      if ( node.eq.0 ) then
+         call <a href="#openoutput">OpenOutput</a>(in_bin,out_bin,title,naxis,saxis,axis)
+      else
+         out_bin = -1
+      endif
+c
+c     there could be different errors for the master and the slaves
+c     check that no-one encountered errors, else die cleanly.
+c
+      ier = <a href="../flibs.php?lib=mpi&api=fddx_checkforerrors">fddx_checkforerrors</a>(np,node)
+c
+      call <a href="#setup">Setup</a>(node,in_bin,out_bin,
+     $     naxis,saxis,size,norm,
+     $     nsin,nsout,ntin,ntout,numjobs,
+     $     ptr_work)
+c
+      ier = <a href="../flibs.php?lib=mpi&api=fddx_slavedriver">fddx_slavedriver</a>(
+     $     np, node, numjobs, iverbose, debug, work,
+     $     <a href="#slavework">Slave_Work</a>,
+     $     <a href="#slavesendresult">Slave_SendResult</a>,
+     $     <a href="#slavesendfinalresults">Slave_SendFinalResults</a>,
+     $     <a href="#masterreceiveresult">Master_ReceiveResult</a>,
+     $     <a href="#masterreceivefinalresults">Master_ReceiveFinalResults</a>,
+     $     <a href="#masterbroadcastresults">Master_BroadcastResults</a> )
+c
+c     shut down gracefully
+c
+      ier = <a href="../flibs.php?lib=mpi&api=fddx_stop">fddx_stop</a>( np, node )
+c
+      end
+c
+c***********************************************************************
+c
+c     <a name="onlinehelp"></a>online help
+c
+c***********************************************************************
+c
+      subroutine online_help()
+c
+      implicit none
+c
+      write(0,*) 'Program to stack along any selected axis with the'
+      write(0,*) 'option to normalize by live samples.'
+      write(0,*) ' '
+      write(0,*) 'usage:'
+      write(0,*)
+     *'   dstack [np= ] [in=dat] [in_data=bin] [in_format=fmt] \\'
+      write(0,*)
+     *'   [out=dat] [out_data=bin] [out_format=fmt] \\'
+      write(0,*)
+     *'   saxis=n [normalize=y|n] [help=]'
+      write(0,*) '   '
+      write(0,*) 'where:'
+      write(0,*) '   np=        # of mpi nodes to use.'
+      write(0,*) '   in=        input data to stack (dflt stdin:)'
+      write(0,*) '   in_bin=    input data binary'
+      write(0,*) '   in_format= input data format'
+      write(0,*) '   out=       output data dictionary (dflt stdout:)'
+      write(0,*) '   out_data=  output data binary'
+      write(0,*) '   out_format=output data format'
+      write(0,*) '   saxis=     axis # to stack (no dflt)'
+      write(0,*) '   normalize= y|n: switch to normalize (dflt y)'
+      write(0,*) '   help=      this help'
+      write(0,*) ' '
+c
+      stop 0
+c
+      end
+c
+c***********************************************************************
+c
+c     <a name="openinput"></a>OpenInput: open input file, get axis names and dimensions
+c
+c***********************************************************************
+c
+      subroutine OpenInput(in_bin,naxis,axis,size,title)
+c
+      implicit none
+c
+#include &lt;fdds.h&gt;
+c
+      integer in_bin,naxis,i,ier
+      integer size(RANK_MAX)
+      character*(AXISNAME_MAX) axis(RANK_MAX)
+      character*80 title,text
+c
+      in_bin=<a href="../fapi/in.html">fddx_in</a>('in','stdin:',title)
+      if (in_bin.lt.0) then
+         ier=<a href="../fapi/prterr.html">fdds_prterr</a>('Unable to open input data\n\0')
+      endif
+c     
+      naxis=<a href="../fapi/scank.html">fdds_scank</a>('axis',' ')
+      ier=<a href="../fapi/scanf.html">fdds_scanf</a>('axis','\0')
+      do i=1,naxis
+         ier=<a href="../fapi/scanf.html">fdds_scanf</a>(' ','%s\0',axis(i))
+      enddo
+c
+      do i=1,naxis
+         ier=<a href="../fapi/sprintf.html">fdds_sprintf</a>(text,'size.axis(%d)\0',i)
+         ier=<a href="../fapi/scanf.html">fdds_scanf</a>(text,'%d\0',size(i))
+      enddo
+c
+      return
+      end
+c
+c
+c***********************************************************************
+c
+c     <a name=readparams></a>read the user parameters
+c
+c***********************************************************************
+c
+      subroutine ReadParams(node,naxis,axis,saxis,norm,iverbose)
+c
+      implicit none
+c
+#include &lt;fdds.h&gt;
+c
+      integer node,naxis,saxis,iverbose,ier
+      character*(AXISNAME_MAX) axis(RANK_MAX)
+      logical norm,verbose
+c
+      ier=fdds_dict('par:','scan')
+c
+      saxis=0
+      ier=<a href="../fapi/scanf.html">fdds_scanf</a>('saxis','%d\0',saxis)
+      if (saxis.lt.1.or.saxis.gt.naxis) then
+         ier=<a href="../fapi/prterr.html">fdds_prterr</a>('saxis(%d) must be between 1 and %d\n\0',
+     $        saxis,naxis)
+         saxis=max(1,min(saxis,naxis))
+      endif
+c
+      norm=(<a href="../fapi/switch.html">fdds_switch</a>('normalize',1).ne.0)
+      iverbose = 0
+      verbose = (<a href="../fapi/switch.html">fdds_switch</a>('verbose',0).eq.1)
+      if(verbose.eq..true.) iverbose = 1
+c
+c-----------------------------------------------------------------------
+c     print parameters
+c-----------------------------------------------------------------------
+      if ( node .eq. 0 ) then
+c
+         ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\n*** PARAMETERS ***\n\n\0')
+         if (norm) then
+            ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('Normalizing stack\n\0')
+         else
+            ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('No Normalization\n\0')
+         endif
+         ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\tsaxis = %d (%s)\n\0',saxis,axis(saxis))
+         ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\n\0')
+         if (verbose) then
+            ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('Writing more verbose printout.\n\0')
+         else
+            ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('Writing less verbose printout.\n\0')
+         endif
+c
+      endif
+c
+      return
+      end
+c
+c***********************************************************************
+c
+c     <a name=openoutput></a>open the output file
+c
+c***********************************************************************
+c
+      subroutine OpenOutput(in_bin,out_bin,title,
+     $     naxis,saxis,axis)
+c
+      implicit none
+c
+#include &lt;fdds.h&gt;
+c
+      integer in_bin,out_bin,naxis,saxis,ier,i
+      character*(AXISNAME_MAX) axis(RANK_MAX)
+      character*80 title,text
+c
+      out_bin=<a href="../fxapi/out.html">fddx_out</a>('out','stdout:',title,in_bin)
+      if (ier.lt.0) then
+c
+         ier=<a href="../fapi/prterr.html">fdds_prterr</a>('opening output file\n\0')
+c
+      else
+c     
+c        define the output axis
+c
+         if (naxis.gt.3) then
+            ier=<a href="../fapi/printf.html">fdds_printf</a>('axis','\0')
+            do i=1,naxis
+               if (i.ne.saxis) ier=<a href="../fapi/printf.html">fdds_printf</a>(' ',' %s\0',axis(i))
+            enddo
+            ier=<a href="../fapi/printf.html">fdds_printf</a>(' ','\n\0')
+         else
+            ier=<a href="../fapi/sprintf.html">fdds_sprintf</a>(text,'size.axis(%d)\0',saxis)
+            ier=<a href="../fapi/printf.html">fdds_printf</a>(text,'1\n\0')
+         endif
+c         
+c        force open the open now
+c        not really necessary, but makes debugging easier.
+c
+         ier=<a href="../fapi/lseek.html">fdds_lseek</a>(out_bin,0,0,SEEK_SET)
+         if (ier.lt.0) then
+            ier=<a href="../fapi/prterr.html">fdds_prterr</a>('opening output file\n\0')
+         endif
+c
+      endif
+c
+      return
+      end
+c
+c***********************************************************************
+c
+c     <a name=setup></a>Setup:Do the prep work before the parallelization.
+c     We need to pack any "work" data into the array.
+c
+c***********************************************************************
+c
+      subroutine Setup(node,in_bin,out_bin,
+     $     naxis,saxis,size,norm,
+     $     nsin,nsout,ntin,ntout,numjobs,
+     $     ptr_work)
+c
+      implicit none
+c
+#include &lt;fdds.h&gt;
+c
+      integer node,in_bin,out_bin
+      integer naxis,saxis,size(RANK_MAX)
+      integer nsin,nsout,ntin,ntout,numjobs,ii,ier
+      real    work(1)
+      real*8  size8
+      logical norm
+      pointer(ptr_work,work)
+c
+      nsin=size(1)
+      if (saxis.eq.1) then
+         nsout=size(2)
+         ntin=size(2)
+         ntout=1
+      else
+         nsout=size(1)
+         ntout=1
+         do ii=2,saxis-1
+            ntout=ntout*size(ii)
+         enddo
+         ntin=ntout*size(saxis)
+      endif
+c
+      numjobs = 1
+      do ii = saxis+1,naxis
+         numjobs = numjobs*size(ii)
+      end do
+c
+      if ( node .eq. 0 ) then
+         ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('There are %d jobs.\n\0',numjobs)
+      endif
+c
+      size8 = sizeof_real*(9+RANK_MAX)
+      size8 = size8 + (SIZEOF_REAL*nsin)
+      size8 = size8 + (SIZEOF_REAL*nsout*ntout)
+      if (norm.and.saxis.ne.1) then
+         size8 = size8 + (SIZEOF_REAL*nsout*ntout)
+      endif
+c
+      ptr_work = <a href="../fapi/malloc8.html">fdds_malloc8</a>( size8 )
+c
+      if ( node .eq. 0 ) then
+         ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('Allocating %lg Gbytes.\n\0',size8*1.0e-9)
+      endif
+c
+      call <a href="#packdata">PackData</a>( work,
+     $     in_bin, out_bin,
+     $     naxis, saxis, norm,
+     $     nsin ,nsout, ntin, ntout, size)
+c
+      return
+      end
+c
+c***********************************************************************
+c
+c     <a name=packdata></a>PackData: put data into the work array.
+c
+c***********************************************************************
+c
+      subroutine PackData( ww,
+     $     in_bin, out_bin,
+     $     naxis, saxis, norm,
+     $     nsin ,nsout, ntin, ntout, size)
+c
+      implicit none
+c
+#include &lt;fdds.h&gt;
+c
+      integer in_bin,out_bin,naxis,saxis,ii
+      integer nsin,nsout,ntin,ntout
+      integer size(RANK_MAX)
+      real    ww(*)
+      logical norm
+c
+      ww(1) = in_bin
+      ww(2) = out_bin
+      ww(3) = naxis
+      ww(4) = saxis
+      ww(5) = norm
+      ww(6) = nsin
+      ww(7) = nsout
+      ww(8) = ntin
+      ww(9) = ntout
+      do ii = 1,naxis
+           ww(9+ii) = size(ii)
+      end do
+c      
+      return
+      end
+c
+c***********************************************************************
+c
+c     <a name=unpackdata></a>UnPackData: get data out from the work array.
+c
+c***********************************************************************
+c
+      subroutine UnPackData( ww,
+     $     in_bin, out_bin,
+     $     naxis, saxis, norm,
+     $     nsin ,nsout, ntin, ntout, size,
+     $     iinbuf, ibuffer, inrmbuf )
+c
+      implicit none
+c
+#include &lt;fdds.h&gt;
+c
+      integer in_bin,out_bin,naxis,saxis,ii,ier
+      integer nsin,nsout,ntin,ntout
+      integer size(RANK_MAX)
+      integer iinbuf, ibuffer, inrmbuf
+      real    ww(*)
+      logical norm
+c
+      in_bin  = ww(1)
+      out_bin = ww(2)
+      naxis   = ww(3)
+      saxis   = ww(4)
+      norm    = ww(5)
+      nsin    = ww(6)
+      nsout   = ww(7)
+      ntin    = ww(8)
+      ntout   = ww(9)
+      do ii = 1,naxis
+         size(ii) = ww(9+ii)
+      end do
+      iinbuf  = naxis + 9 + 1
+      ibuffer = iinbuf + nsin
+      inrmbuf = ibuffer + nsout*ntout
+c
+      return
+      end
+c 
+c***********************************************************************
+c
+c     <a name=slavework></a>Slave_Work: wrapper to the routine that actually does the work.
+c
+c***********************************************************************
+c
+      subroutine Slave_Work( job, work )
+c
+      implicit none
+c
+#include &lt;fdds.h&gt;
+c
+      integer job,ier
+      integer in_bin,out_bin,naxis,saxis
+      integer nsin,nsout,ntin,ntout
+      integer size(RANK_MAX)
+      integer iinbuf, ibuffer, inrmbuf
+      real    work(*)
+      logical norm
+c
+      call <a href="#unpackdata">UnPackData</a>( work,
+     $     in_bin, out_bin,
+     $     naxis, saxis, norm,
+     $     nsin ,nsout, ntin, ntout, size,
+     $     iinbuf, ibuffer, inrmbuf )
+c
+      call <a href=#stackit>stackit</a>( job,
+     $     in_bin, saxis, norm,
+     $     nsin ,nsout, ntin, ntout,
+     $     work(iinbuf),work(ibuffer),work(inrmbuf) )
+c    
+      return
+      end
+c
+c***********************************************************************
+c
+c     <a name=stackit></a>stackit: routine to stack 1 input buffer of traces
+c
+c***********************************************************************
+c
+      subroutine stackit( job,
+     $     in_bin,saxis,norm,
+     $     nsin,nsout,ntin,ntout,
+     $     buf,buffer,nrmbuf)
+c
+      implicit none
+c
+#include &lt;fdds.h&gt;
+c
+      integer   in_bin,job
+      integer   saxis,nsin,nsout,ntin,ntout
+      logical   norm
+      real      buf(nsin)
+      real      buffer(nsout,ntout)
+      real      nrmbuf(nsout,ntout)
+c
+      integer   ier,i,j,itin,itout
+      integer*8 iseek
+      real      nrm,eps,x
+c
+c     clear the output chunk
+c
+      eps=0.00000001
+      if (norm.and.saxis.ne.1) then
+         do i=1,ntout
+            do j=1,nsout
+               buffer(j,i)=0.0
+               nrmbuf(j,i)=eps
+            enddo
+         enddo
+      else
+         do i=1,ntout
+            do j=1,nsout
+               buffer(j,i)=0.0
+            enddo
+         enddo
+      endif
+c
+c     seek to the start of traces for this job
+c
+      iseek = job*ntin
+      ier = <a href="../fapi/lseek8.html">fdds_lseek8</a>(in_bin, 0, iseek, SEEK_SET)
+c
+c     stack in the input
+c
+      do itin=1,ntin
+c
+c        read input trace
+c
+         ier=<a href="../fxapi/read.html">fddx_read</a>(in_bin,buf,1)
+         if (ier.ne.1) then
+            if (itin.gt.1) then
+               ier=<a href="../fapi/prterr.html">fdds_prterr</a>('reading input\n\0')
+            endif
+            return
+         endif
+c
+c        stack it
+c
+         if (saxis.eq.1) then
+            x=0.0
+            nrm=0.0
+            do i=1,nsin
+               x=x+buf(i)
+               if (buf(i).ne.0.0) nrm=nrm+1.0
+            enddo
+            if (norm.and.nrm.gt.0.0) x=x/nrm
+            buffer(itin,1)=x
+         else
+            itout=1+mod(itin-1,ntout)
+            if (norm) then
+               do i=1,nsout
+                  if (buf(i).ne.0.0) then
+                     buffer(i,itout)=buffer(i,itout)+buf(i)
+                     nrmbuf(i,itout)=nrmbuf(i,itout)+1.0
+                  endif
+               enddo
+            else
+               do i=1,nsout
+                  buffer(i,itout)=buffer(i,itout)+buf(i)
+               enddo
+            endif
+         endif
+      enddo
+c
+c     normalize stack
+c
+      if (norm.and.saxis.ne.1) then
+         do i=1,ntout
+            do j=1,nsout
+               buffer(j,i)=buffer(j,i)/nrmbuf(j,i)
+            enddo
+         enddo
+      endif
+c
+      return
+      end
+c
+c***********************************************************************
+c
+c     <a name=slavesendresult></a>Slave_SendResult:
+c     Routine to send back any data that the master needs after the slave has
+c     finished a job. Sometimes this routine can be empty, if all the data is
+c     sent back after all of the jobs have been completed.
+c
+c***********************************************************************
+c
+      subroutine Slave_SendResult( np, node, job, work )
+c
+      implicit none
+c
+#include &lt;mpif&gt;
+#include &lt;fdds.h&gt;
+c
+      integer np, node,job,tag,ier
+      integer in_bin,out_bin,naxis,saxis
+      integer nsin,nsout,ntin,ntout
+      integer size(RANK_MAX)
+      integer iinbuf, ibuffer, inrmbuf
+      real    work(*)
+      logical norm
+c
+      if ( np .gt. 1 ) then
+<span class="comment">c
+c     IMPORTANT: The tags for mpi_sends in Slave_SendResult must match 
+c     those in Master_ReceiveResult
+</span>c
+         tag = 1234
+c         
+         call <a href=#unpackdata>UnPackData</a>( work,
+     $        in_bin, out_bin,
+     $        naxis, saxis, norm,
+     $        nsin ,nsout, ntin, ntout, size,
+     $        iinbuf, ibuffer, inrmbuf )
+c         
+         call mpi_send(work(ibuffer),nsout*ntout,MPI_REAL,0,tag,
+     $        MPI_COMM_WORLD,ier)
+c         
+      endif
+c
+      return
+      end
+c
+c***********************************************************************
+c
+c     <a name=slavesendfinalresults></a>Slave_SendFinalResults:
+c     Routine to send back any data that the master needs after the slave has
+c     finished all the jobs. Note: this routine can sometimes do nothing.
+c
+c***********************************************************************
+c
+      subroutine Slave_SendFinalResults( work )
+c
+      implicit none
+c
+      real work(*)
+<span class="comment">c
+c     IMPORTANT: The tags for mpi_sends in Slave_SendFinalResults must 
+c     match those in Master_ReceiveFinalResults
+</span>c
+      return
+      end
+c
+c***********************************************************************
+c
+c     <a name=masterreceiveresult></a>Master_ReceiveResult:
+c     Routine to process any data that a slave has sent back after the slave 
+c     has finished a job. Note: sometimes this routine can be empty, if all
+c     the data is sent back after all of the jobs have been completed.
+c
+c***********************************************************************
+c
+      subroutine Master_ReceiveResult( np, slave, job, work )
+c
+      implicit none
+c
+#include &lt;mpif&gt;
+#include &lt;fdds.h&gt;
+c
+      integer   np,slave,job,ier
+      integer   in_bin,out_bin,naxis,saxis
+      integer   nsin,nsout,ntin,ntout
+      integer   size(RANK_MAX)
+      integer   iinbuf, ibuffer, inrmbuf
+      integer   status(MPI_STATUS_SIZE),tag
+      integer*8 iseek
+      real      work(*)
+      logical   norm
+<span class="comment">c
+c     IMPORTANT: The tags for mpi_sends in Slave_SendResult must match 
+c     those in Master_ReceiveResult
+</span>c
+      tag = 1234
+c
+      call <a href="#unpackdata">UnPackData</a>( work,
+     $     in_bin, out_bin, 
+     $     naxis, saxis, norm,
+     $     nsin ,nsout, ntin, ntout, size,
+     $     iinbuf, ibuffer, inrmbuf )
+c
+      if ( np .gt. 1 ) then
+         call mpi_recv(work(ibuffer),nsout*ntout,MPI_REAL,slave,tag,
+     $        MPI_COMM_WORLD,status,ier)
+      endif
+c
+c     seek to the start of traces for this job
+c     and then write out the traces
+c
+      iseek = job*ntout
+      ier = <a href="../fapi/prterr.html">fdds_lseek8</a>(out_bin, 0, iseek, SEEK_SET)
+      if ( ier .lt. 0 ) then
+         ier = <a href="../fapi/prterr.html">fdds_prterr</a>('seeking in output!\n\0')
+      endif
+c
+      ier = <a href="../fxapi/write.html">fddx_write</a>(out_bin,work(ibuffer),ntout)
+      if ( ier .ne. ntout ) then
+         ier = <a href="../fapi/prterr.html">fdds_prterr</a>('writing output!\n\0')
+      endif
+c
+      return
+      end
+c
+c***********************************************************************
+c
+c     <a name=masterreceivefinalresults></a>Master_ReceiveFinalResults:
+c     Routine  where the master receives any final data after the slaves have
+c     finished all the jobs. Note: this routine can sometimes do nothing.
+c***********************************************************************
+c
+      subroutine Master_ReceiveFinalResults( work )
+c
+      implicit none
+c
+      real work(*)
+<span class="comment">c
+c     IMPORTANT: The tags for mpi_sends in Slave_SendFinalResults must
+c      match those in Master_ReceiveFinalResults
+</span>c
+      return
+      end
+c
+c***********************************************************************
+c
+c     <a name=masterbroadcastresults></a>Master_BroadcastResults:
+c     Once the slaves have finished all the jobs and the master has received
+c     all of the data, sometimes it is necessary to share information again
+c     amongst the slaves, for further processing. Note: this routine can 
+c     sometimes do nothing.
+c
+c***********************************************************************
+c
+      subroutine Master_BroadcastResults( work )
+c
+      implicit none
+c
+      real work(*)
+c
+      return
+      end
+</pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

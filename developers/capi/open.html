@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_open)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","open")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_open - open DDS binary stream
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>BIN_TAG cdds_open(</b><i>dict, format_alias, data_alias, mode</i><b>);
+      </b><dl><dt><dd>
+        <b>const char *</b><i>dict
+        </i><br>
+        <b>const char *</b><i>format_alias
+        </i><br>
+        <b>const char *</b><i>data_alias
+        </i><br>
+        <b>const char *</b><i>mode
+        </i></dl>
+
+    <P>
+      [ <A HREF="#input">Input</A> 
+      | <A HREF="#output">Output</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+    <h2>DESCRIPTION</h2>
+    This function opens a data stream and returns a binary tag (handle).
+    Definitions within <i>dict</i> describe the format and data name.
+    It also contains the processing history associated with the data.
+    <p>
+      <b>cdds_open</b> may update the first dictionary named by <i>dict</i>.
+      This may be required to accurately describe the input or output data.
+    <p>
+      This may be done for input or output streams.
+      This is required to fully describe the binary data
+      associated with the binary stream.
+      The stream is described by the <i>dict</i> dictionaries.
+      <a name="input"></a><h2>INPUT</h2>
+    <i>dict</i> is a dictionary that describes the binary data to be opened.
+    <p>
+      <i>format_alias</i> is a definition name selected by the programmer.
+      If specified, the end user is allowed to override the <b>format</b> definition
+      using this name (i.e. <b>out_format= segy</b>).
+    <p>
+      <i>data_alias</i> is a definition name selected by the programmer.
+      If specified, the end user is allowed to override the <b>data</b> definition
+      using this name (i.e. <b>out_data= line88</b>).
+    <p>
+      <i>mode</i> determines how data may be accessed within the stream.
+    <pre>
+mode   access        description.
+"r"    read only     open existing file.
+"w"    write only    create file or discard contents.
+"a"    append only   open existing or create.
+"r+"   read write    open existing file.
+"w+"   read write    create file or discard existing contents.
+"a+"   read append   open existing or create.
+"m"    read write    open memory resident file.
+    </pre>
+    <p>
+      Open processing retrieves the <b>DDS_PATH</b> definition
+      from the extended dictionaries.
+      The value names paths, delimited by white space,
+      that are searched for special dictionaries.
+      These dictionaries describe how to create formats and map field contents.
+      <a name="output"></a><h2>OUTPUT</h2>
+    The return value is a binary tag (small integer),
+    or negative if the stream could not be opened.
+    <p>
+      The contents of <i>dict</i> may be updated during
+      <b>cdds_open</b> processing to describe the binary data.
+      <i>dict</i> may be scanned after returning from <b>cdds_open</b>.
+      Definitions should NOT be appended to <i>dict</i>
+      after the binary stream is opened.
+      <a name="examples"></a><h2>EXAMPLES</h2>
+    <dl><dt><dd>
+        <pre>
+          <b>
+            const char *in, *out;
+            BIN_TAG in_bin, out_bin;
+            ...
+            /* open an existing binary i/o stream */
+            in_bin = cdds_open(in, "", "", "r");
+
+            ...
+
+            /* open a new binary i/o stream */
+            out_bin = cdds_open(out, "out_format", "out_data", "w+");
+          </b></pre>
+        <b></b></dl>
+    <h2>SEE ALSO</h2>
+    <pre>
+      <a href="close.html">cdds_close</a> Close binary stream
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

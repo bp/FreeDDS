@@ -1,0 +1,171 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger "C" Api (cdds_get)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","cdds_get")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capishort")</script>
+
+    <h2>
+      cdds_get - get one field from a DDS type buffer
+    </h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+      <b>#include "cdds.h"
+      </b><p>
+      <b>int cdds_get</b><i>xx</i><b>(</b><i>bin, tag, in_buf, out_array, count</i><b>);
+      </b><dl><dt><dd>
+        <b>BIN_TAG </b><i>bin
+        </i><br>
+        <b>FIELD_TAG </b><i>tag
+        </i><br>
+        <b>const void </b>*<i>in_buf
+        </i><br>
+        <b><i>HostType </i></b>*<i>out_array
+        </i><br>
+        <b>int </b><i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    These functions get data from a field of an input buffer and place
+    it into an array variable. The data are converted from the
+    <i>type</i> of the field known to <i>bin_tag</i> to the
+    host-dependent type defined for the trailing characters in the
+    function name (see below).
+
+    <h2>ARGUMENTS</h2>
+    "<i>bin_tag</i>" is a BIN_TAG previously obtained from
+    <a href="cddx_in.html">cddx_in.</a>
+
+    <p>
+      "<i>field_tag</i>" identifies a specific field within a structure of
+      <i>bin_tag</i>. It is obtained with function
+      <a href="cdds_member.html">cdds_member.</a>
+      If <i>field_tag</i> is zero, the default target (a trace) is used.
+
+    <p>
+      "<i>in_buf</i>" is a buffer of data containing the target
+      (a trace).
+
+    <p>
+      "<i>out_array</i>" is a buffer where converted information is
+      placed. The host-dependent type of <i>out_array</i> is implied by trailing
+      chacters in the function name (see below).
+
+    <p>
+      "<i>count</i>" specifies the number of elements to convert.
+
+    <h2>OUTPUT</h2>
+    The <b>get</b> functions copy (or convert) data from one type field
+    into the output array. Vectors are truncated or padded,
+    depending upon the source and destination count.
+
+    <p>
+      The functions return value is count, or zero if an error occurred.
+
+    <p>
+      A simple byte copy is performed, if the binary formats are the same.
+      The <b>get</b><i>xx</i> functions convert between most numeric
+      representations.
+      The allowed combinations are implementation dependent.
+      The functions also convert between ascii and ebcdic character formats.
+      Byte fields can be copied, without conversion, into any array.
+      Conversion is not allowed between numeric and character types.
+      If conversion is not possible, an error is reported and
+      the output array is not changed.
+
+    <pre>
+<b><u>Function     HostType         out_array Pad</u></b>
+cdds_get     byte             zero
+cdds_getcs   char             null terminated
+cdds_getcb   char             blank
+cdds_geti    int              zero
+cdds_gets    short            zero
+cdds_getl    long             zero
+cdds_getu    unsigned         zero
+cdds_getus   short unsigned   zero
+cdds_getul   long unsigned    zero
+cdds_getf    float            zero
+cdds_getff   float            zero (USP fake float)
+cdds_getc    complex          zero
+cdds_getd    double           zero
+    </pre>
+
+    C assignment rules are used to convert
+    <b>float</b> fields to integer and unsigned values.
+    Character fields are assumed to be padded with blanks.
+    Trailing pad characters are ignored during <b>get</b> processing;
+    they effectively shorten input character fields.
+    <b>cdds_getcs</b> appends a trailing null character to the value.
+    In this case <i>out_array</i> should be dimensioned
+    greater than <i>count</i>.
+    <b>cdds_getcb</b> pads the value with blanks to the full <i>count</i>.
+    <b>cdds_getff</b> pulls a float value stuffed into 
+    consecutive 1-, 2- or 4-byte integer fields.
+
+    <p/>
+      USP NOTE: When <b>cdds_getf</b> is given a negative tag, then the
+      absolute value of the tag is instead passed to <b>cdds_getff</b>.
+      This is indicative of a request from <b>cdds_member</b> for one of
+      the Horzxx trace headers.
+
+    <h2>EXAMPLES</h2>
+    <pre><b>
+   BIN_TAG bin;
+   FIELD_TAG tag;
+   const char *in_buf;
+   int *out_array;
+   ...
+   /* get (convert) field into integer out_array */
+   cdds_geti(bin, tag, in_buf, out_array, 100);
+
+   /* retrieve the dead trace flag for tests during processing */
+   const char *Title;
+   BIN_TAG bin_tag;
+   FIELD_TAG field_tag;
+   int itrc, ntrc;
+   int ier, dt_flag;
+   float *in_buf;
+   ...
+   bin_tag = cddx_in("in","stdin:",Title);
+   ntrc = cdds_axis_prod(1);
+   field_tag = cdds_member(bin_tag,0,"StaCor");
+   for (itrc = 0; itrc < ntrc; itrc++ ) {
+      ier = cddx_read(bin_tag,in_buf,1);
+      ier = cdds_geti(bin_tag,field_tag,in_buf,&amp;dt_flag,1);
+      if (dt_flag != 30000) {
+      ...
+      }
+   }
+    </b></pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="cddx_in.html"       >cddx_in</a>
+<a href="cdds_member.html"   >cdds_member</a>
+<a href="cdds_axis_prod.html">cdds_axis_prod</a>
+<a href="cddx_read.html"     >cddx_read</a>
+<a href="cdds_put.html"      >cdds_put</a> Put one field to a buffer
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

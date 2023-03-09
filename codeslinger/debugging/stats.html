@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Debugging (statistics)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","debugging","stats")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+c***********************************************************************
+c
+c     r_stats
+c
+c***********************************************************************
+c
+      subroutine r_stats(in_data,n1,n2,n3, iprt)
+
+      implicit none
+
+      integer n1,n2,n3, iprt
+      real    in_data(n1,n2,n3)
+
+      integer i1,i2,i3
+      real    min_val,max_val,mean_val,rms_val,std_val
+      real*8  dlive,cum_val,cum_sqr,dmean_val,drms_val,dstd_val
+c
+c     Initialize accumulating values and data limits
+c
+      dlive=0.0
+      cum_val=0.0
+      cum_sqr=0.0
+      min_val=+1.0e+36
+      max_val=-1.0e+36
+c
+c Accumulate values
+c
+      do i3=1,n3
+        do i2=1,n2
+          dlive = dlive+n1
+          do i1=1,n1
+            min_val=min(in_data(i1,i2,i3),min_val)
+            max_val=max(in_data(i1,i2,i3),max_val)
+            cum_val=cum_val+in_data(i1,i2,i3)
+            cum_sqr=cum_sqr+in_data(i1,i2,i3)*in_data(i1,i2,i3)
+          enddo
+        enddo
+      enddo
+c
+c Calculate statistical values
+c
+      dmean_val=cum_val/dlive
+      drms_val=sqrt(cum_sqr/dlive)
+      dstd_val=sqrt(cum_sqr/dlive-dmean_val**2)
+
+      mean_val=dmean_val
+      rms_val=drms_val
+      std_val=dstd_val
+c
+c Report statistics to iprt
+c
+  101 format(a26,g12.6)
+
+      write(iprt,*)
+      write(iprt,101)'  Number of live values = ',dlive
+      write(iprt,101)'  Minimum value         = ',min_val
+      write(iprt,101)'  Maximum value         = ',max_val
+      write(iprt,101)'  Mean value            = ',mean_val
+      write(iprt,101)'  RMS value             = ',rms_val
+      write(iprt,101)'  Standard Deviation    = ',std_val
+      write(iprt,*)
+c
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

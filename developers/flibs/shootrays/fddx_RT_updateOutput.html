@@ -1,0 +1,61 @@
+int   fddx_RT_updateOutput( int rt_tag, int step, real vec_x[6], real vec_rhs[6], real dt, real dtsm, real *output );
+
+    <h2>fddx_RT_updateOutput - update the output array for current point on the ray.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fddx_raytracer.h&gt;</b>
+    <p>
+      <b>integer fddx_RT_updateOutput(</b><i>rt_tag, step, vec_x, vec_rhs, dt, dtsm, output</i><b>)
+    </b><dl><dd>
+        <b>integer </b><i>rt_tag</i><br>
+        <b>real    </b><i>step</i><br>
+        <b>real    </b><i>vec_x[6]</i><br>
+        <b>real    </b><i>vec_rhs[6]</i><br>
+        <b>real    </b><i>dt</i><br>
+        <b>real    </b><i>dtsm</i><br>
+        <b>real    </b><i>output(*)</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fddx_RT_updateOutput</b> updates the output array for current point on the ray.<br>
+    Internally, the raytracer will calculate a number of attributes along the ray, many of which you may not need.<br>
+    Use the function <b>fddx_RT_requestOut</b> to specify which parameters you need.<br>
+    <b>fddx_RT_updateOutput</b> is then called to populate the output array.<br>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>rt_tag</i>", specifies which raytracer to show.<br>
+      Use function <b>fddx_RT_new</b> to create the raytracer.
+    </p>
+    <p>
+      The parameter, "<i>step</i>", specifies the ray step length.
+    </p>
+    <p>
+      The parameter, "<i>vec_x</i>", specifies the ray point location and slowness vector.
+    </p>
+    <p>
+      The parameter, "<i>vec_rhs</i>", specifies the right hand side of the ray equations for this ray point.
+    </p>
+    <p>
+      The parameter, "<i>dt</i>", specifies the traveltime change from the previous point on the ray,<br>
+      where the traveltime is calculated in the non-smoothed velocity model.
+    </p>
+    <p>
+      The parameter, "<i>dtsm</i>", specifies the traveltime change from the previous point on the ray,<br>
+      where the traveltime is calculated in the smoothed velocity model.
+    </p>
+
+
+    <h2>OUTPUT</h2>
+    <p>
+      The parameter, "<i>output</i>", specifies the array for the output parameters.<br>
+      Note that <i>output</i> should be of sufficient size, which will be the number of times <b>fddx_requestOut</b> has been successfully called
+      (ie the number of parameters requested), times the max. number of raysteps (see also <b>fddx_RT_maxSteps</b>).
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>fddx_RT_updateOutput</b> always returns 0, unless there is an error, in which case it returns -1.<br>
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

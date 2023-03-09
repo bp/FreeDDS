@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','picking')</script>
+
+    <p>The pick in xsd is simply a set of 2-Dimensional poly-lines in the 2D
+      plane defined by the first plotted vertical axis and the first plotted
+      horizontal axis.  The individual points are called "picks" and each set
+      of picks are called "segments". Every pick segment is contained to the 2D 
+      plane from which its first pick is selected.  Each segment will be displayed
+      on all the other Display Windows that match the same displayed 2D plane 
+      (transposed or not) that has the same axis values for all the other axes. 
+      See <a href="savingloading.html">Saving/Loading</a> to save and restore pick 
+      segments.</p>
+
+    <center><img src="xsd_Picking.jpg" alt=""></center>
+
+    <p>The current pick/segment editing mode is displayed in the 
+      "<code>Edit Mode:</code>" status window.  By default each Display Window is
+      setup to begin in the "<code>Picking</code>" mode. Pressing on the
+      <b>left mouse button</b> will add a "pick" to the working "segment"; the
+      <b>middle mouse button</b> will remove the previous "pick"; the 
+      <b>right mouse button</b> will close out the picking for the working 
+      "segment" and add that "segment" to the list of active segments.  The 
+      <a href="picking/picks.html">Picks</a> and 
+      <a href="picking/segments.html">Segment</a> menus control picking and
+      "segment" editing.</p>
+    
+    <br clear="all" />
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

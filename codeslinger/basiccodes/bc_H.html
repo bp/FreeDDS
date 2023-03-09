@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (dynamic headers)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","bc_H")
+    </script>
+    <!*********************************************************************>
+
+    <hr>
+    <b><font size=+2>Purpose:</font></b>&nbsp;&nbsp;
+      To demonstrate methods of changing trace headers.
+
+    <h2>Outline:</h2>
+      <ul>
+        <li>Retrieve users mapping overrides
+        <li>Define new trace structure and new header mapping in override: dictionary
+        <li>Open a data file for access to headers and samples
+        <li>Retrieve data characteristics needed for the task
+           (n1,n2, ...)
+        <li>Open output dictionary
+        <li>Print old_format=asp to output dictionary to force new headers in output
+        <li>Open the output file
+        <li>Allocate an array to hold data
+        <li>Read data
+        <li>Write the output
+        <li>Clean up before exiting
+      </ul>
+
+    <h2>New DDS resources:</h2>
+
+    <h2>Examples</h2>
+    <table width=50%>
+      <tbody align=center valign=middle>
+        <tr>
+          <td><b><!--<a href="f_xyzhdrs.html">-->f_xyzhdrs.F</a></b></td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

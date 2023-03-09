@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_scantn)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","scant")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_scantn - retrieve definition from DDS dictionary</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_scantn(</b><i>alias, str, count</i><b>)
+      </b><dl><dd>
+        <b>character*(*) </b><i>alias
+        </i><br>
+        <b>character*(*) </b><i>str
+        </i><br>
+        <b>integer </b><i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_scantn</b> retrieves a definition from a dictionary. The "scan"
+    dictionary(s) must have been previously selected by 
+    <a href="dict.html">fdds_dict</a>, or related function. The name of the
+    definition is specified by <i>alias</i>.
+
+    <p>
+      A new definition may be selected for retrieval. Multiple names,
+      delimited by white space, may be specified by <i>alias</i>.
+      If a name is specified, the "scan" dictionaries are searched.
+      Dictionaries are scanned from bottom-to-top and right-to-left.
+      The newest definition that matches any <i>alias</i> is selected.
+      The function returns EOF, if no match is found.
+
+    <p>
+      The current "scan" definition is accessed, if a blank <i>alias</i> is
+      specified. The value is processed, starting from the current position.
+      The function returns EOF, if a "scan" definition is not already
+      selected.
+
+    <p>
+      <b>fdds_scantn</b> differs from <b>fdds_scant</b> in that a 
+      <i>count</i> is specified to determine which token in the 
+      definition is to be returned (count=1 for first token).  
+      The function returns the number of characters in the string.
+      If a token is not found or count is out of range, 
+      it returns EOF and <i>str</i> is not changed.
+
+    <p>
+      If <i>alias</i> is blank, then the <i>count</i> is relative to the
+      previous scan position for the current "scan" definition.
+
+    <p>
+      Dictionaries may contain <i>alias</i> definitions. They define
+      alternate names for "older" definitions. <i>alias</i> definitions are
+      denoted by a special prefix, "<b>alias:</b><i>defn_name</i>" or
+      "<b>$</b><i>defn_name</i>". The value of an <i>alias</i> definition
+      is a list of alternate names.
+
+    <h2>EXAMPLES</h2>
+    <pre>
+!     retrieve third token from any of "bar", "Bar" or "BAR"
+      ier = fdds_scantn('bar Bar BAR', bar, 3)
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="dict.html">fdds_dict</a> Select DDS dictionary and mode
+<a href="scank.html">fdds_scank</a> Retrieve a definition
+<a href="scanf.html">fdds_scanf</a> Retrieve a definition
+<a href="scant.html">fdds_scant</a> Retrieve a definition
+<a href="scanv.html">fdds_scanv</a> Retrieve a definition
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

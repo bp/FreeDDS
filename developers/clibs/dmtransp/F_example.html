@@ -1,0 +1,46 @@
+<h2>Fortran Example</h2>
+<pre>
+     USE DMTransp_mod
+       ...
+     type(c_ptr)          :: Handle            ! pointer to internal transpose resources
+     type(c_ptr)          :: ptr_in, ptr_out   ! pointers to i/o arrays
+     real,dimension(:,:,:):: in_data           ! actual input data array
+     real,dimension(:,:)  :: out_data          ! actual output data array
+     logical(KIND=c_bool) :: lbeg, lend, linv  ! flags for the transpose
+     integer              :: iL1_lcl,iLn_lcl   ! 1st,last local indices of array before transpose
+     integer              :: nL_lcl            ! local allocation size for distributed axis
+     integer              :: n2_transp         ! local axis 2 size after transpose
+     integer              :: ndim=3,sizes(3)   ! global dimensions of distributed array
+     integer              :: COMM              ! an MPI communicator
+       ...
+     sizes(1)=400;    sizes(2)=500;    sizes(3)=600    ! set vector of sizes
+     Handle   = DMT_init(COMM, ndim, sizes, DMT_REAL)  ! initialize the handle
+     nL_lcl   = DMT_getval( Handle, DMT_NL_LCL )       ! get local info of global array
+     n2_transp= DMT_getval( Handle, DMT_N2_OUT_LCL )   ! get post transpose axis 2 size
+     ier      = DMT_commit( Handle )                   ! commit == internal allocations
+     lbeg     = .true.                                 ! flag to start the transpose
+     lend     = .true.                                 ! flag to finish the transpose
+       ...
+     allocate(in_data(400,500,nL_lcl))                 ! allocate in_data
+     allocate(out_data(600,n2_transp))                 ! allocate out_data
+       ...
+     ptr_in  = c_loc(in_data)                          ! set C pointer to input array
+     ptr_out = c_loc(out_data)                         ! set C pointer to output array
+
+     ! Do the forward transpose
+     linv = .false.
+     ier = DMTranspose( Handle, ptr_in,ptr_out, lbeg,lend,linv )
+
+     ! Process transposed array
+     !$OMP PARALLEL DO DEFAULT(shared), PRIVATE(i2)
+     do i2=1,n2_transp
+       out_data(:,i2)=operation(out_data(:,i2))
+     enddo
+
+     ! Do the inverse transpose
+     linv=.true.
+     ier = DMTranspose( Handle, ptr_in,ptr_out, lbeg,lend,linv )
+
+     ! Free all internal transpose resources
+     ier = DMT_free( Handle )
+</pre>

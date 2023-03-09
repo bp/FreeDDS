@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (Structures)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","structures")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      This section lists all the header files associated with the libdds_r3.a
+      library.  Also, the major data structures and globals are listed for
+      each of these header files.</p>
+
+    <p>
+      Go to the <a href="../dir/doxygen/dds3/main.html">Doxygen</a> for automatically
+      generated documentation. Doxygen documentation was generated on a 
+      LX26x86_64-4 machine with the gnu compiler.</p>
+
+    <h3>Type Selection Guide</h3>
+    <dl>
+      <dt>"size_t"</dt>
+      <dd>must be avoided if the value may be formatted because there  
+        is not a portable conversion specifier for scan and print.         
+        "size_t" can NOT be used for values created by the DDS compiler. </dd>  
+      
+      <dt>"long double" and "long long" </dt>
+      <dd>should be avoided because some          
+        compilers (SGI IRIX32 and Sun4 respectively) don't support them.   
+        HOST_LDOUBLE_T and HOST_LLONG_T provides a portable alternative,   
+        iff the value does NOT have to be formatted by scan or print. </dd>     
+      
+      <dt> HOST_INT6_T </dt>
+      <dd>is required for byte offsets and sizes within files in    
+        order to support files sizes greater than 2**31.          </dd>         
+      
+      <dt>"long" </dt>
+      <dd>is used for byte offsets and sizes within memory               
+        that may be associated with arrays created by the DDS compiler.    
+        This includes struct and unions since they may contain arrays. </dd>    
+      
+      <dt>"int" </dt>
+      <dd>is used for most other variables.                               
+        "short" and "char" are used for "small" values iff storage         
+        overhead is more important than execution efficiency.    </dd>
+    </dl>          
+
+    <h3>dds3 Header Files</h3>
+      
+    <p>
+      All the header files used for building libdds_r3.a are listed here.
+      The dds_con<i>x</i>.h header files are discussed in the
+      <a href="discussions/con.html">Conversion Macros</a> section.
+    </p>
+
+    <pre>
+cdds.h        - Public "C" API to the Data Dictionary System
+dds_api.h     - API-related macros
+dds_binary.h  - Binary-related structures and routines
+dds_con3.h    - Level 3 macros to convert data between binary representations
+dds_con4.h    - Level 4 macros to convert data between binary representations
+dds_con5.h    - Level 5 macros to convert data between binary representations
+dds_config.h  - Private "config" (compile options and tuning)
+dds_dict.h    - Dictionary "utility" declarations
+dds_dump.h    - Diagnostic dump "utility" declarations
+dds_hdr.h     - Line header "utility" declarations (USP &amp; SEGY)
+dds_magtape.h - Mag tape "utility" functions
+dds_media.h   - Storage media "utility" declarations
+dds_message.h - Print "utility" functions
+dds_mtio.h    - Include file for mag tape functions
+dds_opcode.h  - DDS_OPCODE enumeration and DDS_OPNOTE declaration/initialization
+dds_oplist.h  - List of OP CODE definitions for expressions 
+                (used in dds_opcode.h and global.c)
+dds_ptype.h   - Prime type (ptype) "utility" declarations
+dds_stack.h   - Stack "utility" declarations
+dds_state.h   - Private "types" (nucleus)
+dds_string.h  - String "utility" declarations
+dds_swap.h    - Macros to byte-swap data for evaluate.c
+dds_symbol.h  - Symbol table "utilities" (lex and yacc compiler stuff)
+dds_sys.h     - Private "sys" (internal API), includes mode of the others
+dds_table.h   - Hash table "utility" declarations
+dds_util.h    - Private "utility" declarations
+dds_version.h - Contains the DDS Revision number
+dds_zip.h     - DDS Zip/Unzip compression
+f90_com.h     - Public Fortran 90 API to the Data Dictionary System
+f_com.h       - Public Fortran API to the Data Dictionary System
+segy_hdr.h    - "segy line header" description
+sep_hdr.h     - "sep line header" description
+usp_hdr.h     - "usp line header" description
+   </pre>
+ 
+    <h3>Generated dds3 Header Files</h3>
+
+    <p>
+      All of these header files are generated under the architecture
+      subdirectories with the exception of "parser.tab.h" which is in the
+      "dds3" directory.</p>
+
+    <pre>
+parser.tab.h - Parser header 
+               (Generated by bison from parser.y)
+asp.fmt.h    - Internal ASP fmt definitions  
+               (Generated by makedict.c and asp.fmt.dds)
+asp.map.h    - Internal ASP map definitions  
+               (Generated by makedict.c and asp.map.dds)
+usp.fmt.h    - Internal USP fmt definitions  
+               (Generated by makedict.c and usp.fmt.dds)
+usp.map.h    - Internal USP map definitions  
+               (Generated by makedict.c and usp.map.dds)
+segy.fmt.h   - Internal SEGY fmt definitions  
+               (Generated by makedict.c and segy.fmt.dds)
+segy.map.h   - Internal SEGY map definitions  
+               (Generated by makedict.c and segy.map.dds)
+segy1.fmt.h  - Internal SEGY1 fmt definitions  
+               (Generated by makedict.c and segy1.fmt.dds)
+segy1.map.h  - Internal SEGY1 map definitions  
+               (Generated by makedict.c and segy1.map.dds)
+dds_con2.h   - Level 2 macros to convert data  
+               (Generated by makecon2.c)
+device.h     - Internal device characteristics definitions  
+               (Generated by makedict.c and device.dds)
+f90dds.h     - Fortran 90 API header  
+               (Generated by makefdds and f90_com.h)
+fdds.h       - Fortran API header
+               (Generated by makefdds and f_com.h)
+    </pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

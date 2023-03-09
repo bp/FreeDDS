@@ -1,0 +1,30 @@
+
+    <h2>cddx_V_new - create a new velocity model.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;cddx_vel.h&gt;</b>
+    <p>
+      <b>int cddx_V_new(</b><i>alias</i><b>)
+    </b><dl><dd>
+        <b>const char *</b><i>alias</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>cddx_V_new</b> creates a new velocity model structure.<br>
+      The structure itself will be empty. Use the <b>cddx_V_request*</b> functions to populate it with real data.
+    </p>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>alias</i>", specifies a prefix to add to the keywords (see the <b>cddx_V_request*</b> functions)<br>
+      to allow the use of multiple different velocities with the same application.<br>
+      For example, if you want the user to be able to specify a P-wave velocity with the keyword <i>old_vp=</i>, then "<i>alias</i>" would be <i>old_</i>.
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_V_new</b> returns a tag to the newly created velocity model. In the event of an error, it will return -1.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

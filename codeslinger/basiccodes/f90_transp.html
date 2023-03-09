@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (data sizes change)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","f90_transp.F90")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+!***********************************************************************
+!
+! transpose subsets of 2D arrays
+!
+!***********************************************************************
+
+      program f90_transp
+
+      implicit none
+
+#include &lt;<a href="../resources/f90dds.h.html">f90dds.h</a>&gt;
+
+! Define F90 precision for integer*8 variables
+      integer,parameter :: LI=selected_int_kind(18)
+
+! For DDS functions. Arguments and return values
+      character(LEN=10),parameter :: prog="f90_transp"
+      character(LEN=80)           :: Title
+      integer ier, fd_in, fd_out
+
+      integer(KIND=LI),parameter :: izero8=0
+      integer(KIND=LI)           :: ier8
+
+! Data attributes
+      character(LEN=AXISNAME_MAX) :: axes(RANK_MAX)
+      integer n1,n2,n3, rank
+
+! User parameters
+      integer i1s,i1e, i2s,i2e
+      logical lverb
+
+! Internal dynamic array
+      real,allocatable :: record_in(:,:), record_out(:,:)
+
+! Internal loop counters and other scalar values
+      integer i3, irank, n1_out,n2_out
+
+!-------------------------------------------------------------------
+!
+! Initialize the Title
+!
+      Title=prog//': transpose subsets of 2D arrays'
+
+!
+! Open the print file and dump command-line help is requested
+!
+      ier=<a href="../fapishort/fdds_openpr.html">fdds_openpr</a>(prog,'')
+      if (ier.gt.0) call help(prog,Title)
+
+!
+! Open input file
+!
+      fd_in=<a href="../fapishort/fddx_in.html">fddx_in</a>('in','stdin:',Title)
+
+!
+! Retrieve data characteristics
+!
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(1)','%d\0',n1)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(2)','%d\0',n2)
+      n3=<a href="../fapishort/fdds_axis_prod.html">fdds_axis_prod</a>(3)
+
+      rank=<a href="../fapishort/fdds_scank.html">fdds_scank</a>('axis','')
+      do irank=1,rank
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('','%s\0',axes(irank))
+      enddo
+
+!
+! Retrieve command line and parfile parameters
+!
+      ier=<a href="../fapishort/fdds_dict.html">fdds_dict</a>('par:','scan')
+
+      i1s=1
+      i1e=n1
+      i2s=1
+      i2e=n2
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('1s','%d\0',i1s)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('1e','%d\0',i1e)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('2s','%d\0',i2s)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('2e','%d\0',i2e)
+
+      lverb=.false.
+      if (<a href="../fapishort/fdds_scank.html">fdds_scank</a>('verbose',DDS_TRUE_KEY).gt.0) lverb=.true.
+
+!
+! Set up the output dictionary
+!
+      fd_out=<a href="../fapishort/fddx_out.html">fddx_out</a>('out','stdout:',Title,fd_in)
+
+!
+! Print modified axis info to output dictionary
+!
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('axis',' %s\0',axes(2))
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('',' %s\0',axes(1))
+      do irank=3,rank
+         ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('',' %s\0',axes(irank))
+      enddo
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('','\n\0')
+
+!
+! Twiddle with the dictionary to get axis names to register
+!
+      ier=<a href="../fapishort/fddx_dict.html">fddx_dict</a>(fd_out,'scan')
+      ier=<a href="../fapishort/fddx_dict.html">fddx_dict</a>(fd_out,'print')
+
+!
+! Print modified size info to output dictionary
+!
+      n1_out=i2e-i2s+1
+      n2_out=i1e-i1s+1
+
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('size.axis(1)','%d\n\0',n1_out)
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('size.axis(2)','%d\n\0',n2_out)
+
+!
+! Now actually open the output with a seek
+!
+      ier8=<a href="../fapishort/fdds_lseek8.html">fdds_lseek8</a>(fd_out,0,izero8,SEEK_SET)
+
+!
+! Allocate data arrays
+!
+      allocate( record_in(n1,n2) )
+      allocate( record_out(n1_out,n2_out) )
+
+!
+! Loop over n3, read-transpose-write
+!
+      do i3 = 1,n3
+
+         if (lverb .and. mod(i3,10).eq.0) then
+            ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('record %5d of %5d\n\0',i3,n3)
+         endif
+
+         if (<a href="../fapishort/fddx_read.html">fddx_read</a>(fd_in,record_in,n2).ne.n2) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Reading record %d\n\0',i3)
+            exit
+         endif
+
+         record_out(:,:) = transpose(record_in(i1s:i1e,i2s:i2e))
+
+         if (<a href="../fapishort/fddx_write.html">fddx_write</a>(fd_out,record_out,n2_out).ne.n2_out) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Writing record %d\n\0',i3)
+            exit
+         endif
+
+      enddo
+
+!
+! Clean up
+!
+      deallocate(record_in)
+      deallocate(record_out)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+      ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+
+!
+! Stop
+!
+      stop
+      end
+
+
+
+
+!***********************************************************************
+!
+! subroutine to print help when requested on the command line
+!
+!***********************************************************************
+
+      subroutine help(prog,Title)
+
+      implicit none
+
+      character(LEN=*) :: prog, Title
+
+      write(0,*)''
+      write(0,*)trim(Title)
+      write(0,*)''
+      write(0,*)' Parameter....Meaning..........................Default'
+      write(0,*)''
+      write(0,*)'  in=         input dictionary                  stdin:'
+      write(0,*)'  out=        output dictionary                stdout:'
+      write(0,*)''
+      write(0,*)'  1s=         First sample of input to transpose     1'
+      write(0,*)'  1e=         Last    "    "    "   "      "        n1'
+      write(0,*)'  2s=         First trace  "    "   "      "         1'
+      write(0,*)'  2e=         Last    "    "    "   "      "        n2'
+      write(0,*)''
+      write(0,*)'  verbose=    verbose output                        no'
+      write(0,*)''
+      write(0,*)'  USAGE: '//trim(prog)
+      write(0,*)'           in=[in_dict] out=[out_dict]'
+      write(0,*)'           [ 1s=[i1s] 1e=[i1e] 2s=[i2s] 2e=[i2e]'
+      write(0,*)'             verbose=[y|n] ]'
+      write(0,*)''
+
+      stop
+
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

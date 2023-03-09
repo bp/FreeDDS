@@ -1,0 +1,30 @@
+
+    <h2>fddx_checkforerrors - check for errors when running using DDS and MPI</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b>
+    <p>
+      <b>integer function fddx_checkforerrors(</b><i>np, node</i><b>)
+    </b><dl><dd>
+        <b>integer </b><i>np
+        </i><br>
+        <b>integer </b><i>node
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    The function, "<b>fddx_checkforerrors</b>", sums all the errors reported by
+    the different MPI threads through <b>fdds_prterr</b>.  If there are errors 
+    on any of the threads then it aborts the program gracefully, stopping all threads.<br>
+    Note that <b>fddx_checkforerrors</b> should be called by <b>all</b> MPI threads.
+     
+    <h2>INPUT</h2>
+    The parameter, "<i>np</i>", specifies the number of MPI threads used by the program.
+    <p>
+      The parameter, "<i>node</i>", specifies the number of the current MPI thread.
+
+    <h2>OUTPUT</h2>
+    Always returns 0, unless an error was detected, in which case the program aborts, and the function does not return.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

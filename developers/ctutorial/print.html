@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Tutorial (Print)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ctutorial","print")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      <a href="../capi/prtmsg.html">cdds_prtmsg</a> prints a message to
+      the printout file (if opened) or to the terminal (via stderr:).
+      It is always advisable to print back out what the program read in
+      for the user parameters.  This will document what parameters the 
+      program is using.  If the user had any typo's, then this will reflect
+      a possible different value than expected.  Also, most typo's will
+      result in a parameter definition not being read and should indicate
+      this at the end of the printout file.  A typical printout of user
+      parameters may look something like:
+
+      <pre>
+      <a href="../capi/prtmsg.html">cdds_prtmsg</a>("\n*** USER PARAMETERS ***\n\n");
+      <a href="../capi/prtmsg.html">cdds_prtmsg</a>("\tscale = %g\n", scale);
+      <a href="../capi/prtmsg.html">cdds_prtmsg</a>("\tnsout = %d\n", nsout);
+      <a href="../capi/prtmsg.html">cdds_prtmsg</a>("\tmute values:");
+      for (i=0;i&lt;n;i++) {
+         <a href="../capi/prtmsg.html">cdds_prtmsg</a>(" %d", mute(i));
+      }
+      <a href="../capi/prtmsg.html">cdds_prtmsg</a>("\n");
+      <a href="../capi/prtmsg.html">cdds_prtmsg</a>("\tmode  = %s\n", mode);
+      <a href="../capi/prtmsg.html">cdds_prtmsg</a>("\n");
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

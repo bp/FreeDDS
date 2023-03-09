@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Devices</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","devices")</script>
+    <!*********************************************************************>
+
+    <p>
+      DDS has built-in capabilities to handle physical devices  (tape and 
+      disk drives) directly.  There are special Device Attributes associated
+      with these devices.  For example, tape drives have labels, density,
+      lengths, and block sizes. Attributes supported by DDS are described.
+      The end user is normally concerned with only a few keyword attributes.
+      They are label, dsn, merge, online, and offline.
+
+    <p>
+      Device attributes are controlled by device Definitions. The device
+      name itself is used in place of an input or output filename.  Then
+      a Definition with the name of that device is used to specify the
+      device attributes.  This following example assumes multiple reels of
+      tape are input. Traces from all reels are concatenated together.
+      If a reel has multiple files, they are merged.
+
+    <pre>
+in_data= /dev/rst0b
+/dev/rst0b= merge label "RE2201 RE2202 RE2203"
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

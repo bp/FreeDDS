@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Definitions</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","defn")</script>
+    <!*********************************************************************>
+
+    <p>
+      A DDS definition is comprised of a &quot;<b>name</b>&quot; and a
+      &quot;<b>value</b>&quot; in the form: 
+      <code><var>name</var>=<var>value</var></code>.  There must not be
+      any &quot;white space&dagger;&quot; between the 
+      &quot;<b>name</b>&quot; and the &quot;<b>=</b>&quot; character;
+      however, there can be any &quot;white space&quot; after the
+      &quot;<b>=</b>&quot; character which will become a part of
+      &quot;<b>value</b>&quot;.  So the &quot;<b>value</b>&quot; consists
+      of all characters following the &quot;<b>=</b>&quot; character up to
+      the beginning of the &quot;<b>name</b>&quot; for the following 
+      Definition.  Thus, a Definition &quot;<b>name</b>&quot; can multiple
+      lines up to the next Definition in the Dictionary.  The &quot;\&quot; 
+      (escape) character is NOT allow in Definition names; it can be used
+      to escape &quot;<b>=</b>&quot; other "white space" and other
+      characters such as quotes. Any non-printable character will be 
+      converted to the <code>~</code> (tilde).
+
+    <p>
+      For examples the following definitions produce each corresponding 
+      &quot;<b>name</b>&quot; and a &quot;<b>value</b>&quot;.
+
+    <pre>    
+     DEFINITION              NAME      VALUE
+     ---------------------   ------    -----------------------
+ 1)  foo=caca...             foo       &quot;caca...&quot;
+ 2)  foo =caca...            &lt;invalid&gt;
+ 3)  foo= caca...            foo       &quot; caca...&quot;
+ 4)  foo = caca...           &lt;invalid&gt; 
+ 5)  foo= caca bar=kaka...   foo       &quot; caca &quot;
+                             bar       &quot;kaka...&quot;
+ 6)  foo=bar=caca...         foo       &quot;&quot;
+                             bar       &quot;caca...&quot;
+ 7)  foo=  =caca...          foo       &quot;  &quot;      (anonymous)
+                             &lt;void&gt;    &quot;caca...&quot;
+ 8)  foo==caca...            foo       &quot;&quot;        (anonymous)
+                             &lt;void&gt;    &quot;caca...&quot;
+ 9)  foo=caca\=kaka...       foo       &quot;caca\=kaka...&quot;
+10)  foo=caca\=bar=kaka...   foo       &quot;caca\=bar&quot; 
+                                    &lt;void&gt;    &quot;kaka...&quot;
+11)  alias:foo=caca...       foo       &quot;caca...&quot; (alias)
+12)  alias:=caca...          &lt;void&gt;    &quot;caca...&quot; (anonymous)
+13)  $foo=caca...            foo       &quot;caca...&quot; (alias)
+14)  $=caca...               &lt;void&gt;    &quot;caca...&quot; (anonymous)
+
+    </pre>
+
+    <p>
+      <b>NOTE</b> when changing a Definition's value in a Dictionary, it is
+      always better and safer to add it as a new Definition at the end of
+      the Dictionary instead of changing it's value at it current location. 
+      This way you maintain a history of what has taken place and you 
+      avoid the chance of not changing it's latest occurance.  It is easier
+      to track errors made this way and you can more easily undo any 
+      changes.
+
+    <p class='footnote'/>
+      &dagger; &quot;white space&quot; characters are space, 
+      form-feed ('\f'), newline ('\n'), carriage return ('\r'),
+      horizontal tab ('\t'), and vertical tab ('\v').<br/>
+     
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

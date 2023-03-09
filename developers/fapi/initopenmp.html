@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_initopenmp)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","initopenmp")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_initopenmp - initialize the DDS system for OpenMP parallelization</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <p>
+      <b>integer fdds_initopenmp( )
+
+      </b><h2>DESCRIPTION</h2>
+    <b>fdds_initopenmp</b> is used to initialize the DDS system for OpenMP
+    parallelization. If OpenMP is available it scans the command line for
+    "nproc" and calls "omp_set_num_threads" to set the number or processors
+    to use. The default value for "nproc" is 1.  The return value is
+    "nproc". If OpenMP is not available it simply returns 1.
+    
+    <p>
+      <u><code>NOTE:</code></u> you will have to define this function for 
+      yourself because it is not defined in fdds.h (if it was, DDS would try to use the
+      parallel routines for all codes).  So add "integer fdds_initopenmp" to any
+      routine that uses it.
+      
+      <h2>Example</h2>
+      <pre>
+	! Declare the function and local value for nproc
+        integer fdds_initopenmp, nproc
+	...
+	
+	! Initialize OpenMP, copy command line value of nproc to local nproc
+        nproc = fdds_initopenmp()
+      </pre>
+      
+    <h2>SEE ALSO</h2>
+    <pre>
+       <a href="initmpi.html">fdds_initmpi</a> Initialize DDS for MPI
+       <a href="initmpix.html">fdds_initmpix</a> Initialize DDS for MPIX
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (Feb 2006)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,54 @@
+<pre class=man>SLASWP(3)                  LAPACK routine                 SLASWP(3)
+
+
+
+<b>NAME</b>
+       SLASWP - a series of row interchanges on the matrix A
+
+<b>SYNOPSIS</b>
+       SUBROUTINE SLASWP( N, A, LDA, K1, K2, IPIV, INCX )
+
+           INTEGER        INCX, K1, K2, LDA, N
+
+           INTEGER        IPIV( * )
+
+           REAL           A( LDA, * )
+
+<b>PURPOSE</b>
+       SLASWP  performs a series of row interchanges on the matrix A.  One row
+       interchange is initiated for each of rows K1 through K2 of A.
+
+
+
+<b>ARGUMENTS</b>
+       N       (input) INTEGER
+               The number of columns of the matrix A.
+
+       A       (input/output) REAL array, dimension (LDA,N)
+               On entry, the matrix of column dimension N  to  which  the  row
+               interchanges will be applied.  On exit, the permuted matrix.
+
+       LDA     (input) INTEGER
+               The leading dimension of the array A.
+
+       K1      (input) INTEGER
+               The  first  element of IPIV for which a row interchange will be
+               done.
+
+       K2      (input) INTEGER
+               The last element of IPIV for which a row  interchange  will  be
+               done.
+
+       IPIV    (input) INTEGER array, dimension (K2*abs(INCX))
+               The vector of pivot indices.  Only the elements in positions K1
+               through K2 of IPIV are accessed.  IPIV(K) = L  implies  rows  K
+               and L are to be interchanged.
+
+       INCX    (input) INTEGER
+               The  increment  between  successive values of IPIV.  If IPIV is
+               negative, the pivots are applied in reverse order.
+
+<b>FURTHER DETAILS</b>
+       Modified by
+        R. C. Whaley, Computer Science Dept., Univ. of Tenn., Knoxville, USA
+</pre>

@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_writem)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","writem")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_writem - map buffer and write binary stream</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    </b><p>
+      <b>integer function fdds_writem(</b><i>out_bin, out_tag, in_bin, in_tag, in_buf, count</i><b>)
+      </b><dl><dd>
+        <b>integer </b><i>out_bin
+        </i><br>
+        <b>integer </b><i>out_tag
+        </i><br>
+        <b>integer </b><i>in_bin
+        </i><br>
+        <b>integer </b><i>in_tag
+        </i><br>
+        <b>integer </b><i>in_buf(*)
+        </i><br>
+        <b>integer </b><i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    This functions maps data from a type buffer
+    and write it into a binary stream.
+
+    <h2>INPUT</h2>
+    <i>Out_bin</i> is a binary tag, previously obtained from 
+    <a href="open.html">fdds_open.</a>
+    It specifies an output binary stream.
+
+    <p>
+      <i>out_tag</i> is a field tag, previously obtained eg. from 
+      <a href="member.html">fdds_member.</a> It specifies a tag associated
+      with <i>out_bin</i>. This provides a scale factor for <i>count</i>.
+      If <i>out_tag</i> is zero (nominal), it defaults to the
+      <i>SEQUENCE</i> (trace type) associated with <i>out_bin</i>.
+
+    <p>
+      <i>In_bin</i> is a binary tag, previously obtained from 
+      <a href="open.html">fdds_open.</a>
+      It specifies an input binary stream.
+
+    <p>
+      <i>in_tag</i> is a field tag, previously obtained eg. rom 
+      <a href="member.html">fdds_member.</a> It specifies a type associated
+      with <i>in_bin</i>. This provides a scale factor for <i>count</i>.
+      If <i>in_tag</i> is zero (nominal), it defaults to the
+      <i>SEQUENCE</i> (trace type) associated with <i>in_bin</i>.
+
+    <p>
+      Data is written from <i>in_buf</i>.
+      The minimum size is <i>count</i> times the size of <i>in_tag</i>.
+
+    <h2>OUTPUT</h2>
+    Data is moved from <i>out_buf</i> to a temporary buffer,
+    while converting from <i>in_tag</i> to <i>out_tag</i>.
+    A byte sequence is copied from the buffer into <i>out_bin</i>.
+    <b>fdds_writem</b> is preferable to executing 
+    <a href="write.html">fdds_write</a>and
+    <a href="map.html">fdds_map</a>directly.
+
+    <p>
+      The return value is the number of types actually mapped and written.
+      EOF is returned, if an error occurred before any transfer.
+
+    <h2>EXAMPLES</h2>
+    In fixed-format Fortran:
+    <pre>
+      #include &lt;fdds.h&gt;
+      integer in_bin, out_bin
+      integer out_buf(*)
+      ...
+!     write 10 traces from type buffer
+      j = fdds_writem(out_bin, 0, in_bin, 0, out_buf, 10)
+    </pre>
+
+    <p>
+    In free-format F90:
+    <pre>
+      #include &lt;f90dds.h&gt;
+      integer in_bin, out_bin
+      integer out_buf(*)
+      ...
+!     write 10 traces from type buffer
+      j = fdds_writem(out_bin, 0, in_bin, 0, out_buf, 10)
+    </pre>
+
+    <p>
+    Using the DDS module:<br>
+    (Note that the DDS module requires that data arrays passed to I/O
+    functions be 1 dimensional.)
+    <pre>
+      use dds
+      
+      integer :: in_bin, out_bin, nsmp, ntrc, itrc
+      real, allocatable :: buffer(:,:)
+      
+      allocate(buffer(nsmp, ntrc))
+      ! write 10 traces from type buffer
+      do itrc=1,10
+        ier = fdds_writem(out_bin, 0, in_bin, 0, buffer(:,itrc), 1)
+      enddo
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+      <a href="readm.html">fdds_readm</a>
+      <a href="write.html">fdds_write</a>
+      <a href="map.html">fdds_map</a>
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

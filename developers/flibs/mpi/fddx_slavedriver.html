@@ -1,0 +1,133 @@
+    <h2>fddx_slavedriver - master-slave parallelization scheme using DDS and MPI</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;pfdds.h&gt;</b>
+    <p>
+      <b>integer function fddx_slavedriver(</b><i>np, node, numjobs, verbose, 
+             debug, mydata, Slave_Work, Slave_SendResult, Slave_SendFinalResults, 
+             Master_ReceiveResult, Master_ReceiveFinalResults, Master_BroadcastResults</i><b>)
+    </b><dl><dd>
+        <b>integer </b><i>np </i><br>
+        <b>integer </b><i>node </i><br>
+        <b>integer </b><i>numjobs </i><br>
+        <b>integer </b><i>verbose </i><br>
+        <b>real    </b><i>mydata(*) </i><br>
+        <b>extern  </b><i>Slave_Work( integer jobnumber, real mydata(*) ) </i><br>
+        <b>extern  </b><i>Slave_SendResult( integer np, integer node, integer jobnumber, real mydata(*) ) </i><br>
+        <b>extern  </b><i>Slave_SendFinalResults( real mydata(*) ) </i><br>
+        <b>extern  </b><i>Master_ReceiveResult( integer np, integer slave, integer jobnumber, real mydata(*) )</i><br>
+        <b>extern  </b><i>Master_ReceiveFinalResults( real mydata(*) ) </i><br>
+        <b>extern  </b><i>Master_BroadcastResults( real mydata(*) )</i><br>
+
+</dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>fddx_slavedriver</b> provides a template for a master-slave parallelization. 
+      Parallel programming is non-trivial. The goal of this routines is 
+      to provide a framework for the developer, so that they may concentrate 
+      on the algorithm, rather than the parallelism.  That said, thought should
+      be given to the level of parallelism required in any application. 
+      If the level of parallelism is too fine (the jobs are too short) then 
+      there is a potential for a bottleneck with the inter-process communication.
+      If the level parallelism is too coarse (the jobs are too long), then you
+      may not be able to use many threads.
+    </p>
+    <p>
+      For the special case of running without MPI (<i>np=1</i>), pseudo-code 
+      for fddx_slavedriver looks like:<br>
+      <br>
+      <code>
+	foreach ( job )<br>
+          {<br>
+            &nbsp;&nbsp;Slave_Work<br>
+            &nbsp;&nbsp;Slave_SendResult<br>
+	    &nbsp;&nbsp;Master_ReceiveResult <br>
+          }<br>
+	Slave_SendFinalResults<br>
+	Master_ReceiveFinalResults<br>
+	Master_BroadcastResults<br>
+      </code>
+    </p>
+    <p>
+      The command-line parameter, "<i>masterslave_debug=</i>", controls the behaviour of the job 
+      distribution to slaves to assist with debugging. Valid values are:
+    </p>
+    <ul>
+      <li>0: normal mode, with no debugging (this it the default value).</li>
+      <li>1: the master will stop after giving one job out.</li>
+      <li>2: the master will stop after giving one job out to each slave.</li>
+    </ul>
+    </p>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>np</i>", specifies the number of MPI threads used by the program.
+    </p>
+    <p>
+      The parameter, "<i>node</i>", specifies the number of the current MPI thread.
+    </p>
+    <p>
+      The parameter, "<i>numjobs</i>", specifies the total number of jobs to be done.
+    </p>
+    <p>
+      The parameter, "<i>verbose</i>", specifies whether to print fewer
+      (<i>verbose=0</i>) or more messages (<i>verbose=1</i>).
+    </p>
+    <p>
+      The parameter, "<i>mydata</i>", specifies a work array (or just a 
+      pointer if you are mixing Fortran and C) of data that can be used
+      by the used-defined functions that follow.
+    </p>
+    <p>
+      The parameter, "<i>Slave_Work</i>", defines a subroutine that
+      will be called by the slaves to do a single element of work.
+    </p>
+    <p>
+      The parameter, "<i>Slave_SendResult</i>", defines a subroutine 
+      that will be called by the slaves to send back results of a single 
+      element of work. Note that if the slaves are keeping all of the 
+      results until the end, then this routine may be empty, but it must exist.
+      A routine, <i>fddx_EmptySendResult</i>, that does nothing is provided for this purpose.
+    </p>
+    <p>
+      The parameter, "<i>Slave_SendFinalResults</i>", defines a subroutine
+      that will be called by the slaves, after they have finished all the 
+      jobs, to send back any final results. Note that if the slaves are 
+      sending back individual results after completing each job, then
+      this routine may be empty, but it must exist. A routine, 
+      <i>fddx_EmptySendFinalResults</i>, that does nothing is provided 
+      for this purpose.
+    </p>
+    <p>
+      The parameter, "<i>Master_ReceiveResult</i>", defines a subroutine 
+      that will be called by the master to receive results of a single
+      element of work. Note that if the slaves are keeping all of the 
+      results until the end, then this routine may be empty, but it must exist.
+      A routine, <i>fddx_EmptyReceiveResult</i>, that does nothing is 
+      provided for this purpose.
+    </p>
+    <p>
+      The parameter, "<i>Master_ReceiveFinalResults</i>", defines a 
+      subroutine that will be called by the master, after the slaves have
+      finished all the jobs, to receive any final results. Note that if 
+      the slaves are sending back individual results after completing 
+      each job, then this routine may be empty, but it must exist.
+      A routine, <i>fddx_EmptyReceiveFinalResults</i>, that does 
+      nothing is provided for this purpose.
+    </p>
+    <p>
+      The parameter, "<i>Master_BroadcastResults</i>", defines a subroutine
+      that will be <u>called by the master AND the slaves</u>,
+      after the slaves have finished all the jobs, to receive any final results.
+      Note that this routine may be empty, but it must exist.
+      A routine, <i>fddx_EmptyBroadcastResults</i>, that does nothing is
+      provided for this purpose.
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>fddx_slavedriver</b> always returns 0.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

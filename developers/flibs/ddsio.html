@@ -1,0 +1,408 @@
+<html>
+  <body>
+    
+    <h2>Introduction</h2>
+    
+    <p><b>libDdsIO</b> provides an object oriented library to replace 
+      the common DDS subroutines and functions. It handles multiple input
+      files for reading and also handles parallel writing with MPI without
+      any developer effort. <b>libDdsIO</b> is written as several F2008
+      modules: DdsIO_mod, MyMPI_mod, and Precision_mod.</p>
+    
+    <p>Going even beyond the DDS convenience routines, the developer need not
+      use any fdds_xxxx() or fddx_xxxx() functions unless their functionality
+      has not yet been added to this module. If any errors occur, they
+      are tracked by internal <b>fdds_prterr</b> calls.</p> Unfortunately, DdsIO 
+    only handles arrays up to 7 dimensions (the F2008 limit) as opposed to DDS which
+    can handle arrays up to 9 dimensions. If all 9 dimensions are needed, then
+    the developer must use the standard Fortran DDS routines.
+    
+    <p><b>libDdsIO</b> internally uses <b>libddz</b> to handle input/output.
+      Therefore, after opening a file for input with <b>data%open()</b>,
+      any <b>fddx</b> convenience routines can be used with the resulting bin tag
+      as though the file had been opened with <b>fddx_in</b>, <b>fddx_in2</b>, etc.</p>
+
+    <p>An example of how to use <b>libDdsIO</b> to read multiple files is provided
+      <a href="flibs.php?lib=ddsio&api=mf_example"><b>here</b></a>. An example of how to use
+      <b>libDdsIO</b> to write in parallel across multiple MPI ranks is provided
+      <a href="flibs.php?lib=ddsio&api=pw_example"><b>here</b></a>.</p>
+
+    <h2>Module hierarchy</h2>
+    <b>libDdsIO</b> is a collection of 3 F2008 modules: <b>DdsIO_mod</b>,
+    <b>MyMPI_mod</b>, and <b>Precision_mod</b>. All of the core DdsIO routines
+    are type-bound procedures on data objects of <b>type(DdsObject)</b>. These
+    procedures (along with the type itself) are found in <b>DdsIO_mod</b>. There
+    are several MPI helper subroutines in <b>MyMPI_mod</b>. <b>InitMyMPI</b> in
+    particular must be called by any program in order to properly handle parallel
+    writing. Finally, the precisions used throughout the DdsIO routines can be found in
+    <b>Precision_mod</b>.
+    <br><br>
+    <b>DdsIO_mod</b> internally uses both <b>MyMPI_mod</b> and <b>Precision_mod</b>.
+
+    <h2>DdsIO Functions</h2>
+
+    <h3>Common DdsIO_mod functions</h3>
+    
+    <table width="95%" border=0 rules="none" frame="void"
+           cols="2" cellspacing="0" cellpadding="5">
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=open"><b>data%open</b></a>
+        </td>
+        <td><p>
+            Opens a data object for reading, writing, or parallel writing.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=read"><b>data%read</b></a>
+        </td>
+        <td><p>
+            Reads in data from the file(s) into a given buffer.
+        </p> </td>
+      </tr>
+      <tr>
+	<td valign="top">
+          <a href="flibs.php?lib=ddsio&api=seekTo"><b>data%seekTo</b></a>
+        </td>
+        <td><p>
+            Seeks from the beginning of the file to the start of a given trace.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=write"><b>data%write</b></a>
+        </td>
+        <td><p>
+            Writes data to file from a given buffer.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=close"><b>data%close</b></a>
+        </td>
+        <td><p>
+            Closes data object.
+        </p> </td>
+      </tr>
+    </table>
+    
+    <h3>Getter/Setter DdsIO_mod functions</h3>
+
+    <table width="95%" border=0 rules="none" frame="void"
+           cols="2" cellspacing="0" cellpadding="5">
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=setAttr"><b>data%setAttr</b></a>
+        </td>
+        <td><p>
+            Associates one of many different attributes with this DDS data object.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=setBinTag"><b>data%setBinTag</b></a>
+        </td>
+        <td><p>
+            Sets this data object's binary tag.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=setSizes"><b>data%setSizes</b></a>
+        </td>
+        <td><p>
+            Sets this data object's sizes for multiple files.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=setDeltas"><b>data%setDeltas</b></a>
+        </td>
+        <td><p>
+            Sets this data object's deltas.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=setOrigins"><b>data%setOrigins</b></a>
+        </td>
+        <td><p>
+            Sets this data object's origins.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=setMergedAxis"><b>data%setMergedAxis</b></a>
+        </td>
+        <td><p>
+            Specifies which axis should be merged across multiple files.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=setMergedMode"><b>data%setMergedMode</b></a>
+        </td>
+        <td><p>
+            Specifies how multiple files are merged: either all axes must be conformant, or 
+	    all axes except the merged axis must be conformant.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=isOpen"><b>data%isOpen</b></a>
+        </td>
+        <td><p>
+            Returns whether or not the data object has been opened.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getBinTag"><b>data%getBinTag</b></a>
+        </td>
+        <td><p>
+            Returns this data object's binary tag.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getAxes"><b>data%getAxes</b></a>
+        </td>
+        <td><p>
+            Returns this data object's axes names.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getRank"><b>data%getRank</b></a>
+        </td>
+        <td><p>
+            Returns this data object's rank.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getSizes"><b>data%getSizes</b></a>
+        </td>
+        <td><p>
+            Returns this data object's sizes.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getDeltas"><b>data%getDeltas</b></a>
+        </td>
+        <td><p>
+            Returns this data object's deltas.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getOrigins"><b>data%getOrigins</b></a>
+        </td>
+        <td><p>
+            Returns this data object's origins.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getUnits"><b>data%getUnits</b></a>
+        </td>
+        <td><p>
+            Returns this data object's unit names.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getNFiles"><b>data%getNFiles</b></a>
+        </td>
+        <td><p>
+            Returns the number of files associated with this data object.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getType"><b>data%getType</b></a>
+        </td>
+        <td><p>
+            Returns this data object's host-dependent sample type.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getSmplIndex"><b>data%getSmplIndex</b></a>
+        </td>
+        <td><p>
+            Returns the index of the first sample in this data object's file(s).
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=getTraceSize"><b>data%getTraceSize</b></a>
+        </td>
+        <td><p>
+            Returns the size of this data object's trace including headers.
+        </p> </td>
+      </tr>
+    </table>
+
+    <h3>Helper DdsIO_mod functions</h3>
+
+    <table width="95%" border=0 rules="none" frame="void"
+           cols="2" cellspacing="0" cellpadding="5">
+      
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=locateFile"><b>data%locateFile</b></a>
+        </td>
+        <td><p>
+            Returns the file number corresponding to the given position in the merged axis.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=fflush"><b>data%fflush</b></a>
+        </td>
+        <td><p>
+            Flushes all or a selected binary stream.
+        </p> </td>
+      </tr>
+      
+    </table>
+    
+    <h3>MyMPI_mod functions</h3>
+    
+    <table width="95%" border=0 rules="none" frame="void"
+           cols="2" cellspacing="0" cellpadding="5">
+      
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=initMyMPI"><b>initMyMPI</b></a>
+        </td>
+        <td><p>
+            Initializes MPIX and OpenMP for both the program and DdsIO module. Must be called if parallel writing to file.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=finalMyMPI"><b>finalMyMPI</b></a>
+        </td>
+        <td><p>
+            Finalizes MPI for the program.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=strxfer"><b>strxfer</b></a>
+        </td>
+        <td><p>
+            Broadcasts a string to all nodes in this module's MPI communicator.
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddsio&api=setMyMPIComm"><b>setMyMPIComm</b></a>
+        </td>
+        <td><p>
+            Sets up this module with a given MPI communicator.
+        </p> </td>
+      </tr>
+      
+    </table>
+
+    <h3>DdsIO datatypes</h3>
+    <table width="95%" border=0 rules="none" frame="void"
+           cols="2" cellspacing="0" cellpadding="5">
+      <tr>
+	<td valign="top">
+	  <b>type(DdsObject)</b>
+	</td>
+	<td><p>
+	    The object-oriented data object that contains all DdsIO getter/setter/helper routines. Located in <b>DdsIO_mod</b>.
+	</p></td>
+      </tr>
+      <tr>
+	<td valign="top">
+	  <b>nodes</b>
+	</td>
+	<td><p>
+	    The number of MPI nodes being used by DdsIO. Located in <b>MyMPI_mod</b>.
+	</p></td>
+      </tr>
+      <tr>
+	<td valign="top">
+	  <b>myid</b>
+	</td>
+	<td><p>
+	    The current MPI rank of this process. Located in <b>MyMPI_mod</b>.
+	</p></td>
+      </tr>
+      <tr>
+	<td valign="top">
+	  <b>nproc</b>
+	</td>
+	<td><p>
+	    The number of OpenMP threads. Located in <b>MyMPI_mod</b>.
+	</p></td>
+      </tr>
+      <tr>
+	<td valign="top">
+	  <b>mympicomm</b>
+	</td>
+	<td><p>
+	    The MPI communicator being used by DdsIO. Located in <b>MyMPI_mod</b>.
+	</p></td>
+      </tr>
+      <tr>
+	<td valign="top">
+	  <b>SSI</b>
+	</td>
+	<td><p>
+	    Short short integer (1-byte integer). Located in <b>Precision_mod</b>.
+	</p></td>
+      </tr>
+      <tr>
+	<td valign="top">
+	  <b>SHI</b>
+	</td>
+	<td><p>
+	    Short integer (2-byte integer). Located in <b>Precision_mod</b>.
+	</p></td>
+      </tr>
+      <tr>
+	<td valign="top">
+	  <b>SPI</b>
+	</td>
+	<td><p>
+	    Single-precision integer (4-byte integer). Located in <b>Precision_mod</b>.
+	</p></td>
+      </tr>
+      <tr>
+	<td valign="top">
+	  <b>DPI</b>
+	</td>
+	<td><p>
+	    Double-precision integer (8-byte integer). Located in <b>Precision_mod</b>.
+	</p></td>
+      </tr>
+      <tr>
+	<td valign="top">
+	  <b>SPR</b>
+	</td>
+	<td><p>
+	    Single-precision real (4-byte float). Located in <b>Precision_mod</b>.
+	</p></td>
+      </tr>
+      <tr>
+	<td valign="top">
+	  <b>DPR</b>
+	</td>
+	<td><p>
+	    Double-precision real (8-byte float). Located in <b>Precision_mod</b>.
+	</p></td>
+      </tr>
+      
+    </table>
+    
+  </body>
+</html>

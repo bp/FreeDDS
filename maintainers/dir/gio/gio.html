@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Directories (gio)
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","dir","gio","gio")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("gio")</script><h2>
+
+    <h2>
+      gio - Geoscience buffered input/output package
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "gio.h"</b><br/>
+
+    <b>GFILE *gstdin, *gstdout, *gstderr;
+    </b><h2>DESCRIPTION</h2>
+    Read and write functions may be used to access GIO streams.
+    Functions are provided that use traditional "copy" semantics,
+    where the caller provides a buffer to read or write.
+    Other functions return pointers into buffers managed by GIO.
+    The functions that use "pointer" semantics offer three advantages.
+    Application code may be reduced, because i/o buffers
+    don't have to be allocated and freed.
+    Second, total memory usage may be reduced,
+    because redundant buffers are eliminated.
+    Third, copying of data between redundant buffers is minimized.
+
+    <p/>
+    Pointer semantics introduce one complexity into the API.
+    The caller must specify constraints on the buffer address
+    that is returned by the i/o function.
+    For example, the caller may need to reference the buffer
+    as an array of floats, shorts, or characters.
+    Each type may have a different minimum alignment.
+    If the address is not properly aligned,
+    access errors will occur or efficiency will suffer.
+
+    <p/>
+    Buffer address constaints are specified with the <i>align</i> argument.
+    Maximum efficiency is obtained when the nominal buffer address
+    is congruent with <i>align</i>.
+    If not congruent, GIO uses an auxiliary buffer to achieve alignment
+    and may copy data to/from the primary buffer.
+    The <b>GIO_ALIGN</b> typedef provides an enumerated value
+    for aligning each "C" type.
+    The <b>GIO_MALLOC</b> value is suiteable for any type,
+    like pointers returned by <b>malloc</b>.
+    It should be used for buffers containing structures and unions.
+
+    <pre>
+typedef enum {  /* GIO buffer address constraints */
+        GIO_CHAR            = GIODEF_ALIGN_CHAR,
+        GIO_SHORT           = GIODEF_ALIGN_SHORT,
+        GIO_INT             = GIODEF_ALIGN_INT,
+        GIO_LONG            = GIODEF_ALIGN_LONG,
+        GIO_LONG_LONG       = GIODEF_ALIGN_LONG_LONG,
+        GIO_FLOAT           = GIODEF_ALIGN_FLOAT,
+        GIO_DOUBLE          = GIODEF_ALIGN_DOUBLE,
+        GIO_LONG_DOUBLE     = GIODEF_ALIGN_LONG_DOUBLE,
+        GIO_CHAR_PTR        = GIODEF_ALIGN_CHAR_PTR,
+        GIO_SHORT_PTR       = GIODEF_ALIGN_SHORT_PTR,
+        GIO_INT_PTR         = GIODEF_ALIGN_INT_PTR,
+        GIO_LONG_PTR        = GIODEF_ALIGN_LONG_PTR,
+        GIO_LONG_LONG_PTR   = GIODEF_ALIGN_LONG_LONG_PTR,
+        GIO_FLOAT_PTR       = GIODEF_ALIGN_FLOAT_PTR,
+        GIO_DOUBLE_PTR      = GIODEF_ALIGN_DOUBLE_PTR,
+        GIO_LONG_DOUBLE_PTR = GIODEF_ALIGN_LONG_DOUBLE_PTR,
+        GIO_VOID_PTR        = GIODEF_ALIGN_VOID_PTR,
+        GIO_ENUM            = GIODEF_ALIGN_ENUM,
+        GIO_MALLOC          = GIODEF_ALIGN_MALLOC
+} GIO_ALIGN;
+    </pre>
+
+    GIO supports "huge" files and offsets, greater than 2 gigabytes.
+    The "<b>gpos_t</b>" typedef is nominally a 64 bit signed integer.
+    If the host doesn't support this binary type,
+    it is emulated within GIO functions.
+
+    <p/>
+    Applications may use a combination of "copy" and "pointer" semantics
+    on the same i/o stream.
+
+    <h2>SPEED</h2>
+    Comparision of measured performance using GIO and other packages.
+    Contrast several access patterns and host vagaries.
+
+    <h2>BUGS</h2>
+    Read and write can be intermixed,
+    with or without intervening file position requests.
+    Applications may break,
+    if converted to <b>stdio</b>,
+    where such sequences are undefined.
+
+    <p/>
+    Deferred: line buffering, scanf, printf.
+
+    <p/>
+    Extensions: gunread, flags for gsetvbuf.
+
+    <h2>FILES</h2>
+    $DDSROOT/include/gio.h<br/>
+    $DDSROOT/include/$TARCH/fgio.h (Fortran)<br/>
+    $DDSROOT/lib/$TARCH/libgio.a<br/>
+
+    <h2>STANDARDS</h2>
+    Function names, return values and formal arguments parallel
+    <b>stdio</b>. The <b>GFILE </b>typedef is similar to, but not
+    compatible with <b>stdio FILE</b>, yet. The same is true for
+    <b>gstdin</b>, <b>gstdout</b>, and <b>gstderr</b>.
+    The names of functions which use <b>GFILE </b>are prefixed by
+    "<b>g</b>", instead of "<b>f</b>".  This simplifies the transition,
+    if this package is integrated into <b>stdio</b>, where
+    <b>FILE</b> and <b>GFILE</b> are compatible.
+
+    <p/>
+    Global name space pollution is minimized by prefixing all
+    symbols with "GIO", or "gio" unless they are actually part of
+    the application program interface.
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <p/>
+    <h2>REFERENCES</h2>
+    1. Orran Krieger and Michael Stumm,
+    "The Alloc Stream Facility, A Redesign of Application-Level Stream I/O"
+    IEEE Computer, Vol. 27, No. 3, Mar. 1994, pp. 75-82.
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (work with headers)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","bc_G")
+    </script>
+    <!*********************************************************************>
+
+    <hr>
+    <b><font size=+2>Purpose:</font></b>&nbsp;&nbsp;
+      Access headers for information or use in an algorithm.
+
+    <h2>Code Outline:</h2>
+      <ul>
+        <li>Open a file for access to headers
+        <li>Retrieve user overrides for headers to analyze
+        <li>Retrieve data characteristics needed for task
+            (n1, n2, ..., header word locations)
+        <li>Allocate an array to hold data
+        <li>Read through the data, retrieve trace headers for use
+            by algorithm
+        <li>Clean up before exiting
+      </ul>
+
+    <h2>New DDS resources:</h2>
+      <ul>
+        <li><a href="../fapishort/fdds_member.html">fdds_member</a> /
+            <a href="../capishort/cdds_member.html">cdds_member</a>
+             - query member tag
+        <li><a href="../fapishort/fdds_index.html">fdds_index</a> /
+            <a href="../capishort/cdds_index.html">cdds_index</a>
+             - query field index
+        <li><a href="../fapishort/fddx_get.html">fddx_getxx</a> /
+            <a href="../capishort/cddx_get.html">cddx_getxx</a>
+             - get a field
+      </ul>
+
+    <h2>Examples</h2>
+    <table width=70%>
+      <tbody align=center valign=middle>
+        <tr>
+          <td><b><a href="c_xyrange.html">c_xyrange.c</a></b></td>
+          <td><b><a href="f_xyrange.html">f_xyrange.F</a></b></td>
+          <td><b><a href="f90_xyrange.html">f90_xyrange.F90</a></b></td>
+        </tr>
+        <tr>
+          <td><b><!--<a href="c_hdr_apply.html">-->c_hdr_apply.c<!--</a>--></b></td>
+          <td><b><a href="f_hdr_apply.html">f_hdr_apply.F</a></b></td>
+          <td><b><a href="f90_hdr_apply.html">f90_hdr_apply.F90</a></b></td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

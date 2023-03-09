@@ -1,0 +1,308 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (change sample type)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","f90_rcfft.F90")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+!***********************************************************************
+!
+! Use DDS FFT wrappers to convert REAL time-domain data to a
+! ccube of frequency domain data
+!
+!***********************************************************************
+
+      program f90_rcfft
+
+      implicit none
+
+#include "f90dds.h"
+#include "f90fft.h"
+
+! Define F90 precision for integer*8 variables
+      integer,parameter :: LI=selected_int_kind(18)
+
+! For DDS functions. Arguments and return values
+      character(LEN=9),parameter  :: prog="f90_rcfft"
+      character(LEN=80)           :: Title
+      integer   ier, fd_in, fd_out
+
+      integer(KIND=LI),parameter :: izero8=0
+      integer(KIND=LI)           :: ier8
+
+! Input data attributes
+      character axes(RANK_MAX)*(AXISNAME_MAX)
+      integer n1,n2,n3, rank
+      real    d1
+
+! Output data attributes
+      integer nf
+      real    df
+
+! User parameters
+      logical lverb
+
+! Internal dynamic arrays
+      complex,allocatable :: record(:,:)
+
+! internal scalar values and loop counters
+      integer i3, irank, nfft
+      integer fft_flag
+      real    fft_scale
+      parameter (fft_flag=FFT_ESTIMATE, fft_scale=1.0)
+
+!-------------------------------------------------------------------
+!
+! Initialize the Title
+!
+      Title=prog//': Real-to-Complex FFT with ccube output'
+
+!
+! Open the print file and dump command-line help is requested
+!
+      ier=fdds_openpr(prog,'')
+      if (ier.gt.0) call help(prog,Title)
+
+!
+! Open input file
+!
+      fd_in=fddx_in('in','stdin:',Title)
+      if (fd_in.lt.0) then
+         ier=fdds_prterr('Cannot open input file\n\0')
+         ier=fdds_closepr()
+         stop
+      endif
+
+!
+! Retrieve data characteristics
+!
+      ier=fdds_scanf('size.axis(1)','%d\0',n1)
+      ier=fdds_scanf('size.axis(2)','%d\0',n2)
+      n3=fdds_axis_prod(3)
+
+      ier=fdds_scanf('delta.axis(1)','%f\0',d1)
+
+      rank=fdds_scank('axis','')
+      do irank=1,rank
+         ier=fdds_scanf('','%s\0',axes(irank))
+      enddo
+
+!
+! Retrieve other parameters from user
+!
+      ier=fdds_dict('par:','scan')
+
+      lverb=.false.
+      if (fdds_scank('verbose',DDS_TRUE_KEY).gt.0) lverb=.true.
+
+!
+! Set up the FFT size and output data size and delta
+! ( df has units Hz per `man dds_expert` )
+!
+      nfft=fft_nrfft5(n1)
+      nf = nfft/2 + 1
+      df = 1.0/(d1*real(nfft))
+
+      if (lverb) then
+         ier=fdds_prtmsg('\n\0')
+         ier=fdds_prtmsg('  nfft = %d\n\0',nfft)
+         ier=fdds_prtmsg('  nf   = %d\n\0',nf)
+         ier=fdds_prtmsg('  df   = %f\n\0',df)
+         ier=fdds_prtmsg('\n\0')
+      endif
+
+!
+! Set up the output dictionary
+!
+      fd_out=fddx_out('out','stdout:',Title,fd_in)
+      if (fd_out.lt.0) then
+         ier=fdds_prterr('Opening output dictionary\n\0')
+         ier=fdds_close(fd_in)
+         ier=fdds_closepr()
+         stop
+      endif
+
+!
+! Print format and modified axis info to output dictionary
+!
+      ier=fdds_printf('','\n\0')
+      ier=fdds_printf('old_format','ccube\n\0')
+
+      ier=fdds_printf('axis','w\0')
+      do irank=2,rank
+         ier=fdds_printf('',' %s\0',axes(irank))
+      enddo
+      ier=fdds_printf('','\n\0')
+
+!
+! Twiddle with the dictionary to get axis names to register
+!
+      ier=fddx_dict(fd_out,'scan')
+      ier=fddx_dict(fd_out,'print')
+
+!
+! Print modified size, delta, and units info to output dictionary
+!
+      ier=fdds_printf('','\n\0')
+      ier=fdds_printf('size.axis(1)','%d\n\0',nf)
+      ier=fdds_printf('delta.axis(1)','%f\n\0',df)
+      ier=fdds_printf('units.axis(1)','hz\n\0')
+
+!
+! Define output samples as complex
+!
+      ier=fdds_printf('','\n\0')
+      ier=fdds_printf &
+            ('fmt:SAMPLE_TYPE','typedef complex SAMPLE_TYPE;\n\0')
+
+!
+! Now actually open the output with a seek
+!
+      ier8=fdds_lseek8(fd_out,0,izero8,SEEK_SET)
+      if (ier8.lt.izero8) then
+         ier=fdds_prterr('Opening output file\n\0')
+         ier=fdds_close(fd_in)
+         ier=fdds_close(fd_out)
+         ier=fdds_closepr()
+         stop
+      endif
+
+!
+! Allocate array
+!
+      allocate(record(nf,n2))
+
+!
+! Loop over input data, read-transform-write
+!
+      do i3 = 1,n3
+
+         if (lverb .and. mod(i3,10).eq.0) then
+            ier=fdds_prtcon('Record %5d of %5d\n\0',i3,n3)
+         endif
+
+         call read_record(fd_in, record, n1,n2,nf, i3)
+         if (fdds_errors().gt.0) then
+            ier=fdds_close(fd_in)
+            ier=fdds_close(fd_out)
+            ier=fdds_closepr()
+            stop
+         endif
+
+         ier=fft_rcfftm(fft_scale,nfft,n2,2*nf,record,fft_flag)
+
+         ier=fddx_write(fd_out,record,n2)
+         if (ier.ne.n2) then
+            ier=fdds_prterr('Writing record,trace %d,%d\n\0',i3,ier)
+            ier=fdds_close(fd_in)
+            ier=fdds_close(fd_out)
+            ier=fdds_closepr()
+            stop
+         endif
+
+      enddo
+
+!
+! Clean up
+!
+      deallocate(record)
+
+      ier=fdds_close(fd_in)
+      ier=fdds_close(fd_out)
+      ier=fdds_closepr()
+
+!
+! Stop
+!
+      stop
+      end
+
+
+
+
+!***********************************************************************
+!
+! subroutine to print help when requested on the command line
+!
+!***********************************************************************
+
+      subroutine help(prog,Title)
+
+      implicit none
+
+      character(LEN=*) :: prog, Title
+
+      write(0,*)''
+      write(0,*)trim(Title)
+      write(0,*)''
+      write(0,*)' Parameter....Meaning..........................Default'
+      write(0,*)''
+      write(0,*)'  in=         input dictionary                  stdin:'
+      write(0,*)'  out=        output dictionary                stdout:'
+      write(0,*)''
+      write(0,*)'  verbose=    verbose output                        no'
+      write(0,*)''
+      write(0,*)'  USAGE: '//trim(prog)
+      write(0,*)'           in=[in_dict] out=[out_dict] verbose=[y|n]'
+      write(0,*)''
+
+      stop
+
+      return
+      end
+
+
+
+
+!***********************************************************************
+!
+! Read a record into an array with axis 1 padded to FFT length
+!
+!***********************************************************************
+
+      subroutine read_record (fd_in, record, n1,n2,nf, i3)
+
+      implicit none
+
+#include "f90dds.h"
+
+! Arguments
+      integer fd_in, n1,n2,nf, i3
+      real    record(2*nf,n2)
+
+! Locals
+      integer i1,i2, ier
+
+! Read and pad n2 traces
+      do i2 = 1,n2
+         if (fddx_read(fd_in,record(1,i2),1).ne.1) then
+            ier=fdds_prterr('Reading record,trace %d,%d\n\0',i3,i2)
+            return
+         else
+            do i1 = n1+1,2*nf
+               record(i1,i2) = 0.0
+            enddo
+         endif
+      enddo
+
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

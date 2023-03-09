@@ -1,0 +1,20 @@
+
+    <h2>segy_read - read a segy trace</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <p>
+      <b>integer segy_read(</b><i>fd, buf, nsmp</i><b>)
+    </b><dl><dd>
+        <b>integer </b><i>fd</i><br>
+        <b>real(*) </b><i>buf</i><br>
+        <b>integer </b><i>nsmp</i><br>
+        </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    The routine, "<b>segy_read</b>", reads a trace from the segy f
+    file as identified by the file descriptor, <i>fd</i>, into the
+    array, <i>buf</i> (which will contain 240 bytes of trace header
+    followed by <i>nsmp</i> data samples.  The return value will
+    be "0" if an error is encountered and "1" if successfully read.
+    </p>

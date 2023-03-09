@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger "C" Api (cdds_closepr)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","cdds_closepr")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capishort")</script>
+
+    <h2>
+      cdds_closepr - close the printout file &amp; terminate execution
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+    <b>int cdds_closepr(</b><i>);
+    </i>
+
+    <P>
+      [ <A HREF="#description">Description</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>cdds_closepr</b> prints termination messages to the console
+    and also to the print file if it is open. Messages to the
+    console will include the program name.
+
+    <p>
+      If no error messages have been printed via <b>cdds_prterr</b>,
+      the message is 'NORMAL TERMINATION', the print file (if open)
+      is closed, and the program terminates with exit(0).
+
+    <p>
+      When errors were detected, the message becomes
+      'ABNORMAL TERMINATION', the print file (if open) is closed,
+      and the program terminates with non-zero exit().
+
+    <p>
+      The routine will never return.<br>
+      Do <b><i>not</i></b> use this routine before invoking
+      MPI_Finalize.
+
+    <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre><b>
+   ier=cdds_openpr("filt", "$Id: filt.c $");
+   ...
+   cdds_closepr();
+    </b></pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="cdds_openpr.html">cdds_openpr</a> open a printout file
+<a href="cdds_prtmsg.html">cdds_prtmsg</a> print message
+<a href="cdds_prtcon.html">cdds_prtcon</a> print message to console
+<a href="cdds_prterr.html">cdds_prterr</a> print error message
+<a href="cdds_errors.html">cdds_errors</a> check for print errors
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

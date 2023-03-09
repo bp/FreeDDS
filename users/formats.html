@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","formats")</script>
+    <!*********************************************************************>
+
+    <p>
+      Formats are interpreted, starting from the format definition. 
+      It specifies the format name (root DDS type) followed by any
+      associated attributes. Attributes are ignored, if they are not
+      relevant to the specified format.  Attribute defaults are based 
+      upon the format name, media (tape, disk, pipe, ...), and mode
+      (read, write, update).
+
+    <pre>format= <var>name attributes</var></pre>
+
+
+    <p>
+      Various data formats can be described by zero or more
+      <u>Line Headers</u> (associated with the entire dataset) and one or
+      more <u>Trace Headers</u> (associated to each trace in a dataset).
+      The data Samples are actually defined as another Trace Header.
+      These Header structures are specified by "<code>fmt:</code>"
+      definitions (See <a href="fmt.html">Fmt Control</a>).
+
+
+    <h3>Standard Predefined Formats:</h3>
+
+    <p>
+      Standard, predefined formats have a reserved name (i.e. <b>usp</b>, 
+      <b>segy</b>, ...).  They require a specific <code>fmt:</code>
+      sequence in the data stream (Line Header followed by traces) and
+      specific fields, within each format (<b>TrcNum</b>, <b>LASTTR</b>,
+      etc.). These restrictions are enforced by DDS. Standard formats are
+      described in the following subsections and are a subset of the
+      generic DDS format.
+
+    <p>
+      The generic DDS format is assumed, when the format name is not a
+      recognized standard. Generic formats may be very simple. For example,
+      data may be accessed as a byte stream, or as a cube of ieee floats.
+      Generic formats may also be very complex. This allows DDS to
+      encompass many standard formats, and allows new ones to be created
+      as needed.
+
+    <h3>Currently Supported Dataset Formats:</h3>
+
+    <pre>
+Name     Description
+-----     -----------
+usp      BP Amoco USP format
+segy     SEGY standard
+segy1    SEGY standard Rev. 1
+su       Colorado School of Mines CWP/Seismic Un*x
+sep      Stanford Exploration Project
+asp      Generic DDS (Flexible Header &amp; Samples)
+cube     Samples only (any type)
+fcube    Samples only (float4<sup>&dagger;</sup> type)
+fcubex   Samples only (float4x<sup>&dagger;</sup> type)
+dcube    Samples only (float8<sup>&dagger;</sup> type)
+dcubex   Samples only (float8x<sup>&dagger;</sup> type)
+ccube    Samples only (complex8<sup>&dagger;</sup> type)
+ccubex   Samples only (complex8x<sup>&dagger;</sup> type)
+icube    Samples only (integer4<sup>&dagger;</sup> type)
+icubex   Samples only (integer4x<sup>&dagger;</sup> type)
+i2cube   Samples only (integer<sup>&dagger;</sup> type)
+i2cubex  Samples only (integer2x<sup>&dagger;</sup> type)
+i1cube   Samples only (integer<sup>&dagger;</sup> type)
+    </pre>      
+
+
+    <p>
+      If a "<code>format=</code>" definition is not provided, DDS will
+      attempt to auto-detect the binary format.  As long as data is in a
+      standard predefined format with a few basic constraints, DDS should
+      be able to detect the format.
+
+    <p class='footnote'/>
+      <code><sup>&dagger;</sup></code> See 
+      <a href="datatypes/independent.html">Data Types</a> for more
+      details.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

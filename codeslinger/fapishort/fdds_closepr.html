@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Fortran Api (fdds_closepr)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","fdds_closepr")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapishort")</script>
+
+    <h2>fdds_closepr - close a print file</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+    <b>integer function fdds_closepr(</b><i>)
+    </i>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_closepr</b> prints termination messages to the console
+    and also to the print file if it is open. Messages to the
+    console will include the program name.
+
+    <p>
+      If no error messages have been printed via <b>fdds_prterr</b>,
+      the message is 'NORMAL TERMINATION', the print file (if open)
+      is closed, and the program terminates with exit(0).
+
+    <p>
+      When errors were detected, the message becomes
+      'ABNORMAL TERMINATION', the print file (if open) is closed,
+      and the program terminates with non-zero exit().
+
+    <p>
+      The routine will never return.<br>
+      Do <b><i>not</i></b> use this routine before calling MPI_Finalize.
+
+    <h2>EXAMPLES</h2>
+    <pre>
+      integer ier
+      ...
+      ier=fdds_closepr()
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="fdds_openpr.html">fdds_openpr</a> Open a printfile
+<a href="fdds_prtmsg.html">fdds_prtmsg</a> Print a message
+<a href="fdds_prtcon.html">fdds_prtcon</a> Print to console
+<a href="fdds_prterr.html">fdds_prterr</a> Print error message
+<a href="fdds_errors.html">fdds_errors</a> Query errors
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

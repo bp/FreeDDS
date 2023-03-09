@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_in)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","in")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_in - initialize input DDS dictionary for binary data.
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>const char * cdds_in(</b><i>alias, value, title</i><b>);
+      </b><dl><dt><dd>
+        <b>const char *</b><i>alias
+        </i><br>
+        <b>const char *</b><i>value
+        </i><br>
+        <b>const char *</b><i>title
+        </i></dl>
+
+    <P>
+      [ <A HREF="#description">Description</A> 
+      | <A HREF="#input">Input</A> 
+      | <A HREF="#output">Output</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>cdds_in</b> initializes a dictionary for <b>input</b> binary data.
+    A temporary dictionary is used so that input files are not changed.
+    It contains the title definitions and a copy of the "<b>par:</b>"
+    dictionary. The function returns a string naming the input dictionaries
+    (temporary and input history, if any). These dictionaries are selected
+    for <i>scan</i> mode, before <b>cdds_in</b> returns. No dictionary is
+    selected for <i>print</i> mode.
+
+    <p/>
+      Applications may update the temporary dictionary contents by appending
+      (<i>print</i>) definitions. The <b>cdds_open</b> function may also 
+      update the dictionary. 
+
+    <p/>
+      Note: This function changes the <i>scan</i> and <i>print</i>
+      dictionary selection. It implicitly calls <b>cdds_dict</b> to select
+      new names and modes. After a dictionary is initialized, it may be
+      switched between <i>scan</i> and <i>print</i> modes by calling
+      <b>cdds_dict</b>.
+
+      <a name="input"></a><h2>INPUT</h2>
+    <b>cdds_in</b> accepts a dictionary name either indirectly via
+    <i>alias</i> or by a default via <i>value</i>.
+
+    <p/>
+      Mutiple <i>definition</i> names, delimited by white space,
+      may be specified by <i>alias</i>. If specified, the "<b>par:</b>"
+      dictionary is searched. If a definition is found, its value is taken
+      as a dictionary name. This feature is disabled, if a null 
+      <i>alias</i> is specified (i.e. <b>NULL</b>, zero length string, 
+      or a string that only contains white space).
+
+    <p/>
+      A default dictionary name may be specified by <i>value</i>. The
+      default is used if the "<b>par:</b>" dictionary does not define
+      <i>alias</i>, or a null <i>alias</i> is specified. If there is no
+      appropriate default, then a null <i>value</i> should be specified.
+      A temporary dictionary is created, if an explicit name is not
+      available.
+
+    <p/>
+      The <i>value</i> default is ignored in special cases. These
+      exceptions make it convenient to use DDS programs with 
+      <i>standard</i> formats and non-DDS applications.
+      <b>cdds_mod</b> ignores the default, if <i>value</i> is
+      "<b>stdin:</b>" or "<b>stdout:</b>".
+
+    <p>
+      The <i>title</i> argument should provide a brief (one line)
+      description of the application program. The <i>title</i> is
+      accumulated in the history, along with other definitions. For example:
+
+    <pre>
+<i>...previous history</i>
+DDS_SENTRY= $Revision: 57 $ $Date: 2009-02-11 17:09:37 -0600 (Wed, 11 Feb 2009) $
+********************************************
+******************* TITLE ******************
+********************************************
+cmd_title=  "bridge, convert seismic data"
+cmd_name= /dist/Linux/2.6/mbs/prod/i686/bridge
+cmd_rev= 1.10
+cmd_user= DoeJohn 
+cmd_date= Mon Oct 23 10:24:20 2006
+cmd_host= machine2
+cmd_cwd= /data/line2
+cmd_pid= 6753
+alias:sep_in= in
+$size=
+$origin=
+$delta=
+$units=
+dds_history{= par:
+<i>...contents of par: dictionary</i>
+dds_history}= par:
+    </pre>
+
+    <a name="output"></a><h2>OUTPUT</h2>
+    A constant character pointer is returned containing a temporary
+    dictionary name and the opened input dictionary name.  The dictionaries
+    are setup for scaning definitions but it changed to print mode, any new
+    definitions will be added to the temporary dictionary. This is done
+    so that any new definitions will not modify the input dataset. 
+    
+    <p/>
+      The dictionary is closed and the memory is freed when the associated
+      binary file is closed. However, if the memory for the output
+      dictionary names must be freed then use  
+      <a href="free.html">cdds_free</a> instead of any other system 
+      'free' routine.
+
+    <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre>
+const char *in_dict;
+
+/* initialize input dictionary */
+in_dict = cdds_in("in", "stdin:", "filt processing");
+    </pre>
+
+    Some applications consume auxiliary data, in addition to the primary
+    input. <b>cdds_in</b> is used to initialize these dictionaries.
+    The "<b>in</b>" <i>alias</i> and "<b>stdin:"</b>" default <i>value</i>
+    should be reserved for the primary input data. Typical <i>alias</i>
+    names for auxiliary input are "<b>vel</b>", "<b>zmap</b>",
+    "<b>geom</b>", etc. Auxiliary input may not have a reasonable default
+    <i>value</i>. For example:
+
+    <pre>
+const char *model_dict;
+            
+/* auxiliary input model dictionary */
+vel_dict = cdds_in("vel", "", "migvz: migrate data via model");
+    </pre>
+
+    Some applications create output, but do not require input.
+    The processing history can be initialized by calling <b>cdds_in</b>.
+    Once initialized, it can be passed to <b>cdds_out</b> like a normal
+    input history. For example:
+
+    <pre>
+const char *in_dict;
+            
+/* begin a new processing history */
+in_dict = cdds_in("", "", "program: processing from scratch");
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="dict.html">cdds_dict</a> Select DDS dictionary and mode
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

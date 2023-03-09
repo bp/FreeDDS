@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_get)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","get")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>cdds_get - get one field from a DDS type buffer</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b>
+    <p>
+      <b>int cdds_get</b><i>xx</i><b>(</b><i>bin, tag, in_buf, out_array, count</i><b>);
+      </b><dl><dt><dd>
+        <b>BIN_TAG </b><i>bin
+        </i><br>
+        <b>FIELD_TAG </b><i>tag
+        </i><br>
+        <b>const void *</b><i>in_buf
+        </i><br>
+        <i>HostType</i> *<i>out_array
+        </i><br>
+        <b>int </b><i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    These functions get data from a data field and into an array variable.
+    The data is converted to the host array type,
+    from the type defined for the field.
+    The array type is implied by the function name suffix.
+
+    <h2>INPUT</h2>
+      The first two arguments describe an input field within a type buffer.
+      <i>bin</i> is a binary tag, previously obtained from
+      <a href="open.html">cdds_open.</a>
+
+    <p/>
+      <i>tag</i> identifies a specific field associated with <i>bin</i>
+      obtained from <a href="member.html">cdds_member.</a> Note that there is
+      a distinct difference between <i>tags</i> generated from different <i>bin</i>
+      values. This means that you should not be using a <i>tag</i> from the
+      <b>in_bin</b> for anything related to the <b>out_bin</b>. If <i>tag</i> is
+      zero, the default target (trace) is used.
+
+    <p/>
+      <i>in_buf</i> is the buffer of data read for the entire target (or
+      trace).
+
+    <p/>
+      The last two arguments describe an output array.
+      The type of <i>out_array</i> is implied by the function name suffix.
+      The number of elements is specified by <i>count</i>.
+
+    <h2>OUTPUT</h2>
+    The <b>get</b> functions copy (or convert) data from one type field
+    into the output array. Vectors are truncated or padded,
+    depending upon the source and destination count.
+
+    <p/>
+      The function return value is the count,
+      or zero if an error occurred.
+
+    <p/>
+      A simple byte copy is performed, if the binary formats are the same.
+      The <b>get</b><i>xx</i> functions convert between most numeric
+      representations.
+      The allowed combinations are implementation dependent.
+      The functions also convert between ascii and ebcdic character formats.
+      Byte fields can be copied, without conversion, into any array.
+      The <b>cdds_get</b> function copies any field type into array,
+      without conversion.
+      Conversion is not allowed between numeric and character types.
+      If conversion is not possible, an error is reported and
+      the output array is not changed.
+
+    <pre>
+<b><u>Function   HostType       out_array Pad</u></b>
+cdds_get     byte              --
+cdds_getcs   char             null terminated
+cdds_getcb   char             blank
+cdds_geti    int              zero
+cdds_gets    short            zero
+cdds_getl    long             zero
+cdds_getu    unsigned         zero
+cdds_getus   short unsigned   zero
+cdds_getul   long unsigned    zero
+cdds_getf    float            zero
+cdds_getff   float            zero (USP fake float)
+cdds_getc    complex          zero
+cdds_getd    double           zero
+    </pre>
+
+    C assignment rules are used to convert
+    <b>float</b> fields to integer and unsigned values.
+    Character fields are assumed to be padded with blanks.
+    Trailing pad characters are ignored during <b>get</b> processing;
+    they effectively shorten input character fields.
+    <b>cdds_getcs</b> appends a trailing null character to the value.
+    In this case <i>out_array</i> should be dimensioned
+    greater than <i>count</i>.
+    <b>cdds_getcb</b> pads the value with blanks to the full <i>count</i>.
+    <b>cdds_getff</b> pulls a float value stuffed from consecutive 4-byte.
+
+    <p/>
+      NOTE: When <b>cdds_getf</b> is given a negative tag, then the absolute value
+      of the tag is instead passed to <b>cdds_getff</b>.  This is
+      indicative of a request from <b>cdds_member</b> for one of the
+      Horzxx trace headers.
+
+    <h2>EXAMPLES</h2>
+    <pre>
+      BIN_TAG bin;
+      FIELD_TAG tag;
+      const char *in_buf;
+      int *out_array;
+      ...
+      tag = cdds_member(bin,0,"TagName");
+      ...
+      // Read in a single trace to in_buf
+      cddx_read(bin, in_buf, 1);
+      // Store 100 values from "TagName" header into out_array (cast to int if necessary)
+      cdds_geti(bin, tag, in_buf, out_array, 100);
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="put.html">cdds_put</a> Put one field to a buffer
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

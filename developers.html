@@ -1,0 +1,185 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="styles.css" type="text/css" rel="stylesheet">
+    <script src="javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <style type="text/css">
+      .frm  {padding:0px 20px 0px 20px;border-width:2px;}
+      .data {width:250px;padding:5px;text-align:center;}
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">header("developers")</script>
+    <!*********************************************************************>
+
+    <center>
+      <h1>Developers Documentation</h1>
+      <h3>Data Flow within applications</h3>
+    </center>
+
+    <table align='center'>
+        <tr>
+          <td>
+            <div class="frm">
+              <table width="100%">
+                  <tr>
+                    <td class="data">
+                      <div style="border-style:solid;border-width:1px;
+                        background-color:#ffffff;">
+                        inDict
+                      </div>
+                      <div style="background-color:#ffff80;
+                        border-style:groove;border-width:5px;">
+                        <code>inBin  </code>
+                        <u>Host-INDEPENDENT</u>&nbsp;data&nbsp;format
+                      </div>
+                         <img src="images/downArrow.png" alt="">
+                   </td>
+                    <td style="vertical-align:bottom;text-align:center;">
+                     (DDS Application)
+                    </td>
+                  </tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div  class="frm" style="background-color:#d0ffff;
+              border-style:dashed;">
+              <table width="90%">
+                  <tr>
+                    <td class="data">
+                      <ol>
+                        <li>Read input binary
+                        <li>Map to internal format<b>&dagger;</b>
+                      </ol>
+                    </td>
+                    <td>
+                     <ul>
+                        <li>open input dictionary
+                        <li>open input binary
+                        <li>read data parameters
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="data">
+                      <div style="border-style:solid;border-width:1px;
+                        background-color:#ffffff;">
+                        inBufDict<b>&dagger;</b>
+                      </div>
+                      <div style="background-color:#ffff80;
+                        border-style:groove;border-width:5px;">
+                        <code>inBufBin </code>
+                        <u>Host-DEPENDENT</u>&nbsp;data&nbsp;format
+                     </div>
+                      <img src="images/downArrowBlue.png" alt="">
+                   </td>
+                    <td style="vertical-align:top;">
+                     <ul>
+                        <li>open internal input buffer dictionary
+                        <li>modify needed fields for host-machine
+                        <li>add any extra parameters
+                        <li>open internal input buffer binary
+                      </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td>
+                      <div style="font-size:20pt;text-align:center;">
+                        PROCESS
+                      </div>
+                    </td>
+                    <td>
+                     <ul>
+                        <li>Apply whatever processing needed to the data
+                    </ul>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="data">
+                      <img src="images/downArrowBlue.png" alt="">
+                      <div style="border-style:solid;border-width:1px;
+                        background-color:#ffffff;">
+                        outBufDict<b>&dagger;</b>
+                      </div>
+                      <div style="background-color:#ffff80;
+                        border-style:groove;border-width:5px;">
+                        <code>outBufBin </code>
+                        <u>Host-DEPENDENT</u>&nbsp;data&nbsp;format
+                      </div>
+                    </td>
+                    <td style="vertical-align:bottom;">
+                     <ul>
+                        <li>open internal output buffer dictionary
+                        <li>modify format as needed for output
+                        <li>modify parameters as needed for output
+                        <li>open internal output buffer binary
+                      </ul>
+                    </td>
+                  </tr>
+                   <tr>
+                    <td class="data">
+                      <ol>
+                        <li>Map to output format<b>&dagger;</b>
+                        <li>Write output binary
+                      </ol>
+                    </td>
+                    <td>
+                     <ul>
+                        <li>open output dictionary
+                        <li>open output binary
+                      </ul>
+                    </td>
+                  </tr>
+             </table>
+            </div>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <div class="frm">
+              <table width="100%">
+                  <tr>
+                    <td class="data">
+                      <img src="images/downArrow.png" alt="">
+                      <div style="border-style:solid;border-width:1px;
+                        background-color:#ffffff;">
+                        outDict
+                      </div>
+                      <div style="background-color:#ffff80;
+                        border-style:groove;border-width:5px;">
+                        <code>outBin  </code>
+                        <u>Host-INDEPENDENT</u>&nbsp;data&nbsp;format
+                     </div>
+                    </td>
+                    <td>&nbsp;</td>
+                  </tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+    </table>
+
+    <hr/>
+    <p class="footnote">
+      <b>&dagger;</b> It is reccommended to use "asp" format for the 
+      internal buffers because of 1.) the flexible headers available with
+      "asp" and 2.) because of the automatic segy header renaming and
+      mapping to corresponding usp header names.  This makes it so standard
+      header values like source x-coordinate will be in the header,
+      "SrPtXC" and the developer does not need to check whether the input
+      is segy or usp. (See <a class="footnote" 
+        href="users/formats/asp/map.html">asp mapping</a>.)
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers make help</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../../images/favicon.ico" type="image/x-icon">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","make","make","help")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      Run "<b>make help</b>" for a listing of the make options:
+
+    <pre>
+#
+# To use the DDS make files create a Makefile defining the
+# program name &amp; source files and include files with:
+#
+#    Name   := &lt;program name&gt;
+#    LibName:= &lt;library name&gt;
+#    FSrcs  := &lt;list of Fortran files&gt;
+#    CSrcs  := &lt;list of "C" files&gt;
+#    Libs   := &lt;list of extra application libraries to include&gt;
+#    PrjLibs:= &lt;subdirectory names for application libs (below $DDSROOT/lib)&gt;
+#    
+#    include /tstapps/global/src/dds/etc/MakeVariables
+#    include /tstapps/global/src/dds/etc/MakeRules 
+#
+#
+# With these DDS Makefiles you can make the following targets:
+#
+#    &gt; make              (build binary)
+#    &gt; make all          (build on all hosts)
+#    &gt; make install      (install script, man page &amp; binary)
+#    &gt; make installbin   (install script)
+#    &gt; make installman   (install man page)
+#    &gt; make allinstall   (install on all hosts)
+#    &gt; make clean        (remove mklog, binary &amp; objects)
+#    &gt; make cleantests   (remove TestLog* &amp; testresults)
+#    &gt; make allclean     (remove mklog, binary &amp; objects for all hosts)
+#    &gt; make remove       (remove all installed files)
+#    &gt; make bin          (create start script if needed)
+#    &gt; make man          (create man template if needed)
+#    &gt; make distribute   (distribute installed files to remote locations)
+#    &gt; make flags        (print help on make flags)
+#    &gt; make variables    (print help on variables)
+#    &gt; make hosts        (print the remote hostnames to build on)
+#    &gt; make tests        (run tests for the application)
+#    &gt; make alltests     (run tests on all hosts)
+#    &gt; make testresults  (create webpage under testresults directory)
+#    &gt; make newtest      (creates a new test script under "tests")
+#
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

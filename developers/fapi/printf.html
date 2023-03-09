@@ -1,0 +1,161 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_printf)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","printf")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_printf - append definition to DDS dictionary</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+    <b>integer function fdds_printf(</b><i>alias, fmt,</i><b>...)</b>
+    <dl><dd>
+        <b>character*(*)</b> <i>alias</i><br>
+	<b>character*(*)</b> <i>fmt</i>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_printf</b> appends a definition to a dictionary.
+    The <i>print</i> dictionary must have been previously selected by
+    <a href="dict.html">fdds_dict</a>, or related function.
+
+    <p>
+      One definition name may be specified by <i>alias</i>.
+      If specified, a new definition is appended to the <i>print</i>
+      dictionary. A new definition is not created, if a blank <i>alias</i>
+      is specified; in this case the value is appended to the current
+      <i>print</i> definition.
+
+    <p>
+      If the <i>alias</i> definition name is prefixed with <b>"alias:"</b>
+      or <b>"?"</b>, a definition alias is appended to the dictionary.
+
+    <p>
+      <b>fdds_printf</b> is controlled by a format string and optional
+      arguments. Characters are appended to the existing value, if any.
+      The new value is created, as specified by the ANSI C standard
+      for the stdio sprintf function.
+
+    <p>
+      <i>fmt</i> and optional arguments control the processing of definition values.
+      The rules correspond to the <b>printf</b> function in ANSI C standard.
+      Values should not contain <b>'='</b> (unless escaped)
+      and they are normally terminated with <b>'\n'</b>.
+
+    <p>
+      Format strings <b><u>MUST</u></b> be terminated with a null
+      character ('\0').
+
+    <p>
+      The following table summarizes conversion specifiers for
+      <b>fdds_printf</b> by Fortran type.
+      See Ansi standard C printf for more details.
+
+    <pre>
+fmt                     modifiers
+char      Data type   h     l      L          *         I/O type
+----      ---------   --------------------------------  --------------------
+ u        integer     short long   longlong   suppress  unsigned
+ d        integer     short long   longlong   suppress  decimal
+ o        integer     short long   longlong   suppress  octal
+ x        integer     short long   longlong   suppress  hexadecimal
+ i        integer     short long   longlong   suppress  dec,oct,hex
+ n        integer     short long   longlong   suppress  (returns # characters)
+ c        characters  NA    NA     NA         suppress  (reads spaces also)
+ s        string      NA    NA     NA         suppress  (skips initial spaces)
+ p        pointer     NA    NA     NA         suppress
+ e, f, g  real        NA    double longdouble suppress
+ [...]    character   NA    NA     NA         suppress
+ [^...]   character   NA    NA     NA         suppress
+ %        NA          NA    NA     NA         NA        (literal "%")
+    </pre>
+
+    The printf type modifiers for floating point arguments
+    must be extended by <b>fdds_printf</b> to support Fortran.
+    "C" always promotes real arguments (Fortran real) to double (precision),
+    therefore C doesn't distinguish between them in printf formats.
+    The type modifiers used by scanf are also honored by <b>fdds_printf</b>;
+    the default is real (Fortran real), <b>'l'</b> implies double
+    (precision), and <b>'L'</b> long double (for extensions).
+
+    <pre>
+real f
+double precision d
+long double precision ld
+...
+j = fdds_printf('foo',  '%f  %lf  %Lf\n\0',  f,  d,  ld)
+    </pre>
+
+    <b>fdds_printf</b> strips trailing blanks from character arguments
+    during '%s' conversion.
+    Like "C", it also assumes the '%c' conversion argument is an integer.
+
+    <h2>INPUT</h2>
+    <i>alias</i> identifies a new definition, or continued processing of
+    the value for the current one.
+
+    <h2>OUTPUT</h2>
+    The contents of the current output dictionary may be changed.
+
+    <p>
+      No function is provided to overwrite existing definitions --
+      history can't be changed. An existing name can be appended again,
+      which effectively redefines its value.
+
+    <p>
+      The return value is the number of characters written,
+      or negative (EOF) if an error occurred.
+      Zero is returned, if an output dictionary is not open.
+
+      <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre>
+!     append "beta" definition to output dictionary
+      ier = fdds_printf('beta', ' %f\n\0', 3.14)
+
+!     append mixed data types (string, integer, float)
+      ier = fdds_printf('gamma', ' %s %i %f\n\0', 'green', 5, 7.3)
+
+!     append an array of float values
+      ier = fdds_printf('omega', ' ')
+      do i=1,count
+         ier = fdds_printf(' ', ' %f\0', omega(i))
+      enddo
+      ier = fdds_printf(' ', '\n\0')
+
+!     append an alias definition
+      ier = fdds_printf('alias:zeta', ' zeta ZETA Zeta\n\0')
+
+!     append an alias to undefine "gamma"
+      ier = fdds_printf('alias:gamma',' \n\0')
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="printt.html">fdds_printt</a> Append a definition
+<a href="printv.html">fdds_printv</a> Append a definition
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

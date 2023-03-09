@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Convenience</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fxapi")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fxapi","fxapi")</script>
+
+      <h1>
+        <img src="../images/book_q.gif" alt="">
+        Table of Contents
+      </h1>
+
+    <p>
+      There are a series of Fortran Convenience Routines that simplify
+      code development. These routines hide the underlying use of
+      Dictionaries and double buffering from the developer that DDS uses
+      to map external files to/from internal buffer binaries. In order to
+      do this, the actual output binaries are not opened until the 
+      first attempt to do I/O on them at which point the underlying 
+      routines do a delayed open internally, hidden from the developer.
+      The developer interface is made through the main input or output 
+      binary tag; the internal binary buffer and Dictionaries are
+      referenced by DDS through this binary tag.
+      
+    <p>
+      The Convenience Open and I/O Routines cannot be mixed with the basic
+      DDS open, read and write routines.  However the bin_tag returned
+      by the Convenience Routines can be used with the other basic Binary
+      Data Control Routines (<b>fdds_isreg</b>, <b>fdds_lseek</b>,
+      <b>fdds_fflush</b> &amp; <b>fdds_close</b>) as well as the Binary
+      Field Access Routines (e.g. <b>fdds_fdds_member</b>, <b>fdds_prec</b>,
+      <b>fdds_index</b>, <b>fdds_get</b><i>xx</i>, etc.).
+
+    <p>
+    DDS functions are accessible after including the proper header file.
+    <p>
+    <table>
+      <tr>
+        <td><big><b>#include "fdds.h"</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big>Use with fixed-format sources.</big></td>
+      </tr>
+      <tr>
+        <td><big><b>#include "f90dds.h"</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big>Use with free-format sources.</big></td>
+      </tr>
+      <tr>
+        <td valign=top><big><b>use dds</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big> A module with most of DDS defined.
+                 <br>Module read/write functions support 1D buffers only.</big></td>
+      </tr>
+    </table>
+
+    <p>
+      <img src="../images/redball.gif" alt="">
+      Open Routines<br/>
+    <ul>
+      <li><a href="fxapi/in.html">fddx_in</a>&nbsp;-&nbsp;open&nbsp;input&nbsp;(no&nbsp;headers)<br/>
+      <li><a href="fxapi/in2.html">fddx_in2</a>&nbsp;-&nbsp;open&nbsp;input&nbsp;(pass&nbsp;headers)<br/>
+      <li><a href="fxapi/inhdr.html">fddx_inhdr</a>&nbsp;-&nbsp;open&nbsp;input&nbsp;(select&nbsp;headers)<br/>
+      <li><a href="fxapi/out.html">fddx_out</a>&nbsp;-&nbsp;open&nbsp;output<br/>
+      <li><a href="fxapi/outhdr.html">fddx_outhdr</a>&nbsp;-&nbsp;open&nbsp;output&nbsp;(select&nbsp;headers)<br/>
+      <li><a href="fxapi/mod.html">fddx_mod</a>&nbsp;-&nbsp;reopen&nbsp;dataset<br/>
+      <li><a href="fxapi/mod2.html">fddx_mod2</a>&nbsp;-&nbsp;reopen&nbsp;dataset&nbsp;with&nbsp;headers<br/>
+    </ul>
+
+    <img src="../images/redball.gif" alt="">
+    Binary I/O Routines<br/>
+    <ul>
+      <li><a href="fxapi/read.html">fddx_read</a>&nbsp;-&nbsp;read&nbsp;data<br/>
+      <li><a href="fxapi/readfrom.html">fddx_readfrom</a>&nbsp;-&nbsp;seek&nbsp;&amp;&nbsp;read<br/>
+      <li><a href="fxapi/readall.html">fddx_readall</a>&nbsp;-&nbsp;read&nbsp;entire&nbsp;dataset<br/>
+      <li><a href="fxapi/write.html">fddx_write</a>&nbsp;-&nbsp;write&nbsp;data<br/>
+      <li><a href="fxapi/writeto.html">fddx_writeto</a>&nbsp;-&nbsp;seek&nbsp;&amp;&nbsp;write<br/>
+
+    </ul>
+
+    <img src="../images/redball.gif" alt="">
+    Utility Routines<br/>
+    <ul>
+      <li><a href="fxapi/dict.html">fddx_dict</a>&nbsp;-&nbsp;set&nbsp;dictionary&nbsp;mode<br/>
+      <li><a href="fxapi/addaxis.html">fddx_addaxis</a>&nbsp;-&nbsp;add&nbsp;an&nbsp;axis<br/>
+      <li><a href="fxapi/rmaxis.html">fddx_rmaxis</a>&nbsp;-&nbsp;remove&nbsp;an&nbsp;axis<br/>
+      <li><a href="fxapi/index.html">fddx_index</a>&nbsp;-&nbsp;get&nbsp;index&nbsp;to&nbsp;fields<br/>
+      <li><a href="fxapi/getbin.html">fddx_getbin</a>&nbsp;-&nbsp;get&nbsp;external&nbsp;bin_tag<br/>
+      <li><a href="fxapi/getdict.html">fddx_getdict</a>&nbsp;-&nbsp;get&nbsp;internal&nbsp;dictionary<br/>
+    </ul>
+
+    <p class="footnote">
+      NOTE: The Convenience Open Routines can only accept a single alias
+      name unlike the basic DDS routines.
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

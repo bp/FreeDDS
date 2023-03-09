@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Fortran Api (fdds_initmpi)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","fdds_initmpi")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapishort")</script>
+
+    <h2>fdds_initmpi - initialize the DDS system for MPI parallelization</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;mpif.h&gt;</b>
+    <p>
+    <p>
+      <b>integer fdds_initmpi(</b><i>node, nodes</i><b>)
+      </b><dl><dd>
+        <b>integer</b> <i>node
+        </i><br>
+        <b>integer</b> <i>nodes
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_initmpi</b> is used to initialize the DDS system for MPI
+    parallelization. It determines the number of MPI nodes used and the
+    node number (0 through nodes-1) for the current process.  
+    If MPI is available on the current system MPI is initialized with the 
+    MPI_Init call. The master node then passes
+    all the command line parameters to the slave nodes to ensure all nodes
+    "see" the exact same parameters (since MPI does not guarantee that). 
+    If MPI is not available, it simply checks that "np=1".
+    The return value is alway 0.
+
+    <p>
+      <u>NOTE:</u> you will have to declare this function
+      yourself because it is cannot be defined in fdds.h.  So add
+      "integer fdds_initmpi" to any routine that uses it. <u>Also</u>
+      note that you need to <b>#include &lt;mpif.h&gt;</b> in source
+      files that use mpi routines.
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="fdds_initopenmp.html">fdds_initopenmp</a>  Initialize DDS for OpenMP
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (Feb 2006)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

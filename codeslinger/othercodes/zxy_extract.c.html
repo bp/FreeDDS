@@ -1,0 +1,389 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (zxy_extract)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","othercodes","zxy_extract.c")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+/***********************************************************************/
+/*                                                                     */
+/* Extract user specified z,x,y range from an input volume             */
+/*                                                                     */
+/* Users specify ranges with origins and widths in input data coords   */
+/* Where ranges are within the input volume, just truncate samples     */
+/* Where ranges go outside the input volume, pad by replication        */
+/* Pass trace headers if any                                           */
+/*                                                                     */
+/***********************************************************************/
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;<a href="../resources/cdds.h.html">cdds.h</a>&gt;
+
+
+/* Macros */
+#define MIN(x,y)  ((x) &lt; (y) ? (x) : (y))
+#define MAX(x,y)  ((x) &gt; (y) ? (x) : (y))
+#define NINT(x)   ((x) &gt;= 0 ? (int)(x+0.5) : (int)(x-0.5))
+
+
+/* Function prototypes */
+void help(char *prog, char *Title);
+
+void copy_to_vol(float *record, int n1, int n2, int nhdr,
+                 float *volume, int n1_out, int n2_out, int n3_out,
+                 int *index_1, int *index_2, int i3);
+
+
+/* main */
+int main(int argc, char **argv)
+{
+
+/* For DDS functions. Arguments and return values */
+   char  *prog, *Title;
+   int   ier;
+   BIN_TAG fd_in,fd_out;
+   long long ier_ll, izero_ll=0;
+
+/* Data attributes */
+   int    n1,n2,n3, n1_out,n2_out,n3_out;
+   int    ismptag,nhdr;
+   float  d1,d2,d3, o1,o2,o3, o1_out,o2_out,o3_out;
+
+/* User parameters */
+   int    verbose;
+   float  w1_out,w2_out,w3_out;
+
+/* Internal dynamic array */
+   int    *index_1, *index_2, *index_3;
+   float  *record, *volume;
+
+/* Internal scalar values and loop counters */
+   int    i1,i2,i3, i1here,i2here,i3here, i3last;
+   long long nseek_ll;
+   int    remainder;
+   float  x_here;
+
+/*-------------------------------------------------------------------*/
+
+/****************/
+/* Initialize   */
+/****************/
+   setargcv(argc, argv);
+   prog="zxy_extract";
+   Title="zxy_extract: extract user specified z,x,y range from input volume";
+
+
+/*****************************************************************/
+/* Open the print file and dump command-line help as requested   */
+/*****************************************************************/
+   ier=<a href="../capishort/cdds_openpr.html">cdds_openpr</a>(prog,"");
+   if (ier&gt;0) help(prog,Title);
+
+
+/***************************************************/
+/* Open input file                                 */
+/* Retrieve data characteristics when successful   */
+/***************************************************/
+   fd_in=<a href="../capishort/cddx_in2.html">cddx_in2</a>("in","stdin:",Title);
+   if (fd_in &lt; 0) {
+
+      <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Unable to open input data file!\n");
+
+   } else {
+
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(1)","%d",&amp;n1);
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(2)","%d",&amp;n2);
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(3)","%d",&amp;n3);
+
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("delta.axis(1)","%f",&amp;d1);
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("delta.axis(2)","%f",&amp;d2);
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("delta.axis(3)","%f",&amp;d3);
+
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("origin.axis(1)","%f",&amp;o1);
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("origin.axis(2)","%f",&amp;o2);
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("origin.axis(3)","%f",&amp;o3);
+
+      ismptag=<a href="../capishort/cdds_member.html">cdds_member</a>(fd_in,0,"Samples");
+      nhdr   =<a href="../capishort/cdds_index.html">cdds_index</a>(fd_in,ismptag,DDS_FLOAT);
+
+   }
+
+
+/**************************************************/
+/* Retrieve command line and parfile parameters   */
+/**************************************************/
+   <a href="../capishort/cdds_dict.html">cdds_dict</a>("par:","scan");
+
+   verbose=(<a href="../capishort/cdds_scank.html">cdds_scank</a>("verbose",DDS_TRUE_KEY)&gt;0);
+
+   o1_out=o1;
+   <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("o1_out","%f",&amp;o1_out);
+   o2_out=o2;
+   <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("o2_out","%f",&amp;o2_out);
+   o3_out=o3;
+   <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("o3_out","%f",&amp;o3_out);
+
+   w1_out=d1*(n1-1);
+   <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("w1_out","%f",&amp;w1_out);
+   w2_out=d2*(n2-1);
+   <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("w2_out","%f",&amp;w2_out);
+   w3_out=d3*(n3-1);
+   <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("w3_out","%f",&amp;w3_out);
+
+
+/***************************************************/
+/* Force the output to be aligned with the input   */
+/* and get output sizes                            */
+/***************************************************/
+   o1_out=o1+d1*NINT((o1_out-o1)/d1);
+   o2_out=o2+d2*NINT((o2_out-o2)/d2);
+   o3_out=o3+d3*NINT((o3_out-o3)/d3);
+
+   n1_out=NINT(w1_out/d1 + 1);
+   n2_out=NINT(w2_out/d2 + 1);
+   n3_out=NINT(w3_out/d3 + 1);
+
+   if (verbose) {
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("\n");
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("Output Attributes\n");
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("  o1_out= %f\n",o1_out);
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("  o2_out= %f\n",o2_out);
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("  o3_out= %f\n",o3_out);
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("\n");
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("  w1_out= %f\n",d1*(n1_out-1));
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("  w2_out= %f\n",d2*(n2_out-1));
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("  w3_out= %f\n",d3*(n3_out-1));
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("\n");
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("  n1_out= %d\n",n1_out);
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("  n2_out= %d\n",n2_out);
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("  n3_out= %d\n",n3_out);
+      <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("\n");
+   }
+
+
+/*******************************************************/
+/* Set up the output dictionary ... Open with lseek8   */
+/*******************************************************/
+   fd_out=<a href="../capishort/cddx_out.html">cddx_out</a>("out","stdout:",Title,fd_in);
+   if (fd_out &lt; 0) {
+      <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Unable to open output buffer dict!\n");
+   } else {
+      <a href="../capishort/cdds_printf.html">cdds_printf</a>("size.axis(1)","%d\n",n1_out);
+      <a href="../capishort/cdds_printf.html">cdds_printf</a>("size.axis(2)","%d\n",n2_out);
+      <a href="../capishort/cdds_printf.html">cdds_printf</a>("size.axis(3)","%d\n",n3_out);
+      <a href="../capishort/cdds_printf.html">cdds_printf</a>("origin.axis(1)","%f\n",o1_out);
+      <a href="../capishort/cdds_printf.html">cdds_printf</a>("origin.axis(2)","%f\n",o2_out);
+      <a href="../capishort/cdds_printf.html">cdds_printf</a>("origin.axis(3)","%f\n",o3_out);
+      ier_ll=<a href="../capishort/cdds_lseek8.html">cdds_lseek8</a>(fd_out,0,izero_ll,SEEK_SET);
+      if ( ier_ll &lt; izero_ll) {
+         <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Unable to open output data file!\n");
+      }
+   }
+
+
+/********************************/
+/* Check for error conditions   */
+/********************************/
+   if (<a href="../capishort/cdds_errors.html">cdds_errors</a>()) {
+      <a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+      <a href="../capishort/cdds_close.html">cdds_close</a>(fd_out);
+      <a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+      exit(0);
+   }
+
+
+/**************************/
+/* Allocate data arrays   */
+/**************************/
+   record=(float*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>((n1+nhdr)*n2*sizeof(float));
+   volume=(float*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>((n1_out+nhdr)*n2_out*n3_out*sizeof(float));
+   index_1=(int*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>(n1_out*sizeof(int));
+   index_2=(int*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>(n2_out*sizeof(int));
+   index_3=(int*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>(n3_out*sizeof(int));
+
+
+/********************************************************/
+/* Set up vectors of input indices that map to output   */
+/********************************************************/
+   for (i1=0; i1&lt;n1_out; i1++) {
+      x_here=d1*i1 + o1_out;
+      i1here=NINT((x_here-o1)/d1);
+      index_1[i1]=MIN(n1-1,MAX(0,i1here));
+   }
+   for (i2=0; i2&lt;n2_out; i2++) {
+      x_here=d2*i2 + o2_out;
+      i2here=NINT((x_here-o2)/d2);
+      index_2[i2]=MIN(n2-1,MAX(0,i2here));
+   }
+   for (i3=0; i3&lt;n3_out; i3++) {
+      x_here=d3*i3 + o3_out;
+      i3here=NINT((x_here-o3)/d3);
+      index_3[i3]=MIN(n3-1,MAX(0,i3here));
+   }
+
+
+/**********************************/
+/* Seek to first record to read   */
+/* Initialize i3last              */
+/**********************************/
+   nseek_ll=n2*(index_3[0]);
+   ier_ll=<a href="../capishort/cdds_lseek8.html">cdds_lseek8</a>(fd_in,0,nseek_ll,SEEK_SET);
+   i3last=index_3[0]-1;
+
+
+/************************************************/
+/* Loop over input data, read and load volume   */
+/************************************************/
+   for (i3=0; i3&lt;n3_out; i3++) {
+
+      remainder=(i3+1)%10;
+      if ( verbose &amp;&amp; !remainder) {
+         <a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("Output record %5d of %5d\n",i3+1,n3_out);
+      }
+
+      if (index_3[i3] != i3last) {
+         if (<a href="../capishort/cddx_read.html">cddx_read</a>(fd_in,record,n2) != n2) {
+            <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Reading input record %d.\n",index_3[i3]+1);
+            break;
+         }
+      }
+
+      copy_to_vol(record, n1,n2,nhdr,
+                  volume, n1_out,n2_out,n3_out,
+                  index_1,index_2, i3);
+
+      i3last=index_3[i3];
+
+   }
+
+
+/*****************************************/
+/* Write the output volume all at once   */
+/*****************************************/
+   if (<a href="../capishort/cddx_write.html">cddx_write</a>(fd_out,volume,n2_out*n3_out) != n2_out*n3_out) {
+      <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Writing volume\n");
+   }
+
+
+/**************/
+/* Clean up   */
+/**************/
+   <a href="../capishort/cdds_free.html">cdds_free</a>(record);
+   <a href="../capishort/cdds_free.html">cdds_free</a>(volume);
+   <a href="../capishort/cdds_free.html">cdds_free</a>(index_1);
+   <a href="../capishort/cdds_free.html">cdds_free</a>(index_2);
+   <a href="../capishort/cdds_free.html">cdds_free</a>(index_3);
+   <a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+   <a href="../capishort/cdds_close.html">cdds_close</a>(fd_out);
+   <a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+
+
+/**********/
+/* Exit   */
+/**********/
+   exit(0);
+}
+
+
+
+
+/* Function help */
+void help( char *prog, char *Title)
+{
+   fprintf(stderr,"\n");
+   fprintf(stderr," %s\n",Title);
+   fprintf(stderr," where (z,x,y) refer to (axis_1,axis_2,axis_3) respectfully\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr," Parameter....Meaning..........................Default\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  in=         input dictionary                  stdin:\n");
+   fprintf(stderr,"  out=        output dictionary                stdout:\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  Origins and widths are expected in input data units\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  Origins for output volume\n");
+   fprintf(stderr,"    o1_out=                              Same as input\n");
+   fprintf(stderr,"    o2_out=                                   \"\n");
+   fprintf(stderr,"    o3_out=                                   \"\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  Widths for output volume\n");
+   fprintf(stderr,"    w1_out=                              Same as input\n");
+   fprintf(stderr,"    w2_out=                                   \"\n");
+   fprintf(stderr,"    w3_out=                                   \"\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  verbose=    verbose output                        no\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  USAGE: %s in=[in_dict] out=[out_dict] \\\n",prog);
+   fprintf(stderr,"                 [ o1_out=[o1_out] w1_out=[w1_out] \\\n");
+   fprintf(stderr,"                   o2_out=[o2_out] w2_out=[w2_out] \\\n");
+   fprintf(stderr,"                   o3_out=[o3_out] w3_out=[w3_out] \\\n");
+   fprintf(stderr,"                   verbose=[y|n] ]\n");
+   fprintf(stderr,"\n");
+
+   exit(0);
+}
+
+
+
+
+/* Function copy_to_vol */
+void copy_to_vol( record, n1,n2,nhdr,
+                  volume, n1_out,n2_out,n3_out,
+                  index_1,index_2, i3 )
+
+   int   n1,n2,nhdr, n1_out,n2_out,n3_out, i3;
+   int   *index_1, *index_2;
+   float *record, *volume;
+{
+   int   i1,i2, o2_in, o2_out,o3_out;
+
+/* Initialize offset into the output volume */
+   o3_out=i3*n2_out*(nhdr+n1_out);
+
+/* Go copy input to output */
+   for (i2=0; i2&lt;n2_out; i2++) {
+
+      /* offsets to beginning of i2-th input/output trace headers */
+      o2_in=index_2[i2]*(nhdr+n1);
+      o2_out=o3_out + i2*(nhdr+n1_out);
+
+      /* copy headers */
+      for (i1=0; i1&lt;nhdr; i1++) {
+         volume[o2_out+i1]=record[o2_in+i1];
+      }
+
+      /* offsets to beginning of i2-th input/output data samples */
+      o2_in=index_2[i2]*(nhdr+n1) + nhdr;
+      o2_out=o3_out + i2*(nhdr+n1_out) + nhdr;
+
+      /* copy samples */
+      for (i1=0; i1&lt;n1_out; i1++) {
+         volume[o2_out+i1]=record[o2_in+index_1[i1]];
+      }
+   }
+   return;
+}
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

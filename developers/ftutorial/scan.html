@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Tutorial (Scan Parameters)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ftutorial","scan")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      Use <a href="../fapi/dict.html">fdds_dict</a> to scan parameters from
+      the "<code>par:</code>" dictionary.  This will allow you to retrieve
+      command line and par file parameters which we call "local parameters".
+      Scanning for parameters from an input dictionary will retrieve
+      parameters from the historical part of the dictionary as well as the
+      command line and par file parameters which we call "global
+      parameters".  So make sure you setup to scan the "<code>par:</code>"
+      dictionary when retrieving local parameters associated with just the
+      current processing step with:
+
+    <pre>
+      ier=<a href="../fapi/dict.html">fdds_dict</a>('par:','scan')
+    </pre>
+
+    <p>
+      Now you are ready to scan any of the program parameters with the
+      scan routines.  There are several ways of setting up parameters. 
+      (<u><b>NOTE</b></u> that when writing Fortran code the format strings
+      must be terminated by a null character "<code>\0</code>".)
+
+    <ul>
+      <li>Setup a default value which can be overridden:
+        <pre>
+      alpha=3.14
+      ier=<a href="../fapi/scanf.html">fdds_scanf</a>('alpha','%f\0',alpha)</pre>
+
+      <li>Check to make sure a value is specified when there is no default:
+        <pre>
+      if (<a href="../fapi/scanf.html">fdds_scanf</a>('beta','%f\0',beta).ne.1) then
+         ier=<a href="../fapi/prterr.html">fdds_prterr</a>('No value given for "beta"\n\0')
+      endif</pre>
+
+      <li>Scan for a parameter which could have multiple alias names:
+        <pre>
+      ier=<a href="../fapi/scanf.html">fdds_scanf</a>('gamma Gamma GAMMA','%f\0',gamma)</pre>
+
+      <li>Retrieve arbitrary number of values (<u><b>NOTE</b></u> that a
+        new definition is selected if an <i>alias</i> is specified for 
+        fdds_scanf; otherwise the scan will continue after the previous
+        value):
+        <pre>
+      real delta(*)
+      pointer (ptr_delta,delta)
+      ...
+      n=<a href="../fapi/scank.html">fdds_scank</a>('delta',' ')
+      ptr_delta=<a href="../fapi/malloc.html">fdds_malloc</a>(n*SIZEOF_REAL)
+      ier=<a href="../fapi/scanf.html">fdds_scanf</a>('delta','\0')
+      do i=1,n
+         ier=<a href="../fapi/scanf.html">fdds_scanf</a>(' ','%f\0',delta(i))
+      enddo</pre>
+
+      <li>Retrieve different data types (<u><b>NOTE</b></u> that it is 
+        safer to use "<code>%d</code>" that it is to use "<code>%i</code>"
+        because if a user specifies a number with a preceding zero then it
+        will be interpreted as an octal value instead of a decimal value):
+        <pre>
+      integer num
+      real    value
+      character*80 text
+      ...
+      ier=<a href="../fapi/dict.html">fdds_scanf</a>('num','%d\0',num)
+      ier=<a href="../fapi/scanf.html">fdds_scanf</a>('value','%f\0',value)
+      ier=<a href="../fapi/scanf.html">fdds_scanf</a>('name','%s\0',text)
+c     or read mixed types from a single definition
+      ier=<a href="../fapi/scanf.html">fdds_scanf</a>('omega','%d %f %s\0',num,value,text)</pre>
+
+      <li>Scan for a switch (a switch is normal off be default and simply
+        specifying the name without a value will turn it on; or the user
+        can explicitly specify a logical value):
+        <pre>
+      logical inverse
+      ...
+      inverse=(<a href="../fapi/switch.html">fdds_switch</a>('inverse',0).ne.0)</pre>
+
+    </ul>
+ 
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

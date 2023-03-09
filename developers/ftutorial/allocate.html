@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Tutorial (Allocate Memory)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ftutorial","allocate")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      Dynamic memory allocation can be done in Fortran with the use of the
+      Fortran <b>pointer</b> extension and the DDS Memory Allocation 
+      routines.  Also, by using the DDS Memory Allocation routines, any
+      DDS program can check memory overwrites at run time by the use of
+      the command line or environmental varable, <b>DDS_DEBUG</b>, setting
+      it to include "<b>dgb_call</b>" (see 
+      <a href="../../users/debug.html">Debug Support</a>). A couple of
+      examples are:
+
+    <pre>
+      ptr_databuf=<a href="../fapi/malloc.html">fdds_malloc</a>(ns*SIZEOF_REAL)
+c
+      nbytes=<a href="../fapi/prec.html">fdds_prec</a>(in_bin,0)
+      ptr_inbuf=<a href="../fapi/malloc.html">fdds_malloc</a>(nbytes)
+    </pre>
+
+    <p>
+      Whenever dynamic memory needs to be released, only use the DDS free
+      routine to free the memory with the array pointer name:
+
+    <pre>
+      ier=<a href="../fapi/free.html">fdds_free</a>(ptr_inbuf)
+    </pre>
+
+    <p>
+      In Fortran 90, however, it is easier to use the standard allocation
+      and deallocation routines.
+      
+    <pre>
+      use dds
+      
+      integer :: samples, traces
+      real, allocatable :: buffer(:,:)
+      allocate(buffer(samples, traces))
+      ...
+      if (allocated(buffer)) then
+      deallocate(buffer)
+      endif
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

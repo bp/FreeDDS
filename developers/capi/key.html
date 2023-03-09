@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_key)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","key")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_key - keyword search or token count in definition value. 
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p/>
+      <b>int cdds_key(</b><i>keyword</i><b>);
+      </b><dl><dt><dd>
+        <b>const char *</b><i>keyword
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    This function is superceded by 
+    <a href="scanf.html#scank">cdds_scank.</a>
+    The new function allows the <i>scan</i> definition
+    to be selected in the same call.
+    It also allows the value to be processed from the current position.
+    <b>cdds_key</b> provides backward compatibility
+    with an earlier version of DDS.
+
+    <p/>
+      <b>cdds_key</b> is used to parse the value of the <i>scan</i> definition.
+      This definition must have been previously selected
+      using a 
+      <a href="scanf.html">cdds_scan...</a>function,
+      It is processed from left-to-right,
+      starting at the beginning of the value (not current position).
+      If a <i>scan</i> definition is not selected,
+      <b>cdds_key</b> returns EOF.
+
+    <p/>
+      The value of the <i>scan</i> definition is divided into <i>tokens</i>.
+      Tokens are delimited by white space, and double quotes (optional).
+      If a token is quoted, it may contain special characters.
+      Any single character may be escaped by prefixing it with "<b>\</b>".
+      Escapes are required to preserved special characters
+      ('<b>\</b>', '<b>=</b>', '<b>"</b>').
+      White space within a quoted token does not need to be escaped.
+      Escape characters "<b>\</b>" are removed during retrieval.
+
+    <p/>
+      <b>cdds_key</b> can be used to count tokens.
+      A count is requested by specifying a null <i>keyword</i>, i.e.
+      <b>NULL</b>, zero length string, or a string that only contains white space.
+      The function returns the number of tokens in the value.
+      Zero is returned if none exist.
+      The current position in the value is set to the beginning.
+
+    <p/>
+      <b>cdds_key</b> can be used to search for a token in the <i>scan</i> value.
+      A search is requested by specifying a non-null <i>keyword</i>.
+      The <i>keyword</i> argument is parsed into tokens, similar to the value.
+      The search stops at the first value token
+      that matches any <i>keyword</i> token.
+      If a match is found, its count is returned and
+      the current position in the value is advanced to the token.
+      If a match is not found, the function returns EOF and
+      the current position is set to the beginning.
+
+    <p/>
+      The function returns EOF, if a syntax error is detected in the tokens.
+
+    <p/>
+      NOTE: This routine is deprecated; use <a href="scank.html">cdds_scank</a> instead.
+
+    <h2>EXAMPLE</h2>
+    <dl><dt><dd>
+        <pre>
+          <b>
+            int j, count, n_red, max;
+            const char *alias;
+            float pick[100];
+
+            /* select the "palette" definition */
+            j = cdds_scanf("palette", "");
+
+            /* count the number of colors */
+            count = cdds_key(NULL);
+
+            /* find a "reddish" token */
+            n_red = cdds_key("scarlet crimson cherry");
+
+            /* retrieve the reddish "alias" */
+            j = cdds_scant(NULL, &amp;alias);
+
+            /* count and retrieve "depth_picks" */
+            if(! cdds_scanf("depth_picks", "") {
+            max = cdds_key(NULL);
+            for(n = 0; n &lt; max; n++)
+            cdds_scanf(NULL, "%f", pick + n);
+            }
+          </b></pre>
+        <b></b></dl>
+    
+    <h2>SEE ALSO</h2>
+    <pre>
+      <a href="dict.html">cdds_dict</a>  Select DDS dictionary and mode
+      <a href="scanf.html#scanv">cdds_scanv</a> Retrieve value from scan dictionary
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

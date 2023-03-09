@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger "C" Api (cdds_lseek8)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","cdds_lseek8")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capishort")</script>
+
+    <h2>
+      cdds_lseek8 - seek (8 byte precision) position within DDS binary stream
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>long long cdds_lseek8(</b><i>bin , tag, offset, whence</i><b>);
+      </b><dl><dt><dd>
+        <b>BIN_TAG </b><i>bin
+        </i><br>
+        <b>FIELD_TAG </b><i>tag
+        </i><br>
+        <b>long long </b><i>offset
+        </i><br>
+        <b>int </b><i>whence
+        </i></dl>
+
+    <P>
+      [ <A HREF="#arguments">Arguments</A> 
+      | <A HREF="#output">Output</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+    <h2>DESCRIPTION</h2>
+    This function seeks a new position in a binary stream.<br>
+    Pipe media only supports forward seeks.
+
+    <a name="arguments"></a><h2>ARGUMENTS</h2>
+    "<i>bin</i>" is a BIN_TAG, previously obtained from
+    <a href="cddx_in.html">cddx_in.</a>
+    It specifies the binary stream on which to seek.
+
+    <p>
+      "<i>tag</i>" is a field tag which specifies a type of object
+      <i>offset</i> refers to. E.g. <b>DDS_FLOAT</b> should be used if
+      <i>offset</i> is measured in sizeof(float) words.
+      <br>When <i>tag</i> = <b>0</b>,
+      the nominal DDS target type (which is a trace) is used.
+
+    <p>
+      "<i>offset</i>" is a position measured relative to the <i>whence</i>
+      origin. The offset should be an integer number of <i>tag</i> types.
+
+    <pre>
+whence     seek origin.
+SEEK_SET   beginning of the file.
+SEEK_CUR   current file position.
+SEEK_END   end of the file.
+    </pre>
+
+    <a name="output"></a><h2>OUTPUT</h2>
+    The current binary stream position may be changed.
+    The return value is the new offset, or -1 if an error occurred.
+
+    <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre><b>
+   BIN_TAG bin;
+   ...
+   /* skip next 10000000 target types (traces) */
+   cdds_lseek8(bin, 0, +10000000L, SEEK_CUR);
+    </b></pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>
+i

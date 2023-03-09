@@ -1,0 +1,58 @@
+
+    <h2>fddx_readtrace - read traces and map headers.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;pfddx.h&gt;</b>
+    <p>
+      <b>integer cddx_readtrace(</b><i>bin, buflen, nsamp, ntrace, buf, tr_tag, samples, numtags, tags, hvals</i><b>)
+    </b><dl><dd>
+        <b>integer </b><i>bin</i><br>
+        <b>integer </b><i>buflen</i><br>
+        <b>integer </b><i>nsamp</i><br>
+        <b>integer </b><i>ntrace</i><br>
+        <b>real </b><i>buf(buflen,ntrace)</i><br>
+        <b>integer </b><i>tr_tag</i><br>
+        <b>real </b><i>samples(nsamp,ntrace)</i><br>
+        <b>integer </b><i>numtags</i><br>
+        <b>int </b><i>tags(numtags)</i><br>
+        <b>real</b><i>hvals(numtags,ntrace)</i><br>
+    </dd></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fddx_readtrace</b> reads <i>ntrace</i> traces from the input file.<br>
+    Trace samples and specified headers are extraced.<br>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>bin</i>", specifies the binary tag of the file.
+    </p><p>
+      The parameter, "<i>buflen</i>", specifies the length of the trace buffer.
+    </p><p>
+      The parameter, "<i>nsamp</i>", specifies the number of samples in the trace buffer.
+    </p><p>
+      The parameter, "<i>ntrace</i>", specifies the number of traces to read.
+    </p><p>
+      The parameter, "<i>tr_tag</i>", specifies the tag to the trace Samples.
+    </p><p>
+      The parameter, "<i>numtags</i>", specifies the number of header values to be extracted.
+    </p><p>
+      The parameter, "<i>tags</i>", specifies tags to the trace headers to be extracted.<br>
+      The header values are only extracted if the tag values are >= 0.
+    </p>
+      
+    <h2>OUTPUT</h2>
+    <p>
+      The parameter, "<i>buf</i>", specifies the trace buffer.
+    </p><p>
+      The parameter, "<i>samples</i>", specifies the buffer for the samples.
+    </p><p>
+      The parameter, "<i>hvals</i>", specifies the buffer for the requested header values.
+    </p>
+
+
+    <h2>RETURN VALUE</h2>
+    <b>fddx_readtrace</b> returns the number traces that were successfully read from file.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

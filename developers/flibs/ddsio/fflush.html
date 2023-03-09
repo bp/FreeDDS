@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>fflush - Flushes all or a selected binary stream</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>procedure fflush()</b>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"fflush"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure internally uses <b>fdds_flush</b> to flush the binary tag associated
+      with this data object. If the binary tag has not been set (or is set as -1), then
+      all binary streams are flushed.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	
+	type(DdsObject) :: inData
+	
+	call inData%open('r', 'in')
+	call inData%fflush()
+      </pre>
+      
+  </body>
+</html>

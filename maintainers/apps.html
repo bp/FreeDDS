@@ -1,0 +1,95 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Applications Installation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("maintainers","apps")</script>
+    <!*********************************************************************>
+
+    <p>
+      This provides a more detailed set of instructions for maintaining the 
+      DDS applications.  For quick, simple installation procedure on
+      a single platform, go to <a href='../download/apps.html'>Quick
+      Applications Installation</a>.
+     
+    <p>
+      HOW TO INSTALL THE DDS APPLICATIONS FROM SOURCE CODE:
+
+    <p>DDS applications can be obtained by 1) downloading,
+      untarring, making and installing applications; or 2)
+      creating your own applications using DDS library calls
+      and linking into the libraries.  You can use the make 
+      structure, MakeVariables and MakeRules, provided in the
+      etc directory. The other make files are for building the
+      dds libraries.
+    <ol>
+      <li>
+        Before building any DDS applications, the DDS libraries must
+        first be in place (see <a href="lib.html">Library Installation</a>).
+        These libraries include:
+        <ul>
+          <li><b>libdds_r3.a</b> - core DDS API routines
+          <li><b>libchost.a</b>  - host dependent routines for "C"
+            programs
+          <li><b>libfhost.a</b>  - host dependent routines for
+            Fortran programs
+          <li><b>libgio.a</b>    - generalized buffered I/O routines
+            for DDS
+          <li><b>libfft.a</b>    - basic fft wrappers for different
+            platforms
+          <li><b>libfftw.a</b>   - fftw routines from fftw.org used
+            by the fft wrappers on platforms that do not have good fft's
+          <li><b>librfftw.a</b>  - rfftw routines from fftw.org used 
+            by the fft wrappers
+        </ul>
+        <p>
+          These libraries can be installed by downloading the DDS source,
+          making and installing the libraries. For platforms that are not
+          already setup for the DDS make structure, you can modify the 
+          make structure (see <a href="lib/config.html">Makefile Configuration</a>)
+          then build and install the libraries. That can be a challenge.<br />
+        <p>
+          For each application enter
+          "make" to build an  application; "make update" to build
+          and update the binary to the distribution directory; "make
+          install" to update and also install the bin startup script
+          and the man page; or "make all" to make use of the
+          REMOTE_HOSTS to build and install on multiple platforms.
+          Use "make help", "make variables" and/or "make flags"
+          for more information on the application make structure 
+          which is totally different form the dds libarary make scheme.
+      <li>For the MPI codes, make sure an executable copy of "mpirun"
+        is in the correct path (${DDS_DIST}/*/*/mbs/prod/*) for
+        your system. Also modify MakeVariables in
+        ${DDSROOT}/src/lib/host so that the CCFlags, FCFlags,
+        LibDirs &amp; Libes have the correct info for building MPI
+        on your platform.<br><br>
+      <li>Execute the script called "MakeApps" which will make and
+        install all applications.  for the current platform 
+        (or you can go into each of the src/cmd subdirectories
+        and run "make" and "make install").<br><br>
+      <li>After building the applications, add "${DDS_DIST}/bin" 
+        into your PATH environment variable and run "rehash". 
+        That should allow you to be able to run any of the 
+        built applications.  Each application has a startup 
+        script in "${DDS_DIST}/bin which will setup and execute
+        the corresponding binary associated with the current 
+        platform.  This way  executables from multiple platforms 
+        can coexist together under ${DDS_DIST}.  Run any 
+        application with "-h" or "help=" on the command line
+        to display the online help for that application. 
+        You can also add "${DDS_DIST}/man/mbs" to your MANPATH 
+        environment variable to get to the application man pages.
+    </ol>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

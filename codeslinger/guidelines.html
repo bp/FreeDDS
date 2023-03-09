@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Guidelines</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("codeslinger","guidelines")</script>
+    <!*********************************************************************>
+
+    Writing high quality code can be challenging without a few guiding
+    principles. Some of the principles recommended in the Code Slinger area
+    are listed below<sup><small>1</small></sup>. Those are followed by other
+    programing practices to assist with performance.
+
+    <ul>
+      <li><b>Keep it simple</b> - Identify the basic task(s) a code is supposed
+        to perform. Eliminate distracting options during initial development, those
+        can be added after the basic function is in place and debugged.<br><br>
+
+      <li><b>Don't get tricky</b> -  Implementing advanced or implicit language
+        features is usually more confusing than helpful. For example the use of
+        automatic arrays can be convenient for debugging during initial development,
+        but they have no place in stable production code where they are likely to
+        result in stack overflows.<br><br>
+
+      <li><b>Localize the DDS</b> -  Keep the DDS API restricted to a few
+        functions. This helps with code portability and readability. DDS
+        belongs in the main program and perhaps a few other functions, but
+        source files that execute the core algorithm are better left
+        DDS-free.<br><br>
+
+      <li><b>Other Recommendations</b><br><br>
+        <ul>
+          <li><b>Avoid language extensions</b> -  Though some language extensions
+            are essential (e.g. pointers for dynamic arrays and variable names
+            longer than 6 characters for F77), extensions to the programming
+            language often lead to non-portable code.  Minimizing the use of
+            extensions will enhance readability by everyone and eliminate
+            problems that will surely crop up when the next generation of
+            hardware and compilers are adopted.<br><br>
+
+          <li><b>Avoid deprecated and obsolescent language features</b> -  It is
+            always best to stay within current language specifications. Good
+            FORTRAN references for these are
+            <pre><font color="#000000"> Fortran 95 Handbook, Adams, et al., 1997,
+    MIT Press</font></pre>
+            <pre><font color="#000000"> Fortran 2003 Handbook, Adams, et al., 2009,
+    Springer Science+Business Media</font></pre>
+            Most deprecated features are forbidden by the <b>Keep it simple</b> and
+            <b>Don't get tricky</b> rules anyway.<br><br>
+
+          <li><b>Clean, clear comments</b> -  Clear, straight forward comments
+            are especially useful when you haven't looked at a code in a long
+            time. They are even more useful to a person picking up the code for
+            the first time.<br><br>
+
+            In scientific programming, use the language of the science in comments.
+            This will help those who are not computer scientists understand the
+            basic functions performed in each code section.<br><br>
+
+        </ul>
+
+      <li><b>Performance Measures</b><br><br>
+        <ul>
+          <li><b>Balance memory fetches with recalculation</b> - Retrieving
+            precomputed values from memory is often more expensive than recomputing
+            them on the fly.<br><br>
+
+          <li><b>Reduce memory use to the extent possible</b> - Because fetching
+            information from memory is relatively expensive, reduce memory
+            requirements as much as possible by eliminating redundant memory-resident
+            arrays.<br><br>
+
+          <li><b>Create OpenMP and MPI short lists</b> - As recommended for the
+            DDS API, focussing on a short list of OpenMP and MPI functions will
+            simplify the initial learning curve for those tools.<br><br>
+
+          <li><b>Minimize the number and size of MPI messages</b> - The network is
+            likely the slowest part of MPI applications. To limit the impact of
+            this bottleneck, use messages only as required.<br><br>
+
+          <li><b>Localize the MPI</b> - Restrict MPI calls to a few functions.
+            This helps with code portability and readability. MPI enabled codes
+            should run equally well on single hosts. One way of ensuring this is
+            to place MPI calls inside functions called at the end of compute
+            intensive parts of your application. This way your algorithm can look
+            straight-forward with a few calls to data exchange routines.<br><br>
+
+          <li><b>OpenMP can cost you</b><br>
+            <ul>
+              <li>Never, never, never use DDS in a threaded region. <b>DDS is
+                <u>not</u> thread safe.</b><br><br>
+
+              <li>Allocate memory for non-uniform memory access (NUMA). On most
+                modern cluster computers, the price of memory access is low when
+                memory is local to the thread requesting it but very high when
+                memory is owned by a distant thread. Since the memory-thread
+                relationship is established when memory is first touched, this
+                NUMA performance hit is avoided by initializing memory within
+                OpenMP loops like those used in compute intensive parts of the
+                application.<br><br>
+
+              <li>Minimize false sharing. Multiple threads writing to the same
+                cache line of memory causes a condition called false sharing that
+                requires cache coherence code too be executed. This is expensive.
+                <br><br>
+
+              <li>Setting up threads can be expensive. Try to maximize the work
+                done within individual parallel regions.<br><br>
+
+            </ul>
+        </ul>
+    </ul>
+
+    <p>
+<!-- Footnotes -->
+    <small>
+    <sup>1</sup> Guidelines are intended to facilitate learning and initial code
+    development.<br>
+    &nbsp;&nbsp;&nbsp;Advanced applications may benefit from carefully chosen
+    deviation from these principles.
+    </small>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users FAQ</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","faq","padding")</script>
+    <!*********************************************************************>
+  
+    <p>
+      Padding in dead traces in place of expected missing traces can be
+      challenging at times because you need to know on what basis is a trace
+      missing.  Padding on any specific axis (other than the first axis) is
+      enabled by the "<b>dense.</b><i>axis</i>" attribute to either the 
+      <a href="../formats/attributes.html">format definition</a> or in an
+      <a href="../fmt/edit.html"><b>edit:</b><i>alias</i> Fmt Control</a> 
+      definition.
+
+    <p>
+      Padding on an axis requires telling DDS what index to expect for the
+      given axis.  DDS pads missing traces based on an axis having its 
+      "sort" header (defined by <b>sort.</b><i>axis</i>=) ranging from its 
+      "<b>base.</b><i>axis</i>" and incrementing by the its 
+      "<b>step.</b><i>axis</i>". For example, if:
+
+<pre>
+axis= t x y
+size.x= 125
+sort.x= TrcNum
+base.x= 1
+step.x= 1
+</pre>
+
+    <p>
+      then DDS expects the <b>TrcNum</b> to go from 1 to 125 by 1 
+      monotonically for each record.  Any traces that have <b>TrcNum</b> 
+      outside that range will be flagged as an error. At any point in the
+      the flow of the traces, if a trace is missing in this expected
+      range, then a zero'd, dead trace will be inserted (if this is done on
+      the "<b>y</b>" axis, then whole records will be inserted when
+      necessary.
+
+    <p>
+      Typically we want to pad in missing traces in offset gathers.  So it
+      requires defining what the "expected" offsets are.  There are several
+      different approaches.
+
+    <h3>METHOD 1: modify the current sort header</h3>
+
+    <p>We could modify <b>TrcNum</b> to fit this range.  For example, if
+      the <b>DstSgn</b> goes from 500 to 9800 incrementing by 75, we could
+      simply map the <b>TrcNum</b> values:
+
+<pre>
+map:*:out.TrcNum= 1 + (DstSgn-500)/75
+edit:out=dense.x
+</pre>
+
+    <p>
+      <b><u>NOTE 1:</u></b> You will need to put these each in quotes if used
+      directly on the command line to avoid Linux shell from interpreting 
+      some of the characters.  
+
+    <p>
+      <b><u>NOTE 2:</u></b> You generally will need to use the "<var>*</var>" 
+      in the "<var>map:*:out.TrcNum</var> definition instead of the input 
+      alias or format because (other than bridge) all DDS programs
+      have internal buffers, so the data does not flow directly from the 
+      input to the output.
+
+    <p>
+      <b><u>NOTE 3:</u></b> You could just as easily have added
+      "<var>dense.x</var>" to the <b>out_format</b> definition instead of
+      "<var>edit:out= dense.x</var>".
+
+    <p>
+      <b><u>NOTE 4:</u></b> Occassionally you may need to make this synchronous
+      with the higher axis -- for example in case the next record starts with a
+      trace that has a higher index than the previous record ended with.  
+      To make the the padding synchronous add <var>sync.x</var> to the 
+      <var>edit:out= dense.x</var> definition.
+
+    <p>
+      <b><u>NOTE 5:</u></b> You can NEVER force (eg. <var>edit:out= dense.x 
+      force.x</var>) an ordinal axis when you are trying to pad dead traces, 
+      as that would force the ordinal values to expected values and never
+      pad a trace.
+
+    <h3>METHOD 2: redefine sort, base and step</h3>
+
+    <p>
+      Instead, we could modify <b>sort, base</b> and <b>step</b>
+
+<pre>
+sort.x= DstSgn
+base.x= 500
+step.x= 75
+edit:out=dense.x
+</pre>
+
+    <h3>METHOD 3: define a general grid</h3>
+
+    <p>
+      Sometimes the values we are trying to key off from do not increment
+      at all in a linear fashion (although the key MUST be monotonically
+      increasing or decreasing).  In this case you can define the 
+      "<b>grid</b>" for the axis which will be used instead of the <b>base</b>
+      and <b>step</b>.  The DstSgn values will be matched up the the nearest
+      <b>grid</b> value and will be expected to line up starting with the first
+      value.  If the <b>size</b> value is larger than the # of <b>grid</b> 
+      values given, then the <b>grid</b> values will be extrapolated as
+      necessary.  For example:
+      
+<pre>
+sort.x= DstSgn
+edit:out=dense.x
+grid.x= 55 65 79 90 110 150 200 255 310 400 550 700
+</pre>
+
+    <p>
+      In this case DDS looks for values of <b>DstSgn</b> to start near the
+      "55" value, then "65", etc.  Dead traces will be padded for any missing
+      <b>grid</b> values.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

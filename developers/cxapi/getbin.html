@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Convenience (cddx_getbin)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","cxapi","getbin")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("cxapi")</script>
+
+    <h2>cddx_getbin - retrieve external DDS binary tag</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b>
+    <p>
+      <b>BIN_TAG function cddx_getbin(</b><i>bin_tag</i><b>);
+      </b><dl><dd>
+        <b>BIN_TAG </b><i>bin_tag
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    Routine, <b>"cddx_getbin"</b>, returns the BIN_TAG of the external
+    binary stream.  This is needed because these convenience routines only
+    use the internal buffer BIN_TAG's.
+    A return value &lt; 0 indicates an error.
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

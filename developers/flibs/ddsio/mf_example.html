@@ -1,0 +1,85 @@
+<h2>Multiple file read example</h2>
+
+Example of how to use DdsIO module to read across multiple files. Can be run with 
+<br><br>
+./mf_example in=rand1 rand2 i1s=4 i1e=6 i2s=9 i2e=10 j2s=9 j2e=12
+
+<h3>Makefile:</h3>
+<pre>
+  Name := mf_example
+  F90Srcs := mf_example.F90
+
+  F90 :=x
+  Libs := DdsIO ddz
+  PrjLibs := libDdsIO libddz
+
+  include ${DDSROOT}/etc/MakeVariables
+
+  include ${DDSROOT}/etc/MakeRules
+  
+</pre>
+
+<h3>mf_example.F90</h3>
+
+<pre>
+
+program mf_example
+
+use MyMPI_mod
+use DdsIO_mod
+
+implicit none
+
+integer(kind=8) :: ier8, iTrace
+integer :: ier, if, i1s, i2s, i1e, i2e, nf, j2s, j2e
+real, allocatable, dimension(:,:,:,:) :: data
+real, allocatable, dimension(:) :: data1D
+type(DdsObject) :: inData
+
+integer, parameter :: NDIM=3
+integer :: nsize(NDIM)
+
+call initMyMPI()
+
+ier = fdds_dict( 'par:', 'scan' )
+
+!------------------------------------------------------------------------------
+! Use DdsObject to read sub-block across multiple files
+!------------------------------------------------------------------------------
+
+ier = fdds_scanf('i1s','%d\0',i1s)
+ier = fdds_scanf('i1e','%d\0',i1e)
+ier = fdds_scanf('i2s','%d\0',i2s)
+ier = fdds_scanf('i2e','%d\0',i2e)
+
+call inData%setMergedMode(1)
+call inData%setMergedAxis(2)
+call inData%setAttr('rank', 3)
+call inData%open('r', 'in')
+nf = inData%getNFiles()
+nsize = inData%getSizes()
+
+allocate( data(i1s:i1e, i2s:i2e, 1:1, nf) )
+call inData%readGroup( [i1s, i2s, 1], data )
+
+do if = 1, nf
+    print *, 'File: ', if, '> ', data(:,:,:,if)
+enddo
+
+!------------------------------------------------------------------------------
+! Use DdsObject to read across multiple files as a virtual file
+!------------------------------------------------------------------------------
+
+ier = fdds_scanf('j2s','%d\0',j2s)
+ier = fdds_scanf('j2e','%d\0',j2e)
+
+allocate( data1D(nsize(1)) )
+do iTrace = j2s, j2e
+    ier8 = inData%seekTo(i2=iTrace)
+    call inData%read(data1D)
+enddo
+
+call finalMyMPI()
+
+end program mf_example
+</pre>

@@ -1,0 +1,51 @@
+
+    <h2>fddx_trace_in_range - check if a trace is within the user specified range.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;pfddx.h&gt;</b>
+    <p>
+      <b>integer fddx_trace_in_range(</b><i>itrace, rank, cumsize, ss, ee, ii, dimstart, dimend</i><b>)</b>
+
+    <dl><dd>
+        <b>integer </b><i>itrace</i><br>
+        <b>integer </b><i>rank</i><br>
+        <b>integer*8 </b><i>cumsize(RANK_MAX)</i><br>
+        <b>integer </b><i>ss(RANK_MAX)</i><br>
+        <b>integer </b><i>ee(RANK_MAX)</i><br>
+        <b>integer </b><i>ii(RANK_MAX)</i><br>
+        <b>integer </b><i>dimstart</i><br>
+        <b>integer </b><i>dimend</i><br>
+    </dd></dl>
+
+    <h2>DESCRIPTION</h2>
+    The function, "<b>fddx_trace_in_range</b>", checks if a trace is within the range specified by the user using the <i>2s= 2e= 2i=</i> parameters.<br>
+    <b>fddx_trace_in_range</b> is <i>thread safe</i> and so can be called within an OpenMP loop.
+
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>itrace</i>", specifies the trace number (the first trace is numbered 0).
+    </p><p>
+      The parameter, "<i>rank</i>", specifies the rank (number of dimensions) of the file.
+    </p><p>
+      The parameter, "<i>cumsize</i>", specifies the cumulative size, in traces, of each axis.
+    </p><p>
+      The parameter, "<i>ss</i>", specifies the user specified starting value to process for each axis.
+    </p><p>
+      The parameter, "<i>ee</i>", specifies the user specified end value to process for each axis.
+    </p><p>
+      The parameter, "<i>ii</i>", specifies the user specified increment to process for each axis.
+    </p>
+    </p><p>
+      The parameter, "<i>dimstart</i>", specifies the first dimension to check. For example, if you only want to know if the trace is within the user specified range for the 3rd axis and above, set this to 3. Valid entries are from 2 to <i>rank</i>.
+    </p>
+    </p><p>
+      The parameter, "<i>dimend</i>", specifies the last dimensions to check. Valid entries are from 2 to <i>rank</i>.
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>fddx_trace_in_range</b> returns 1 if the trace is within the user range, 0 otherwise.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

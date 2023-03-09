@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_copy)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","copy")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_copy - DDS, copy one definition</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_copy(</b><i>alias</i><b>)
+      </b><dl><dd>
+        <b>character*(*) </b><i>alias
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    This function copies one definition from an input dictionary
+    to the output dictionary.
+
+    <h2>INPUT</h2>
+    <i>Alias</i> is a list of definition names,
+    delimited by white space.
+    A new definition is selected,
+    if one or more names are specified.
+    The first definition that matches any alias is selected.
+    Dictionary are scanned from bottom-to-top and right-to-left.
+    If no match is found, the copy is ignored and EOF is returned.
+
+    <p>
+      If an <i>alias</i> is not specified,
+      the current input definition is copied.
+      The entire value is copied,
+      regardless of the current position.
+
+    <h2>OUTPUT</h2>
+    Another input definition may be selected.
+    One Definition may be appended to the output dictionary.
+
+    <p>
+      The return value is the number of characters written,
+      or EOF if an error occurred.
+      Zero is returned if no output dictionaries are open.
+
+    <h2>EXAMPLE</h2>
+    <pre>
+      ! copy the "size" definition
+      j = fdds_copy('size')
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="history.html">fdds_history</a> Copy all DDS definitions
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

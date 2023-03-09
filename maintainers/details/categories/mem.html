@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (mem)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","mem")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Media:</h2>
+
+    <p>
+      <b>DDS_HEAP</b> is used to validate dds malloc and free usage.  Validation is
+      turned on by defining DDS_HEAP_CHECK, and recompiling DDS malloc.c,
+      calloc.c, and realloc.c (This is currently turned on).  All blocks are 
+      validated whenever the heap is changed and run-time check is controlled
+      by specifying "dds_debug=" to include "dbg_heap", "dbg_alloc", "dbg_all" 
+      or "dbg_call".</p>
+                                                           
+   <p>
+      The size of each "user" buffer is increased for checks.  Three copies of
+      DDS_HEAP exist for each active block. </p>
+    <ol>  
+      <li> immediately before the "user" buffer</li>             
+      <li> immediately after  the "user" buffer</li>             
+      <li> within the dds_heap "stack"</li>  
+    </ol>  
+
+    <p>            
+      (1) and (2) are used to detect "user" buffer overruns.  If the block is freed,
+      (1) and (2) are discarded and the "size" of (3) is reset to zero.</p>
+                                                           
+    <p>
+      DDS_HEAP_CREEP is the number of bytes needed for one DDS_HEAP struct,
+      rounded up to nominal alignment.       
+
+    <pre>
+<b><u>Structures:</u></b>
+    DDS_HEAP - heap validation descriptor defined in dds_util.h
+
+
+<b><u>Globals:</u></b>
+    DDS_STACK dds_heap; /* stack of heap structures */
+
+
+<b><u>Files:</u></b>
+    f_xxx.c     - Fortran API Routines
+                     f_malloc8.c f_malloc.c f_realloc8.c f_realloc.c 
+                     f_calloc8.c f_calloc.c f_free.c f_memuse.c
+    c_xxx.c     - "C" API Routines
+                     c_malloc.c c_realloc.c c_calloc.c c_free.c c_memuse.c 
+    malloc.c    - Malloc memory with error detection and aborting
+    zalloc.c    - Malloc and clear memory with error detection and aborting
+    realloc.c   - Realloc memory with error detection and aborting
+    free.c      - Free memory with NULL pointer check
+    heapcheck.c - Validate dds heap blocks via either allocation, freeing
+                  or explicit cdds_check call as controlled at runtime by
+                  "dds_debug" fields.
+    alloca.c    - Allocate automatically reclaimed memory
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

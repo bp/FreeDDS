@@ -1,0 +1,285 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications (ddscan)</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','ddscan','L')</script>
+   
+    <p>
+      Entering the "Line Header" command ("<code>L</code>") will printout any
+      available line header information. This is an example for a line header
+      from a <b>USP</b> file.
+    </p>
+
+    <pre style="margin-left: 50px">
+<b>l</b>
+                 --- Line Header (PREAMBLE) ---
+
+ -FIELD-            -OFST- -LEN- -BYTS-    -VALUE-   -TYPE-
+ line_green_prefix      0     1      4       1674   integer4 
+ EqpCod                 4     1      1              ascii1   
+ CrwNam                 5     6      6              ascii1   
+ DatTyp                11     1      1              ascii1   
+ DgTrkS                12     2      2              ascii1   
+ PrcNam                14    10     10              ascii1   
+ PrcNam_GAP            24     4      4         ~~~~ ascii1   
+ PrcDat                28     8      8              ascii1   
+ OACLin                36     8      8              ascii1   
+ JobNum                44     8      8              ascii1   
+ NumTrc                52     1      4         81   integer4 
+ NumRec                56     1      4         30   integer4 
+ SmpInt                60     1      4          2   integer4 
+ NumSmp                64     1      4        150   integer4 
+ Format                68     1      2          3   integer2 
+ IndAdj                70     1      2          0   integer2 
+ OpGrFl                72     1      2          0   integer2 
+ OpGrFl_GAP            74     2      2           ~~ ascii1   
+ SrtTyp                76     2      2              ascii1   
+ CDPFld                78     1      2          0   integer2 
+ GrpInt                80     4      4         0    ascii1   
+ _DtInFl
+    DtInFl             84     1      4       1000   integer4 
+    Dy1000             84     1      4       1000   integer4 
+ MxSPEl                88     1      2          0   integer2 
+ MnSPEl                90     1      2          0   integer2 
+ MxRSEL                92     1      2          0   integer2 
+ MnRSEL                94     1      2          0   integer2 
+ MxGrEl                96     1      2          0   integer2 
+ MnGrEl                98     1      2          0   integer2 
+ MxTrSt               100     1      2          0   integer2 
+ MnTrSt               102     1      2          0   integer2 
+ LinDir               104     4      4              ascii1   
+ AERcPr               108     1      4          0   integer4 
+ OrNTRC               112     1      2          0   integer2 
+ OrNREC               114     1      2          0   integer2 
+ MutVel               116     1      4  0.00000     float4   
+ ZDMuTm               120     1      2          0   integer2 
+ IntInc               122     1      2          0   integer2 
+ _WatVel
+    WatVel            124     1      4          0   integer4 
+    RefVel            124     1      4          0   integer4 
+ MxShDp               128     1      2          0   integer2 
+ MnShDp               130     1      2          0   integer2 
+ MxUHTm               132     1      2          0   integer2 
+ MnUHTm               134     1      2          0   integer2 
+ MxTrOf               136     1      2          0   integer2 
+ MnTrOf               138     1      2          0   integer2 
+ _RATTrc
+    RATTrc            140     1      2          0   integer2 
+    AnglSt            140     1      2          0   integer2 
+ _RATFld
+    RATFld            142     1      2          0   integer2 
+    AngInc            142     1      2          0   integer2 
+ UnitFl               144     1      2          2   integer2 
+ FrstSP               146     1      2          0   integer2 
+ DpN1SP               148     1      2          0   integer2 
+ NmDpIn               150     1      2          0   integer2 
+ StWdFl               152     1      2          0   integer2 
+ DptInt               154     1      2          0   integer2 
+ _TmMsSl
+    TmMsSl            156     1      4       1000   integer4 
+    Dx1000            156     1      4       1000   integer4 
+ _TmSlIn
+    TmSlIn            160     1      4      43123   integer4 
+    Dz1000            160     1      4      43123   integer4 
+ TmMsFS               164     1      4  0.00000     float4   
+ NTrLnS               168     1      4          0   integer4 
+ PltDir               172     1      2          0   integer2 
+ LgRfEl               174     1      2          0   integer2 
+ MnLnIn               176     1      2          0   integer2 
+ MxLnIn               178     1      2          0   integer2 
+ MnDpIn               180     1      2          0   integer2 
+ MxDpIn               182     1      2          0   integer2 
+ ILClIn               184     1      4  0.00000     float4   
+ CLClIn               188     1      4  0.00000     float4   
+ ReSpFm               192     1      2          0   integer2 
+ VlFnRF               194     1      2          0   integer2 
+ OACUsr               196     4      4              ascii1   
+ LinNam               200     8      8              ascii1   
+ MutFlg               208     1      2          0   integer2 
+ SPBias               210     2      2              ascii1   
+ SpBiFl               212     1      2          0   integer2 
+ APIWNo               214    12     12              ascii1   
+ APIWNo_GAP           226     2      2           ~~ ascii1   
+ NmSpMi               228     1      4  0.00000     float4   
+ NmSpMi_GAP           232   368    368              ascii1   
+      "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+ NmSpMi_GAP2          600     4      4         ~~~~ ascii1   
+ _VelFun
+    VelFun            604   200    400          0   integer2 
+    _MinVel
+       MinVel         604     1      2          0   integer2 
+       MaxVel         606     1      2          0   integer2 
+       Nx_Pad         608     1      2          0   integer2 
+       Nx_Win         610     1      2          0   integer2 
+       Nx_Rec         612     1      2          0   integer2 
+       NxLine         614     1      2          0   integer2 
+       Nx_Trc         616     1      2          0   integer2 
+       Ny_Pad         618     1      2          0   integer2 
+       Ny_Win         620     1      2          0   integer2 
+       Ny_Rec         622     1      2          0   integer2 
+       NyLine         624     1      2          0   integer2 
+       Ny_Trc         626     1      2          0   integer2 
+       MCTrSp         628     1      2          0   integer2 
+       NumCmp         630     1      2          1   integer2 
+       MCLE01         632     1      2          0   integer2 
+       MCLE02         634     1      2          0   integer2 
+       MCLE03         636     1      2          0   integer2 
+       MCLE04         638     1      2          0   integer2 
+       MCLE05         640     1      2          0   integer2 
+       MCLE06         642     1      2          0   integer2 
+       MCLE07         644     1      2          0   integer2 
+       MCLE08         646     1      2          0   integer2 
+       MCLE09         648     1      2          0   integer2 
+       MCLE10         650     1      2          0   integer2 
+       MCLE11         652     1      2          0   integer2 
+       MCLE12         654     1      2          0   integer2 
+       MCLE13         656     1      2          0   integer2 
+       MCLE14         658     1      2          0   integer2 
+       MCLE15         660     1      2          0   integer2 
+       MCLE16         662     1      2          0   integer2 
+       MC_GAP         664    10     20          0   integer2 
+       OrNSMP         684     1      2          0   integer2 
+       AziIln         686     1      4          0   float4   
+       AziXln         690     1      4          0   float4   
+       HrzNul         694     1      4          0   float4   
+       T_Unit         698     1      2          0   integer2 
+       UnitSc         700     1      4          0   float4   
+       SmpFlt         704     1      4          0   float4   
+       MaxAmp         708     1      4          0   float4   
+       AvgAmp         712     1      4          0   float4   
+       RmsAmp         716     1      4          0   float4   
+       VelTyp         720     1      2          0   integer2 
+       WlfCol         722     1      2          0   integer2 
+       WavBas         724     1      2          0   integer2 
+       WavMom         726     1      2          0   integer2 
+       WlfCo1         728     1      2          0   integer2 
+       WavBa1         730     1      2          0   integer2 
+       WavMo1         732     1      2          0   integer2 
+       WlfCo2         734     1      2          0   integer2 
+       WavBa2         736     1      2          0   integer2 
+       WavMo2         738     1      2          0   integer2 
+       FreQst         740     1      4          0   float4   
+       FreQnd         744     1      4          0   float4   
+       RaMmin         748     1      4          0   float4   
+       RaMmax         752     1      4          0   float4   
+       RaXmax         756     1      4          0   float4   
+       RaZref         760     1      4          0   float4   
+ HlhEnt              1004     1      2         30   integer2 
+ HlhByt              1006     1      2        674   integer2 
+ HlhBuf              1008   670    670          0   unsigned1
+    </pre>
+
+    <p>
+     This is an example for a line header from a <b>SEGY</b> file.
+    </p>
+
+    <pre style="margin-left: 50px">
+<b>l</b>
+                 --- Line Header (PREAMBLE) ---
+
+ -FIELD-   -OFST- -LEN- -BYTS-    -VALUE-  -TYPE-
+ card3200      0  3200   3200              ebcdic1 
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+      "                                                                                "
+
+
+                 --- Line Header (PREAMBLE2) ---
+
+ -FIELD-       -OFST- -LEN- -BYTS-    -VALUE-   -TYPE-
+ JobNum            0     1      4          0   integer4 
+ LineNum           4     1      4          0   integer4 
+ ReelNum           8     1      4          0   integer4 
+ NumTrc           12     1      2         81   unsigned2
+ NumAux           14     1      2          0   unsigned2
+ SmpInt           16     1      2       2000   unsigned2
+ OrigSmpInt       18     1      2          0   unsigned2
+ NumSmp           20     1      2        150   unsigned2
+ OrigNumSmp       22     1      2          0   unsigned2
+ FmtCode          24     1      2          1   integer2 
+ CdpFold          26     1      2          0   integer2 
+ SortCode         28     1      2          0   integer2 
+ VertSumFlag      30     1      2          0   integer2 
+ SwpFreqStart     32     1      2          0   integer2 
+ SwpFreqEnd       34     1      2          0   integer2 
+ SwpLength        36     1      2          0   integer2 
+ SwpCode          38     1      2          0   integer2 
+ SwpChan          40     1      2          0   integer2 
+ SwpTprStart      42     1      2          0   integer2 
+ SwpTprEnd        44     1      2          0   integer2 
+ SwpTprType       46     1      2          0   integer2 
+ CorrFlag         48     1      2          0   integer2 
+ GainFlag         50     1      2          0   integer2 
+ AmpFlag          52     1      2          0   integer2 
+ UnitsFlag        54     1      2          2   integer2 
+ PolarityFlag     56     1      2          0   integer2 
+ VibLagFlag       58     1      2          0   integer2 
+ SpareBin
+    I1            60   240    240          0   unsigned1
+    I2            60   120    240          0   integer2 
+    I4            60    60    240          0   integer4 
+    F4            60    60    240          0   float4   
+    F4ibm         60    60    240          0   float4ibm
+ SegyFmt         300     1      2          0   integer2 
+ FixedLength     302     1      2          0   integer2 
+ NumHdr          304     1      2          0   integer2 
+ Unassigned      306     1      2          0   integer2 
+ Spare2Bin
+    I1           308    92     92          0   unsigned1
+    I2           308    46     92          0   integer2 
+    I4           308    23     92          0   integer4 
+    F4           308    23     92          0   float4   
+    F4ibm        308    23     92          0   float4ibm
+    </pre>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

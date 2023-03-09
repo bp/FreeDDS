@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications (ddscan)</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','ddscan','AS')</script>
+   
+    <p>
+      Entering the "Dump All Samples" command ("<code>AS</code>") will dump
+      Sample values from all selected traces and records (see "<code>SR</code>").
+      The example shown below was setup with "<code>ss 100 150 10</code>",
+      "<code>st 10 80 20</code>" and "<code>sr 3 10 3</code>" .
+    </p>
+
+    <pre style="margin-left: 50px">
+<b>as</b>
+
+                        --- Sample Dump ---
+                 (samples   100 ->   150 x   10)
+
+                Rec #   Trc #
+Trc     172:       3      10
+             -0.5263050E-05 -0.4504636E-07 -0.1415371E-05 -0.2220700E-05  0.1934884E-06
+              0.2781017E-05
+Trc     192:       3      30
+              0.6951143E-05 -0.2799155E-05  0.4172165E-04 -0.7240148E-04 -0.4358588E-05
+             -0.1843616E-04
+Trc     212:       3      50
+             -0.2258214E-05  0.7544385E-05 -0.4345895E-05  0.2482760E-05  0.1574661E-06
+             -0.2208661E-05
+Trc     232:       3      70
+              0.8157027E-06 -0.1928785E-05  0.4090267E-05 -0.5079215E-06 -0.1039658E-05
+              0.2252277E-06
+
+SUMMARY: min= -0.7240148E-04 max=  0.4172165E-04 rms=  0.1774190E-04
+Trc     415:       6      10
+              0.2527241E-06 -0.1942950E-05  0.1050064E-06  0.8262397E-06  0.6661384E-06
+             -0.1753579E-06
+Trc     435:       6      30
+              0.1910723E-04 -0.3014576E-04  0.3103288E-04 -0.1799558E-04  0.4932194E-06
+              0.2346579E-04
+Trc     455:       6      50
+              0.1103648E-05  0.7120870E-05 -0.1425714E-05  0.1388346E-05 -0.3466548E-05
+             -0.2037276E-05
+Trc     475:       6      70
+             -0.1705546E-04 -0.9673577E-05 -0.5172757E-05 -0.2488507E-05  0.5202131E-05
+             -0.1623849E-05
+
+SUMMARY: min= -0.3014576E-04 max=  0.3103288E-04 rms=  0.1230819E-04
+Trc     658:       9      10
+             -0.7077265E-05  0.5209380E-06  0.1453701E-05  0.1505121E-05  0.1170224E-05
+              0.2738774E-06
+Trc     678:       9      30
+              0.8745146E-05  0.2063834E-05  0.2732063E-05  0.2346464E-05 -0.1351533E-05
+              0.2850479E-05
+Trc     698:       9      50
+             -0.8718089E-06 -0.2133838E-05 -0.3405257E-06  0.4132734E-05 -0.3034648E-05
+             -0.2815696E-05
+Trc     718:       9      70
+             -0.1771482E-05  0.3459407E-05 -0.3025755E-06  0.2630462E-05 -0.4192062E-06
+              0.3668266E-06
+
+SUMMARY: min= -0.7077265E-05 max=  0.8745146E-05 rms=  0.3040791E-05
+</pre>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

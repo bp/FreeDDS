@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (read)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","read")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Read:</h2>
+
+    <p>
+      These are only called through cdds_read.
+
+    <pre>
+<b><u>Files:</u></b>
+    f_xxx.c      - Fortran API Routines
+                      f_readm.c f_read.c
+    c_xxx.c      - "C" API Routines
+                      c_readm.c c_read.c
+    readuspl.c   - Read usp line header binary data
+    readuspt.c   - Read and edit usp trace binary data
+    readsegyc.c  - Read segy card header binary data
+    readsegyb.c  - Read segy binary header binary data
+    readsegyt.c  - Read and edit segy trace binary data
+    readgent.c   - Read and edit generic trace binary data
+    readgen.c    - Read generic binary data on a byte-basis
+    readslicet.c - Read and edit sliced trace binary data
+    readslice.c  - Read sliced binary data on a byte-basis
+    readcheck.c  - Check results of read binary data
+                   (residual bytes, EOF, padding...)
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

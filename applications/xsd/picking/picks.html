@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','picking','picks')</script>
+
+    <p>Use the "Picks" menu to select the "<code>Edit Mode</code>" which controls 
+      editing picks within existing segments.</p>
+
+    <ul>
+      <li><u>Undo Last Edit:</u><br />
+        <img src="xsd_PicksMenu.jpg" alt="" align="right" style="padding:0 0 0 20px">
+        This option will remove the last (and <u>only</u> the
+        last) edit made.  The "<code>Edit Mode</code>" will remain unchanged.</li>
+
+      <li><u>Add Picks:</u><br /> 
+        This option sets up to add picks to existing
+        pick segments. Press the <b>left mouse button</b> to select the neatest
+        segment, then press the <b>left mouse button</b> again to select the 
+        nearest pick within that segment from which to add additional picks 
+        within the 2D segment plane. Continue pressing the <b>left mouse button</b>
+        adding picks.  Press the <b>right mouse button</b> to terminate adding picks
+        to that segment and select another segment or change the Mode.</li>
+
+      <li><u>Move Picks:</u><br />
+        This option sets up to moving picks within
+        existing pick segments. Press the <b>left mouse button</b> to select the
+        nearest segment, then press the <b>left mouse button</b> again to select
+        the nearest pick and drag it to any desired position within the 2D segment
+        plane.  Press the <b>right mouse button</b> to terminate moving picks on that
+        segment and select another segment or change the Mode.</li>
+
+      <li><u>Delete Picks:</u><br /> 
+        This option sets up to delete picks within
+        existing pick segments. Press the <b>left mouse button</b> to select the
+        segment, then press the <b>left mouse button</b> again to delete the nearest 
+        pick within that segment.  Continue pressing the <b>left mouse button</b>
+        to continue deleting other picks in the selected segment. Press the 
+        <b>right mouse button</b> to terminate deleting picks in that
+        segment and select another segment or change the Mode.</li>
+
+      <li><u>Round Picks Left:</u><br /> 
+        This option sets up to move picks to the
+        left edge of the 2D segment plane. Press the <b>left mouse button</b> to
+        move the nearest pick to the left edge.  Press the <b>right mouse button</b>
+        to reset and then the <b>left mouse button</b> again to move another pick.
+        Repeat the steps until the Mode is changed again.</li>
+
+      <li><u>Round Picks Right:</u><br /> 
+        This option sets up to move picks to the
+        right edge of the 2D segment plane. Press the <b>left mouse button</b> to
+        move the nearest pick to the right edge.  Press the <b>right mouse button</b>
+        to reset and then the <b>left mouse button</b> again to move another pick.
+        Repeat the steps until the Mode is changed again.</li>
+
+      <li><u>Round Picks Top:</u><br /> 
+        This option sets up to move picks to the
+        top edge of the 2D segment plane. Press the <b>left mouse button</b> to
+        move the nearest pick to the top edge.  Press the <b>right mouse button</b>
+        to reset and then the <b>left mouse button</b> again to move another pick.
+        Repeat the steps until the Mode is changed again.</li>
+
+      <li><u>Round Picks Bottom:</u><br /> 
+        This option sets up to move picks to the
+        bottom edge of the 2D segment plane. Press the <b>left mouse button</b> to
+        move the nearest pick to the bottom edge.  Press the <b>right mouse button</b>
+        to reset and then the <b>left mouse button</b> again to move another pick.
+        Repeat the steps until the Mode is changed again.</li>
+
+      <li><u>Round Picks Point:</u><br /> 
+        This option sets up to move picks to a
+        designated point on the 2D segment plane. Press the <b>left mouse button</b> 
+        to define the designated point. Press the <b>left mouse button</b> again
+        to select the nearest segment to modify.  Press the <b>left mouse button</b> 
+        again repeatedly to move the nearest picks in that segment to the designated
+        point.  Press the <b>right mouse button</b> to terminate modifying that
+        segment and then the <b>left mouse button</b> again to repeat the process
+        until the Mode is changed.</li>
+
+      <li><u>Round Picks Horizontal:</u><br /> 
+        This option sets up to move picks to 
+        a horizontal line on the 2D segment plane. Press the <b>left mouse button</b> 
+        to define the designated horizontal line. Press the <b>left mouse button</b>
+        again to select the nearest segment to modify.  Repeatedly press the 
+        <b>left mouse button</b> to move the nearest pick in that segment to the
+        designated line.  Press the <b>right mouse button</b> to terminate modifying 
+        that segment and then the <b>left mouse button</b> again to repeat the process
+        until the Mode is changed.</li>
+
+      <li><u>Round Picks Vertical:</u><br /> 
+        This option sets up to move picks to 
+        a vertical line on the 2D segment plane. Press the <b>left mouse button</b> 
+        to define the designated vertical line. Press the <b>left mouse button</b>
+        again to select the nearest segment to modify.  Repeatedly press the 
+        <b>left mouse button</b> to move the nearest pick in that segment to the
+        designated line.  Press the <b>right mouse button</b> to terminate modifying 
+        that segment and then the <b>left mouse button</b> again to repeat the process
+        until the Mode is changed.</li>
+
+      <li><u>Auto Picking:</u><br /> 
+        <img src="xsd_AutoPickWindow.jpg" alt="" align="right" style="padding:0 0 20px 20px">
+        This option sets up the auto picking parameters. The "<code>Trace Incr</code>"
+        parameter determine the horizontal increment at which to auto pick. The 
+        "<code>Window Size</code>" parameter defines a window tolerance within which
+        the auto picking can search.  The "<code>Weight Factor</code>" is a multiplier
+        to the distance from the picks used for auto-picking.  Pick the
+        "<code>Positive (peak)</code>" or "<code>Negative (trough)</code>" to determine
+        auto-picking the peaks or troughs.  The "<code>On</code>" button will turn
+        the auto-picking on the the "<code>Off</code>" button will turn auto-picking 
+        off.</li>
+
+    </ul>
+
+    <br clear="all" />
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

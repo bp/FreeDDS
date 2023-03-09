@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>open - Opens data object in read or write mode</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>procedure open(</b><i>mode, label, alabel1, inherit</i><b>)</b>
+      <dl><dd>
+	  <b>character(len=*), intent(in)           :: </b><i>mode</i><br>
+	  <b>character(len=*), intent(in)           :: </b><i>label</i><br>
+	  <b>character(len=*), optional, intent(in) :: </b><i>alabel1</i><br>
+	  <b>type(DdsObject), optional, intent(in)  :: </b><i>inherit</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"open"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure opens the data object in one of three <i>modes</i>: 'r' (read),
+      'w' (write), or 'pw' (parallel write).
+      <br><br>
+      If the file is opened for reading, then <i>mode</i> is specified as 'r', and the <i>label</i>
+      (aka 'alias') to search for in the par file or command line is opened. Note that multiple dictionaries
+      can be specified for one alias; every file will be accessible through this data object. <i>alabel1</i>
+      (aka 'value') is used as a fallback in case <i>label</i> is absent. After this call,
+      the data object's dictionary is ready for probing and the data object's file
+      is ready for reading.
+      <br><br>
+      If the file is opened for writing, then <i>mode</i> is specified as 'w', and the <i>label</i>
+      (aka 'alias') to search for in the par file or command line is opened. <i>alabel1</i> (aka 'value')
+      is used as a fallback in case <i>label</i> is absent. If <i>inherit</i> is also specified, then
+      history information from the inherit data object is passed to this data object to be opened, and
+      all unspecified attributes are pulled from the inherit data object. Use <b>data%setAttr</b> to modify 
+      any attribute in this data object from that of the <i>inherit</i> data object. After this call, this
+      data object's file is ready for writing.
+      <br><br>
+      If the file is opened for parallel writing, then <i>mode</i> is specified as 'pw', and the other inputs
+      are identical to normal writing mode. Writing is performed in parallel across MPI nodes; therefore the
+      MPI module <b>MyMPI_mod</b> must be properly initialized using both <b>initMyMPI</b> and
+      <b>setMyMPIComm</b> before any data object is opened for parallel writing.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	
+	type(DdsObject) :: inData
+	type(DdsObject) :: outData
+	
+	! open data in read mode
+	call inData%open('r', 'in')
+	
+	! open data in write mode from inData
+	call outData%setAttr('axes', 'z x y')
+	call outData%open('w', 'out', inherit=inData)
+	
+	! close data
+	call inData%close()
+	call outData%close()
+      </pre>
+      
+  </body>
+</html>

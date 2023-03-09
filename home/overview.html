@@ -1,0 +1,262 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Overview Diagram</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <style type="text/css">
+      thead {font-weight:bold;} 
+      td {text-align:left;font-size:12pt;}
+      img {border:0px none;}
+      pre {font-size:11pt;}
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">header("home","overview")</script>
+    <!*********************************************************************>
+
+    <h2><u>A. DDS Generalization</u></h2>
+    <table border='0' cellspacing='0' cellpadding='0'>
+        <tr>
+          <td>
+            <div style='text-align:center;font-size:16pt;font-family:sans;
+              border-style:dotted;border-width:1px'>
+              Dataset
+            </div>
+            <div style='background-color:#d0ffff;padding:10;
+              border-style:dotted;border-width:2px;'>
+              <table border='0' cellspacing='0' cellpadding='0'>
+                  <tr>
+                    <td>
+                      <div style='border-style:solid;border-width:1px;
+                        background-color:#ffffff;text-align:center;'>
+                        Dictionary
+                      </div>
+                      <div style='width:200;background-color:#ffff80;
+                        border-style:groove;border-width:5px;'>
+                        <pre style='xwidth:180;'>
+data= oak39_@
+format=segy
+...
+axis= t y cmp
+...
+size.t= 1000
+size.y= 96
+size.cmp=24
+...
+delta.t= 0.008
+units.t= sec
+...
+origin.y= 5000
+units.y= meters
+...
+                        </pre>
+                      </div>
+                    </td>
+                    <td><img src='../images/rightArrowBlue.png' alt=''></td>
+                    <td>
+                      <div style='border-style:solid;border-width:1px;
+                        background-color:#ffffff;text-align:center;'>
+                        Binary Data
+                      </div>
+                      <div style='width:150;background-color:#ffff80;
+                        padding:10;border-style:groove;border-width:5px;'>
+                        Card Header<br/>
+                        Line Header<br/><br/>
+                        Traces...
+                      </div>
+                    </td>
+                  </tr>
+              </table>
+            </div>
+          </td>
+          <td valign=top>
+            <div style='margin:20;font-size:13pt;'>
+              <ul>
+                <li><b>N-Dimensional Array of I/O Records</b>
+                  <ul>
+                    <li>Densley popoulated for random access
+                    <li>Sequential access if sparse
+                  </ul>
+                <li><b>Meaningful Axis Names</b>
+                  <ul>
+                    <li>t, x, t, z, w, kx, ky, kz, cmp, shot, offset, ...
+                  </ul>
+                <li><b>Extensible Axis Attributes</b>
+                  <ul>
+                    <li>Regular grid (size, origin, delta, units, ...)
+                    <li>Variable grid (grid.z= 1 3 5 7 11, ...)
+                    <li>Non-numeric (label.attr= Vp Vs rho)
+                  </ul>
+              </ul>
+              <b>Great for research!</b> 
+              Exotic algorithms and unforeseen domains can be accurately 
+              represented and processed as easily as traditional ones.
+            </div>
+          </td>
+        </tr>
+    </table>
+
+    <h2><u>B. Mixed Processing Systems</u></h2>
+
+    <p>
+      DDS can integrate directly with other systems.  Here a DDS program,
+      <code>editd</code>, (note input format can be auto-detected) is 
+      piped directly into a SU program, <code>supswigp</code>.
+
+    <pre>
+editd in=minute2.usp 3s=16 3e=48 3i=2 out_format=su out_data=stdout: |\
+supswigp clip=0.2 > wiggle.ps
+    </pre>
+
+
+    <h2><u>C. Multi-File Suppoort (Sliced Datasets)</u></h2>
+
+    <p>DDS dictionaries can point at other dictionaries
+
+    <table>
+        <tr>
+          <td>
+            <div style='background-color:#d0ffff;padding:10;
+              border-style:dotted;border-width:2px;'>
+              <table border='0' cellspacing='10' cellpadding='0'>
+                  <tr>
+                    <td rowspan='3'>
+                      <div style='border-style:solid;border-width:1px;
+                        background-color:#ffffff;text-align:center;'>
+                        Dictionary
+                      </div>
+                      <div style='width:250;background-color:#ffff80;
+                        border-style:groove;border-width:5px;'>
+                        <pre style='xwidth:180;'>
+data= dict.comp1
+      dict.comp2
+      dict.comp3
+format=segy slice.comp
+axis= t h comp cdp
+size.t= 1000
+size.h= 48
+size.comp=3
+size.cdp=24
+delta.t= 0.008
+delta.h= 25
+delta.comp= 1
+delta.cdp= 25
+origin.t= 0
+origin.h= 0
+origin.comp= 0
+origin.cdp= 0
+units.t= sec
+units.h= meters
+...
+                        </pre>
+                      </div>
+                    </td>
+                    <td><img src='../images/rightArrowBlue.png' alt=''></td>
+                    <td>
+                      <div style='border-style:solid;border-width:1px;
+                        background-color:#ffffff;text-align:center;'>
+                        Dictionary (dict.comp1)
+                      </div>
+                      <div style='width:200;background-color:#ffff80;
+                        border-style:groove;border-width:5px;'>
+                        <pre>
+data=data.c1.segy
+format=segy
+axis=t h cdp
+...
+                        </pre>
+                      </div>
+                    </td>
+                    <td><img src='../images/rightArrowBlue.png' alt=''></td>
+                    <td>
+                      <div style='border-style:solid;border-width:1px;
+                        background-color:#ffffff;text-align:center;'>
+                        Binary Data
+                      </div>
+                      <div style='width:150;background-color:#ffff80;
+                        padding:10;border-style:groove;border-width:5px;'>
+                        SEGY Binary file:<br/>
+                        "data.c1.segy"
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><img src='../images/rightArrowBlue.png' alt=''></td>
+                    <td>
+                      <div style='border-style:solid;border-width:1px;
+                        background-color:#ffffff;text-align:center;'>
+                        Dictionary (dict.comp2)
+                      </div>
+                      <div style='width:200;background-color:#ffff80;
+                        border-style:groove;border-width:5px;'>
+                        <pre>
+data=data.c2.segy
+format=segy
+axis=t h cdp
+...
+                        </pre>
+                      </div>
+                    </td>
+                    <td><img src='../images/rightArrowBlue.png' alt=''></td>
+                    <td>
+                      <div style='border-style:solid;border-width:1px;
+                        background-color:#ffffff;text-align:center;'>
+                        Binary Data
+                      </div>
+                      <div style='width:150;background-color:#ffff80;
+                        padding:10;border-style:groove;border-width:5px;'>
+                        SEGY Binary file:<br/>
+                        "data.c2.segy"
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><img src='../images/rightArrowBlue.png' alt=''></td>
+                    <td>
+                      <div style='border-style:solid;border-width:1px;
+                        background-color:#ffffff;text-align:center;'>
+                        Dictionary (dict.comp3)
+                      </div>
+                      <div style='width:200;background-color:#ffff80;
+                        border-style:groove;border-width:5px;'>
+                        <pre>
+data=data.c3.segy
+format=segy
+axis=t h cdp
+...
+                        </pre>
+                      </div>
+                    </td>
+                    <td><img src='../images/rightArrowBlue.png' alt=''></td>
+                    <td>
+                      <div style='border-style:solid;border-width:1px;
+                        background-color:#ffffff;text-align:center;'>
+                        Binary Data
+                      </div>
+                      <div style='width:150;background-color:#ffff80;
+                        padding:10;border-style:groove;border-width:5px;'>
+                        SEGY Binary file:<br/>
+                        "data.c3.segy"
+                      </div>
+                    </td>
+                  </tr>
+              </table>
+            </div>
+          </td>
+        </tr>
+    </table>
+
+    <br/>
+    &dagger;&nbsp;Taken from Joe Dellinger's EAEG presentation June 2006
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

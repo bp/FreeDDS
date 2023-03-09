@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Mapping (defaults)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","mapping","defaults")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      DDS provides a set of default mappings between various data formats.
+      Default mappings are adequate for most, but not all, field
+      conversions. The end user should understand what the defaults are,
+      and override them as needed.
+
+    <p>
+      Below are tables of default header mappings. These tables only include
+      the explicit header mappings between headers of different names.  All
+      headers with identical names between formats are implicitly mapped
+      by default. (NOTE: header "Spare.Hdr.RecNum" is not the same as
+      "RecNum).
+
+    <p>
+      The segy format reserves 60 bytes for spare Trace Header fields and
+      segy1 format reserves 24 bytes for sapre trace header fields. 
+      Usage of these fields varies widely within the industry. Thus,
+      they may be used differently within a particular segy dataset.
+      Even "standard" header definitions are often ignored by vendors
+      requiring the necessity of overriding the default mappings.
+
+    <p>
+      Also, be aware that some fields may be ambiguous in some formats
+      because they contain the same information as another field in the
+      same format. As such, no default mapping is made INTO any field that
+      is contained in any union.
+
+    <h3>Trace Header Indices:</h3>
+
+    <pre>
+SEGY                SEGY1                  USP/ASP
+-----------------   --------------------   -------
+HorzStack           HorzStack              FoldNm
+FieldRecNum         FieldRecNum            PrRcNm
+FieldTrcNum         FieldTrcNum            PrTrNm
+LineTrcNum          LineTrcNum             InTrCn
+CdpTrcNum           CdpTrcNum              TrcNum
+CdpNum              CdpNum                 DphInd
+Spare.Hdr.LinInd    LinInd                 LinInd
+Spare.Hdr.SrcLoc    SrcLoc                 SrcLoc
+Spare.Hdr.FlReFN    Spare1.Hdr.FlReFN      FlReFN
+Spare.Hdr.RecNum    Spare1.Hdr.RecNum      RecNum
+Spare.Hdr.SrcPnt    Spare1.Hdr.SrcPnt      SrcPnt
+Spare.Hdr.SoPtNm    Spare1.Hdr.SoPtNm      SoPtNm
+Spare.Hdr.RecInd    Spare1.Hdr.RecInd      RecInd
+    </pre>
+
+    <h3>Trace Header Coordinates:</h3>
+
+    <pre>
+SEGY                SEGY1                  USP/ASP
+-----------------   --------------------   -------
+SrcX                SrcX                   SrPtXC
+SrcY                SrcY                   SrPtYC
+GrpX                GrpX                   RcPtXC
+GrpY                GrpY                   RcPtYC
+SrcDepth            SrcDepth               ShtDep
+SrcElev             SrcElev                SrPtEl
+GrpElev             GrpElev                GrpElv
+GrpDatum            GrpDatum               RfSrEl
+Spare.Hdr.CDPBCX    CDPBCX                 CDPBCX
+Spare.Hdr.CDPBCY    CDPBCY                 CDPBCY
+Spare.Hdr.SrRcMX    Spare1.Hdr.SrRcMX      SrRcMX
+Spare.Hdr.SrRcMY    Spare1.Hdr.SrRcMY      SrRcMY
+Spare.Hdr.DePtEl    Spare1.Hdr.DePtEl      DePtEl
+Spare.Hdr.FlDtEl    Spare1.Hdr.FlDtEl      FlDtEl
+    </pre>
+
+    <h3>Trace Header Statics:</h3>
+
+    <pre>
+SEGY1               SEGY                   USP/ASP
+-----------------   --------------------   -------
+UpholeTmSrc         UpholeTmSrc            UphlTm
+TotalStatic         TotalStatic            StaCor
+SrcStatic           SrcStatic              InStAp
+GrpStatic           GrpStatic              RcStAp
+Spare.Hdr.CdpStatic Spare1.Hdr.CdpStatic   ToStAp
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','windows')</script>
+
+
+    <p>The Display Windows are identified by a Sequence # and a Window Id # which
+      are displayed in the window Title bar along with the filename and selection
+      parameters.  The Sequence # is a simple number that starts
+      from 1 and increments for each window opened up.  The Window Id # also starts
+      from 1 and increments, however, as windows get deleted, those Window Id numbers
+      can be reused.  The Window Id # is the key identification number for each window.
+      The data is displayed with the Sample amplitudes mapped to an editable colormap
+      for each window.</p>
+
+    <ul>
+      <li><u>Annotation:</u><br />
+        The annotation can be referenced by "<b>index</b>", "<b>base/step</b>" or
+        "<b>delta/origin</b>" as selected by the "<code>Ref by:</code>" option.  These
+        values and axis names were defined for each axis in the
+         <a href="data/definition.html">Data Definition</a> section of the Server 
+            Parameters.  The Axis names can be set to show up as whatever you want.
+        <ul>
+          <li>Each axis with more than one selected value is plotted and annotated
+            in the Vertical or Horizontal direction as specified in the 
+            <a href="data/definition.html">Data Selection</a> section of the Server 
+            Parameters in the order specified.</li>
+
+	  <li>Moving the cursor around on the data will change the odometer (right
+	    side of the "<code>Ref by:</code>" option). The odometer shows the axis 
+	    values in addition to the data Amplitude (with the precision possible 
+	    within a single byte) and up to three selected trace header values 
+	    (selected from menu Options&rarr;Trace&nbsp;Header&nbsp;Item&nbsp;#).<br /><br />
+            <center><img src="xsd_DataWindow.jpg" alt=""></center><br />
+	    While actually making picks, any trace header values will be replaced
+	    with the Slope and Velocity values (in the units as selected by the 
+	    "<code>Ref by:</code>" option.<br /><br />
+            <center><img src="xsd_Odometer.jpg" alt=""></center>
+	    </li>
+        </ul><br />
+
+      </li>
+
+      <li><u>Color Control:</u><br />
+        The colormap can be interactively modified by modifying the Contrast and/or
+        Bias scales. This can be beneficial in enhancing desired data features.
+        Pressing the "<code>Cont</code>" or "<code>Bias</code>" buttons will reset
+        the corresponding scales. Setting the "<code>Global Colors</code>" toggle
+        on this window (or any other Display Window) will cause any Contrast and/or 
+        Bias changes to be applied to every Display Window. See 
+        <a href="colors.html">"Colors"</a> to change or edit colormaps.</li>
+
+      <li><u>Scroll Control:</u><br />
+        When the displayed data image is larger than the Display Window, the horizontal
+        and vertical scroll bars will appear to allow scrolling around on the image.
+        Selecting the "<code>Global Scroll</code>" toggle will cause and scrolling to
+        be applied to every Display Window.
+      </li>
+
+      <li><u>Cursor Control:</u><br />
+        When comparing data in multiple windows it is sometimes helpful to have the
+        cursor show up in each window at the corresponding locations.  To turn on
+        this feature, select the "<code>Global Cursor</code>" toggle.  Slave cursors
+        will be positioned in each window (in black) at the correct location (same
+        axis indeces) even if the data is displayed differently.  Whenever the 
+        same data location does not exist, no cursor will show up in that window.
+        For any window that has the 
+        <a href="picking/segments.html#toggles">Honor Records</a>
+        toggle turned off, the cursor will simply be shown at the same relative image
+        "x" and "y" pixel coordinates. Whenever the "<code>Global Cursor</code>" toggle
+        is changed, all the "<code>Global Cursor</code>" toggles for each existing
+        window is set to the same state.
+      </li>
+
+      <li><u>Scale/Offset:</u><br />
+        The "Scale" and "Offset" values that were used to display the current data is
+        shown.  For example, if the data was scaled with Maximum or some Histogram 
+        scaling, other data can be displayed with the exact same scaling by applying
+        this "Scale" and "Offset" values with the "Fixed" scaling.
+      </li>
+
+      <li><u>Mode:</u><br />
+        The editing "Mode" is displayed to indicated the current type of editing setup
+        by the various "Segment" or "Picks" menu options 
+        (see <a href="picking.html">"Picking"</a>).
+      </li>
+
+    </ul>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

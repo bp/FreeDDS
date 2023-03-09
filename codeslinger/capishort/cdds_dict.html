@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger "C" Api (cdds_dict)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","cdds_dict")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capishort")</script>
+
+    <h2>
+      cdds_dict - select DDS dictionary and mode.
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>int cdds_dict(</b><i>names, mode</i><b>);
+      </b><dl><dt><dd>
+        <b>const char *</b><i>names
+        </i><br>
+        <b>const char *</b><i>mode
+        </i></dl>
+
+    <p>
+      [ <a href="#description">Description</a>
+      | <a href="#arguments">Arguments</a>
+      | <a href="#output">Output</a>
+      | <a href="#examples">Examples</a>
+      ]
+    <hr>
+
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>cdds_dict</b> changes the access <i>mode</i> of dictionaries.
+    It is used to switch between dictionaries during processing.
+
+    <p>
+      NOTE: Other DDS API functions may implicitly call <b>cdds_dict</b>.
+      If they change dictionary selection, their documentation
+      <i>should</i> clearly say so. In particular see
+      <a href="cddx_dict.html">cddx_dict</a>,
+      <a href="cddx_in.html">cddx_in</a>,
+      <a href="cddx_out.html">cddx_out</a>,
+
+    <p>
+      <b>cdds_scan</b> functions read definitions from dictionaries in
+      "<b>scan</b>" mode. A dictionary is selected for scanning either
+      by invoking <b>cdds_dict</b> with "<b>scan</b>" <i>mode</i> or by
+      invoking <b>cddx_in</b>. Dictionaries previously selected for
+      scanning are suspended when these 2 functions are used. Multiple
+      dictionaries may be specified by <i>names</i>. Their precedence
+      is left-to-right; the first dictionary has precedence over
+      subsequent ones. If <i>name</i> is not specified, subsequent use
+      of <b>cdds_scan</b> functions will return EOF.
+
+    <p>
+      <b>cdds_print</b> functions append definitions to the dictionary
+      in "<b>print</b>" mode. A dictionary is selected for printing
+      either by invoking  <b>cdds_dict</b> with <b>"print"</b>
+      <i>mode</i> or by invoking <b>cddx_out</b>.  The dictionary
+      previously selected for printing is suspended when these 2
+      functions are used. If multiple names are specified, only the
+      first is selected. If a name is not specified, subsequent use
+      of <b>cdds_print</b> functions will return EOF.
+
+    <p>
+      If the same dictionary is selected for both <i>scan</i> and
+      <i>print</i> modes, the most recent request is honored.  This
+      prevents a dictionary from being open for both input and output
+      simultaneously. Dictionaries don't need to be explicitly suspended
+      when switching between <i>scan</i> and <i>print</i> modes.
+
+    <a name="arguments"></a><h2>ARGUMENTS</h2>
+    "<i>names</i>" is a list of dictionary names, delimited by white space.
+    They may be filenames or special mnemonics (<b>stdin:, stdout:, cmd:,
+      par:, env:, fd</b><i>n</i>, or <b>tmp</b><i>n</i><b>:</b>).
+    Filenames may contain any printing character except '='.
+
+    <pre>
+dictionary   nominal initialization.
+filename     Definitions read from filename.
+stdin:       Definitions read from standard input.
+stdout:      Definitions read from standard output.
+cmd:         Command line definitions.
+par:         Command line and "par= file ..." definitions.
+env:         All environment variables.
+fdn:         File descriptor n.
+tmpxxx:      Empty, temporary dictionary xxx.
+    </pre>
+
+    <p>
+      "<i>mode</i>" determines the mode of the named dictionary(s).
+      It controls initialization, when a dictionary is first selected.
+      If <i>mode</i> is "<b>scan</b>", "<b>suspend</b>" or
+      "<b>print</b>", the existing contents are preserved. If
+      <i>mode</i> is "<b>reset</b>", then existing contents are
+      discarded. Initialization is only performed when changing a
+      dictionary from "<b>reset</b>" to another mode.
+
+    <p>
+      If <i>mode</i> is "<b>scan</b>", the named dictionaries are opened
+      for scanning by the <b>cdds_scan</b> functions.
+
+    <p>
+      If <i>mode</i> is "<b>print</b>", the named dictionary is opened
+      for appending new definitions into the dictionary by the
+      <b>cdds_print</b> functions.
+
+    <p>
+      If <i>mode</i> is "<b>suspend</b>", the named dictionaries are
+      suspended. Their contents are preserved for future use. This is
+      done automatically if the dictionary has not been referenced by
+      the most recent <b>"scan"</b> or <b>"print"</b><i> mode</i>.
+
+    <p>
+      If <i>mode</i> is "<b>reset</b>", the named dictionaries are
+      reset. If they are selected again later, their contents are
+      re-initialized. All dictionaries are implicitly reset, when a
+      process terminates normally.
+
+    <p>
+      If <i>mode</i> is "<b>freeze</b>", the named dictionaries are
+      frozen from any further modification.  This is done internally by
+      DDS to prevent redefining the binary after the dataset is opened.
+
+    <pre>
+<u> mode       access    initialization</u>
+"scan"      input     preserve contents
+"print"     output    preserve contents
+"suspend"   none      temporary suspend
+"reset"     none      reset dictionary
+"freeze"    none      freeze contents
+    </pre>
+
+    <a name="output"></a><h2>OUTPUT</h2>
+    The dictionaries currently open for input and output may be changed.
+    <b>cdds_dict</b> returns a non-zero value if an error is detected, and
+    zero otherwise.
+
+    <p>
+      Dictionary resources are not released, until a dictionary is
+      explicitly reset. This includes file descriptors and about two
+      words of memory for each definition. Some dictionaries may have
+      binary data attached to them. Once these dictionaries are opened,
+      they should not be closed, until the binary stream is opened.
+
+     <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre><b>
+   int j;
+
+   /* select "foo_dict" dictionary for printing */
+   j = cdds_dict("foo_dict", "print");
+
+   /* select two dictionaries for scanning */
+   j = cdds_dict("par: bar_dict", "scan");
+    </b></pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="cddx_in.html"  >cddx_in</a>   Open input
+<a href="cddx_out.html" >cddx_out</a>  Open output
+<a href="cddx_dict.html">cddx_dict</a> Set dictionary mode convenience routine open
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

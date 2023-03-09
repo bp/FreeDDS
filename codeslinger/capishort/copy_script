@@ -1,0 +1,27 @@
+cp ../../../html/developers/cxapi/in.html ./cddx_in.html
+cp ../../../html/developers/cxapi/in2.html ./cddx_in2.html
+cp ../../../html/developers/cxapi/out.html ./cddx_out.html
+cp ../../../html/developers/cxapi/dict.html ./cddx_dict.html
+cp ../../../html/developers/cxapi/read.html ./cddx_read.html
+cp ../../../html/developers/cxapi/write.html ./cddx_write.html
+
+cp ../../../html/developers/capi/axis_prod.html ./cdds_axis_prod.html
+cp ../../../html/developers/capi/close.html ./cdds_close.html
+cp ../../../html/developers/capi/closepr.html ./cdds_closepr.html
+cp ../../../html/developers/capi/dict.html ./cdds_dict.html
+cp ../../../html/developers/capi/errors.html ./cdds_errors.html
+cp ../../../html/developers/capi/free.html ./cdds_free.html
+cp ../../../html/developers/capi/get.html ./cdds_get.html
+cp ../../../html/developers/capi/index.html ./cdds_index.html
+cp ../../../html/developers/capi/initmpi.html ./cdds_initmpi.html
+cp ../../../html/developers/capi/initopenmp.html ./cdds_initopenmp.html
+cp ../../../html/developers/capi/lseek8.html ./cdds_lseek8.html
+cp ../../../html/developers/capi/member.html ./cdds_member.html
+cp ../../../html/developers/capi/openpr.html ./cdds_openpr.html
+cp ../../../html/developers/capi/printf.html ./cdds_printf.html
+cp ../../../html/developers/capi/prtcon.html ./cdds_prtcon.html
+cp ../../../html/developers/capi/prterr.html ./cdds_prterr.html
+cp ../../../html/developers/capi/prtmsg.html ./cdds_prtmsg.html
+cp ../../../html/developers/capi/put.html ./cdds_put.html
+cp ../../../html/developers/capi/scanf.html ./cdds_scanf.html
+cp ../../../html/developers/capi/scank.html ./cdds_scank.html

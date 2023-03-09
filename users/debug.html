@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Debug</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","debug")</script>
+    <!*********************************************************************>
+
+    <p>
+      Messages are printed to standard error, when problems are detected
+      (normally standard is rerouted to the DDS print file).  Nominal
+      processing can also be monitored.  The contents of each trace read
+      or written can be printed. The real names of temporary files can be
+      printed, and their contents preserved for inspection.
+
+    <p>
+      The end user can define 
+
+<pre>dds_debug= <var>keywords</var></pre>
+
+    <p>
+      to control this feature. Recognized values are shown below.
+      Keyword groups are mutually exclusive. The keyword read (or write)
+      may be added to limit the dump to input (or output) traces.
+
+    <pre>
+keyword            description
+----------------   --------------------------------------
+diff               only field changes
+diff0              lower level changes
+diff1              same as "diff"
+diff2              secondary sort changes
+max                set diff dump limit (default 30)
+list "f1 f2 ..."   dump selected headers
+usp                dump set subset of usp headers
+segy               dump set subset of segy headers
+-verbose           turn off verbose mode (on by default)
+-debug             turn off debug print (on by default)
++tmp               save tmp files (off by default)
+read               dump on read only
+write              dump on write only
+seek               dump on seek only
+dbg_heap           check memory on each allocation &amp; free
+dbg_alloc          check memory on each allocation
+dbg_free           check memory on each free
+dbg_call           check memory on each API call
+dbg_trace          trace all API calls
+dbg_scanner        trace compiler scanner
+dbg_uncompile      dump uncompile stacks
+dbg_symbol         dump binary symbol tables
+dbg_binary         dump binary
+dbg_panic          dump binary tables on panic
+dbg_all            dump all
+    </pre>
+
+    <p>
+      If "<code>dds_debug= buf 8</code>" is defined, all fields in all
+      traces are printed. Vector field dumps are limited to 8 elements.
+      This prints a lot of (unwanted) information.
+
+    <p>
+      If "<code>dds_debug= read diff</code>" is defined, only input
+      traces are printed. By default, vector field dumps are limited to 30
+      elements. The name and value of all fields in the first trace are
+      printed. After the first, fields are printed only if they differ 
+      from the previous trace. This makes interesting information more
+      visible, by eliminating clutter from constant fields. The end user
+      can replace uncertainty with knowledge, when faced with new data.
+
+    <p>
+      <u>Hint</u>: If only the dump is wanted, define 
+      "<code>out_data= /dev/null</code>" to dispose of binary data.
+
+    <p>
+      If the <code><u>read</u></code> keyword is eliminated, both input and 
+      output traces are printed. This can be used to quality control
+      field mapping from one format to another. An input trace is
+      displayed, followed by the corresponding output trace. Some 
+      applications may dump traces by ensemble (records, or 2D planes).
+
+    <p>
+      If <code><u>diff2</u></code> is used, more clutter is eliminated.
+      Traces are compared to two previous values. Constant fields are
+      printed, only if they start changing. Varying fields are printed,
+      only if they become constant. This technique highlights field 
+      changes at secondary sort (record) boundaries. All fields are
+      printed from the first two traces, to provide a reference point.
+      
+    <p>
+      The <code><u>list</u></code> keyword is used to select fields for
+      a tabular dump. Selected fields are printed on one line for each
+      trace. Only the first value from a vector field is displayed.
+      The keywords, <code><u>usp</u></code> and <code><u>segy</u></code>,
+      are predefined lists. If multiple standards are requested,
+      a compromise is made to limit print line width. For example:
+
+    <pre>
+dds_debug= usp
+
+comment= "usp", as an explicit list
+dds_debug= list "RecNum TrcNum RecInd DphInd
+    SrcLoc SoPtNm SrcPnt LinInd DstSgn StaCor"
+    </pre>
+
+    <p>
+      Standard error will scroll off the screen, unless redirected.
+      Redirection syntax is dependent upon the Unix shell. These examples
+      assume the C shell is used to execute bridge.
+
+    <pre>
+bridge par= <var>file</var> &gt;&amp; log
+
+bridge par= <var>file</var> |&amp; more
+
+bridge par= <var>file</var> |&amp; xcat
+
+bridge par= <var>file</var> |&amp; tee log
+
+(bridge par= <var>file</var> | <var>cmd2</var> ...) |&amp; tee log
+    </pre>
+
+    <p>
+      <u>Hint</u>: <i>ctrl-c</i> can be used to interrupt execution,
+      after sufficient data is printed.
+
+    <p>
+      These examples assume the Bourne shell is used.
+
+    <pre>
+bridge par= <var>file</var> 2&gt; log
+
+bridge par= <var>file</var> 2&gt;&amp;1 | more
+
+bridge par= <var>file</var> 2&gt;&amp;1 | xcat
+
+bridge par= <var>file</var> 2&gt;&amp;1 | tee log
+
+(bridge par= <var>file</var> | <var>cmd2</var> ...) 2&gt;&amp;1 | tee log
+    </pre>
+   
+    <p>
+      Also see <a href="runtime.html">Runtime Control</a> for enbaling 
+      debug features.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

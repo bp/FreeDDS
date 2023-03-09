@@ -1,0 +1,295 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (work with headers)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","f90_xyrange.F90")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+!***********************************************************************
+!
+! Get the range of values in user selected headers
+! Use source/receiver XY headers as defaults
+!
+! An example of reasonably defensive and robust coding.
+!
+!***********************************************************************
+
+      program f90_xyrange
+
+      implicit none
+
+#include "f90dds.h"
+
+! Define F90 precision for real*8 variables
+      integer,parameter :: DP=selected_real_kind(15,300)
+
+! For DDS functions. Arguments and return values
+      character(LEN=11) :: prog='f90_xyrange'
+      character(LEN=80) :: Title
+      integer ier, fd_in
+
+! Data attributes
+      integer n1,n2,n3, ntrc_words
+      integer iSrcX,iSrcY, iGrpX,iGrpY
+
+! Internal dynamic array
+      real,allocatable :: record(:,:)
+
+! Internal scalar values and loop counters
+      character(LEN=DEFNNAME_MAX) :: SrcX,SrcY, GrpX,GrpY
+      integer       :: i2,i3, ntr, ier_sx,ier_sy, ier_gx,ier_gy
+      real(KIND=DP) :: sx_min,sx_max,sx_here, sy_min,sy_max,sy_here
+      real(KIND=DP) :: gx_min,gx_max,gx_here, gy_min,gy_max,gy_here
+
+!-------------------------------------------------------------------
+!
+! Initialize the Title
+!
+      Title=prog//': Get the range of selected trace header words'
+
+!
+! Open the print file and dump command-line help as requested
+!
+      ier=fdds_openpr(prog,'')
+      if (ier.gt.0) call help(prog,Title)
+
+!
+! Retrieve alternate headers from user parameters
+!
+      ier=fdds_dict('par:','scan')
+
+      ! set defaults names for source/receiver XY headers
+      SrcX='SrPtXC'
+      SrcY='SrPtYC'
+      GrpX='RcPtXC'
+      GrpY='RcPtYC'
+
+      ! get user overrides for default header names
+      ier=fdds_scanf('SrcX srcx','%s\0',SrcX)
+      ier=fdds_scanf('SrcY srcy','%s\0',SrcY)
+      ier=fdds_scanf('GrpX grpx','%s\0',GrpX)
+      ier=fdds_scanf('GrpY grpy','%s\0',GrpY)
+
+!
+! Open input. Retrieve data characteristics when open is successful
+!
+      fd_in=fddx_in2('in','stdin:',Title)
+
+      if (fd_in.lt.0) then
+
+         ier=fdds_prterr('Opening input data\n\0')
+
+      else
+
+         ier=fdds_scanf('size.axis(1)','%d\0',n1)
+         ier=fdds_scanf('size.axis(2)','%d\0',n2)
+         n3=fdds_axis_prod(3)
+
+         ntrc_words=fdds_prec(fd_in,0)/SIZEOF_REAL
+         if (ntrc_words.lt.0) then
+            ier=fdds_prterr('Cannot determine trace length\n\0')
+         endif
+
+         ! Go find the headers within the trace structure
+         iSrcX=fdds_member(fd_in,0,SrcX)
+         iSrcY=fdds_member(fd_in,0,SrcY)
+         iGrpX=fdds_member(fd_in,0,GrpX)
+         iGrpY=fdds_member(fd_in,0,GrpY)
+
+         if (iSrcX.lt.0) then
+            ier=fdds_prterr('Header %s is not available\n\0',SrcX)
+         endif
+         if (iSrcY.lt.0) then
+            ier=fdds_prterr('Header %s is not available\n\0',SrcY)
+         endif
+         if (iGrpX.lt.0) then
+            ier=fdds_prterr('Header %s is not available\n\0',GrpX)
+         endif
+         if (iGrpY.lt.0) then
+            ier=fdds_prterr('Header %s is not available\n\0',GrpY)
+         endif
+
+      endif
+
+!
+! Check whether any errors were reported.
+! If so, clean up and terminate now.
+!
+      if (fdds_errors().gt.0) then
+         if (fd_in.ge.0) ier=fdds_close(fd_in)
+         ier=fdds_closepr()
+         stop
+      endif
+
+!
+! Allocate array for input data
+!
+      allocate(record(ntrc_words,n2))
+
+!
+! Initialize the min/max header values
+!
+      sx__min = +huge(sx_min)
+      sx__max = -huge(sx_max)
+
+      sy__min = +huge(sy_min)
+      sy__max = -huge(sy_max)
+
+      gx__min = +huge(gx_min)
+      gx__max = -huge(gx_max)
+
+      gy__min = +huge(gy_min)
+      gy__max = -huge(gy_max)
+
+!
+! Loop over input data, set min/max values
+! Stop on all DDS-detectable errors
+!
+      do i3 = 1,n3
+
+         ntr=fddx_read(fd_in,record,n2)
+
+         if (ntr.ne.n2) then
+            ier=fdds_prterr('Reading record %d: %d traces\n\0',i3,ntr)
+         else
+            ! Get the ranges
+            do i2 = 1, n2
+
+               ier_sx=fdds_getd(fd_in,iSrcX,record(:,i2),0,sx_here,1)
+               ier_sy=fdds_getd(fd_in,iSrcY,record(:,i2),0,sy_here,1)
+               ier_gx=fdds_getd(fd_in,iGrpX,record(:,i2),0,gx_here,1)
+               ier_gy=fdds_getd(fd_in,iGrpY,record(:,i2),0,gy_here,1)
+
+               if (ier_sx.lt.1) then
+                  ier=fdds_prterr ('Failed to "get" header %s\n\0',SrcX)
+               else
+                  sx_min=min(sx_min,sx_here)
+                  sx_max=max(sx_max,sx_here)
+               endif
+
+               if (ier_sy.lt.1) then
+                  ier=fdds_prterr ('Failed to "get" header %s\n\0',SrcY)
+               else
+                  sy_min=min(sy_min,sy_here)
+                  sy_max=max(sy_max,sy_here)
+               endif
+
+               if (ier_gx.lt.1) then
+                  ier=fdds_prterr ('Failed to "get" header %s\n\0',GrpX)
+               else
+                  gx_min=min(gx_min,gx_here)
+                  gx_max=max(gx_max,gx_here)
+               endif
+
+               if (ier_gy.lt.1) then
+                  ier=fdds_prterr ('Failed to "get" header %s\n\0',GrpY)
+               else
+                  gy_min=min(gy_min,gy_here)
+                  gy_max=max(gy_max,gy_here)
+               endif
+
+               if (fdds_errors().gt.0) then
+                  ier=fdds_prterr('Record %d, Trace %d\n\0',i3,i2)
+                  exit
+               endif
+
+            enddo
+         endif
+
+         if (fdds_errors().gt.0) then
+            deallocate(record)
+            ier=fdds_close(fd_in)
+            ier=fdds_closepr()
+            stop
+         endif
+
+      enddo
+
+!
+! Report results
+!
+      ier=fdds_prtcon('\n\0')
+      ier=fdds_prtcon('Range for header %15s: %lg to %lg\n\0', &
+                      SrcX,sx_min,sx_max)
+      ier=fdds_prtcon('Range for header %15s: %lg to %lg\n\0', &
+                      SrcY,sy_min,sy_max)
+      ier=fdds_prtcon('Range for header %15s: %lg to %lg\n\0', &
+                      GrpX,gx_min,gx_max)
+      ier=fdds_prtcon('Range for header %15s: %lg to %lg\n\0', &
+                      GrpY,gy_min,gy_max)
+      ier=fdds_prtcon('\n\0')
+
+!
+! Clean up
+!
+      deallocate(record)
+      ier=fdds_close(fd_in)
+      ier=fdds_closepr()
+
+!
+! Stop
+!
+      stop
+      end
+
+
+
+
+!***********************************************************************
+!
+! subroutine to print help when requested on the command line
+!
+!***********************************************************************
+
+      subroutine help(prog,Title)
+
+      implicit none
+
+      character prog*(*), Title*(*)
+
+      write(0,*)''
+      write(0,*)trim(Title)
+      write(0,*)''
+      write(0,*)' Parameter......Meaning........................Default'
+      write(0,*)''
+      write(0,*)'  in=[dict]     input dictionary                stdin:'
+      write(0,*)''
+      write(0,*)'  SrcX=[Hdr1]   Override for SrcX header        SrPtXC'
+      write(0,*)'  SrcY=[Hdr2]      "      "  SrcY   "           SrPtYC'
+      write(0,*)'  GrpX=[Hdr3]      "      "  GrpX   "           RcPtXC'
+      write(0,*)'  GrpX=[Hdr4]      "      "  GrpY   "           RcPtYC'
+      write(0,*)''
+      write(0,*)'  verbose=[y|n] verbose output                      no'
+      write(0,*)''
+      write(0,*)'  USAGE:'
+      write(0,*)'    '//trim(prog)//' in=[in_dict]'
+      write(0,*)'       [ SrcX=[Hdr1] SrcY=[Hdr2]'
+      write(0,*)'         GrpX=[Hdr3] GrpY=[Hdr4] verbose=[y|n] ]'
+      write(0,*)''
+
+      stop
+
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

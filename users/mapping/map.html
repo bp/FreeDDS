@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Mapping (map:)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","mapping","map")</script>
+    <!*********************************************************************>
+
+    <p>
+      Map Definition are used when one data format is mapped to another.
+      Definition names are prefixed by "<code>map:</code>" in the form:
+
+    <pre>
+map:<var>in</var>:<var>out</var>.<var>field</var>= <var>expression</var></pre>
+
+    where:
+
+    <ul>
+      <li>"<var>in</var>" and "<var>out</var>" can be the format name
+      (eg. "usp" or "segy") or alias names (eg. "in" or "vel"); but don't
+      intermix them.  It is advisable to use "<code>*</code>" in place 
+      of "<var>in</var>" for output mapping because most applications 
+      (except "<b>bridge</b>") use an internal intermediate buffer, 
+      so the input dataset may not be the actual buffer being used
+      internally by an application.<br/><br/>
+
+      <li>"<var>field</var>" can be any Trace Header name in the output
+        dataset.<br/><br/>
+
+      <li>"<var>expression</var>" is an algebraic expression.  It may 
+        contain constants, field names from the input format, operators,
+        <a href="functions.html">built-in functions</a>, and parentheses.
+    </ul>
+
+    <p>
+      Example map definitions:
+
+    <pre>
+comment= set a field to a constant
+map:*:usp.GrpElv= 0.0
+
+comment= map SEGY header "CdpTrcNum", to USP "TrcNum"
+map:segy:usp.TrcNum= CdpTrcNum
+
+comment= calculate a Midpoint for fields
+map:*:out.SrRcMX= 0.5 * (SrcX + GrpX)
+
+comment= calculate offset distance
+map:segy:usp.DstUsg= sqrt((SrcX-GrpX)*(SrcX-GrpX)
+                        + (SrcY-GrpY)*(SrcY-GrpY))
+    </pre>
+
+    <p>
+      <b>NOTE:</b> any Trace Headers that have the same names in the output
+      as the input will get mapped automatically.  Mapping Definitions are
+      therefore only needed when the names change.  However,
+      "<code>Spare.Hdr.LinInd</code>" is not the same name as
+      "<code>LinInd</code>".  Also, there are no default mappings going
+      into a union, because of conflicting datatypes for the same byte
+      locations.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

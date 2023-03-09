@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>fddz_intype - interrogate a DDS dataset for input sample genus and host-dependent type</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "fdds.h"</b><br>
+    <b>#include "fddz.h"</b>
+    <p>
+      <b>integer function fddz_intype(</b><i>alias, value, title, genus, host_type</i><b>)</b>
+      <dl><dd>
+        <b>character </b><i>alias*(*)</i><br>
+        <b>character </b><i>value*(*)</i><br>
+        <b>character </b><i>title*(*)</i></br>
+        <b>character </b><i>genus*(*)</i></br>
+        <b>character </b><i>host_type*(*)</i>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Routine <b>"fddz_intype"</b> enables flexible, host-dependent
+    sample type mapping. It is used in conjunction with <b>"fddz_mapin"
+    </b> or <b>"fddz_mapin2"</b> to open a file in 2 stages. Between
+    the <i>intype</i> and <i>mapin</i> calls, the program can decide
+    on the mapping to perform based on information returned in
+    arguments <i>genus</i> and <i>host_type</i>. The integer return value
+    and argument <i>alias</i> should not be changed between <i>intype</i>
+    and <i>mapin</i> calls.
+    <p>
+    After opening a file for input with <b>"fddz_intype"</b> the input
+    dictionary will be left open for scanning. The open process  will
+    look for "<i>alias</i>" for the dictionary, "<i>alias</i><b>_data</b>"
+    for overriding the binary, and "<i>alias</i><b>_format</b>" for
+    overriding the format. The input parameter "<i>value</i>" is the
+    default value (eg. "stdin:") used for a fallback in cases where
+    "<i>alias</i>" is not specified by the user. The input parameter
+    "<i>title</i>" should be a brief one line description of the application
+    program.  It will return a integer associated with the external binary
+    upon successful opening, a value of -2 if the dataset is not specified
+    and no default value is given, otherwise a value of -1 to signify an
+    open failure.
+
+    <h2>LIMITATIONS</h2>
+    Convenience routines have a limitation where the <i>alias</i> argument
+    can only have a single alias name.
+
+   <h2> EXAMPLE</h2>
+   <pre>
+integer   in_tag,buf_tag
+character title*(*), genus*(*), hdt_in*(*), hdt_mapto*(*)
+ ...
+in_tag=fddz_intype('in','stdin:',title,genus,hdt_in)
+if (index(genus,'integer').gt.0) hdt_mapto='long long'
+if (index(genus,'float').gt.0)   hdt_mapto='double'
+if (index(genus,'complex').gt.0) hdt_mapto='complex double'
+buf_tag=fddz_mapin('in','stdin:',title,htd_mapto,in_tag)
+ ...
+   </pre>
+
+   <h2>SEE ALSO</h2>
+   <pre>
+<a href="flibs.php?lib=ddz&api=fddz_hdtype">fddz_hdtype</a> Retrieve host-dependent type of a field
+<a href="flibs.php?lib=ddz&api=fddz_mapin">fddz_mapin</a> Open a buffer with specific Sample maping
+<a href="flibs.php?lib=ddz&api=fddz_mapin2">fddz_mapin2</a> Open a buffer with specific Sample maping
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

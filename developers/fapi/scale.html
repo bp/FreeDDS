@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (cdds_scale)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","scale")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>
+      fdds_scale - retrieve units conversion scale factors 
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+    <b>real*8 fdds_scale(</b><i>out, in</i><b>)
+    </b><dl><dt><dd>
+        <b>character*(*)</b><i>out
+        </i><br>
+        <b>character*(*)</b><i>in
+        </i></dl>
+
+    <Hr>
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>fdds_scale</b> retrieves the scale factor needed to convert 
+	 from <i>in</i> units to <i>out</i> units.  For time conversion
+    units can be "sec","msec","usec","nsec" or of the form "<i>xxx</i> sec" 
+    where "<i>xxx</i>" is the number of seconds which
+    can be any integer or floating point value.  For distance
+    conversions, units can be "meters" or "feet".
+
+    <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre>
+      real   scale
+      real*8 scale2
+      character*(100) units
+
+      ier=fdds_scanf('units.axis(1)','%s\0', units)
+      scale = fdds_scale('meters',units)
+
+      scale2 = fdds_scale('feet','meters')
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger "C" Api (cdds_put)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","cdds_put")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capishort")</script>
+
+    <h2>
+      cdds_put - put one field into a DDS type buffer
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+      <b>#include "cdds.h"
+      </b><p>
+      <b>int cdds_put</b><i>xx</i><b>(</b><i>bin_tag, fieldtag, out_buf, in_array, count</i><b>);
+      </b><dl><dt><dd>
+        <b>BIN_TAG </b><i>bin
+        </i><br>
+        <b>FIELD_TAG </b><i>tag
+        </i><br>
+        <b>const void </b>*<i>out_buf
+        </i><br>
+        <i>HostArrayType</i> </b>*<i>in_array
+        </i><br>
+        <b>int </b><i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    These functions put data from <i>in_array</i> into a field of
+    <i>out_buf</i>. The data are converted from the host-dependent type
+    defined by the trailing characters in the function name (see below)
+    to the type of the field known to <i>bin_tag</i>.
+
+    <h2>ARGUMENTS</h2>
+
+    <p>
+      "<i>bin_tag</i>" is a binary tag previously obtained from
+      <a href="cddx_out.html">cddx_out.</a>
+
+    <p>
+      "<i>field_tag</i>" identifies a specific field within a structure
+      of <i>bin_tag</i>.  It is obtained with function
+      <a href="cdds_member.html">cdds_member.</a>
+      If <i>field_tag</i> is zero, the default target (a trace) is used.
+
+    <p>
+      "<i>out_buf</i>" is the output buffer into which the converted
+      information is placed.
+
+    <p>
+      "<i>in_array</i>" is the input array from which the data is
+      transferred. The host-dependent type of <i>in_array</i> is
+      implied by the function name suffix ("<i>xx</i>").
+
+    <p>
+      "<i>count</i>" is the number of elements to convert.<br>
+
+    <h2>OUTPUT</h2>
+    The <b>put</b> functions copy (or convert) data from an input array
+    into the output field.  Vectors are truncated or padded, depending
+    upon the source and destination count.
+
+    <p>
+      The function return value is count, or zero if an error occurred.
+
+    <p>
+      A simple byte copy is performed, if the binary formats are the same.
+      The <b>put</b> functions convert between most numeric representations.
+      The allowed combinations are implementation dependent.
+      The functions also convert between ascii and ebcdic character formats.
+      Byte fields can be copied, without conversion, from any array.
+      The <b>cdds_put</b> function copies an array into any field type,
+      without conversion.
+      Conversion is not allowed between numeric and character types.
+      If conversion is not possible, an error is reported and
+      the output field is not changed.
+    <dl><dt><dd>
+        <pre>
+<b><u>Function     HostType         in_array Pad</u></b>
+cdds_put     char             zero
+cdds_putcs   char             null terminated
+cdds_putcb   char             blank
+cdds_puti    int              zero
+cdds_puts    short            zero
+cdds_putl    long             zero
+cdds_putu    unsigned         zero
+cdds_putus   unsigned short   zero
+cdds_putul   unsigned long    zero
+cdds_putf    float            zero
+cdds_putff   float            zero (USP fake float)
+cdds_putd    double           zero
+        </pre>
+    </dl>
+    C assignment rules are used to convert
+    <b>float</b> arrays to integer and unsigned fields.
+    Character arrays passed by <b>cdds_putcb</b>
+    are assumed to be padded with blanks.
+    Trailing pad characters are ignored during <b>put</b> processing;
+    they effectively shorten input character arrays.
+    A null character, within a <b>cdds_putcs</b> character array,
+    effectively reduces its <i>count</i>.
+    <b>cdds_putff</b> stuffs floats into consecutive 1-, 2- or 4-byte integers
+    (fake floats).
+
+    <a name="examples"></a><h2>EXAMPLES</h2>
+    <b><pre>
+   BIN_TAG bin;
+   FIELD_TAG tag;
+   char *out_buf;
+   const int *in_array;
+   ...
+   /* put (convert) integer in_array into type field */
+   cdds_puti(bin, tag, out_buf,in_array, 100);
+   </pre></b>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="cdds_get.html"   >cdds_get</a>    Get one field from a buffer
+<a href="cddx_out.html"   >cddx_out</a>    Open output
+<a href="cdds_member.html">cdds_member</a> Get the FIELD_TAG of a structure member
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,315 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (symflags)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","discussions","symflags")
+    </script>
+    <!*********************************************************************>
+
+    <h3>DDS_SYM_FLAG</h3>
+
+    <p>
+      <b>"DDS_SYM_FLAG"</b> is an enumerated list of symbol table flags 
+      defined in dds_symbol.h.  This is a brief description of the flags.</p>
+
+    <pre>
+   /************************************************************************/
+   /* Flags that distinguish between the basic symbol entries.             */
+   /* These flags are mutually exclusive.                                  */
+   /************************************************************************/
+   DDS_SYM_TYPE   - type description (DDS_TYPE)       
+                         Name space not applicable. Binary data representation.    
+   DDS_SYM_OBJECT - storage description (DDS_OBJECT)  
+                         Identifier name space: variables, constants, 
+                         enumerations and functions.  Implies value and storage,
+                         unless TYPEDEF is also set.
+   DDS_SYM_EXPR   - expression description (DDS_EXPR).
+                         Map expression name space: results, operators, and args.  
+   DDS_SYM_MEMBER - member description (DDS_MEMBER)   
+                         Struct or union name space: bit fields may be anonymous.   
+                         Members subdivide objects, but have no storage themself.  
+   DDS_SYM_BLOCK  - nested scope (DDS_BLOCK)          
+                         "tag" name space (struct, union, enum, initializer).     
+                         Symbols delimited by "{}"     
+   DDS_SYM_LABEL  - statement markers (DDS_LABEL)     
+                         "label" name space            
+
+   /************************************************************************/
+   /* Flags shared by most symbol descriptors.                             */
+   /************************************************************************/
+   DDS_SYM_ERROR     - symbol descriptor error
+   DDS_SYM_MULTIPLE  - multiple declarations
+   DDS_SYM_UNDEFINED - used before declaration
+
+   /************************************************************************/
+   /* Flags (storage class) for DDS_OBJECT.                                */
+   /* DDS_DECLARE usage is transient (declaration parsing).                */
+   /* DDS_BLOCK usage is for local objects and expressions.                */
+   /* These flags are mutually exclusive in DDS_DECLARE.                   */
+   /* DDS_SYM_REGISTER allowed in DDS_EXPR (deviant).                      */
+   /************************************************************************/
+   DDS_SYM_AUTO     - automatic           
+                           Default for objects declared within functions.     
+   DDS_SYM_REGISTER - register (auto)     
+                           Unary "&amp;" may not be applied to register object.   
+                           If set, value is NOT aligned (deviant symantics),  
+                           i.e. non-aligned assignments/coercion required.    
+                           Example: map buffer objects created by ddsOpenMap. 
+   DDS_SYM_STATIC   - static              
+   DDS_SYM_EXTERN   - external (static).  
+                           Default for objects declared within file scope,    
+                           and non-static function declarations.              
+   DDS_SYM_TYPEDEF  - typedef             
+                           Syntactic convenience.  no storage is reserved.    
+                           If set, DDS_SYM_LVALUE and PREP should be reset.   
+
+   /************************************************************************/
+   /* Flags (lex context) for DDS_DECLARE.                                 */
+   /* Declare usage is transient (declaration parsing).                    */
+   /************************************************************************/
+   DDS_SYM_IDENT    - IDENTIFIER_TOKEN wanted from  
+                           scanner (not existing object).
+
+   /************************************************************************/
+   /* Flags (scope usage) for DDS_OBJECT, DDS_BLOCK, DDS_EXPR.             */
+   /************************************************************************/
+   DDS_SYM_FUNC     - function                
+
+   /************************************************************************/
+   /* Flags (scope usage) for DDS_TYPE, DDS_OBJECT,                        */
+   /* BLOCK, MEMBER, and EXPR.                                             */
+   /************************************************************************/
+   DDS_SYM_ARRAY    - array declaration 
+
+   /************************************************************************/
+   /* Flags (scope usage) for DDS_TYPE, DDS_OBJECT,                        */
+   /* BLOCK, MEMBER, and EXPR.                                             */
+   /* These flags are mutually exclusive.                                  */
+   /************************************************************************/
+   DDS_SYM_STRUCT   - structure         
+   DDS_SYM_UNION    - union             
+   DDS_SYM_ENUM     - enumerated        
+
+   /************************************************************************/
+   /* Flags (member modifiers) for DDS_MEMBER                              */
+   /************************************************************************/
+   DDS_SYM_FIELD    - ":N", bit field 
+
+   /************************************************************************/
+   /* Flags (member composition) for DDS_DECLARE.                          */
+   /* DDS_DECLARE usage is transient (declaration parsing).                */
+   /* Used to "edit" members within struct/union lists.                    */
+   /************************************************************************/
+   DDS_SYM_DELETE   - "-"  delete, if it exists  
+   DDS_SYM_REPLACE  - "*"  replace, if it exists 
+   DDS_SYM_APPEND   - "+"  append, if unique     
+   DDS_SYM_DAPPEND  - "-+" delete and append     
+   DDS_SYM_RAPPEND  - "*+" replace or append     
+
+   /************************************************************************/
+   /* Flags (variations) for DDS_TYPE descriptors                          */
+   /************************************************************************/
+   DDS_SYM_SHORT    - short     
+   DDS_SYM_LONG     - long      
+   DDS_SYM_LLONG    - long long 
+   DDS_SYM_SIGNED   - signed    
+   DDS_SYM_UNSIGNED - unsigned  
+
+   /************************************************************************/
+   /* Flags (type genus) for DDS_TYPE descriptors                          */
+   /************************************************************************/
+   DDS_SYM_VOID     - void                            
+   DDS_SYM_CHAR     - character                       
+   DDS_SYM_INT      - integer                         
+   DDS_SYM_FLOAT    - floating point                  
+   DDS_SYM_DOUBLE   - double precision floating point 
+   DDS_SYM_COMPLEX  - complex (real, imaginary pair)  
+
+   /************************************************************************/
+   /* Flags (attributes) for DDS_OBJECT, DDS_EXPR, and DDS_MEMBER.         */
+   /* Set in DDS_EXPR iff it computes a pointer (P+n, A[n], P->m, S.m).    */
+   /*    The computed pointer is save in DDS_EXPR value ptr itself, unlike */
+   /*    other expressions which change the value pointed to by the ptr.   */
+   /*    Dependencies are relocated when the expression is evaluated.      */
+   /* Set in DDS_OBJECT iff the value ptr can change after compilation.    */
+   /*    For example, the value ptr can change for map buffer objects.     */
+   /*    Dependencies are relocated before evaluating map expressions.     */
+   /* If DDS_SYM_RELOC is set and the value is used as an argument, then   */
+   /*    the DDS_EARG value.ptr must be relocated when the original moves. */
+   /*    An entry is appended to the original pointer's reloc list for     */
+   /*    each DDS_EARG value.ptr that is dependent upon the value.         */
+   /* Expressions with INHIBIT set are not threaded for evaluation.        */
+   /*    If RELOC is also set (as with member references), dependencies    */
+   /*    can not be relocated when the expression is evaluated.            */
+   /*    Instead, the relocation information is propagated upwards.        */
+   /* Set in DDS_MEMBER iff it is a pointer ???                            */
+   /************************************************************************/
+   DDS_SYM_RELOC    - value "ptr" type is (void**)       
+
+   /************************************************************************/
+   /* Flags (attributes) for DDS_OBJECT.                                   */
+   /* Set in DDS_OBJECT iff value is a literal.  If set, "name" is the     */
+   /* unparsed text for uncompile ("123", "3.14", "0xf", "string", etc.).  */
+   /* If reset, "name" is taken as an object identifer by uncompile.       */
+   /************************************************************************/
+   DDS_SYM_LITERAL  - literal value  
+
+   /************************************************************************/
+   /* Flags (attributes) for DDS_EXPR.                                     */
+   /* Set in DDS_EXPR iff the expression is not threaded for evaluation,   */
+   /* i.e. the results are computed via another mechanism.                 */
+   /* Expression examples: foo.member, sizeof(type_name), axis_size("t").  */
+   /************************************************************************/
+   DDS_SYM_INHIBIT  - inhibit threading and evaluation. 
+
+   /************************************************************************/
+   /* Flags (attributes) for DDS_OBJECT and DDS_EXPR.                      */
+   /* Implicitly set/reset in DDS_EXPR, depending upon operator and args.  */
+   /************************************************************************/
+   DDS_SYM_LVALUE   - value pointie is assignable       
+
+   /************************************************************************/
+   /* Flags (uncompile) for DDS_OBJECT and DDS_MEMBER.                     */
+   /* Set iff uncompile has already processed the object.                  */
+   /************************************************************************/
+   DDS_SYM_UNCOMP   - uncompiled done.   
+
+   /************************************************************************/
+   /* Flags (opcode modifier) for DDS_EXPR.                                */
+   /* If set, "ddsUncompile" must perform special processing.              */
+   /************************************************************************/
+   DDS_SYM_CAST     - explicit cast, DDS_ASSIGN_OP only. 
+   DDS_SYM_COERCE   - implicit cast, DDS_ASSIGN_OP only. 
+                           CAST and COERCE are optional and mutually exclusive.
+                           If neither CAST nor COERCE are set, its a normal 
+                           assignment.   
+
+   /************************************************************************/
+   /* Flags (type qualifiers)  DDS_TYPE, DDS_OBJECT, DDS_MEMBER, DDS_EXPR. */
+   /* Propagated to DDS_OBJECT from its declared DDS_TYPE.                 */
+   /* Propagated to DDS_MEMBER from its declared DDS_TYPE.                 */
+   /* Propagated to DDS_EXPR from DDS_MEMBER by "->" and "." operators.    */
+   /* Propagated to DDS_EXPR from DDS_OBJECT by "=" operator.              */
+   /************************************************************************/
+   DDS_SYM_CONST    - value not assignable               
+                         Set in DDS_TYPE via declaration keyword "const". 
+                         Implicitly set in DDS_EXPR for literal (constant) 
+                         values.  Warning if CONST is set and DDS_EXPR is used 
+                         as an lvalue.  Implicitly set/reset in DDS_EXPR, 
+                         depending upon operator. (K&amp;R 2nd Ed, A7.19)
+   DDS_SYM_VOLATILE - volatile, unpredictable value.     
+                         Set in DDS_TYPE via declaration keyword "volatile".
+                         Optimization is suppressed if VOLATILE is set in an 
+                         DDS_EXPR
+   DDS_SYM_ALIGN    - non default alignment              
+                         Set in DDS_TYPE via declaration keyword "align(N)".
+                         Implicitly reset in DDS_EXPR for literal (constant)
+                         values. Implicitly set in DDS_OBJECT for map buffer
+                         references.
+
+   /************************************************************************/
+   /* Flags (CONST variations) DDS_OBJECT, DDS_EXPR.                       */
+   /* Implicitly set/reset in DDS_EXPR, depending upon operator and args.  */
+   /* Implicitly set in DDS_EXPR for literal (constant) values.            */
+   /************************************************************************/
+   DDS_SYM_CONST_PREP - preprocessor constant             
+   DDS_SYM_CONST_DECL - declaration constant.             
+   DDS_SYM_CONST_INIT - initializer constant              
+
+   /************************************************************************/
+   /* Flags (attributes) for DDS_TYPE, DDS_OBJECT, DDS_BLOCK, DDS_MEMBER,  */
+   /* and DDS_LABEL.                                                       */
+   /************************************************************************/
+   DDS_SYM_INCOMPLETE - incomplete type                   
+                           Set in DDS_LABEL, if usage is a forward reference.
+                           Reset in DDS_LABEL, when forward reference is back patched.
+                           Set in DDS_TYPE, if array bound is unknown, i.e. "[]".
+                           Set in DDS_TYPE, if struct/union/enum is a forward reference.
+                           Propagated to DDS_MEMBER from its declared DDS_TYPE.
+                           Propagated to DDS_TYPE from struct/union DDS_MEMBER.
+                           Propagated to DDS_OBJECT from DDS_TYPE.
+                           Reset in DDS_OBJECT, when forward reference is back patched.
+                           If set in DDS_TYPE, ERROR is returned by "sizeof" operator.
+                           If set in DDS_TYPE, ERROR if member of struct or union.
+    </pre>
+
+    <h3>Legal Combinations of symbol flags</h3>
+
+    <pre>
+   /***********************************************************************/
+   /* bit   TYPE      OBJECT     EXPR      MEMBER     BLOCK      DECLARE  */   
+   /***********************************************************************/
+       0    TYPE                                                          
+       1              OBJECT                                              
+       2                         EXPR                                      
+       3                                   MEMBER                          
+       4                                              BLOCK                 
+       6    ERROR     ERROR      ERROR     ERROR      ERROR      ERROR       
+       7              MULTIPLE             MULTIPLE   MULTIPLE              
+       8              UNDEFINED  UNDEFINED UNDEFINED  UNDEFINED             
+       9    SHORT     AUTO                            AUTO       AUTO        
+      10    LONG      REGISTER                        REGISTER   REGISTER    
+      11    LLONG     STATIC                          STATIC     STATIC      
+      12    SIGNED    EXTERN                          EXTERN     EXTERN      
+      13    UNSIGNED  TYPEDEF                         TYPEDEF    TYPEDEF     
+      14    VOID      RELOC      RELOC     RELOC                 DELETE      
+      15    CHAR      LITERAL    INHIBIT                         REPLACE     
+      16    INT       LVALUE     LVALUE                          APPEND      
+      17    FLOAT     UNCOMP     CAST      UNCOMP                DAPPEND     
+      18    DOUBLE               COERCE                          RAPPEND     
+      19    COMPLEX   FUNC       FUNC      FUNC       FUNC                  
+      20    ARRAY     ARRAY      ARRAY     ARRAY                            
+      21    STRUCT    STRUCT     STRUCT    STRUCT     STRUCT                
+      22    UNION     UNION      UNION     UNION      UNION                 
+      23    ENUM      ENUM       ENUM      ENUM       ENUM                  
+      24    CONST     CONST      CONST     CONST                            
+      25    VOLATILE  VOLATILE   VOLATILE  VOLATILE                         
+      26    ALIGN     ALIGN      ALIGN     ALIGN                            
+      27              PREP       PREP      FIELD                 IDENT       
+      28              DECL       DECL                                      
+      29              INIT       INIT                                      
+      30   INCOMPLETE INCOMPLETE           INCOMPLETE INCOMPLETE            
+    </pre>
+
+    <h3>DDS_SYM_FLAG flow between DDS_SYM entries</h3>
+
+    <pre>                                                      
+                            parser                    
+                              |                       
+                              +------------+          
+                              |            |          
+                              | BASE       |          
+                              | MODIFY     | STORE    
+                              | ASUE       | EDIT     
+                              | QUAL       |          
+                              v            v          
+                             TYPE       DECLARE       
+                              |            |          
+           +--------+---------+            |          
+           |        |         |            |          
+           | SUE    | ASUE    | ASUE       | STORE    
+           |        | QUAL    | QUAL       |          
+           v        v         v            |          
+         BLOCK    MEMBER    OBJECT <-------+          
+                    |         |                       
+                    |         | LVALUE                
+                    | ASUE    | ASUE                  
+                    | QUAL    | QUAL                  
+                    |         | P/D/I                 
+                    |         v                       
+                    +------> EXPR <---+               
+                              |       |               
+                              +-------+               
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

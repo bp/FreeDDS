@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>fddz_hdtin - open a DDS dataset for input passing samples mapped to the host-dependent type</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "fdds.h"</b><br>
+    <b>#include "fddz.h"</b>
+    <p>
+      <b>integer function fddz_hdtin(</b><i>alias, value, title</i><b>)</b>
+      <dl><dd>
+        <b>character </b><i>alias*(*)</i><br>
+        <b>character </b><i>value*(*)</i><br>
+        <b>character </b><i>title*(*)</i>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"fddz_hdtin"</b> opens an input dataset. All headers will
+    be dropped leaving the "Samples" starting at the first value of each trace.
+    Samples are mapped to the host-dependent version of the sample type in the
+    input file. The dataset is open with "r+" so that it can be modified.
+
+    <p>
+    After opening a file for input with <b>"fddz_hdtin"</b> the input
+    buffer dictionary will be left open for scanning. The open process 
+    will look for "<i>alias</i>" for the dictionary,
+    "<i>alias</i><b>_data</b>" for overriding the
+    binary, and "<i>alias</i><b>_format</b>" for overriding the format.
+    The input parameter "<i>value</i>" is the default value 
+    (eg. "stdin:") used for a fallback in cases where "<i>alias</i>" is
+    not specified by the user.  The input parameter "<i>title</i>"
+    should be a brief one line description of the application program. 
+    It will return a binary tag associated with the internal binary upon
+    successful opening, a value of -2 if the dataset is not specified
+    and no default value is given, otherwise a value of -1 to signify 
+    an open failure.
+
+    <h2>LIMITATIONS</h2>
+    Convenience routines have a limitation where the <i>alias</i> argument
+    can only have a single alias name.
+    <p>
+    Some sample types understood by DDS are not part of the FORTRAN
+    specification.  If any such type is inadvertently mapped, the results
+    cannot be predicted.
+
+   <h2> EXAMPLE</h2>
+   <pre>
+integer int_buf(*), ier, in_tag,smpl_tag, iprec,count
+real    real_buf(*)
+double precision dbl_buf(*)
+character title*(80), genus*(DEFNNAME_MAX)
+ ...
+in_tag=fddx_hdtin('in','stdin:',title)
+smpl_tag=fdds_member(in_tag,0,'Samples')
+ier=fdds_genus(genus,in_tag,smpl_tag)
+iprec=fdds_prec(in_tag,smpl_tag)/fdds_count(in_tag,smpl_tag)
+ ...
+if (index(genus,'float').gt.0) then
+   if(iprec.eq.4) ier=fddx_read(in_tag,real_buf,count)
+   if(iprec.eq.8) ier=fddx_read(in_tag,dbl_buf,count)
+elseif (index(genus,'integer').gt.0) then
+   ier=fddx_read(in_tag,int_buf,count)
+endif
+ ...
+   </pre>
+
+   <h2>SEE ALSO</h2>
+   <pre>
+<a href="flibs.php?lib=ddz&api=fddz_hdtype">fddz_hdtype</a> Retrieve host-dependent type of a field
+<a href="flibs.php?lib=ddz&api=fddz_intype">fddz_intype</a> Open a file and get host-dependent type of Samples
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

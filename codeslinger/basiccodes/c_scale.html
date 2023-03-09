@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (access samples)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","c_scale.c")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+/***********************************************************************
+ *
+ * multiply data by a scalar, add a bias
+ *
+ ***********************************************************************/
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;<a href="../resources/cdds.h.html">cdds.h</a>&gt;
+
+/* main */
+int main(int argc, char **argv)
+{
+
+/* For DDS functions. Arguments and return values */
+   char  *prog, *Title;
+   int   ier;
+   BIN_TAG fd_in,fd_out;
+   long long ier_ll, izero_ll=0;
+
+/* Data attributes */
+   int   n1,n2,n3;
+
+/* User parameters */
+   float scalar, bias;
+
+/* Internal dynamic array */
+   float *record;
+
+/* Internal scalar values and loop counters */
+   int    i1,i2,i3, is;
+
+/*-------------------------------------------------------------------*/
+
+/* Initialize */
+   setargcv(argc, argv);
+   prog="c_scale";
+   Title="c_scale: data_out=scalar*data_in + bias";
+
+/* Open input file */
+   fd_in=<a href="../capishort/cddx_in.html">cddx_in</a>("in","stdin:",Title);
+
+/* Retrieve data characteristics */
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(1)","%d",&amp;n1);
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(2)","%d",&amp;n2);
+   n3=<a href="../capishort/cdds_axis_prod.html">cdds_axis_prod</a>(3);
+
+/* Retrieve command line and parfile parameters */
+   ier=<a href="../capishort/cdds_dict.html">cdds_dict</a>("par:","scan");
+
+   scalar=1.0;
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("scalar s","%f",&amp;scalar);
+
+   bias=0.0;
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("bias b","%f",&amp;bias);
+
+/* Open the output */
+   fd_out=<a href="../capishort/cddx_out.html">cddx_out</a>("out","stdout:",Title,fd_in);
+   ier_ll=<a href="../capishort/cdds_lseek8.html">cdds_lseek8</a>(fd_out,0,izero_ll,SEEK_SET);
+
+/* Allocate trace array */
+   record=(float*)malloc(n1*n2*sizeof(float));
+
+/* Loop over input data, read-scale-write */
+   for (i3=0; i3&lt;n3; i3++) {
+      ier=<a href="../capishort/cddx_read.html">cddx_read</a>(fd_in,record,n2);
+      for (i2=0; i2&lt;n2; i2++) {
+         for (i1=0; i1&lt;n1; i1++) {
+            is = n1*i2+i1;
+            record[is] = scalar*record[is] + bias;
+         }
+      }
+      ier=<a href="../capishort/cddx_write.html">cddx_write</a>(fd_out,record,n2);
+   }
+
+/* Clean up */
+   free(record);
+   ier=<a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+   ier=<a href="../capishort/cdds_close.html">cdds_close</a>(fd_out);
+
+/* Exit */
+   exit(0);
+}
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

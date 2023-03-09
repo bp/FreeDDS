@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (ptype)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","structures","ptype")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      These are the data structures used to define the primary data types.</p>
+
+    <h2>Sturctures:</h2>
+   <pre>
+DDS_PRIME       - Prime attributes (one for each DDS_PTYPE)
+DDS_PRIME_GENUS - type genus "prime" attributes (one for each DDS_TYPE_GENUS)
+    </pre>
+
+
+    <h2>Globals:</h2>
+    <pre>
+DDS_PTYPE       dds_mutate[];      /* mutate DDS_PTYPE to host "C" type */
+DDS_PTYPE       dds_concur[][];    /* concur on type to use between ptypes */
+DDS_PRIME      *dds_prime;         /* Primary data types */
+DDS_PRIME_GENUS dds_prime_genus[]; /* Genus of ptypes (eg. FLOATS, INTEGERS...) */
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

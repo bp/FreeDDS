@@ -1,0 +1,224 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_map)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","map")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_map - convert fields between DDS type buffers
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>int cdds_map(</b><i>out_bin, out_tag, out_buf, in_bin, in_tag, in_buf</i><b>);
+      </b><dl><dt><dd>
+        <b>BIN_TAG </b><i>out_bin
+        </i><br>
+        <b>FIELD_TAG </b><i>out_tag
+        </i><br>
+        <b>void *</b><i>out_buf
+        </i><br>
+        <b>BIN_TAG </b><i>in_bin
+        </i><br>
+        <b>FIELD_TAG </b><i>in_tag
+        </i><br>
+        <b>const void *</b><i>in_buf
+        </i></dl>
+    <h2>DESCRIPTION</h2>
+    This function maps fields from one type buffer to another.
+    The conversions are specified by map definitions.
+    These may be defined by the user, program or default files.
+    These definitions are retrieved, when 
+    <a href="open.html">cdds_open</a>
+    is executed.
+    Normally the "Samples" are mapped along with any headers (except 
+    when used in conjunction with either 
+    <a href="../cxapi/out.html">cddx_out</a> or
+    <a href="../cxapi/outhdr.html">cddx_outhdr</a> the "Samples" are 
+    <u>NOT</u> mapped). If the output "Samples" (or any other
+    vectors) have different lengths between the input and output,
+    then the shorter length is used.
+
+    <p>
+    Map definitions have the following syntax.
+    <p>
+      <b>map</b><i>:in_format:out_format.out_field= expression</i>
+    <p>
+      or
+    <p>
+      <b>map</b><i>:in_alias:out_alias.out_field= expression</i>
+    <dl><dt><dd>
+        <pre>
+          <b>
+            map:usp:segy.OrigRecNum= RecNum
+            map:in:out.OrigRecNum= RecNum
+            map:*:out.OrigRecNum= RecNum
+
+            map:disco:usp.ToTmAU= 4 * TTIMAU
+
+            comment= subscripts are zero based
+            map:usp:abc.time= _TVPair.TVPair[0]
+            map:usp:abc.velocity= _TVPair.TVPair[1]
+
+            comment= don't map (change) gamma from disco
+            map:disco:abc.gamma= void
+
+            comment= macro required for ambiguous names
+            or default support.
+            map:disco:usp.SrRcMX= field("MID-X", 0.)
+
+            comment= support for defined constants
+            map:usp:abc.xyz= dict("xyz_default", 0.)
+
+            comment= error, if disco "BETA" field doesn't exist
+            map:disco:abc.beta= field("BETA", error)
+
+            comment= select input field name via definition
+            map:usp:abc.Sample= field( dict("component", "Sample"), void)
+          </b></pre>
+        <b></b></dl>
+    <p>
+      The value of the map definition is an algebraic expression.
+      Map definitions are ignored, unless they match the format and field name.
+      If a map definition is not specified for an output field,
+      an input field by the same name is used by default.
+      The field type (integer, float, ...) and style (ieee, ibm, ...)
+      are converted as needed.
+    <p>
+      The following operators may be used in numeric expressions.
+      The operands are field names, or the results from functions and macros.
+      Operator precedence and associativity are consistent with "C".
+    <dl><dt><dd>
+        <pre>
+Operator   grouping        Description (precedence).
+()  []     left to right   grouping, subscript (highest).
++  -       right to left   unary signs
+*  /       left to right   multiply, divide
++  -       left to right   binary add, subtract (lowest).
+%          left to right   Modulo (Remainder).
+        </pre>
+    </dl>
+    The following functions are supported, for numeric data types.
+    The argument type may be integer or float.
+    The result is either scalar or vector valued,
+    depending upon the argument.
+    <dl><dt><dd>
+        <pre>
+Function   Description
+abs(x)     absolute value.
+ceil(x)    smallest integer not less than x.
+floor(x)   largest integer not greater than x.
+int(x)     convert to integer (round toward zero).
+near(x)    convert to nearest integer.
+float(x)   convert to float.
+sqrt(x)    square root.
+sign(x)    returns -1 or +1 based on the sign of x.
+sin(x)     sine(x) (x in radians)
+cos(x)     cosine(x) (x in radians)
+tan(x)     tangent(x) (x in radians)
+asin(x)    arcsine(x) in radians
+acos(x)    arccosine(x) in radians
+atan(x)    arctangent(x) in radians
+atan2(x,y) arctangent of x/y in radians
+log(x)     natural log of x
+log10(x)   base-10 log of x
+exp(x)     e**x
+pow(x,y)   x**y
+        </pre>
+    </dl>
+    Two special macros are recognized.
+    The first argument is a string that
+    names an input field or an output definition.
+    The second argument is a default value.
+    It is evaluated if the field or definition,
+    referenced by the first argument, doesn't exist.
+    If a macro subscript is specified,
+    it only applies to the first argument.
+    <dl><dt><dd>
+        <pre>
+Macro                          Description
+field("field_name", default)   input field.
+dict("defn_name", default)     output definition.
+        </pre>
+    </dl>
+    If an input field has a "nice" name,
+    it can be directly referenced in an expression.
+    Otherwise, the <b>field</b> macro must be used.
+    Nice names begin with an alpha character (a-z, A-Z, "_"),
+    and only contain alpha and numeric characters.
+    "BIN-X" is not a nice name; it would parse as "BIN" minus "X".
+    <p>
+      Three special values are recognized.
+      The output field is not mapped (not changed),
+      if the final expression yields any of these values.
+      They may optionally generate warning or error messages.
+    <dl><dt><dd>
+        <pre>
+value   Description
+error   generate error message
+warn    generate warning message
+void    no mapping, no message
+        </pre>
+    </dl>
+    <h2>INPUT</h2>
+    The first three arguments describe an output type and buffer.
+    <p>
+      <i>Out_bin</i> is a binary tag, previously obtained from 
+      <a href="open.html">cdds_open.</a>
+    <p>
+      <i>Out_tag</i> is a field tag, previously obtained eg. from 
+      <a href="member.html">cdds_member.</a>
+      It specifies a field tag associated with <i>out_bin</i>.
+      If <i>out_tag</i> is zero (nominal),
+      it defaults to the <i>SEQUENCE</i> (trace type) associated with <i>out_bin</i>.
+    <p>
+      <b>Out_buf</b> is the destination buffer.
+      The size and field structure is implied by <i>out_tag</i>.
+    <p>
+      The last three arguments describe an input type and buffer.
+      They are similar to the <i>out</i> arguments.
+    <h2>OUTPUT</h2>
+    The contents of <i>out_buf</i> are updated,
+    as specified by the map definitions.
+    <p>
+      The return value is zero.
+      If an error is detected, a negative value is returned.
+    <h2>EXAMPLES</h2>
+    <dl><dt><dd>
+        <pre>
+          <b>
+            BIN_TAG out_bin, in_bin;
+            char *out_buf;
+            const char *in_buf;
+            ...
+            cdds_map(out_bin, 0, out_buf, in_bin, 0, in_buf)
+          </b></pre>
+        <b></b></dl>
+    <h2>SEE ALSO</h2>
+    <pre>
+      <a href="readm.html">cdds_readm</a>  Read binary stream and map buffer
+      <a href="writem.html">cdds_writem</a> Write binary stream and map buffer
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

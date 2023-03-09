@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>setMergedMode - Specifies how multiple files are merged</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>procedure setMergedMode(</b><i>mode</i><b>)</b>
+      <dl><dd>
+	<b>integer, intent(in) :: </b><i>mode</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"setMergedMode"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      For a data object associated with multiple files in read mode, this procedure specifies
+      how the axes should be merged across files.
+      <br><br>
+      If <i>mode</i> is 0, then the files are merged across the specified axis. All axes except
+      the merged axis must be conformant. If <i>mode</i> is 1, then all axes including the
+      merged axis must be conformant so that subblocks subblocks can be read across multiple files.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	
+	type(DdsObject) :: inData
+	
+	! merge files across 2nd axis
+	call inData%setMergedMode(0)
+	call inData%setMergedAxis(2)
+	
+	call inData%open('r', 'in')
+      </pre>
+      
+  </body>
+</html>

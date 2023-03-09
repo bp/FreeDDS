@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger "C" Api (cdds_openpr)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","cdds_openpr")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capishort")</script>
+
+    <h2>
+      cdds_openpr - open printout file
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>int cdds_openpr(</b><i>pname, id</i><b>);
+      </b><dl><dt><dd>
+        <b>const char *</b><i>pname
+        </i><br>
+        <b>const char *</b><i>id
+        </i></dl>
+
+    <P>
+      [ <A HREF="#description">Description</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>cdds_openpr</b> opens a printfile. It first checks the command line
+    for a user request of online help via the <b>"-h"</b> or <b>"help="</b>
+    switches. If help is requested, a standard header is written to the
+    console and the return value is 1 (or 2 if non-DDS command arguments
+    are present). Otherwise, a unique print file is opened up, a standard
+    header is written to it, and the return value is 0.  The print file is
+    created using the program name, <i>pname</i>.  (The actual printfile
+    can be controlled at runtime.
+    See <a href="../../users/iocontrol/printout.html">Printout File</a>.)
+    If the file cannot be opened, the return value is -1.  If a file is
+    already opened, the return value is -2.  The standard header is
+    written by <b>cdds_prthdr</b> using the program name, <i>pname</i>,
+    and RCS Id, <i>id</i> (see NOTE on RCS).  The other print routines can
+    write to this print file.
+
+    <p>
+      <b>NOTE:</b> The RCS Id is a Revision Control Sysem keyword
+      (CVS, RCS or Subversion).  However, this parameter is no
+      longer used if the DDS Application makefiles are used.  Instead,
+      a svn_version.c file is created in the object directory and built
+      into the code with the current subversion revision number.
+      That way the revision number in the code will always reflect
+      the latest revision number.
+
+    <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre><b>
+   ier=cdds_openpr("filt", "$Id: filt.c$");
+   if (ier != 0) help();
+   ...
+   cdds_prterr("illegal value=%f\n", value);
+   ...
+   cdds_prtmsg("offset = %d\nangle =%f\n", ofst, angle);
+   ...
+   if(!cdds_errors()) {
+      ...
+      cdds_prtcon("%d% complete\n", pct);
+   }
+   ...
+   cdds_closepr();
+     </b></pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="cdds_prtmsg.html" >cdds_prtmsg</a>  print message
+<a href="cdds_prtcon.html" >cdds_prtcon</a>  print message to console
+<a href="cdds_prterr.html" >cdds_prterr</a>  print error message
+<a href="cdds_errors.html" >cdds_errors</a>  check for print errors
+<a href="cdds_closrpr.html">cdds_closepr</a> close out &amp; termination
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

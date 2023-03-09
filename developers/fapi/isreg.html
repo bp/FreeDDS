@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_isreg)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","isreg")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_isreg - is DDS binary data a regular file</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_isreg(</b><i>bin</i><b>)
+      </b><dl><dd>
+        <b>integer </b><i>bin
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    This function returns positive value if the binary data is associated 
+    with a regular file, otherwise a zero value is returned, indicating 
+    that it may be data associated with a pipe, FIFO, socket,
+    character-special file or block-special file.  Only if a file is 
+    regular can it be seek'd upon.
+
+    <h2>INPUT</h2>
+    <i>bin</i> is a binary tag, previously obtained from 
+    <a href="open.html">fdds_open.</a>
+    It specifies a particular binary stream.
+
+    <h2>OUTPUT</h2>
+    A negative value is returned if <i>bin</i> is invalid.
+    Otherwise, the value will indicated whether the file is regular or not
+    by a '0' for 'false' and a positive value for 'true'.
+
+    <h2>EXAMPLES</h2>
+    <pre>
+      integer bin
+      ...
+      if (fdds_isreg(in_bin).gt.0) ier=fdds_lseek(bin, 0, -1, SEEK_CUR)
+      ...
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

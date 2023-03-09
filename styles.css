@@ -1,0 +1,115 @@
+body {
+  color:black;
+  font-family: Times;
+  font-size: 14pt;
+  text-align: justify;
+  margin:0;
+}
+
+img {
+   border:0px none;
+}
+
+p {
+  color:black;
+  font-family: Times;
+  font-size: 14pt;
+  text-align: left;
+}
+
+h3 {
+  text-decoration:underline;
+}
+
+li {
+  text-align:left;
+}
+
+pre {
+  color:#800000;
+  margin-left:20px;
+  font-size:12pt;
+}
+
+code {
+  color:#800000;
+  font-weight:bold;
+  font-size:12pt;
+}
+
+var {
+  color:#008000;
+  font-weight:normal;
+}
+
+.topic {  
+  background-color:#edfeff;
+}
+
+.list {
+   border:1px inset;
+   background-color:#edfeff;
+}
+
+.menu {
+  color:#ffd700;
+  color:#fff000;
+  text-decoration:none;
+  font-family: sans-serif;
+  font-size:16px;
+  font-weight:normal;
+}
+
+.menu:hover {
+  color:#000000;
+  background-color:#ffff80;
+  text-decoration:none;
+}
+
+.active {
+  color:#000000;
+  background-color:#80f0ff;
+  text-decoration:none;
+  font-family: sans-serif;
+  font-size:12pt;
+}
+
+.active:hover {
+  color:#ff0000;
+  background-color:#ffff80;
+  text-decoration:none;
+}
+
+a {
+  color:#0000ff;
+  font-family: sans-serif;
+  font-size:12pt;
+}
+
+a:hover {
+  color:#ff0000;
+}
+
+a:active {
+  color:#005FD5; 
+  text-decoration:none;
+}
+
+.footnote { 
+  font-family:sans;
+  font-size:10pt;
+  font-style:italic;
+}
+
+#footer {
+  background: url('images/banner_bg.png') repeat-x #616262;
+  border-top: 1px solid #999999;
+  border-bottom: 1px solid #999999;
+  height: 20px;
+  text-align: center;
+  color: #d0d0d0;
+  font-family:Times;
+  font-size:9pt;
+  margin-top: 0px;
+}
+

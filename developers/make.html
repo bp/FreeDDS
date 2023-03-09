@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Installation</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("developers","make")</script>
+    <!*********************************************************************>
+
+    <h2><u>Makefile Setup</u></h2>
+
+    <p>
+      Before building any DDS application you need to setup the following:
+
+    <ol>
+      <li>
+        <b><u>Compiler</u></b>: Make sure your compiler is setup in your 
+        path for the correct
+        machine on which you are building. (Within BP this is setup for
+        by you sourcing to "<b>devsetup</b>")<br/><br/></li>
+      <li>
+        <b><u>Environment</u></b>: Make sure your environment variables 
+        are setup correctly
+        <ul>
+          <li><b>DDSROOT</b> - path to the root DDS directory. (Within BP
+            this is setup for you by sourcing to "<b>devsetup</b>")</li>
+          <li><b>DDS_DIST</b> - path to the distribution directory. (This is
+            defaulted to /tstapps/global by the DDS Make structure)</li>
+          <li><b>REMOTE_HOSTS</b> - list of remote machines to use when
+            making on multiple platforms at the same time using the "all" or
+            "allinstall" make options.  The newer application make files
+            can determine at run-time (if <b>REMOTE_HOSTS</b> is <u>not</u>
+            defined) the available machines to use via a couple of scripts 
+            (gethosts &amp; chkhost).  (These will have to be setup for FreeDDS.)</li>
+        </ul><br/></li>
+
+      <li><b><u>Makefile</u></b>: Setup a Makefile similar to this one for 
+        the programs "freq".  
+        If you have any "C" routines, they can be included in the "CSrcs" 
+        definition; otherwise it's just there if needed.  (F77Srcs, F90Srcs,
+        C+Srcs &amp; C++Srcs are aliased to these.) The make flags
+        (such as DEBUG, MP or FFT; see "make flags" for available flags)
+        must have any non-blank definition to turn them on.
+        (<u>NOTE:</u> by using "<code>LibName</code>" instead of "<code>Name</code>"
+        a library is made instead of an application.)
+        <u><b>WARNING:</b></u> Make sure you pick a name for your application
+        that does not already exist in the installation or distribution.
+
+<pre style="font-weight:bold">
+Name  := freq
+FSrcs := freq.F t2w.F w2t.F subs.F90
+CSrcs :=
+
+#DEBUG:=X 
+MP    :=X
+FFT   :=X
+
+include ${DDSROOT}/etc/MakeVariables
+
+include ${DDSROOT}/etc/MakeRules
+</pre>
+
+        Run "<a href="make/make/help.html">make help</a>" to get online help information on the use
+        of the DDS Makefile features.  Run "<a href="make/make/variables.html">make variables</a>"
+        for a list of the DDS Makefile variables that are used and modifiable (e.g.
+        FSrcs).  Run "<a href="make/make/flags.html">make flags</a>" for a list of DDS Makefile 
+        flags that can be used (e.g. FFT).  They only need to be defined with 
+        some non-blank value.</li>
+    </ol>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

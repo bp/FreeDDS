@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (access samples)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","f90_avg.F90")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+!***********************************************************************
+!
+! Get the average value of a dataset
+!
+!***********************************************************************
+
+      program f90_avg
+
+      implicit none
+
+#include &lt;<a href="../resources/f90dds.h.html">f90dds.h</a>&gt;
+
+! For DDS functions. Arguments and return values
+      character(LEN=7),parameter :: prog='f90_avg'
+      character(LEN=80)          :: Title
+      integer   ier, fd_in
+
+! Data attributes
+      integer n1,n2,n3
+
+! Internal dynamic array
+      real,allocatable :: trace(:)
+
+! Internal scalar values and loop counters
+      integer i2,i3
+      real    data_avg
+      double precision data_sum, denom
+
+!-------------------------------------------------------------------
+!
+! Initialize the Title
+!
+      Title=prog//': Get the average value of a dataset'
+
+!
+! Open input file
+!
+      fd_in=<a href="../fapishort/fddx_in.html">fddx_in</a>('in','stdin:',Title)
+
+!
+! Retrieve data characteristics
+!
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(1)','%d\0',n1)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(2)','%d\0',n2)
+      n3=<a href="../fapishort/fdds_axis_prod.html">fdds_axis_prod</a>(3)
+
+!
+! Allocate array
+!
+      allocate(trace(n1))
+
+!
+! Initialize the sum
+!
+      data_sum=0.0
+
+!
+! Loop over input data, accumulating the sum
+!
+      do i3 = 1,n3
+         do i2 = 1,n2
+            ier=<a href="../fapishort/fddx_read.html">fddx_read</a>(fd_in,trace,1)
+            data_sum = data_sum + sum(trace(:))
+         enddo
+      enddo
+
+!
+! Compute the average
+!
+      denom = dble(n1)*dble(n2)*dble(n3)
+      data_avg = data_sum/denom
+
+!
+! Report the result
+!
+      write(0,*) 'The average of input samples is',data_avg
+
+!
+! Clean up
+!
+      deallocate(trace)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+
+!
+! Stop
+!
+      stop
+      end program f90_avg
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

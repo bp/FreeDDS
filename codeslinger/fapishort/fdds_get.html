@@ -1,0 +1,168 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Fortran Api (fdds_get)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","fdds_get")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapishort")</script>
+
+    <h2>fdds_get - get one field from a DDS type buffer</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_get</b><i>xx</i><b>(</b><i>bin_tag, field_tag, in_buf, offset, out_array[, count]</i><b>)
+      </b><dl><dd>
+        <b>integer</b> <i>bin_tag
+        </i><br>
+        <b>integer</b> <i>field_tag
+        </i><br>
+        <b><i>HostBufType</i></b> <i>in_buf(*)
+        </i><br>
+        <b>integer</b> <i>offset
+        </i><br>
+        <b><i>HostArrayType</i></b> <i>out_array(*)
+        </i><br>
+        <b>integer</b> <i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    These functions get data from a field of an input buffer and place
+    it into an array variable. The data are converted from the
+    <i>type</i> of the field known to <i>bin_tag</i> to the
+    host-dependent type defined for the trailing characters in the
+    function name (see below).
+
+    <h2>ARGUMENTS</h2>
+    "<i>bin_tag</i>" is a binary tag previously obtained from 
+    <a href="fddx_in.html">fddx_in.</a>
+
+    <p>
+      "<i>field_tag</i>" identifies a specific field within a structure of
+      <i>bin_tag</i>. It is obtained with function
+      <a href="fdds_member.html">fdds_member.</a>
+      If <i>field_tag</i> is zero, the default target (a trace) is used.
+
+    <p>
+      "<i>in_buf</i>" is a buffer of data containing the target
+      (a trace).
+
+    <p>
+      "<i>offset</i>" is a byte offset into buffer from where the
+      <i>field_tag</i> is referenced (typically 0).
+
+    <p>
+      "<i>out_array</i>" is a buffer where converted information is
+      placed. The host-dependent type of <i>out_array</i> is implied by trailing
+      chacters in the function name (see below).
+
+    <p>
+      "<i>count</i>" specifies the number of elements to convert.
+      (except for type <b>character</b> where the maximum count is
+      implicit).
+
+    <h2>OUTPUT</h2>
+    The <b>get</b> functions copy (or convert) data from one type field
+    into the output array. Vectors are truncated or padded,
+    depending upon the source and destination count.
+
+    <p>
+      The functions return value is count, or zero if an error occurred.
+
+    <p>
+      A simple byte copy is performed, if the binary formats are the same.
+      The <b>get</b><i>xx</i> functions convert between most numeric
+      representations.
+      The allowed combinations are implementation dependent.
+      The functions also convert between ascii and ebcdic character formats.
+      Byte fields can be copied, without conversion, into any array.
+      Conversion is not allowed between numeric and character types.
+      If conversion is not possible, an error is reported and
+      the output array is not changed.
+
+    <pre>
+<b><u>function     HostType     out_array pad</u></b>
+fdds_get     byte         zero
+fdds_getcb   character    blank
+fdds_geti    integer      zero
+fdds_geti2   integer*2    zero
+fdds_getr    real         zero
+fdds_getff   real         zero (USP fake float)
+fdds_getd    real*8       zero
+fdds_getc    complex      zero
+    </pre>
+
+    C assignment rules are used to convert <b>float</b> fields to integer
+    and unsigned values. Character fields are assumed to be padded with
+    blanks. Trailing pad characters are ignored during <b>get</b>
+    processing; they effectively shorten input character fields. 
+    <b>fdds_getff</b> retrieve fake floats from consecutive 1-, 2- or 
+    4-byte integers.
+
+    <p>
+      USP NOTE: When <b>fdds_getr</b> is given a negative field_tag, the
+      absolute value of the field_tag is passed to <b>fdds_getff</b>. 
+      This is indicative of a request from <b>fdds_member</b> for one of
+      the Horzxx trace headers.
+
+    <h2>EXAMPLES</h2>
+    <pre>
+c  get (convert) type field into integer out_array
+      integer bin_tag, field_tag
+      integer in_buf(*)
+      integer out_array
+      ...
+      ier = fddx_read(bin, in_buf, 1)
+      j = fdds_geti(bin_tag, field_tag, in_buf, 0, out_array, 100)
+
+c retrieve the dead trace flag for tests during processing
+      character Title*(80)
+      integer bin_tag, field_tag
+      integer itrc, ntrc
+      integer ier, dt_flag
+      real    in_buf(*)
+      ...
+      bin_tag = fddx_in('in','stdin:',Title)
+      ntrc = fdds_axis_prod(1)
+      field_tag = fdds_member(bin_tag,0,'StaCor')
+      do itrc = 1,ntrc
+         ier = fddx_read(bin_tag,in_buf,1)
+         ier = fdds_geti(bin_tag,field_tag,in_buf,0,dt_flag,1)
+         if (dt_flag .ne. 30000) then
+            ...
+         endif
+      enddo
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="fddx_in.html"       >fddx_in</a>
+<a href="fdds_member.html"   >fdds_member</a>
+<a href="fdds_axis_prod.html">fdds_axis_prod</a>
+<a href="fddx_read.html"     >fddx_read</a>
+<a href="fdds_put.html"      >fdds_put</a>
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

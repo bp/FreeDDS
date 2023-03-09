@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Definitions (Par)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","defn","par")</script>
+    <!*********************************************************************>
+
+    <p>
+      Control definitions can be placed in a parameter file, and referenced
+      from the command line by the command line parameter definition, 
+      "<code>par=<var>filename</var></code>". 
+      This circumvents problems with the shell and special characters.
+      It also provides an alternative to (re-)typing long command lines.  
+      The following could be placed in a file named "<b>foo.par</b>". 
+      DDS applications can reference this parameter Dictionary by defining
+      "<code>par= foo.par</code>" on the command line.
+
+    <pre>
+ in_data= classic.usp
+ in_format= usp
+ map:usp:segy.GrpDatum= 10 * RfSrEl
+ out= bar
+ out_format= segy
+    </pre>
+
+    <p>
+      Definitions on the command line take precedence over the same name
+      within a parameter Dictionary.  For example, nominal values can be
+      placed in a parameter file, and one attribute can be varied on the
+      command line with each execution. In the following example the
+      command line overrides the definition of in_data=, provided in the
+      parameter file.
+
+    <pre> bridge par= foo.par in_data= test.usp </pre>  
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

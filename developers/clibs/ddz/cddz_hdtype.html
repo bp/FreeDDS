@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>cddz_hdtype - Detect the host-dependent type of a field</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b>
+    <br>
+    <b>#include "cddz.h"</b>
+    <p>
+      <b>const char *cddz_hdtype(</b><i>bin_tag, field_tag</i><b>)</b>
+      <dl><dd>
+        <b>BIN_TAG </b><i>bin_tag</i><br>
+        <b>SYM_TAG </b><i>field_tag</i><br>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"cddz_hdtype"</b> returns the host-dependent type for a
+    field. Host-dependent type is uniquely determined by the combination of
+    "genus" and "precision". The table below shows the association between
+    genus, precision, and host-dependent type.
+
+    <pre>
+           bytes of
+genus     precision    host_type
+
+integer       1        signed char
+integer       2        short
+integer       4        int
+integer       8        long long
+
+float         4        float
+float         8        double
+float        16        long double
+
+complex       8        complex
+complex      16        complex double
+complex      32        complex long
+    </pre>
+
+    (Several genera have been omitted becuase they are seldom used: character,
+    pointer, unsigned, structure, union, void)
+
+    <h2>INPUT</h2>
+    <i>bin_tag</i> is  a  binary tag, previously obtained from cdds_open. It
+    specifies a particular binary stream. <i>field_tag</i> is the tag of the
+    field for which the host-dependent type is desired.  It can be found
+    with <b>"cdds_member"</b>.
+
+   <h2> EXAMPLE</h2>
+   <pre>
+int bin, tag;
+const char *RecNum_type, *Sample_type;
+ ...
+/* host_type of RecNum field */
+tag = cdds_member(bin, 0, "RecNum")
+RecNum_type = cddz_hdtype(bin, tag);
+ ...
+/* host_type of Samples field */
+tag = cdds_member(bin, 0, "Samples");
+Sample_type = cddz_hdtype(bin, tag);
+   </pre>
+
+   <h2>SEE ALSO</h2>
+   <pre>
+<a href="capi/member.html">cdds_member</a> Fetch a field tag within DDS structure
+<a href="capi/genus.html">cdds_genus</a> Get genus of a field
+<a href="capi/prec.html">cdds_prec</a> Byte count for a field
+<a href="capi/count.html">cdds_count</a> Field element count
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

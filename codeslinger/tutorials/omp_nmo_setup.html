@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (OpenMP)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","omp_nmo_setup")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+c***********************************************************************
+c
+c Setup the NMO process with OpenMP in mind
+c
+c***********************************************************************
+
+      subroutine omp_nmo_fxn
+     :      ( cmp_in, cmp_out, geom, vel, work, ntrc,nhdr, nproc,
+     :        n1,n2,n3, d1,d2,d3, o1,o2,o3, isx,isy,igx,igy,idead )
+
+      implicit none
+
+c Arguments
+      integer ntrc,nhdr, n1,n2,n3, nproc
+      integer isx,isy, igx,igy, idead
+      real    d1,d2,d3, o1,o2,o3
+
+      real    cmp_in(n1,ntrc,nproc), cmp_out(n1,ntrc,nproc)
+      real    geom(nhdr,ntrc,nproc)
+      real    vel(n1,n2,n3)
+      real    work(n1,9,nproc)
+
+c Locals
+      integer iv2,iv3, itrc, nlive, i1, iproc
+      real    src_x,src_y, grp_x,grp_y, cmp_x,cmp_y, off_x,off_y, offset
+      logical ldead
+
+c OpenMP variables and functions
+      integer iproc, omp_get_thread_num, omp_get_num_threads
+
+c-----------------------------------------------------------------------
+
+C$OMP PARALLEL DO DEFAULT(shared),
+C$OMP:    PRIVATE( iproc,itrc,i1, iv2,iv3,
+C$OMP:             src_x,src_y, grp_x,grp_y, ldead, nlive,
+C$OMP:             cmp_x,cmp_y, off_x,off_y, offset )
+      do iproc=1,nproc
+
+c
+c Get the XY coordinate for this CMP
+c
+         cmp_x=0.0
+         cmp_y=0.0
+         nlive=0
+
+         do itrc=1,ntrc
+
+            src_x=geom(isx,itrc,iproc)
+            src_y=geom(isy,itrc,iproc)
+            grp_x=geom(igx,itrc,iproc)
+            grp_y=geom(igy,itrc,iproc)
+            ldead=(geom(idead,itrc,iproc).ne.0)
+
+            if (.not.ldead) then
+               cmp_x=cmp_x + (src_x+grp_x)/2.0
+               cmp_y=cmp_y + (src_y+grp_y)/2.0
+               nlive=nlive+1
+            endif
+
+         enddo
+
+         cmp_x=cmp_x/real(nlive)
+         cmp_y=cmp_y/real(nlive)
+
+c
+c Locate the nearest neighbor velocity trace
+c
+         iv2 = nint((cmp_x-o2)/d2) + 1
+         iv3 = nint((cmp_y-o3)/d3) + 1
+
+         iv2 = max(1,min(n2,iv2))
+         iv3 = max(1,min(n3,iv3))
+
+c
+c Loop over traces, get the offset and do the NMO
+c
+         do itrc=1,ntrc
+
+            src_x=geom(isx,itrc,iproc)
+            src_y=geom(isy,itrc,iproc)
+            grp_x=geom(igx,itrc,iproc)
+            grp_y=geom(igy,itrc,iproc)
+            ldead=(geom(idead,itrc,iproc).ne.0)
+
+            if (ldead) then
+
+               do i1=1,n1
+                  cmp_out(i1,itrc,iproc)=0.0
+               enddo
+
+            else
+
+               off_x = src_x-grp_x
+               off_y = src_y-grp_y
+               offset= sqrt(off_x*off_x + off_y*off_y)
+
+               call <a href="apply_nmo.html">apply_nmo</a>
+     :              ( cmp_in(1,itrc,iproc), cmp_out(1,itrc,iproc),
+     :                vel(1,iv2,iv3), n1, offset, 0.0, d1,
+     :                work(1,1,iproc),work(1,2,iproc),work(1,6,iproc) )
+
+            endif
+
+         enddo
+
+      enddo   ! end of loop iproc=1,nproc
+C$OMP END PARALLEL DO
+
+c
+c All done
+c
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

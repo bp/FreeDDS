@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_history)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","history")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_history - copy an entire history
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>int cdds_history();</b>
+
+    <h2>DESCRIPTION</h2>
+    <b>cdds_history</b> copies all definitions from all <i>scan</i>
+    dictionaries. EOF is returned, if an error is detected, or a
+    <i>print</i> dictionary is not selected. If multiple <i>scan</i>
+    dictionaries are selected, the lowest precedence (older) is copied 
+    first, followed by higher (newer) ones. Special <i>history</i>
+    definitions are inserted into the <i>print</i> dictionary. They
+    preserve the name of each <i>scan</i> dictionary, and delimit its
+    contents. For example:
+
+    <pre>
+...old print dictionary contents...
+dds_history= <i>scan_dict_name</i>
+...contents of scan dictionary...
+dds_history_end= <i>scan_dict_name</i>
+    </pre>
+
+    <p/>
+      This routine is not normally used directly by applications, because
+      it is used internally by other DDS routines.
+
+    <h2>EXAMPLES</h2>
+    <pre>
+int j;
+
+/* copy all scan dictionaries */
+j = cdds_history();
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="dict.html">cdds_dict</a>   Select DDS dictionary and mode
+<a href="scanf.html">cdds_scan</a>  Retrieve value from scan dictionary
+<a href="printf.html">cdds_printf</a> Append value to print dictionary
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

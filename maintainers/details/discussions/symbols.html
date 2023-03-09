@@ -1,0 +1,162 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (symbols)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","discussions","symbols")
+    </script>
+    <!*********************************************************************>
+
+   <p>
+    The parser and scanner append symbols to the "active" table. The active symbol
+    table and associated binary are defined by:
+
+   <pre>
+       DDS_TABLE *dds_symbol;                              
+       DDS_BIN   *dds_compile;                             
+   </pre>
+                                                                  
+    The symbol table for DDS prime types is shared by binaries.  The initial table
+    entry is identified by "<b>dds_prime_block</b>".  Nested within it are prime types and 
+    error recovery symbols.  The prime symbol table and special entries are defined
+    by:     
+
+   <pre>
+       DDS_TABLE   dds_prime_table;                        
+       DDS_BLOCK  *dds_prime_block;                        
+       DDS_BLOCK  *dds_error_block;                        
+       DDS_TYPE   *dds_error_type;                         
+       DDS_OBJECT *dds_error_object;                       
+       DDS_MEMBER *dds_error_member;                       
+       DDS_EXPR   *dds_error_expr;                         
+       DDS_EXPR   *dds_error_thread;                       
+   </pre>
+                                                                  
+    "dds_prime" is an array of DDS_PRIME structs (attributes).  The attributes
+    include pointers into dds_prime_table.  "dds_prime_tag" STACK provides shared 
+    API symbol tags.        
+                                                                  
+    Each binary stream also has a private "symbol" table.  The initial table entry
+    is identified by "block_old".  Nested within it are implicit symbols from the
+    old format.  "block_new" is nested within block_old, which provides the default
+    symbols and outer scope for the new format.  The block_old and block_new scopes
+    are never closed.  "dds_block" identifies the current/active compiler scope.     
+    "sym_tag" STACK provides private API symbol tags.  The BIN struct for each
+    binary stream contains: 
+              
+   <pre>
+       DDS_TABLE symbol;                                          
+       DDS_BLOCK *block_old;                                      
+       DDS_BLOCK *block_new;                                      
+       DDS_STACK sym_tag; 
+   </pre>
+
+    This is the logical flow when looking for named "objects" while compiling formats:
+
+   <pre>
+    If the object is defined within the current scope, 
+       use it !
+    else the scanner calls ddsYYdepend and attempts to create it. 
+       If DDS_YACC_CREATE is set (write create mode),             
+          If "fmt:-:-.name" is defined,                           
+             call ddsYYparser recursively, which should create a  
+                "name" object within the current scope.           
+             If "name" object is created, use it !                
+          else if object "name" is defined within the block_old   
+             scope, use it !                                      
+          else if "fmt:-.name is defined,                         
+             re-open the block_old scope and call ddsYYparser.    
+             This "should" create the "name" object.              
+             If "name" object is created, use it !                
+             The block_old scope is closed before continuing.     
+          else                                                    
+             fail !                                               
+       else (read existing mode),                                 
+          If "fmt:-.name is defined,                              
+             call ddsYYparser recursively, which should create a  
+                "name" object within the current scope.           
+             If "name" object is created, use it !                
+          else if "fmt:-:-.name" is defined,                      
+             call ddsYYparser recursively, which should create a  
+                "name" object within the current scope.           
+             If "name" object is created, use it !                
+          else                                                    
+             fail ! 
+    </pre>      
+
+     <h3 style="padding: 0 0 0 70px">***  CONNECTIVITY DIAGRAM OF SYMBOL ENTRIES  ***</h3>
+
+    <pre>                
+       :.......:  :                                  :             :    
+               |  |                                  |             |    
+       +------      --------------&gt;  BLOCK  &lt;--------+------&lt;------+    
+       |       |  |                     hash/name                       
+       |       |  |   outer hash &lt;----  chain                           
+       |       |  +----------&lt;--------  older                           
+       |       |                        newer  ----------&gt;---------+    
+       |       +---------&lt;------------  block/flag                 |    
+       |              type  &lt;---------  type                       |    
+       |                                first  --&gt;---+             |    
+       |                                last  ------   -----&gt;--+   |    
+       |                                             |         |   |    
+       :                                             :         :   :    
+       |    +--&gt;------------------&gt;  OBJECT  &lt;-------+         |   |    
+       |    |                           hash/name              |   |    
+       |    |         local hash &lt;----  chain                  |   |    
+       |    |              0 &lt;--------  older                  |   |    
+       |    |                           newer  --&gt;---+         |   |    
+       +---   -----------&lt;------------  block/flag   |         |   |    
+       |    |         type  &lt;---------  type         |         |   |    
+       |    +--&lt;--+                     ptr          |         |   |    
+       |          |   stack  &lt;--------  reloc        |         |   |    
+       |          |   value  &lt;--------  track        |         |   |    
+       :          :                                  :         :   :    
+       |    +--&gt;-   ---------------&gt; MEMBER  &lt;-------+         |   |    
+       |    |     |                     hash/name              |   |    
+       |    |     |   local hash &lt;----  chain                  |   |    
+       |    |     +----------&lt;--------  older                  |   |    
+       |    |                           newer  --&gt;---+         |   |    
+       +---   -----------&lt;------------  block/flag   |         |   |    
+       |    |         type  &lt;---------  type         |         |   |    
+       |    |                           offset       |         |   |    
+       |    |                           adjust       |         |   |    
+       |    +--&lt;--+   value  &lt;--------  value_b      |         |   |    
+       :          :                                  :         :   :    
+       |    +--&gt;-   ---------------&gt; TYPE  &lt;---------+         |   |    
+       |    |     |                     hash/name              |   |    
+       |    |     |            0 &lt;----  chain                  |   |    
+       |    |     +----------&lt;--------  older                  |   |    
+       |    |                           newer  --&gt;---+         |   |    
+       +---   -----------&lt;------------  block/flag   |         |   |    
+       |    |         type  &lt;---------  type         |         |   |    
+       |    |                           ptype        |         |   |    
+       |    |                           align        |         |   |    
+       |    |                           prec/count   |         |   |    
+       |    |                           stroke       |         |   |    
+       |    +--&lt;--+                     c/a/trail    |         |   |    
+       :          :                                  :         :   :    
+       |    +--&gt;-   ---------------&gt; EXPR  &lt;---------+         |   |    
+       |    |     |                     hash/name              |   |    
+       |    |     |   local hash &lt;----  chain                  |   |    
+       |    |     +----------&lt;--------  older                  |   |    
+       |    |                           newer  --&gt;---+         |   |    
+       +---   -----------&lt;------------  block/flag   |         |   |    
+       |    |         type    &lt;-------  type         |         |   |    
+       |    |                           ptr          |         |   |    
+       |    |         stack  &lt;--------  reloc        |         |   |    
+       |    |                           opcode       |         |   |    
+       |    |         expr  &lt;---------  next         |         |   |    
+       |    |         value  &lt;--------  args...      |         |   |    
+       :    :.....:                                  :         :   :    
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

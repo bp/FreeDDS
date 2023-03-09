@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Convenience</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","cxapi")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("cxapi","cxapi")</script>
+
+      <h1>
+        <img src="../images/book_q.gif" alt="">
+        Table of Contents
+      </h1>
+
+    <p>
+      There are a series of "C" Convenience Routines that simplifies
+      code development.  These routines hide the underlying use of
+      Dictionaries and double buffering from the developer that DDS uses
+      to map external files to/from internal buffer binaries. In order to
+      do this, the actual output binaries are not opened until the 
+      first attemp to do I/O on them at which point the underlying 
+      routines do a delayed open internally, hidden from the developer.
+      The developer interface is made through the main input or output 
+      binary tag; the internal binary buffer and Dictionaries are
+      referenced by DDS through this binary tag.
+
+    <p>
+      The Convenience Open and I/O Routines cannot be mixed with the basic
+      DDS open, read and write routines.  However the bin_tag returned
+      by the Convenience Routines can be used with the other basic Binary
+      Data Control Routines (<b>cdds_isreg</b>, <b>cdds_lseek</b>,
+      <b>cdds_fflush</b> &amp; <b>cdds_close</b>) as well as the Binary
+      Field Access Routines (e.g. <b>cdds_cdds_member</b>, <b>cdds_prec</b>,
+      <b>cdds_index</b>, <b>cdds_get</b><i>xx</i>, etc.).
+
+    <p>
+      <img src="../images/redball.gif" alt="">
+      Open Routines<br/>
+    <ul>
+      <li><a href="cxapi/in.html">cddx_in</a>&nbsp;-&nbsp;open&nbsp;input&nbsp;(no&nbsp;headers)<br/>
+      <li><a href="cxapi/in2.html">cddx_in2</a>&nbsp;-&nbsp;open&nbsp;input&nbsp;(pass&nbsp;headers)<br/>
+      <li><a href="cxapi/inhdr.html">cddx_inhdr</a>&nbsp;-&nbsp;open&nbsp;input&nbsp;(select&nbsp;headers)<br/>
+      <li><a href="cxapi/out.html">cddx_out</a>&nbsp;-&nbsp;open&nbsp;output<br/>
+      <li><a href="cxapi/outhdr.html">cddx_outhdr</a>&nbsp;-&nbsp;open&nbsp;output&nbsp;(select&nbsp;headers)<br/>
+      <li><a href="cxapi/mod.html">cddx_mod</a>&nbsp;-&nbsp;reopen&nbsp;dataset<br/>
+      <li><a href="cxapi/mod2.html">cddx_mod2</a>&nbsp;-&nbsp;reopen&nbsp;dataset&nbsp;with&nbsp;headers<br/>
+    </ul>
+
+    <img src="../images/redball.gif" alt="">
+    Binary I/O Routines<br/>
+    <ul>
+      <li><a href="cxapi/read.html">cddx_read</a>&nbsp;-&nbsp;read&nbsp;data<br/>
+      <li><a href="cxapi/readfrom.html">cddx_readfrom</a>&nbsp;-&nbsp;seek&nbsp;&amp;&nbsp;read<br/>
+      <li><a href="cxapi/readall.html">cddx_readall</a>&nbsp;-&nbsp;read&nbsp;entire&nbsp;dataset<br/>
+      <li><a href="cxapi/write.html">cddx_write</a>&nbsp;-&nbsp;write&nbsp;data<br/>
+      <li><a href="cxapi/writeto.html">cddx_writeto</a>&nbsp;-&nbsp;seek&nbsp;&amp;&nbsp;write<br/>
+
+    </ul>
+
+    <img src="../images/redball.gif" alt="">
+    Utility Routines<br/>
+    <ul>
+      <li><a href="cxapi/dict.html">cddx_dict</a>&nbsp;-&nbsp;set&nbsp;dictionary&nbsp;mode<br/>
+      <li><a href="cxapi/addaxis.html">cddx_addaxis</a>&nbsp;-&nbsp;add&nbsp;an&nbsp;axis<br/>
+      <li><a href="cxapi/rmaxis.html">cddx_rmaxis</a>&nbsp;-&nbsp;remove&nbsp;an&nbsp;axis<br/>
+      <li><a href="cxapi/index.html">cddx_index</a>&nbsp;-&nbsp;get&nbsp;index&nbsp;to&nbsp;fields<br/>
+      <li><a href="cxapi/getbin.html">cddx_getbin</a>&nbsp;-&nbsp;get&nbsp;external&nbsp;bin_tag<br/>
+      <li><a href="cxapi/getdict.html">cddx_getdict</a>&nbsp;-&nbsp;get&nbsp;internal&nbsp;dictionary<br/>
+    </ul>
+
+    <p class="footnote">
+      NOTE: The Convenience Open Routines can only accept a single alias
+      name unlike the basic DDS routines.
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,152 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (usp Trace Header)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","usp","trchdr")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      The default fields that make up the <b>USP_TRACE</b> structure are 
+      defined in
+      "<code>${DDSROOT}/src/lib/dds3/usp.fmt.dds</code>"
+      and may be modified by editing that file and putting it into a
+      directory defined by "<code>${DDS_PATH}</code>".
+      These defaults are summarized by their nominal offset, name, type,
+      and element count.   
+
+    <pre>
+Off  Name       Type<sup>&dagger;</sup>      N Comment
+---  ---------  ----       - ----------------------------------
+0    USP_GREEN  USP_INT    1 "USP green word prefix"
+4    SGRNum     USP_SHORT  1 "SGR number"
+6    SGRAmp     USP_SHORT  1 "SGR PreAmp Gain, Filter"
+8    SGRDat     USP_INT    1 "SGR Julian Date Recorded"
+12   FlReFN     USP_SHORT  1 "Field Record File Number"
+14   FlStNm     USP_SHORT  1 "Field Station Number"
+16   PREPIn     USP_SHORT  1 "PREP Initiation Static"
+18   InStUn     USP_SHORT  1 "Initiation Static Unapplied"
+20   InStAp     USP_SHORT  1 "Initiation Static Applied"
+22   PREPRc     USP_SHORT  1 "PREP Reception Static"
+24   RcStUn     USP_SHORT  1 "Reception Static Unapplied"
+26   RcStAp     USP_SHORT  1 "Reception Static Applied"
+28   ToStAp     USP_SHORT  1 "Total Static Applied"
+30   ToTmAA     USP_SHORT  1 "Total Timing Adjust Applied"
+32   ToStUn     USP_SHORT  1 "Total Static Unapplied"
+34   ToTmAU     USP_SHORT  1 "Total Timing Adjust Unapplied"
+36   RcComp     USP_SHORT  1 "Receiver component xyz code"
+38   SrComp     USP_SHORT  1 "Source component xyz code"
+40   SrStat     USP_SHORT  1 "Source floating datum static"
+42   RcStat     USP_SHORT  1 "Receiver floating datum static"
+44   TrHdID     USP_SHORT  1 "Trace Header Identifier"
+46   SrRcAz     USP_SHORT  1 "Source-to-Receiver Azimuth"
+48   SrPtXC     USP_INT    1 "Src Point X-Coordinate 3D"
+52   SrPtYC     USP_INT    1 "Src Point Y-Coordinate 3D"
+56   RcPtXC     USP_INT    1 "Rec Point X-Coordinate 3D"
+60   RcPtYC     USP_INT    1 "Rec Point Y-Coordinate 3D"
+64   SrRcMX     USP_INT    1 "Src Rec Midpoint X 3D"
+68   SrRcMY     USP_INT    1 "Src Rec Midpoint Y 3D"
+72   CDPBCX     USP_INT    1 "CDP Bin Center X Coordinate"
+76   CDPBCY     USP_INT    1 "CDP Bin Center Y Coordinate"
+80   InTrCn     USP_INT    1 "Incremental Trace Counter"
+84   FlDtEl     USP_SHORT  1 "Floating Datum Elev this CDP"
+86   MulSkw     USP_SHORT  1 "Multiplex Skew (ms*1000)"
+88   PerSPO     USP_SHORT  1 "Perpendicular Src Pt Off y"
+90   InlSPO     USP_SHORT  1 "Inline Src Pt Off x"
+92   TiLine     USP_SHORT  6 "Tie Line Indicator 1-6"
+104  TVPT01     USP_SHORT  1 "Time-Velocity Pairs 1-20"
+106  TVPV01     USP_SHORT  1 "Time-Velocity Pairs 1-20"
+108  TVPT02     USP_SHORT  1
+110  TVPV02     USP_SHORT  1
+112  TVPT03     USP_SHORT  1
+114  TVPV03     USP_SHORT  1
+116  TVPT04     USP_SHORT  1
+118  TVPV04     USP_SHORT  1
+120  TVPT05     USP_SHORT  1
+122  TVPV05     USP_SHORT  1
+124  TVPT06     USP_SHORT  1
+126  TVPV06     USP_SHORT  1
+128  TVPT07     USP_SHORT  1
+130  TVPV07     USP_SHORT  1
+132  TVPT08     USP_SHORT  1
+134  TVPV08     USP_SHORT  1
+136  TVPT09     USP_SHORT  1
+138  TVPV09     USP_SHORT  1
+140  TVPT10     USP_SHORT  1
+142  TVPV10     USP_SHORT  1
+144  TVPT11     USP_SHORT  1
+146  TVPV11     USP_SHORT  1
+148  TVPT12     USP_SHORT  1
+150  TVPV12     USP_SHORT  1
+152  TVPT13     USP_SHORT  1
+154  TVPV13     USP_SHORT  1
+156  TVPT14     USP_SHORT  1
+158  TVPV14     USP_SHORT  1
+160  TVPT15     USP_SHORT  1
+162  TVPV15     USP_SHORT  1
+164  TVPT16     USP_SHORT  1
+166  TVPV16     USP_SHORT  1
+168  TVPT17     USP_SHORT  1
+170  TVPV17     USP_SHORT  1
+172  TVPT18     USP_SHORT  1
+174  TVPV18     USP_SHORT  1
+176  TVPT19     USP_SHORT  1
+178  TVPV19     USP_SHORT  1
+180  TVPT20     USP_SHORT  1
+182  TVPV20     USP_SHORT  1
+184  RedVel     USP_SHORT  1 "Reduction Velocity for vred"
+186  RedTim     USP_SHORT  1 "Time of first sample for vred"
+188  VPick1     USP_SHORT  1 "Auto Static Pick 1"
+190  VPick2     USP_SHORT  1 "Auto Static Pick 2"
+192  LRcCDP     USP_SHORT  1 "Last Record CDP"
+194  CabDep     USP_SHORT  1 "Cable Depth"
+196  WDepDP     USP_SHORT  1 "Water Depth Above Depth Point"
+198  DPOPer     USP_SHORT  1 "Depth Point Offset Perpendicular"
+200  ShtDep     USP_SHORT  1 "shot depth"
+202  UphlTm     USP_SHORT  1 "uphole time in ms"
+204  DpPtLt     USP_INT    1 "depth pt lat (deg* 10^5)"
+208  DpPtLn     USP_INT    1 "depth pt lon (deg* 10^5)"
+212  FoldNm     USP_SHORT  1 "fold"
+214  RecNum     USP_SHORT  1 "record number"
+216  TrcNum     USP_SHORT  1 "trace number"
+218  SrcPnt     USP_SHORT  1 "src point above this depth pt"
+220  SrcLoc     USP_SHORT  1 "src location ind mult by 10"
+222  PrRcNm     USP_SHORT  1 "permanent record number PRI"
+224  PrTrNm     USP_SHORT  1 "permanent trace number  PTI"
+226  SrPtEl     USP_SHORT  1 "source point elevation"
+228  SrPrLt     USP_INT    1 "source point lat (deg* 10^5)"
+232  SrPrLn     USP_INT    1 "source point lon (deg* 10^5)"
+236  DstUsg     USP_SHORT  1 "unsigned trace distance"
+238  RecInd     USP_SHORT  1 "rec location  GI"
+240  DstSgn     USP_SHORT  1 "signed trace distance"
+242  GrpElv     USP_SHORT  1 "group elevation"
+244  LinInd     USP_SHORT  1 "line  3D"
+246  DphInd     USP_SHORT  1 "depth "
+248  DePtEl     USP_SHORT  1 "depth point elevation"
+250  RfSrEl     USP_SHORT  1 "reference surface elevation"
+252  StaCor     USP_SHORT  1 "correction"
+254  DatShf     USP_SHORT  1 "datum "
+256  SoPtNm     USP_SHORT  1 "source point number"
+258  SoPtAl     USP_CHAR   1 "source point alphabetic suffix"
+259  SoPtBi     USP_CHAR   1 "source point bias /10000"
+260  Samples    USP_FLOAT -1 "trace samples"
+    </pre>
+
+    <p class='footnote'/>
+      <code><sup>&dagger;</sup></code> See 
+      <a href="../../datatypes.html">Data Types</a> for more
+      details.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

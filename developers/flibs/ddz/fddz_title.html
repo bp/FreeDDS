@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>fddz_title - Print the standard DDS title block to a dictionary in print mode</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "fdds.h"</b><br>
+    <b>#include "fddz.h"</b>
+    <p>
+      <b>integer function fddz_title(</b><i>Title</i><b>)</b>
+      <dl><dd>
+        <b>character </b><i>Title*(*)</i><br>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"fddz_title"</b> gives FORTRAN programs the ability to print
+    the standard DDS title block to dictionaries that are opened without
+    any history information. An example of such a title is shown below.
+
+   <pre>
+DDS_SENTRY= 231 2011-07-15 09:29:24 -0500 (Fri, 15 Jul 2011)
+********************************************
+******************* TITLE ******************
+********************************************
+cmd_title=  "editd: general seismic editting program"
+cmd_name= /apps/global/dist/Linux/2.6/mbs/prod/x86_64/editd
+cmd_rev= 7632
+cmd_ddsrev= 231
+cmd_user= zjwe06
+cmd_date= Fri Sep 14 07:17:14 2012
+cmd_host= hpcp8004
+cmd_cwd= /bphpc6/vol0/zjwe06/test_data
+cmd_pid= 8724
+   </pre>
+
+   <h2> EXAMPLE</h2>
+   <pre>
+integer fd_tmp,ier
+character Title*(*),tmp_dict*(*)
+ ...
+ier = fdds_out(tmp_dict,'tmp',' ',' ')
+ier = fddz_title(Title)
+ ...
+fd_tmp=fdds_open(tmp_dict,' ',' ','w+')
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

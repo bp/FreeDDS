@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Fortran API (fddx_read)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","fddx_read")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapishort")</script>
+
+    <h2>fddx_read - read a DDS dataset</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources) <br>
+    <p>
+      <b>integer function fddx_read(</b><i>bin_tag, buffer, count</i><b>)
+      </b><dl><dd>
+        <b>integer </b><i>bin_tag
+        </i><br>
+        <b>real </b><i>buffer(*)
+        </i><br>
+        <b>integer </b><i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fddx_read</b> reads <i>count</i> traces from the input binary
+    stream referenced by <i>bin_tag</i> into array <i>buffer</i>.
+
+    <h2>OUTPUT</h2>
+    <b>fddx_read</b> returns the number of traces read. If an error
+    occurs, the return value is negative.
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

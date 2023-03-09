@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>fddz_md5sum - Get the md5sum of a buffer</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "fdds.h"</b><br>
+    <b>#include "fddz.h"</b>
+    <p>
+      <b>integer function fddz_md5sum(</b><i>checksum, buffer, byte_count</i><b>)</b>
+      <dl><dd>
+        <b>character </b><i>checksum*(*)</i><br>
+        <b>real      </b><i>buffer(*)</i><br>
+        <b>integer*8 </b><i>byte_count</i><br> <!*** is this really in bytes? *>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"fddz_md5sum"</b> gives programs access to GNU core utils
+    function md5_buffer. This is the message-digest function used by utility
+    md5sum(1). Access to the MD5 algorithm is useful when trying to locate
+    system bugs that are causing headaches.
+
+    <h2>INPUT</h2>
+    <i>buffer</i> is the memory block to digest. <i>byte_count</i> tells
+    <b>"fddz_md5sum"</b> the number of bytes to process.
+
+    <h2>OUTPUT</h2>
+    The result is returned in variable <i>checksum</i>. Variable <i>checksum</i>
+    should be declaired with a length of at least 33 to hold the entire result.
+    Shorter character variables will work, but resolution will be lost.
+    <p>
+    On error, -1 is returned.
+
+   <h2>SEE ALSO</h2>
+   <pre>
+   md5sum(1) compute and check MD5 message digest
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users IO Data (Input)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","iocontrol","in")</script>
+    <!*********************************************************************>
+
+    <p>
+      Binary data (and its processing history) is normally described by a
+      Dictionary.  If the Dictionary exists, it is normally input using
+      the "<b>in</b>" alias name in either of these ways: 
+
+    <pre>
+in= <var>dictionary</var>
+in= /dev/rst0b
+in= stdin:</pre>
+
+    <p>
+      The Dictionary should define the data format with 
+      "<code>format=</code>" and the data path to the binary with
+      "<code>data=</code>". If these are missing or incorrect, then
+      the user must provide a hint by defining "<code>in_format=</code>"
+      and "<code>in_data=</code>" to override what may be in the 
+      Dictionary.
+
+    <p>
+      The input data can be taken directly from a tape device by
+      specifying its "device name" such as "<code>/dev/rst0b</code>"
+      (see <a href="../devices.html">Devices</a> for more detail).
+      This can also be specified for "<code>in_data</code>".
+
+    <p>
+      The input data can also come from a pipe by specifying
+      "<code>stdin:</code>".
+      This can also be specified for "<code>in_data</code>".
+
+    <p>
+      If no input dataset is defined, then the application may
+      either treat it as an optional input; give it some default (eg. 
+      "<code>stdin:</code>"); or treat it as an error.
+
+    <h3>Input Standard Format Binary:</h3>
+
+    <p>
+      Sometimes an input Dictionary does not exist for the binary data.
+      This is typical when the data was created by a non-DDS (<b>usp</b>,
+      <b>segy</b>, <b>segy1</b>, <b>su</b>) application. In this case,
+      "<code>in_format</code>" and "<code>in_data</code>" must be 
+      defined to read in the binary-only data of a Standard Format dataset.
+      For example:
+
+    <pre>
+in_format=usp
+in_data=line2.usp</pre>
+
+    <p>
+      Because DDS has auto-detection capability, a Standard Format binary
+      can be input directly via the "alias" name in place of a Dictionary.
+      In this case the format does not need to be specified.  For example
+      in the above case, simply specify:
+
+    <pre>in=line2.usp</pre>
+
+    <h3>Piping:</h3>
+
+    <p>
+      If the dataset is piped into an application (eg. via 
+      "<code>&lt;</code>" or "<code>|</code>") then instead of specifying
+      a filename, specify:
+
+      <pre>in= stdin:</pre>
+
+    <p>
+      If the input is defaulted to "<b>stdin:</b>", it is ignored if
+      standard input is connected to a terminal or if "<b>par:</b>"
+      defines "<b>format</b>" or "<b>in_format</b>".  This allows 
+      "<b>stdin:</b>" to be used for binary data, when piping from  
+      non-DDS applications.
+
+    <p>
+      When piping in Standard Format binaries you can either use:
+
+    <pre>
+in_format=segy
+in_data=stdin:</pre>
+
+    <p>
+      or better and simpler, 
+
+    <pre>in=stdin:</pre>
+
+    <p>
+      <b>Hint:</b> Avoid using shell "<code>&lt; <var>file</var></code>" 
+      redirection. Neither the application nor processing history can see
+      the actual filename used by the Shell. It is better to define
+      "<code>in=</code>" or "<code>in_data=</code>" instead. This hint
+      also applies to output redirection. Shell pipes ("<code>|</code>")
+      introduce the same uncertainty, but it can not be easily avoided.
+ 
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

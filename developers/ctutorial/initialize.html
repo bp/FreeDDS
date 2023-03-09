@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Tutorial (Initialize)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ctutorial","initialize")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      It is highly recommended to use "implicit none" which will greatly
+      help to reduce typo's and programming errors.
+
+    <p>
+      <a href="../capi/openpr.html">cdds_openpr</a> should be called to
+      check for online help request or open the print file.  The first time
+      any API routine is called will cause DDS to initialize itself.  This
+      call will specifically initialize the print file; the user can always 
+      override and modify the print file creation via the <b>PRINT_PATH</b>
+      environment. The <code>'$Id: initialize.html 1 2009-01-06 00:31:13Z ehlersjw $'</code> field will be filled in
+      appropriately by RCS or CVS every time the file is checked out. The 
+      <a href="../capi/openpr.html">cdds_openpr</a> routine will pull out
+      what it needs, if available from the second parameter. 
+
+    <pre>
+ier = <a href="../capi/openpr.html">cdds_openpr</a>("filt", "$Id: initialize.html 1 2009-01-06 00:31:13Z ehlersjw $");
+if (ier &gt; 0) help();
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

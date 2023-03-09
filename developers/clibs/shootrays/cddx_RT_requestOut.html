@@ -1,0 +1,59 @@
+
+    <h2>cddx_RT_requestOut - request an output parameter from the raytracer.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;cddx_raytracer.h&gt;</b>
+    <p>
+      <b>int cddx_RT_requestOut(</b><i>rt_tag, param</i><b>)
+    </b><dl><dd>
+        <b>int </b><i> rt_tag</i><br>
+        <b>ENUM</b><i> param</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>cddx_RT_requestOut</b> requests an output parameter from the raytracer.<br>
+      This function should be called before any raytracing takes place.
+    </p>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>rt_tag</i>", specifies for which raytracer to request the output parameter.<br>
+    </p>
+    <p>
+      The parameter, "<i>param</i>", specifies the output parameter.<br>
+      Currently supported values are:
+
+      <table border=1>
+	<tr><th> VALUE              </th><th> DESCRIPTION          </th></tr>
+	<tr><td> cddx_RT_X          </td><td> X location </td></tr>
+	<tr><td> cddx_RT_Y          </td><td> Y location </td></tr>
+	<tr><td> cddx_RT_Z          </td><td> Y location </td></tr>
+	<tr><td> cddx_RT_PX         </td><td> X-component of the slowness vector </td></tr>
+	<tr><td> cddx_RT_PY         </td><td> Y-component of the slowness vector </td></tr>
+	<tr><td> cddx_RT_PZ         </td><td> Z-component of the slowness vector </td></tr>
+	<tr><td> cddx_RT_UX         </td><td> X-component of the group velocity vector </td></tr>
+	<tr><td> cddx_RT_UY         </td><td> Y-component of the group velocity vector </td></tr>
+	<tr><td> cddx_RT_UZ         </td><td> Z-component of the group velocity vector </td></tr>
+	<tr><td> cddx_RT_TX         </td><td> X-component of the tangent to the ray</td></tr>
+	<tr><td> cddx_RT_TY         </td><td> Y-component of the tangent to the ray</td></tr>
+	<tr><td> cddx_RT_TZ         </td><td> Z-component of the tangent to the ray</td></tr>
+	<tr><td> cddx_RT_LENGTH     </td><td> Ray length </td></tr>
+	<tr><td> cddx_RT_TIME       </td><td> Traveltime </td></tr> 
+	<tr><td> cddx_RT_SMOOTHTIME </td><td> Traveltime calculated in a smooth velocity </td></tr>
+	<tr><td> cddx_RT_VPH        </td><td> Magnitude of the phase velocity in the slowness direction</td></tr>
+	<tr><td> cddx_RT_VGP        </td><td> Magnitude of the group velocity in the ray direction</td></tr>
+	<tr><td> cddx_RT_VRMS       </td><td> RMS velocity </td></tr>
+	<tr><td> cddx_RT_DVDX       </td><td> X-derivative of the velocity </td></tr>
+	<tr><td> cddx_RT_DVDY       </td><td> Y-derivative of the velocity </td></tr>
+	<tr><td> cddx_RT_DVDZ       </td><td> Z-derivative of the velocity </td></tr>
+      </table>
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_RT_requestOut</b> returns an index into the output array of <i>param</i>.<br>
+    If the raytracer does not support <i>param</i> then <b>cddx_RT_requestOut</b> returns -1.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

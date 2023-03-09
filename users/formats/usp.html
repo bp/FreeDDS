@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (usp)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","formats","usp")</script>
+    <!*********************************************************************>
+
+    <p>
+      DDS supports the BPAmoco <a href="http://www.freeusp.org">USP</a>
+      (<b><u>U</u></b>n*x 
+      <b><u>S</u></b>eismic <b><u>P</u></b>rocssing) format as "<b>usp</b>".
+      The effective default attributes for <b>usp</b> output is:
+      
+    <pre>format= usp float 4 ieee green_prefix 4</pre>
+
+    <p>
+      Examples of attributes available for <b>usp</b> (see 
+      <a href="attributes.html">Attributes</a>) include the following:
+
+    <pre>
+Attributes        Description
+---------------   -------------------------------------------
+green_prefix 4    4-byte green word prefix
+no_green_suffix   no green word suffix
+float 4 ieee      4-byte ieee float samples
+dense.2           2nd axis is padded (3rd axis may be sparse)
+hlh_cube          use previously stored DDS axis information
+ignore_hlh        ignore hlh entirely
+</pre>
+
+    <p>
+      Other effective usp defaults include:
+    
+    <pre>
+axis= t x y
+sort.x=TrcNum
+sort.y=RecNum
+</pre>
+
+    <p>
+      DDS automatically detects the <b>usp</b> format and attributes of 
+      input binary data. If they conflict with attributes explicitly
+      defined by format, a warning is issued and the override is honored.
+      Output data attributes take predefined defaults, unless explicitly
+      overridden. Output is forced to include green word prefix and ascii 
+      characters.
+
+    <p>
+      The <b>usp</b> seismic format is described by two major types, 
+      <b>USP_LINE (PREAMBLE)</b> and <b>USP_TRACE (SEQUENCE)</b>. 
+      This format is created using the "<code>${DDSROOT}/usp.fmt.dds</code>" 
+      Dictionary and "<code>${DDSROOT}/usp.map.dds</code>" provides the 
+      default mapping Definitions. Either of these can be copied into some
+      other directory and edited to modify the format.  Point DDS to this
+      directory with <a href="../runtime.html">DDS_PATH</a>.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

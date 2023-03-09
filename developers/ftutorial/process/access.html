@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Tutorial (Process - Data Access)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ftutorial","process","access")
+    </script>
+    <!*********************************************************************>
+    
+    <h2>Binary Read</h2>
+
+    <p>
+      In order to access fields in the data buffers, the field tag 
+      associated with the desired field must first be retrieved using
+      the following routines with the binary tag for the data buffer.
+    <pre>
+     tagsrcx=<a href="../../fapi/member.html">fdds_member</a>(bin,0,"SrPtXC")
+     tagsmpl=<a href="../../fapi/member.html">fdds_member</a>(bin,0,"Samples")
+    </pre>
+
+    <p>
+      Once the field tag is obtained, there are two ways to access field
+      data value from the the data buffers. 
+ 
+    <ol>
+      <li>
+        If the field type is the same as the buffer array type, then all
+        we need is the index into the array.  This index only needs to
+        be setup one time initially and then used for each trace associated
+        with that binary trace:
+        <pre>
+integer ibuf(*)
+real    buf(*),data(nsmp)
+pointer (ptr_buf,buf)
+pointer (ptr_ibuf,ibuf)
+...
+ndxsrcx=<a href="../../fapi/index.html">fdds_index</a>(bin,tagsrcx,DDS_INTEGER)
+ndxsmpl=<a href="../../fapi/index.html">fdds_index</a>(bin,tagsmpl,DDS_REAL)
+ptr_ibuf= ptr_buf
+...
+srcx=ibuf(ndxsrcx+1)
+do i=1,nsmp
+   data(i)=buf(ndxsmp+i)
+enddo
+        </pre>
+
+      <li>
+        Another way is to use the tag each time the field is read from
+        the buffer arry:
+        <pre>
+integer isrcx,ibuf(*)
+real    srcx,buf(*),data(nsmp)
+...
+ier=<a href="../../fapi/get.html">fdds_geti</a>(bin,tagsrcx,buf,0,isrcx,1)
+ier=<a href="../../fapi/get.html">fdds_getr</a>(bin,tagsrcx,buf,0,srcx,1)
+ier=<a href="../../fapi/get.html">fdds_getr</a>(bin,tagsrcx,buf,0,data,nsmp)
+        </pre>
+    </ol>      
+
+    <h2>Binary Write</h2>
+
+    <p>
+      Similarly for updating an output buffer before writing it the field
+      tags are used for either 1) indexing directly into an array (if the 
+      fields are the same types as the array); or 2) putting into a buffer
+      array such as:
+
+<pre>
+    ier=<a href="../../fapi/put.html">fdds_puti</a>(bin,tagsrcx,buf,0,isrcx,1)
+    ier=<a href="../../fapi/put.html">fdds_putr</a>(bin,tagsrcx,buf,0,data,nsmp)
+
+</pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

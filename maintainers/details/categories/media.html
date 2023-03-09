@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (media)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","media")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Media:</h2>
+
+    <p>
+      These routines deal with pathnames, file status and tape media.
+
+    <pre>
+<b><u>Structures:</u></b>
+    DDS_MEDIA - Dictionary Structure defined in dds_media.h
+
+
+<b><u>Globals:</u></b>
+    DDS_MEDIA *dds_media_list; /* media access list */
+
+
+<b><u>Files:</u></b>
+    pathclean.c    - Cleanup pathname
+    pathfast.c     - Morph to the fastest (clean) path name
+                     (eg. decide whether to use DDS_MNT; defaults to /hpc)
+    mediafind.c    - Find media, given its name and/or fd
+    medianew.c     - Create and default new DDS_MEDIA descriptor
+    mediascan.c    - Scan for specs on (tape) drive/media
+    mediadelete.c  - Close and free DDS_MEDIA descriptor
+    mediafirst.c   - Mount first media onto drive 
+                     (called by ddsOpenNew and ddsOpenOld)
+    mediachain.c   - Chain media descriptor into the dds_media_list
+    mediaload.c    - Load media on device 
+                     (called by ddsMediaFirst and ddsOpenNext)
+    mediaunload.c  - Unload media from drive
+    opennext.c     - Open next file/media on device
+                     (called by cdds_read and cdds_write)
+    openblock.c    - Set block size for binary data
+                     (called by ddsOpenNew and ddsOpenOld)
+    openestimate.c - Estimate required media (quantity and minimum I/O time) 
+                     (called by ddsCubeLinker)
+    devicecode.c   - Convert (tape) drive device code into mnemonic 
+                     (called by ddsMediaFirst)
+    statgenus.c    - Retrieve media genus via stat (filename)
+    findddsfile.c  - Find "DDS" file among "dds_path" directories 
+                     (called by ddsCubeScanInit and ddsMediaFirst)
+    fstatgenus.c   - Retrieve media genus via fstat (file descriptor)
+    fstatsize.c    - Retrieve media size via fstat (file descriptor) 
+                     (called by ddsSeekSlice)
+    fstatid.c      - Initialize file stat id, given its file descriptor
+                     (called by ddsMediaFind)
+    statid.c       - initialize file stat id, given its file name
+                     (called by ddsOpenNameTest)
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

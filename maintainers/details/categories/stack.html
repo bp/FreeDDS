@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (stack)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","stack")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Stack:</h2>
+
+    <p>
+      DDS_STACK structures describe resizeable memory blocks.  The byte "size"
+      and "alignment" of pushed items may be specified. This allows any type 
+      to be pushed onto the stack and accessed.</p>     
+                                                                       
+    <p>
+      The stack's base address may change when data is pushed onto it    
+      because the memory may be re-allocated and the buffer moved. </p>
+    <pre>    
+          ***************************************************          
+          ***  WARNING    WARNING     WARNING    WARNING  ***          
+          ***************************************************          
+          ***  All pointers into the stack are invalid    ***          
+          ***  after any data is pushed on the the stack. ***          
+          ***  INVALID POINTER BUGS ARE DATA DEPENDENT.   ***          
+          ***************************************************          
+    </pre>
+    <p>
+      The DDS_IDX (char index) to existing items within the stack is always 
+      preserved, however the absolute address may change.  Links between items
+      should use a DDS_IDX index (char index). </p>      
+                 
+    <p>                                                      
+      The following masking macros are defined in dds_stack.h.<br />
+      (NOTE: &dagger; Overloaded macros are provided for efficiency.)</p>
+    <ul>
+      <li>ddsStackTop - return top of stack</li>
+      <li>ddsStackTmp - Push type onto dds_tmp stack</li>
+      <li>ddsPushTmp  - Push bytes onto dds_tmp stack</li>
+      <li>ddsStackPushChar &dagger;</li>
+      <li>ddsStackPop &dagger;</li>
+      <li>ddsStackPtr &dagger;</li>
+      <li>ddsStackSet &dagger;</li>
+    </ul>
+
+    <pre>
+<b><u>Structures:</u></b> defined in dds_stack.h
+    DDS_STACK - Stack Descriptor (relocatable memory block)
+
+
+<b><u>Globals:</u></b>
+    DDS_STACK dds_dump_que  -  /* dump "diff", print preamble queue */
+    DDS_STACK dds_prime_tag -  /* array of (DDS_SYM*) values. */
+    DDS_STACK dds_tmp       -  /* stack for temporary data */
+
+
+<b><u>Files:</u></b>
+    stackinit.c     - Initialize stack descriptor
+    stackpush.c     - Push "size" bytes ("align" offset) onto stack (return offset)
+    stackpushchar.c - Push one character onto stack (return offset to char)
+    stackpushptr.c  - Push one pointer onto stack
+    stackstr.c      - Push "string" onto stack (return offset)
+    stackchar.c     - Push "char array" onto stack (return offset)
+    stackpop.c      - pop "size" bytes from top of stack
+    stackset.c      - Set "index" as top of stack
+    stackptr.c      - Return pointer to "index" offset in stack
+    stackterm.c     - Terminate stack descriptor
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

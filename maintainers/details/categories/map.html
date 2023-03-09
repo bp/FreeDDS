@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (map)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","map")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Map:</h2>
+
+    <p>
+      Map definitions are retrieved and their expressions compiled. Mapping 
+      expressions are processed in output field offset order. Expressions that 
+      are effectively "byte copy" are identified. Linear sequences of byte copies 
+      are merged into one expression. Merged "byte copy" is significantly faster, 
+      when mapping a list of scalar members in a struct (trace header fields). 
+      Similar optimization is applied to assignment sequences that convert between 
+      the same pair of types (int to float, etc.) Expressions in the output symbol 
+      table are evaluated when the cdds_map function is called (perhaps via 
+      cdds_readm or writem). 
+      
+    <pre>
+
+ OVERVIEW:                                                          
+                                                                    
+ FUNCTIONS: calling hierarchy of map specific processing.           
+    cdds_openm                                                      
+      ddsMapCompile          process output in offset order         
+        ddsMapStruct         iff output ptype is DDS_STYPE_STRUCT   
+          ddsMapAssign       synthesize assignment                  
+            ddsMapOptimize   optimize assignment                    
+        ddsMapUnion          iff output ptype is DDS_STYPE_UNION    
+        ddsMapVect           iff output ptype is "vector"           
+    
+<b><u>Structures:</u></b>
+    DDS_MAP - Mapping Structure defined in dds_binary.h
+
+
+<b><u>Globals:</u></b>
+    DDS_MAP  **dds_map; /* map descriptors from one binary to another */
+
+
+<b><u>Files:</u></b>
+    f_xxx.c         - Fortran API Routines 
+                         f_map.c f_openm.c
+    c_xxx.c         - "C" API Routines
+                         c_map.c c_openm.
+    openmap.c       - Open mapping from input to output binary
+    mapcompile.c    - Open map processing phase 1 (compilation)
+                      (called only by ddsOpenMap)
+    mapcompilesu.c  - Open map processing of structures &amp; unions (compilation)
+                      (called only by ddsMapCompile)
+    mapcompilesu2.c - Compile map for struct members
+                      (called only by ddsMapCompileSU)
+    mapassign.c     - Open map assignments
+                      (called only by ddsMapCompileSU2 and ddsLinkObjectSU2)
+    evaluate.c      - Evaluate DDS_EXPR expression sequence.  All numerical
+                      expressions are handled by this routine.
+    dateconv.c      - Conversion between segy Date structure &amp; usp SGRDat
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

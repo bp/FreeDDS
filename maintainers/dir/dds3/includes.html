@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Directories (dds3-includes)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","dir","dds3","includes")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      These are the DDS Internal <u>Include files</u>.
+
+    <pre>
+  <u><b>API for user callable routines:</b></u>
+    cdds.h           C API
+    f_*.h            Fortran '77 API
+    f90_*.h          Fortran '90 API
+
+  <u><b>API boiler plate:</b></u>
+    dds_api.h        Entry &amp; exit sequences for user 
+                     callable routines.
+  
+  <u><b>Include for internal use:</b></u>
+    dds_sys.h        Include will grab several others.
+
+  <u><b>Configuration:</b></u>
+    dds_config.h     Configuration parms &amp; special values.
+    dds_version.h    Version information
+
+  <u><b>Global state:</b></u>
+    dds_state.h      Global error flags &amp; structure anchors.
+
+  <u><b>Binary Data:</b></u>
+    dds_binary.h     I/O.
+    dds_con3.h       conversion macros
+    dds_con4.h
+    dds_con5.h
+    dds_dump.h       Dump in printable form
+    dds_hdr.h        Trace header put/get
+
+  <u><b>Dictionaries:</b></u>
+    dds_dict.h       Dictionaries.
+
+  <u><b>Magnetic Tape support:</b></u>
+    dds_magtape.h
+    dds_mtio.h
+
+  <u><b>Storage media:</b></u>
+    dds_media.h      For both binary data &amp; dictionaries
+
+  <u><b>Messages:</b></u> 
+  (Panic, Abort, Error, Warn, Verbose, Operator)
+    dds_message.h
+
+  <u><b>Constants for standard formats:</b></u>
+    segy_hdr.h       Parameters only needed for SEGY format.
+    sep_hdr.h        Parameters only needed for SEP  format.
+    usp_hdr.h        Parameters only needed for USP  format.
+
+  <u><b>Format Descriptions &amp; Header mapping:</b></u> 
+  (spooky Flex &amp; Bison stuff)
+    dds_opcode.h
+    dds_oplist.h
+    dds_ptype.h
+    dds_symbol.h
+    parser.tab.h
+
+  <u><b>Utilities:</b></u>
+    dds_stack.h      General purpose stack (push, pop)
+    dds_string.h     String manipulation
+    dds_swap.h       Byte swap support
+    dds_table.h      Hash tables
+    dds_util.h       Miscellaneous stuff
+
+  </pre>
+       
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

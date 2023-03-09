@@ -1,0 +1,45 @@
+
+    <h2>cddx_RT_new - create a new raytracer.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;cddx_raytracer.h&gt;</b>
+    <p>
+      <b>int cddx_RT_new(</b><i>alias, vel_tag, rk_tag</i><b>)
+    </b><dl><dd>
+        <b>const char *</b><i>alias</i><br>
+        <b>int </b><i>vel_tag</i><br>
+        <b>int </b><i>rk_tag</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>cddx_RT_new</b> creates a new raytracer.<br>
+    It scans for user input to decide which type of raytracing method to use.<br>
+    Currently only isotropic is implemented.<br>
+    Eventually, the user will be able to specify which method to use by specifying <b>raytracer=isotropic</b> or <b>raytracer=tti</b>, for example.
+    </p>
+    <p>
+      The raytracer will ensure at run-time that it has all of the parameters for it to run successfully.<br>
+      (ie. TTI raytracer will check that the user provides, epsilon, delta, tilts, etc.)<br>
+    </p>
+
+
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>alias</i>", specifies a prefix to add to the <b>raytracer=</b> keyword to allow the use of multiple different raytrace
+      methods with the same application.
+    </p>
+    <p>
+      The parameter, "<i>vel_tag</i>", specifies a tag for the velocity to use.
+    </p>
+    <p>
+      The parameter, "<i>rk_tag</i>", specifies a tag for the Runge-Kutta method to use.<BR>
+    </p>
+
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_RT_new</b> returns a tag to the newly created raytracer. In the event of an error, it will return -1.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

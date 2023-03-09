@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_initmpix)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","initmpix")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_initmpix - initialize the DDS system for MPIX parallelization</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;mpif.h&gt;</b>
+    <p>
+    <b>integer fdds_initmpix(</b><i>node, nodes</i><b>)</b>
+    <dl><dd>
+        <b>integer</b> <i>node </i><br>
+	<b>integer</b> <i>nodes</i>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_initmpix</b> is used to initialize the DDS system for MPIX
+    parallelization (where MPI is not used if np=1 so programs can be piped
+    when using a single node).  Makefiles should define <b>"MPIX"</b> instead
+    of <b>"MPI"</b>. It determines the number of MPI nodes used and the
+    node number (0 through nodes-1) for the current process.  It checks
+    the value of "np=" from the command line to determine if MPI is needed.
+    If so and if np .gt. 1, it checks if MPI is available on the current
+    system and initializes MPI with the MPI_Init call. The node with rank=0
+    then passes all the command line parameters to all other nodes to ensure
+    all nodes "see" the exact same parameters (since MPI does not guarantee
+    that).  If MPI is not available, it simply checks that "np=1". The "par:"
+    dictionary is set for scanning upon exiting this routine.  Any node with
+    rank.gt.0 will close dictionaries that have been opened for printing.
+    The return value is alway 0.
+
+    <p>
+      <u><code>NOTE:</code></u> you will have to define this function for yourself 
+      because it cannot be defined in fdds.h (because it would try to use the
+      parallel routines for all codes).  So add "integer fdds_initmpix" to any 
+      routine that uses it. <u>Also</u> note that you need the extra,
+      <b>#include &lt;mpif.h&gt;</b>, include file for any of the mpi
+      routines.
+
+    <h2>SEE ALSO</h2>
+    <pre>
+      <a href="initmpi.html">fdds_initmpi</a>  Initialize DDS for MPI
+      <a href="initopenmp.html">fdds_initopenmp</a>  Initialize DDS for OpenMP
+    </pre>
+
+    <h2>EXAMPLES</h2>
+    Initializes MPI in a DDS application - F77:
+    <pre>
+      #include &lt;mpif.h&gt;
+      #include &lt;fdds.h&gt;
+
+      integer rank, np, ier
+      integer fdds_initmpix
+
+      ier = fdds_initmpix(rank, np)
+    </pre>
+
+    <p>
+    Initializes MPI in a DDS application using modules:
+    <pre>
+      use mpi
+      use dds
+
+      integer :: rank, np, ier
+
+      ier = fdds_initmpix(rank, np)
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (Aug 2007)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

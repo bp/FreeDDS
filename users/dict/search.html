@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Dictionaries (Search)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","dict","search")</script>
+    <!*********************************************************************>
+
+    <h3>Search Order:</h3>
+
+    <p>
+      When DDS searches (scans) for a definition, it can have multiple
+      Dictionaries open for scanning.  The first Dictionary listed for
+      scanning will be scanned first.  If the definition is not found then
+      DDS will continue scanning the next Dictionary.
+
+    <h3>Global Data Dictionary Search:</h3>
+
+    <ul>
+      <li><b>cmd:</b> - Dictionary contains the command line parameter 
+      definitions<br/>
+
+      <li><b>par:</b> - Dictionary contains any definitions specified by
+        a &quot;par=&quot; file in addtions the the &quot;<b>cmd:</b>&quot;
+        definitions.
+
+      <li><b>${CWD}/project.dds</b> - Project dictionary for setupng
+        up project-related definitions, for example "DATA_PATH=".
+
+      <li><b>${HOME}/.ddsrc</b> - User dictionary to setup up user 
+        personal preferences, for example specifying "PRINT_PATH=".
+
+      <li><i>data dictionaries</i> contain all previous historical
+        definitions as well as the &quot;<b>par:</b>&quot; definitions.
+    </ul>
+
+    <h3>Local Parameter Search:</h3>
+
+    <p>
+      DDS programs can search &quot;<b>par:</b>&quot; for local parameters
+      associated with the current program execution.  During opening of an
+      input or output dataset, programs search for parameter definitions
+      in the data Dictionary thus having access to &quot;global&quot;
+      parameters from previous steps in the processing history.
+
+    <h3>Extended Dictionaries:</h3>
+
+    Extended dictionaries are used to find some definitions. These include 
+    <a style="text-decoration:none;" href="../runtime.html">
+      <u>DDS_PATH</u>, <u>DATA_PATH</u>, <u>DATA_SUFFIX</u></a> and
+    <a href="../devices.html">device attributes</a>. Extended dictionaries
+    are searched until the desired definition is found. Each level broadens
+    the scope from problem specific to a wider arena.  The following table
+    shows the order by which DDS does these searches:
+
+    <pre>
+ Dictionary   Purpose (precedence)
+ ----------   -------------------------------
+ env:         environment defaults (lowest)
+              (not used for DATA_PATH &amp; DATA_SUFFIX)
+ <var>data_dict</var>    problem specific
+ par:         command line defaults (highest)
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

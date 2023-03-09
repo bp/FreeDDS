@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Dataset</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","datasets")</script>
+    <!*********************************************************************>
+
+    <p>
+      Datasets are comprised of a DDS Dictionary (which defines the binary
+      format and contains the processing history) and a Binary File.
+      The Binary File can be attached to the Dictionary to form a single
+      file for the Dataset.  For predefined data formats like
+      <a href="http://www.freeusp.org">usp</a>,
+      <a href="http://seg.org/publications/tech-stand/seg_y_rev0.pdf">
+        segy</a>, 
+      <a href="http://seg.org/publications/tech-stand/seg_y_rev1.pdf">
+        segy1</a>, or
+      <a href="http://www.cwp.mines.edu/cwpcodes/index.html">su</a>
+      the Dictionary is optional, in which case certain default 
+      definitions are setup for these fixed predefined formats.
+
+    <h3>Filenames:</h3>
+
+    <p>
+      Filenames have a few constraints. They should not be terminated with ":"
+      (colon).  These names are reserved for internal mnemonic data streams.
+      Filenames must not contain "=", white space, or control characters.
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

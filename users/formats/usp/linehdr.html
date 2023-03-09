@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (usp Line Header)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","usp","linehdr")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      The <b>usp</b> line header, <b>USP_LINE</b> contains a sequence of 
+      fields. The field values
+      associated with the binary data are also available as Dictionary 
+      Definitions by preceding their names with "<code>usp_</code>" 
+      (eg. <code>usp_SmpInt=</code>). They may be examined
+      in the Dictionary by end users or retrieved by application programs.
+      End users may override any of the field values associated 
+      with binary input data.  For example:
+
+<pre>
+comment= override binary header value
+usp_NumTrc= 48
+usp_SmpInt= 8
+usp_CDPFld= 50
+</pre>
+
+    <p>
+      The first two above could just as well have been specified by their
+      corresponding axis Definitions (assuming the default "axis= t x y"):
+
+<pre>
+size.x=48
+delta.t= 8.0
+</pre>
+
+    <p>
+      The default fields that make up the <b>USP_LINE</b> structure are 
+      defined in
+      "<code>${DDSROOT}/src/lib/dds3/usp.fmt.dds</code>"
+      and may be modified by editing that file and putting it into a
+      directory defined by "<code>${DDS_PATH}</code>".
+      These defaults are summarized by their nominal offset, name, type,
+      and element count.
+
+    <pre>
+Off   Name              Type<sup>&dagger;</sup>       N Comment
+---   ------            ---------   - -------------------------------
+0     line_green_prefix USP_INT     1 "USP green word prefix"
+4     EqpCod            USP_CHAR    1 "Equipment code"
+5     CrwNam            USP_CHAR    6 "Crew Six Characters"
+11    DatTyp            USP_CHAR    1 "Data Type"
+12    DgTrkS            USP_CHAR    2 "Digital Truck System"
+14    PrcNam            USP_CHAR   10 "Processor Name"
+28    PrcDat            USP_CHAR    8 "Processing Date"
+36    OACLin            USP_CHAR    8 "OAC Line, 7 char right just"
+44    JobNum            USP_CHAR    8 "JOB Number 7 char right just"
+52    NumTrc            USP_INT     1 "number traces per record"
+54    NumRec            USP_INT     1 "number records per line"
+60    SmpInt            USP_INT     1 "sample interval ms"
+64    NumSmp            USP_INT     1 "number samples per trace"
+68    FmtCod            USP_SHORT   1 "format code"
+70    IndAdj            USP_SHORT   1 " adjustment"
+72    OpGrFl            USP_SHORT   1 "Opposite/Between Group Flag"
+76    SrtTyp            USP_CHAR    2 "Sort Type 0=FIFO 1=LA 2=mx/mn"
+78    CDPFld            USP_SHORT   1 "CDP Fold"
+80    GrpInt            USP_CHAR    4 "Group Interval"
+84    DtInFl            USP_INT     1 "Data Indicator Flag"
+84*   Dy1000            USP_INT     1 "Record interval*1000 (MBS)"
+88    MxSPEl            USP_SHORT   1 "Max Source Point Elevation"
+90    MnSPEl            USP_SHORT   1 "Min Source Point Elevation"
+92    MxRSEL            USP_SHORT   1 "Max Ref Surface Elevation"
+94    MnRSEL            USP_SHORT   1 "Min Ref Surface Elevation"
+96    MxGrEl            USP_SHORT   1 "Maximum group Elevation"
+98    MnGrEl            USP_SHORT   1 "Minimum group Elevation"
+100   MxTrSt            USP_SHORT   1 "Maximum trace Static"
+102   MnTrSt            USP_SHORT   1 "Minimum trace Static"
+104   LinDir            USP_CHAR    4 "Line Direction e.g., N45E"
+108   AERcPr            USP_INT     1 "Accumulative Est Rec Proc"
+112   OrNTRC            USP_SHORT   1 "Original traces Per Record"
+114   OrNREC            USP_SHORT   1 "Original Number records"
+116   MutVel            USP_FLOAT   1 "Muting Velocity"
+120   ZDMuTm            USP_SHORT   1 "Zero Distance Mutine Time"
+122   IntInc            USP_SHORT   1 "interpolation increment"
+124   WatVel            USP_INT     1 "Water Velocity"
+124*  RefVel            USP_INT     1 "SLNT Reference Velocity(MBS)"
+128   MxShDp            USP_SHORT   1 "Maximum Shot Depth"
+130   MnShDp            USP_SHORT   1 "Minimum Shot Depth"
+132   MxUHTm            USP_SHORT   1 "Maximum Uphole Time"
+134   MnUHTm            USP_SHORT   1 "Minimum Uphole Time"
+136   MxTrOf            USP_SHORT   1 "Maximum traverse Offset"
+138   MnTrOf            USP_SHORT   1 "Minimum traverse Offset"
+140   RATTrc            USP_SHORT   1 "RATS Traces per Record"
+140*  AnglSt            USP_SHORT   1 "SLNT Starting Angle (MBS)"
+142   RATFld            USP_SHORT   1 "RATS Fold"
+142*  AngInc            USP_SHORT   1 "SLNT Angle Increment (MBS)"
+144   UnitFl            USP_SHORT   1 "Units Flag 0=feet 1=meters"
+146   FrstSP            USP_SHORT   1 "1st SP Number on Line"
+148   DpN1SP            USP_SHORT   1 "Dep Pt Num Below 1st Src Pt"
+150   NmDpIn            USP_SHORT   1 "Num Dep Pt Int per Unit Inc"
+152   StWdFl            USP_SHORT   1 "Static Wd Flag 0=old >=1 new"
+154   DptInt            USP_SHORT   1 "Depth Point interval"
+156   TmMsSl            USP_INT     1 "Time in ms of First Slice"
+156*  Dx1000            USP_INT     1 "Trace interval*1000 (MBS)"
+160   TmSlIn            USP_INT     1 "Time Slice increment in ms"
+160*  Dz1000            USP_INT     1 "Depth Interval*1000 (MBS)"
+164   TmMsFS            USP_FLOAT   1 "Time in ms of First Sample"
+168   NTrLnS            USP_INT     1 "Number Traces/Line Sorted In"
+172   PltDir            USP_SHORT   1 "Plot Direction"
+174   LgRfEl            USP_SHORT   1 "Log Reference Elevation"
+176   MnLnIn            USP_SHORT   1 "Minimum line Index"
+178   MxLnIn            USP_SHORT   1 "Maximum line Index"
+180   MnDpIn            USP_SHORT   1 "Minimum depth Index"
+182   MxDpIn            USP_SHORT   1 "Maximum depth Index"
+184   ILClIn            USP_FLOAT   1 "In Line Cell Increment"
+188   CLClIn            USP_FLOAT   1 "Cross Line Cell Increment"
+192   ReSpFm            USP_SHORT   1 "Reserved Special Format"
+194   VlFnRF            USP_SHORT   1 "Vel Func Ref Flag 0=RI 1=DI"
+196   OACUsr            USP_CHAR    4 "OAC USER Field"
+200   LinNam            USP_CHAR    8 "Line Name"
+208   MutFlg            USP_SHORT   1 "Mute Flag 0=yes 1=no"
+210   SPBias            USP_CHAR    2 "Shot point Bias"
+212   SpBiFl            USP_SHORT   1 "Shot Point Bias Flag"
+214   APIWNo            USP_CHAR   12 "API Well Number"
+228   NmSpMi            USP_FLOAT   1 "Number Shot points per Mile"
+604   VelFun            USP_SHORT 200 "velocity function"
+604*  MinVel            USP_SHORT   1 "Minimum velocity (MBS)"
+606*  MaxVel            USP_SHORT   1 "Maximum velocity (MBS)"
+700   UnitSc            float4      1 "Scale factor for time axis"
+1004  HlhEnt            USP_SHORT   1 "Number of Entries in HLH"
+1006  HlhByt            USP_SHORT   1 "Number of Bytes in HLH"
+1008  HlhBuf            unsigned1   0 "HLH buffer (sizes and char)"
+*     PadLine           unsigned1   0 "USP Line header pad"
+    </pre>
+
+    <p>
+      &nbsp;&nbsp;&nbsp;&nbsp;where <code>*</code> indicates overloading of
+      fields for the same byte locations.
+
+    <p class='footnote'/>
+      <code><sup>&dagger;</sup></code> See 
+      <a href="../../datatypes.html">Data Types</a> for more
+      details.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

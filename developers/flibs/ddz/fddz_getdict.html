@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>fddz_getdict - Get the name of a dictionary when only the BIN_TAG is known</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "fdds.h"</b><br>
+    <b>#include "fddz.h"</b>
+    <p>
+      <b>integer function fddz_getdict(</b><i>dict, bin_tag</i><b>)</b>
+      <dl><dd>
+        <b>character </b><i>dict*(*)</i><br>
+        <b>integer </b><i>bin_tag</i><br>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"fddz_getdict"</b> finds the name of a dictionary given it's
+    binary TAG. This is useful when the name is needed after a file was
+    openned with <b>fddx_in</b> or <b>fddx_out</b> functions.
+
+   <h2> EXAMPLE</h2>
+   <pre>
+integer fd_in, fd_out, fd_buf_out, ier
+character buf_in_dict*(*), buf_out_dict*(*), Title*(*)
+ ...
+c
+c Use convenience routines on input but not on output
+c
+fd_in = fddx_in ('in','stdin:',Title)
+ier = fddz_getdict(buf_in_dict, fd_in)
+ier = fdds_out(buf_out_dict,' ',' ',buf_in_dict)
+fd_buf_out = fdds_open(buf_out_dict,' ',' ','m')
+ier = fdds_out(out_dict,' ',' ',buf_out_dict)
+fd_out = fdds_open(out_dict,' ',' ','w')
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

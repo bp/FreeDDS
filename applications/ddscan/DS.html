@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications (ddscan)</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','ddscan','DS')</script>
+      
+    <p>
+      Entering the "Dump Samples" command ("<code>DS</code> &lt;<i>#</i>&gt;") will
+      printout trace Sample values for each trace in record <i>#</i>.  If no <i>#</i>
+      is given, then it will printout the Sample values for the next record in 
+      sequence.  Once this is done, then each time a blank command is entered it 
+      will printout the Sample values from the next record or if you enter just a 
+      <i>#</i> by itself, it will printout the Sample values for the specified 
+      record.  You can use the "<code>SS</code>" command to select which Samples 
+      to printout and "<code>ST</code>" command to select which traces to printout. 
+      A summary of the minimum, maximum and RMS values are pinted out at the end
+      of each dump. The example shown below was setup with "<code>ss 45 100 2</code>" 
+      and "<code>st 5 15 2</code>".
+    </p>
+
+    <pre style="margin-left: 50px">
+
+                       --- Sample Dump ---
+                 (samples    45 ->    99 x    2)
+
+                Rec #   Trc #
+Trc    1949:      25       5
+              0.1580562E-06 -0.2972259E-06 -0.5890431E-06 -0.5595245E-06 -0.2684511E-06
+             -0.5260630E-07  0.2622137E-06  0.4706164E-06  0.6683676E-06  0.4118122E-06
+              0.2567042E-07 -0.4933441E-06 -0.8934078E-06 -0.8442948E-06 -0.2005091E-06
+              0.4539046E-06  0.1025289E-05  0.9697414E-06  0.4567987E-06 -0.3156460E-06
+             -0.8751900E-06 -0.6793250E-06 -0.4324312E-06 -0.2004134E-06 -0.1224229E-05
+             -0.1551004E-05  0.4841066E-05  0.6587846E-05
+Trc    1951:      25       7
+             -0.1962031E-06 -0.3885582E-06 -0.5030619E-06 -0.2659787E-06 -0.2923734E-07
+              0.2716055E-06  0.4100970E-06  0.5066910E-06  0.3759785E-06 -0.5210351E-07
+             -0.3916762E-06 -0.6547110E-06 -0.6361380E-06 -0.3477547E-06  0.2737781E-06
+              0.7298786E-06  0.9604983E-06  0.6871108E-06 -0.4970454E-07 -0.6319372E-06
+             -0.8535561E-06 -0.6284631E-06 -0.9595324E-06 -0.2074388E-05 -0.6469091E-06
+              0.6881658E-05  0.9193112E-05 -0.2707649E-05
+Trc    1953:      25       9
+             -0.8137823E-06 -0.1429571E-05 -0.1521739E-05 -0.8558242E-06  0.2359301E-06
+              0.1259176E-05  0.1827515E-05  0.1570218E-05  0.5499692E-06 -0.8003520E-06
+             -0.1848971E-05 -0.2208851E-05 -0.1602893E-05 -0.1394899E-06  0.1702161E-05
+              0.2849863E-05  0.2626262E-05  0.1051738E-05 -0.1069594E-05 -0.2513739E-05
+             -0.2941664E-05 -0.2550079E-05 -0.2805334E-05 -0.1364280E-05  0.7898996E-05
+              0.1498138E-04  0.4789065E-05 -0.1331288E-04
+Trc    1955:      25      11
+             -0.5835340E-06  0.9008198E-07  0.7726586E-06  0.1077750E-05  0.9731211E-06
+              0.4399003E-06 -0.2904746E-06 -0.9626592E-06 -0.1343081E-05 -0.1141702E-05
+             -0.4177975E-06  0.6714902E-06  0.1567347E-05  0.1812637E-05  0.1188123E-05
+             -0.7602245E-07 -0.1180691E-05 -0.1871017E-05 -0.2020778E-05 -0.2580276E-05
+             -0.2506160E-05  0.4096211E-05  0.1129555E-04  0.5469568E-05 -0.5652417E-05
+             -0.1149740E-04 -0.1001581E-04 -0.4094431E-07
+Trc    1957:      25      13
+              0.1530292E-05  0.1529505E-05  0.7975331E-06 -0.2634752E-06 -0.1233717E-05
+             -0.1749818E-05 -0.1714667E-05 -0.8856703E-06  0.6149781E-06  0.1970276E-05
+              0.2594265E-05  0.1983122E-05  0.3386730E-06 -0.1617334E-05 -0.2721784E-05
+             -0.2562319E-05 -0.2155413E-05 -0.2709678E-05 -0.7838080E-06  0.9951972E-05
+              0.1706768E-04  0.2357341E-05 -0.1864469E-04 -0.2207019E-04 -0.5887971E-05
+              0.1402597E-04  0.2282587E-04  0.1266345E-04
+Trc    1959:      25      15
+              0.8217017E-06  0.2849042E-06 -0.3545034E-06 -0.8763026E-06 -0.1307804E-05
+             -0.1075999E-05 -0.3757476E-06  0.9425907E-06  0.1585765E-05  0.1767576E-05
+              0.9294713E-06 -0.1886222E-06 -0.1250751E-05 -0.1840294E-05 -0.1755807E-05
+             -0.3106488E-05 -0.4155051E-05  0.4973524E-05  0.1786117E-04  0.5957246E-05
+             -0.1367187E-04 -0.1718479E-04 -0.7338841E-05  0.5945051E-05  0.1669489E-04
+              0.1264427E-04 -0.2868215E-05 -0.1079436E-04
+
+SUMMARY: min= -0.2207019E-04 max=  0.2282587E-04 rms=  0.5472058E-05
+</pre>
+ 
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

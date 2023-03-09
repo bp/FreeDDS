@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_scank)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","scank")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_scank - retrieve definition information from dictionary
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+    <b>int cdds_scank(</b><i>alias, keys</i><b>);
+    </b><dl><dt><dd>
+        <b>const char *</b><i>alias
+        </i><br>
+        <b>const char *</b><i>keys
+        </i></dl>
+
+    <P>
+      [ <A HREF="#description">Description</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>cdds_scank</b> retrieves a definition information from dictionaries.
+    The <i>scan</i> dictionaries must have been previously selected by 
+    <a href="dict.html">cdds_dict,</a> or related function. The name of
+    the definition is specified by <i>alias</i> (multiple names, delimited
+    by white space, may be specified). If a null <i>alias</i> is specified
+    (i.e. <b>NULL</b>, zero length string, or a string that only contains
+    white space) the value is processed, starting from the current position
+    of the current <i>scan</i> definition.
+
+    <p/>
+      Dictionaries are scanned from bottom-to-top and right-to-left.
+      The newest definition that matches any <i>alias</i> is selected.
+
+    <p/>
+      <b>cdds_scank</b> is used to count tokens and search for keywords.
+      The value is parsed into tokens, similar to <b>cdds_scant</b>.
+      The remaining tokens are simply counted, if a null <i>keys</i> is
+      specified. The function returns -1 if the <i>alias</i> is not found,
+      0 if the <i>alias</i> is found but there are no tokens, or the total
+      number of tokens found. When tokens are counted, the current position
+      in the value is not changed. A search is requested by specifying a
+      non-null <i>keys</i>. The <i>keys</i> argument is parsed into tokens,
+      similar to the value. The search stops at the first value token that
+      matches any <i>keys</i> token. If a match is found, its count is
+      returned and the current position in the value is advanced to the token.
+      If a match is not found, the function returns zero and the current
+      position is not changed.
+
+    <p/>
+      Dictionaries may contain <i>alias</i> definitions. They define
+      alternate names for <i>older</i> definitions. <i>Alias</i>
+      definitions are denoted by a special prefix, 
+      "<b>alias:</b><i>defn_name</i>" or  "<b>$</b><i>defn_name</i>".
+      The value of an <i>alias</i> definition is a list of alternate names.
+      For example:
+
+    <pre>
+out_data= /very/long/path/name/file
+name= value...
+alias:data= out_data
+
+foo= hidden definition...
+name= value...
+$foo=
+    </pre>
+
+    <i>Alias</i> definitions are processed, when scan functions search for
+    a name. If a definition name matches an <i>alias</i>, the search list
+    is modified and processing continues. The defined values (definition
+    names delimited by white space) replace the one name matched in the 
+    original alias list.
+
+    <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre>
+int i, j, dimensions, ier;
+float size[3];
+
+j = cdds_scank("flag", "true TRUE True t T");
+
+dimensions = cdds_scank("size3d", "");
+if (dimensions > -1) {
+    if (dimensions == 3) {
+        ier = cdds_scanf("size3d", "");
+        for (i = 0; i < bounds; ++i) {
+            ier = cdds_scanf("", "%f", &size[i]);
+        }
+    }
+    else {
+        ier = cdds_prterr("You did not specify the correct size3d dimensions.\n");
+    }
+}
+else {
+    size[0] = 0;
+    size[1] = 0;
+    size[2] = 0;
+}
+
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="dict.html">cdds_dict</a> Select DDS dictionary and mode
+<a href="scanf.html">cdds_scanf</a> Retrieve a definition
+<a href="scant.html">cdds_scant</a> Retrieve a definition
+<a href="scantn.html">cdds_scantn</a> Retrieve a definition
+<a href="scanv.html">cdds_scanv</a> Retrieve a definition
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

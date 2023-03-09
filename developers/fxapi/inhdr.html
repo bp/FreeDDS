@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Convenience (fddx_inhdr)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fxapi","inhdr")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fxapi")</script>
+
+    <h2>fddx_inhdr - initialize DDS dataset for input, selected headers</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fddx_inhdr(</b><i>alias, value, title, sprime, hprime, hdrs</i><b>)
+      </b><dl><dd>
+        <b>character(*) </b><i>alias
+        </i><br>
+        <b>character(*) </b><i>value
+        </i><br>
+        <b>character(*) </b><i>title
+        </i><br>
+        <b>integer </b><i>sprime
+        </i><br>
+        <b>integer </b><i>hprime
+        </i><br>
+        <b>character(*) </b><i>hdrs
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+      Routine, <b>"fddx_inhdr"</b>, opens an input dataset.  All input 
+      headers specified in the string, <i>"hdrs"</i>, must exist on the
+      input and will be at the beginning of each trace (in the order 
+      specified) in the format specified by <i>"hprime"</i>; followed by
+      the "Samples" in the format specified by <i>"sprime"</i>; and then 
+      all other headers will follow in their native-formats.  So the
+      specified headers and Samples can be referenced directly in the trace 
+      array indexed by the order specified.  Use "<b>fddx_index</b>" 
+      to get the offset index to the first data sample of each trace.
+      The dataset is open with "r+" so that is can be modified.
+
+    <p>
+      After opening a file for input with <b>"fddx_inhdr"</b> the input
+      buffer Dictionary will be left open for scanning.  The open process 
+      will look for "<i>alias</i>" for the Dictionary (or usp, segy or su
+      binary on input), "<i>alias</i><b>_data</b>" for overriding the
+      binary, and "<i>alias</i><b>_format</b>" for overriding the format.
+      The input parameter, <i>"value"</i>, is the default value 
+      (eg. "stdin:" or "stdout:") used for a fallback in cases where 
+      <i>"alias"</i> is not specified by the user.  The input parameter,
+      <i>"title"</i>, should be a brief one line description of the
+      application program.  It will return a binary tag associated with 
+      the internal binary upon successful opening, a value of -2 if the 
+      dataset is not specified and no default value is given, otherwise 
+      a value of -1 to signify an open failure.
+
+    <p>
+      The specified <i>"sprime"</i> and <i>"hprime"</i> types can be any
+      prime type defined for <a href="../fapi/index.html">fdds_index"</a>. 
+      <i>"sprime"</i> can also have a value < 0, in which case the 
+      Samples will be <b>DDS_COMPLEX</b> or <b>DDS_REAL</b> depending on
+      whether the input samples are complex or not.
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

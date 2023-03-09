@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Other Example Codes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("codeslinger","othercodes")</script>
+    <!*********************************************************************>
+
+    <hr>
+      <p>
+      These are various example codes that may or may not prove useful.
+      <p>
+      Where noted, codes employ OpenMP and/or MPI.
+
+    <hr>
+
+    <ol type=disc>
+      <li><b><a href="othercodes/zxy_extract.F.html">zxy_extract.F</a></b>
+      <li><b><a href="othercodes/zxy_extract.c.html">zxy_extract.c</a></b>
+         <ul>
+           <li>Extract user specified z,x,y range from an input volume.
+           <li>Users specify ranges with origins and widths in input data coordinates
+           <li>Where range is within input volume, just truncate samples
+           <li>Where range is outside input volume, pad by replication
+           <li>Pass trace headers if any
+           <li>2D reads, 3D write
+         </ul>
+
+       <p>
+      <li><b><a href="othercodes/mute.F.html">mute.F</a></b>
+         <ul>
+           <li>Apply a mute based on user t0_mute,v_mute and header XY values
+           <li>Use source/receiver XY headers as defaults, allow user overrides
+           <li>An example of reasonably defensive and robust coding.
+         </ul>
+
+       <p>
+      <li><b><a href="othercodes/lowpass.F.html">lowpass.F</a></b>
+         <ul>
+           <li>Apply a 3D low-pass fiter to 3D volumes
+           <li>Real-to-complex and complex-to-real 3D FFTs
+           <li>OpenMP in filter application and FFTs
+           <li>Preserve top mute, preserve trace headers when present
+           <li>Force internal sample alignment to complex word boundaries
+         </ul>
+    </ol>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

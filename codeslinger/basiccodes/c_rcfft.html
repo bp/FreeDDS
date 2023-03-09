@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (change sample type)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","c_rcfft.c")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+/***********************************************************************/
+/*                                                                     */
+/* Use DDS FFT wrappers to convert REAL time-domain data to a          */
+/* ccube of frequency domain data                                      */
+/*                                                                     */
+/***********************************************************************/
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;<a href="../resources/cdds.h.html">cdds.h</a>&gt;
+#include &lt;<a href="../resources/cfft.h.html">cfft.h</a>&gt;
+
+
+/* Function prototypes */
+void help(char *prog, char *Title);
+
+int read_record(
+       BIN_TAG fd_in, float *record,
+       int n1, int n2, int nf, int i3);
+
+
+/* main */
+int main(int argc, char **argv)
+{
+
+/* For DDS functions. Arguments and return values */
+   char  *prog, *Title;
+   int   ier;
+   BIN_TAG fd_in,fd_out;
+   long long ier_ll, izero_ll=0;
+
+/* Data attributes */
+   char  axes[RANK_MAX][AXISNAME_MAX];
+   int   n1,n2,n3, rank;
+   float d1;
+
+/* User parameters */
+   int    verbose;
+
+/* Internal dynamic array */
+   float  *record;
+
+/* Internal scalar values and loop counters */
+   const char *defn;
+   int    i3, irank, nfft, nf;
+   int    fft_flag=FFT_ESTIMATE;
+   float  df, fft_scale=1.0;
+   int    remainder;
+
+/*-------------------------------------------------------------------*/
+
+/****************/
+/* Initialize   */
+/****************/
+   setargcv(argc, argv);
+   prog="c_rcfft";
+   Title="c_rcfft: Real-to-Complex FFT with ccube output";
+
+
+/*****************************************************************/
+/* Open the print file and dump command-line help as requested   */
+/*****************************************************************/
+   ier=<a href="../capishort/cdds_openpr.html">cdds_openpr</a>(prog,"");
+   if (ier&gt;0) help(prog,Title);
+
+
+/*********************/
+/* Open input file   */
+/*********************/
+   fd_in=<a href="../capishort/cddx_in.html">cddx_in</a>("in","stdin:",Title);
+
+
+/***********************************/
+/* Retrieve data characteristics   */
+/***********************************/
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(1)","%d",&amp;n1);
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(2)","%d",&amp;n2);
+   n3=<a href="../capishort/cdds_axis_prod.html">cdds_axis_prod</a>(3);
+
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("delta.axis(1)","%f",&amp;d1);
+
+   rank=<a href="../capishort/cdds_scank.html">cdds_scank</a>("axis","");
+   for (irank=0; irank&lt;rank; irank++) {
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("","%s",axes[irank]);
+   }
+
+
+/********************************************************/
+/* Retrieve other command line and parfile parameters   */
+/********************************************************/
+   ier=<a href="../capishort/cdds_dict.html">cdds_dict</a>("par:","scan");
+
+   verbose=(<a href="../capishort/cdds_scank.html">cdds_scank</a>("verbose",DDS_TRUE_KEY)&gt;0);
+
+
+/********************************************************/
+/* Set up the FFT size and output data size and delta   */
+/* ( df has units Hz per                                */
+/*   https://www.freeusp.org/DDS/users/defn/axis.html ) */
+/********************************************************/
+   nfft=<a href="../../developers/cfft/nrfft5.html">cfft_nrfft5</a>(n1);
+   nf = nfft/2 + 1;
+   df = 1.0/(d1*(float)(nfft));
+
+   if (verbose) {
+      ier=<a href="../capishort/cdds_prtmsg.html">cdds_prtmsg</a>("\n");
+      ier=<a href="../capishort/cdds_prtmsg.html">cdds_prtmsg</a>("  nfft = %d\n",nfft);
+      ier=<a href="../capishort/cdds_prtmsg.html">cdds_prtmsg</a>("  nf   = %d\n",nf);
+      ier=<a href="../capishort/cdds_prtmsg.html">cdds_prtmsg</a>("  df   = %f\n",df);
+      ier=<a href="../capishort/cdds_prtmsg.html">cdds_prtmsg</a>("\n");
+   }
+
+
+/**********************************/
+/* Set up the output dictionary   */
+/**********************************/
+   fd_out=<a href="../capishort/cddx_out.html">cddx_out</a>("out","stdout:",Title,fd_in);
+   if (fd_out &lt; 0) {
+      ier=<a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Opening output dictionary\n");
+      ier=<a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+      ier=<a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+      exit(0);
+   }
+
+
+/**************************************************************/
+/* Print format and modified axis info to output dictionary   */
+/**************************************************************/
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("","\n");
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("old_format","ccube\n");
+
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("axis","w");
+   for (irank=1; irank&lt;rank; irank++) {
+      ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>(""," %s",axes[irank]);
+   }
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("","\n");
+
+
+/***************************************************************/
+/* Twiddle with the dictionary to get axis names to register   */
+/***************************************************************/
+   ier=<a href="../capishort/cddx_dict.html">cddx_dict</a>(fd_out,"scan");
+   ier=<a href="../capishort/cddx_dict.html">cddx_dict</a>(fd_out,"print");
+
+
+/*******************************************************************/
+/* Print modified size,delta and units info to output dictionary   */
+/*******************************************************************/
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("","\n");
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("size.axis(1)","%d\n",nf);
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("delta.axis(1)","%f\n",df);
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("units.axis(1)","hz\n");
+
+
+/**************************************/
+/* Define output samples as complex   */
+/**************************************/
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("","\n");
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("fmt:SAMPLE_TYPE","typedef complex SAMPLE_TYPE;\n");
+
+
+/**********************************************/
+/* Now actually open the output with a seek   */
+/**********************************************/
+   ier_ll=<a href="../capishort/cdds_lseek8.html">cdds_lseek8</a>(fd_out,0,izero_ll,SEEK_SET);
+   if (ier_ll &lt; izero_ll) {
+      ier=<a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Opening output file\n\0");
+      ier=<a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+      ier=<a href="../capishort/cdds_close.html">cdds_close</a>(fd_out);
+      ier=<a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+      exit(0);
+   }
+
+
+/**************************/
+/* Allocate data array   */
+/**************************/
+   record=(float*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>(2*nf*n2*sizeof(float));
+
+
+/************************************************/
+/* Loop over input data, read-transform-write   */
+/************************************************/
+   for (i3=0; i3&lt;n3; i3++) {
+
+      remainder=(i3+1)%10;
+      if ( verbose &amp;&amp; !remainder) {
+         ier=<a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("Record %5d of %5d\n",i3+1,n3);
+      }
+
+      if (read_record(fd_in, record, n1,n2,nf, i3) != n2 ) {
+         break;
+      }
+
+      ier=<a href="../../developers/cfft/rcfftm.html">cfft_rcfftm</a>(fft_scale,nfft,n2,2*nf,record,fft_flag);
+
+      ier=<a href="../capishort/cddx_write.html">cddx_write</a>(fd_out,record,n2);
+      if (ier != n2) {
+         ier=<a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Writing record %d. %d traces written\n",i3+1,ier);
+         break;
+      }
+
+   }
+
+
+/**************/
+/* Clean up   */
+/**************/
+   <a href="../capishort/cdds_free.html">cdds_free</a>(record);
+   <a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+   <a href="../capishort/cdds_close.html">cdds_close</a>(fd_out);
+   <a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+
+
+/**********/
+/* Exit   */
+/**********/
+   exit(0);
+}
+
+
+
+
+/* Function help */
+void help( char *prog, char *Title)
+{
+   fprintf(stderr,"\n");
+   fprintf(stderr," %s\n",Title);
+   fprintf(stderr,"\n");
+   fprintf(stderr," Parameter....Meaning........................Default\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  in=         input dictionary                stdin:\n");
+   fprintf(stderr,"  out=        output dictionary              stdout:\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  verbose=    verbose output                      no\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  USAGE: %s in=[in_dict] out=[out_dict] \\\n",prog);
+   fprintf(stderr,"              verbose=[y|n] ]\n");
+   fprintf(stderr,"\n");
+
+   exit(0);
+}
+
+
+
+/* Function read_record */
+int read_record( fd_in, record, n1, n2, nf, i3 )
+
+   BIN_TAG fd_in;
+   float   *record;
+   int     n1, n2, nf, i3;
+
+{
+   int i1,i2,ier;
+
+   i2=0;
+   while ( i2&lt;n2 &amp;&amp; <a href="../capishort/cddx_read.html">cddx_read</a>(fd_in,&amp;record[i2*2*nf],1)==1 ) {
+      for (i1=n1; i1&lt;2*nf; i1++) record[i2*2*nf+i1]=0.0;
+      i2++;
+   }
+
+   if (i2 != n2) {
+      ier=<a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Reading record %d. %d traces read\n",i3+1,i2);
+   }
+   return (i2);
+}
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (data sizes change)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","c_transp.c")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+/***********************************************************************/
+/*                                                                     */
+/* transpose subsets of 2D arrays                                      */
+/*                                                                     */
+/***********************************************************************/
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;string.h&gt;
+#include &lt;<a href="../resources/cdds.h.html">cdds.h</a>&gt;
+
+
+/* Function prototypes */
+void help(char *prog, char *Title);
+
+
+/* main */
+int main(int argc, char **argv)
+{
+
+/* For DDS functions. Arguments and return values */
+   char  *prog, *Title;
+   int   ier;
+   BIN_TAG fd_in,fd_out;
+   long long ier_ll, izero_ll=0;
+
+/* Data attributes */
+   char  axes[RANK_MAX][AXISNAME_MAX];
+   int   n1,n2,n3, rank;
+
+/* User parameters */
+   int    verbose;
+   int    i1s,i1e, i2s,i2e;
+
+/* Internal dynamic array */
+   float  *record_in, *record_out;
+
+/* Internal scalar values and loop counters */
+   const char *defn;
+   int    i1,i2,i3, irank, n1_out,n2_out;
+   int    i1_out,i2_out, is_in,is_out;
+   int    remainder;
+
+/*-------------------------------------------------------------------*/
+
+/****************/
+/* Initialize   */
+/****************/
+   setargcv(argc, argv);
+   prog="c_transp";
+   Title="c_transp: transpose subsets of 2D arrays";
+
+
+/*****************************************************************/
+/* Open the print file and dump command-line help as requested   */
+/*****************************************************************/
+   ier=<a href="../capishort/cdds_openpr.html">cdds_openpr</a>(prog,"");
+   if (ier&gt;0) help(prog,Title);
+
+
+/*********************/
+/* Open input file   */
+/*********************/
+   fd_in=<a href="../capishort/cddx_in.html">cddx_in</a>("in","stdin:",Title);
+
+
+/***********************************/
+/* Retrieve data characteristics   */
+/***********************************/
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(1)","%d",&amp;n1);
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(2)","%d",&amp;n2);
+   n3=<a href="../capishort/cdds_axis_prod.html">cdds_axis_prod</a>(3);
+
+   rank=<a href="../capishort/cdds_scank.html">cdds_scank</a>("axis","");
+   for (irank=0; irank&lt;rank; irank++) {
+      <a href="../capishort/cdds_scanf.html">cdds_scanf</a>("","%s",axes[irank]);
+   }
+
+
+/**************************************************/
+/* Retrieve command line and parfile parameters   */
+/**************************************************/
+   ier=<a href="../capishort/cdds_dict.html">cdds_dict</a>("par:","scan");
+
+   i1s=1;
+   i1e=n1;
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("1s","%d",&amp;i1s);
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("1e","%d",&amp;i1e);
+
+   i2s=1;
+   i2e=n2;
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("2s","%d",&amp;i2s);
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("2e","%d",&amp;i2e);
+
+   verbose=(<a href="../capishort/cdds_scank.html">cdds_scank</a>("verbose",DDS_TRUE_KEY)&gt;0);
+
+
+/********************************/
+/* Open the output dictionary   */
+/********************************/
+   fd_out=<a href="../capishort/cddx_out.html">cddx_out</a>("out","stdout:",Title,fd_in);
+
+
+/***************************************************/
+/* Print modified axis info to output dictionary   */
+/***************************************************/
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("axis"," %s",axes[1]);
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>(""," %s",axes[0]);
+   for (irank=2; irank&lt;rank; irank++) {
+      ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>(""," %s",axes[irank]);
+   }
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("","\n");
+
+
+/***************************************************************/
+/* Twiddle with the dictionary to get axis names to register   */
+/***************************************************************/
+   ier=<a href="../capishort/cddx_dict.html">cddx_dict</a>(fd_out,"scan");
+   ier=<a href="../capishort/cddx_dict.html">cddx_dict</a>(fd_out,"print");
+
+
+/***************************************************/
+/* Print modified size info to output dictionary   */
+/***************************************************/
+   n1_out=i2e-i2s+1;
+   n2_out=i1e-i1s+1;
+
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("size.axis(1)","%d\n",n1_out);
+   ier=<a href="../capishort/cdds_printf.html">cdds_printf</a>("size.axis(2)","%d\n",n2_out);
+
+
+/**********************************************/
+/* Now actually open the output with a seek   */
+/**********************************************/
+   ier_ll=<a href="../capishort/cdds_lseek8.html">cdds_lseek8</a>(fd_out,0,izero_ll,SEEK_SET);
+
+
+/**************************/
+/* Allocate data arrays   */
+/**************************/
+   record_in=(float*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>(n1*n2*sizeof(float));
+   record_out=(float*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>(n1_out*n2_out*sizeof(float));
+
+
+/************************************************/
+/* Loop over input data, read-transpose-write   */
+/************************************************/
+   for (i3=0; i3&lt;n3; i3++) {
+
+      remainder=(i3+1)%10;
+      if ( verbose &amp;&amp; !remainder) {
+         ier=<a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("Record %5d of %5d\n",i3+1,n3);
+      }
+
+      ier=<a href="../capishort/cddx_read.html">cddx_read</a>(fd_in,record_in,n2);
+      if (ier != n2) {
+         <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Reading record %d. %d traces read\n",i3+1,ier);
+         break;
+      }
+
+      i1_out=-1;
+      for (i2=i2s-1; i2&lt;i2e; i2++) {
+         i1_out++;
+         i2_out=-1;
+         for (i1=i1s-1; i1&lt;i1e; i1++) {
+            i2_out++;
+            is_in = n1*i2+i1;
+            is_out= n1_out*i2_out+i1_out;
+            record_out[is_out] = record_in[is_in];
+         }
+      }
+
+      ier=<a href="../capishort/cddx_write.html">cddx_write</a>(fd_out,record_out,n2_out);
+      if (ier != n2_out) {
+         <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Writing record %d. %d traces written\n",i3+1,ier);
+         break;
+      }
+
+   }
+
+
+/**************/
+/* Clean up   */
+/**************/
+   <a href="../capishort/cdds_free.html">cdds_free</a>(record_in);
+   <a href="../capishort/cdds_free.html">cdds_free</a>(record_out);
+   <a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+   <a href="../capishort/cdds_close.html">cdds_close</a>(fd_out);
+   <a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+
+
+/**********/
+/* Exit   */
+/**********/
+   exit(0);
+}
+
+
+
+
+/* Function help */
+void help( char *prog, char *Title)
+{
+   fprintf(stderr,"\n");
+   fprintf(stderr," %s\n",Title);
+   fprintf(stderr,"\n");
+   fprintf(stderr," Parameter....Meaning........................Default\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  in=         input dictionary                stdin:\n");
+   fprintf(stderr,"  out=        output dictionary              stdout:\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  1s=         First sample of input to transpose   1\n");
+   fprintf(stderr,"  1e=         Last    \"    \"   \"    \"      \"      n1\n");
+   fprintf(stderr,"  2s=         First trace  of input to transpose   1\n");
+   fprintf(stderr,"  2e=         Last    \"    \"   \"    \"      \"      n2\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  verbose=    verbose output                      no\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  USAGE: %s in=[in_dict] out=[out_dict] \\\n",prog);
+   fprintf(stderr,"            [ 1s=[i1s] 1e=[i1e] 2s=[i2s] 2e=[i2e] \\\n");
+   fprintf(stderr,"              verbose=[y|n] ]\n");
+   fprintf(stderr,"\n");
+
+   exit(0);
+}
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

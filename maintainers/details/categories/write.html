@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (write)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","write")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Write:</h2>
+
+    <p>
+      These are only called through cdds_write.
+
+    <pre>
+<b><u>Files:</u></b>
+    f_xxx.c        - Fortran API Routines
+                        f_writem.c  f_write.c
+    c_xxx.c        - "C" API Routines
+                        c_writem.c c_write.c 
+    writeuspl.c   - Write usp line header binary data
+    writeuspt.c   - Write and edit usp trace binary data
+    writesegyc.c  - Write segy card header binary data
+    writesegyb.c  - Write segy binary header binary data
+    writesegyt.c  - Write and edit segy trace binary data
+    writegent.c   - Write and edit generic trace binary data
+    writegen.c    - Write generic binary data on a byte-basis
+    writeslicet.c - Write and edit sliced trace binary data
+    writeslice.c  - Write sliced binary data on a byte-basis
+    writecheck.c  - Check results of write binary data
+                    (residual bytes, EOF...)
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

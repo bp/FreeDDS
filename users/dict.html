@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Dictionaries</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","dict")</script>
+    <!*********************************************************************>
+
+    <p>
+      Dictionaries contain a chronological sequence of 
+      <a href="definitions.html">definitions</a>.
+      DDS will normally scanf for definitions from the bottom up 
+      looking for the latest definition when there are multiple
+      occurances for the same definition name. Each Dictionary is
+      identified by its filename or a special mnemonic for internal
+      dictionaries.  Because anything written to a Dictionary will
+      become a part of a Definition.  Therefore, if you want to add
+      a comment to a Dictionary, <u>DO NOT</u> simply do something like
+      adding a "#" at the begining of a line.  Instead simply create
+      a new Definition with a name that is not normally used for anything
+      such as "comment=...".  All Definitions can expand across multipl
+      lines until the next Definition is encountered.
+
+    <h3>Dictionary filenames have a few constraints:</h3>
+
+    <ul>
+      <li>They should not terminate with &quot;:&quot; (colon).
+        These names are reserved for mnemonic dictionaries.<br/><br/>
+
+      <li>Filenames must not contain &quot;=&quot;, white space, or
+        control characters, as this would conflict with the basic
+        definition structure.<br/><br/>
+
+      <li>It is reccommended that other special characters and "white
+        space" not be used in filename.  Although this is possible, it
+        can create confusion and difficulty dealing with these unusual
+        types of filenames.<br/><br/>
+
+      <li> Users may follow additional conventions. For example,
+        dictionaries that describe binary data may be prefixed by "H"
+        (History).
+    </ul>
+
+    <p>
+      By default, disk files are created in the current working directory.
+      The use of <var>DATA_PATH</var>  
+      (see <a href="runtime.html">Runtime Control</a>) can be used to create
+      Binary files in other directories.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

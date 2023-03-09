@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>cddz_mapin2 - open a DDS dataset for input, passing samples mapped to an application specific host-dependent type</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b>
+    <br>
+    <b>#include "cddz.h"</b>
+    <p>
+      <b>BIN_TAG cddz_mapin2(</b><i>alias, value, title, host_type, open_tag</i><b>)</b>
+      <dl><dd>
+        <b>const char </b><i>*alias</i><br>
+        <b>const char </b><i>*value</i><br>
+        <b>const char </b><i>*title</i><br>
+        <b>const char </b><i>*host_type</i><br>
+        <b>BIN_TAG    </b><i>open_tag</i><br>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"cddz_mapin2"</b> opens a file with user-defined sample type
+    mapping. It also completes an open that was started by <b>"cddz_intype"</b>.
+    <p>
+    When an application needs a specific type of sample that is not accomodated
+    by <b>"cddx_in2"</b>, <b>"cddz_mapin2"</b> allows the application to map
+    input data of any type to buffer samples of <i>host_type</i>. If the input
+    stream has not yet been openned, then <i>open_tag</i> should be set to -1.
+    <p>
+    If the application needs to know the sample type of the input stream
+    before deciding how to map samples, <b>"cddz_intype"</b> can be used to
+    initiate the open process and detect the host-dependent type of external
+    samples. That information can be used to set the <i>host_type</i> before
+    calling <b>"cddz_mapin2"</b> with the <i>open_tag</i> that was returned by
+    <b>"cddz_intype"</b>.
+    <p>
+    All headers are retained but not mapped. The dataset is open with "r+" so
+    that it can be modified.
+    <p>
+    After opening a file for input with <b>"cddz_mapin2"</b> the input
+    buffer dictionary will be left open for scanning. The open process 
+    will look for "<i>alias</i>" for the dictionary, "<i>alias</i><b>_data</b>"
+    for overriding the binary, and "<i>alias</i><b>_format</b>" for overriding
+    the format.  <b>"cddz_mapin2"</b> returns a BIN_TAG associated with the
+    internal buffer dictionary. A value of -1 signifies an open failure.
+    <p>
+    The following table shows the DDS association between genus, host_type,
+    and precision.
+    <pre>
+    genus     host_type        DDS type      precision
+                                              (bytes)
+
+    integer   signed char      DDS_SCHAR         1
+    integer   short            DDS_SHORT         2
+    integer   int              DDS_INT           4
+    integer   long long        DDS_LLONG         8
+
+    float     float            DDS_FLOAT         4
+    float     double           DDS_DOUBLE        8
+    float     long double      DDS_LDOUBLE      16
+
+    complex   complex          DDS_CPX           8
+    complex   complex double   DDS_DBLCPX       16
+    complex   complex long     DDS_LDBLCPX      32
+    </pre>
+
+   <h2> EXAMPLE</h2>
+   <pre>
+BIN_TAG    tmp_tag,buf_tag;
+const char *title, *genus, *host_type_in, *host_type_buf;
+ ...
+tmp_tag=cddz_intype("in","stdin:",title,&genus,&host_type_in);
+if (!strcmp(genus,"integer")) host_type_buf="long long";
+if (!strcmp(genus,"float"))   host_type_buf="double";
+if (!strcmp(genus,"complex")) host_type_buf="complex double";
+buf_tag=cddz_mapin2("in","stdin:",title,&host_type_buf,&tmp_tag);
+ ...
+   </pre>
+
+   <h2>SEE ALSO</h2>
+   <pre>
+<a href="clibs.php?lib=ddz&api=cddz_intype">cddz_intype</a> Open a file and get host-dependent type of Samples
+<a href="clibs.php?lib=ddz&api=cddz_mapin">cddz_mapin</a> Open a buffer with specific Sample maping
+<a href="clibs.php?lib=ddz&api=cddz_hdtin">cddz_hdtin</a> Open a file with equivalent host-dependent Sample mapping
+<a href="clibs.php?lib=ddz&api=cddz_hdtin2">cddz_hdtin2</a> Open a file with equivalent host-dependent Sample mapping
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

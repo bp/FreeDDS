@@ -1,0 +1,32 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>getBinTag - Returns this data object's binary tag</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>integer function getBinTag(</b><i>ifile</i><b>)</b>
+      <dl><dd>
+	  <b>integer, optional, intent(in) :: </b><i>ifile</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"getBinTag"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure returns the data object's associated binary tag. If <i>ifile</i>
+      is specified, then this procedure returns the binary tag of file <i>ifile</i>.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	
+	type(DdsObject) :: inData
+	integer         :: binTag
+	
+	call inData%open('r', 'in')
+	binTag = inData%getBinTag()
+      </pre>
+      
+  </body>
+</html>

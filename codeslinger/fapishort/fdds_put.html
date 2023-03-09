@@ -1,0 +1,164 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Fortran Api (fdds_put)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","fdds_put")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapishort")</script>
+
+    <h2>fdds_put - put one field into a DDS type buffer</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources) <br>
+    <p>
+      <b>integer function fdds_put</b><i>xx</i><b>(</b><i>bin_tag, field_tag, out_buf, offset, in_array[, count]</i><b>)
+      </b><dl><dd>
+        <b>integer</b> <i>bin_tag
+        </i><br>
+        <b>integer</b> <i>field_tag
+        </i><br>
+        <i>HostBufType</i> <i>out_buf(*)
+        </i><br>
+        <b>integer</b> <i>offset
+        </i><br>
+        <i>HostArrayType</i> <i>in_array(*)
+        </i><br>
+        <b>integer</b> <i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    These functions put data from <i>in_array</i> into a field of
+    <i>out_buf</i>. The data are converted from the host-dependent type
+    defined by the trailing characters in the function name (see below)
+    to the type of the field known to <i>bin_tag</i>.
+
+    <h2>ARGUMENTS</h2>
+
+    <p>
+      "<i>bin_tag</i>" is a binary tag previously obtained from
+      <a href="fddx_out.html">fddx_out.</a>
+
+    <p>
+      "<i>field_tag</i>" identifies a specific field within a structure
+      of <i>bin_tag</i>.  It is obtained with function
+      <a href="fdds_member.html">fdds_member.</a>
+      If <i>field_tag</i> is zero, the default target (a trace) is used.
+
+    <p>
+      "<i>out_buf</i>" is the output buffer into which the converted
+      information is placed.
+
+    <p>
+      "<i>offset</i>" is a byte offset into <i>out_buf</i> from where the 
+      <i>field_tag</i> is referenced (typically 0).
+
+    <p>
+      "<i>in_array</i>" is the input array from which the data is
+      transferred. The host-dependent type of <i>in_array</i> is 
+      implied by the function name suffix ("<i>xx</i>").
+
+    <p>
+      "<i>count</i>" is the number of elements to convert.<br>
+
+      <b><i>count</i> must <u>NOT</u> be used for <b>fdds_putcb</b>,
+      but is require by each of the other routines.</b>
+
+    <h2>OUTPUT</h2>
+    The <b>put</b> functions copy (or convert) data from an input array
+    into the output field. Vectors are truncated or padded, depending upon
+    the source and destination count.
+
+    <p>
+      The function return value is count, or zero if an error occurred.
+
+    <p>
+      A simple byte copy is performed, if the binary formats are the same.
+      The <b>put</b> functions convert between most numeric representations.
+      The allowed combinations are implementation dependent.
+      The functions also convert between ascii and ebcdic character formats.
+      Byte fields can be copied, without conversion, from any array.
+      Conversion is not allowed between numeric and character types.
+      If conversion is not possible, an error is reported and
+      the output field is not changed.
+
+    <pre>
+<b><u>Function     Host Type    in_array Pad</u></b>
+fdds_put     byte         zero
+fdds_putcb   character    blank
+fdds_puti    integer      zero
+fdds_puti2   integer*2    zero
+fdds_putr    real         zero
+fdds_putff   real         zero (USP fake float)
+fdds_putd    real*8       zero
+fdds_putc    complex      zero
+    </pre>
+
+    C assignment rules are used to convert <b>float</b> arrays to integer
+    and unsigned fields. Character arrays passed by <b>fdds_putcb</b>
+    are assumed to be padded with blanks. Trailing pad characters are 
+    ignored during <b>put</b> processing; they effectively shorten input
+    character arrays. A null character, within a <b>fdds_putcb</b> 
+    character array, effectively reduces its <i>count</i>. 
+    <b>fdds_putff</b> stuffs floats into consecutive 1-, 2- or 4-byte 
+    integer values (fake floats).
+
+    <h2>EXAMPLES</h2>
+    <pre>
+c put (convert) integer in_array into type field
+      integer bin_tag, field_tag
+      integer out_buf(*)
+      integer in_array(*)
+      ...
+      j = fdds_puti(bin_tag, field_tag, out_buf, 0, in_array, 100)
+
+c Stuff REAL srcx into output header SrcX
+      character Title*(80)
+      integer in_bin_tag, out_bin_tag, srcx_tag
+      integer ier, itrc, ntrc
+      real    srcx
+      real    out_buf(*)
+      ...
+      out_bin_tag = fddx_out('out','stdout:',Title,in_bin_tag)
+      ier = fddx_dict(in_bin_tag,'scan')
+      ntrc = fdds_axis_prod(1)
+      srcx_tag = fdds_member(out_bin_tag,0,'SrcX')
+      do itrc = 1,ntrc
+         ...
+         ier = fdds_putr(out_bin_tag,srcx_tag,out_buf,0,srcx,1)
+         ier = fddx_write(out_bin_tag,out_buf,1)
+      enddo
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="fdds_member.html"   >fdds_member</a>
+<a href="fdds_get.html"      >fdds_get</a>
+<a href="fddx_out.html"      >fddx_out</a>
+<a href="fddx_write.html"    >fddx_write</a>
+<a href="fddx_dict.html"     >fddx_dict</a>
+<a href="fdds_axis_prod.html">fdds_axis_prod</a>
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Tutorial (Print Parameters)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ftutorial","print")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      <a href="../fapi/printf.html">fdds_printf</a> prints a Definition to
+      the Dictionary opened for "print".  This is usually done when
+      modifying parameter definitions in an output Dictionary.  After
+      opening an output file, the output Dictionary is left in the "print"
+      mode.
+
+    <p>
+      <b><u>NOTE:</u></b> after modifying the "axis" definition, the
+      Dictionary must be reset to reestablish the axis substitution 
+      for the ".axis(n)" built-in function.  This can be done by changing
+      the Dictionary mode to "scan" and then back to "print" again:
+
+    <pre>
+      ier=<a href="../fapi/printf.html">fdds_printf</a>('axis','%s %s %s\n\0','t','x','y')
+c
+      ier=<a href="../fapi/dict.html">fdds_dict</a>(dict,'scan')
+      ier=<a href="../fapi/dict.html">fdds_dict</a>(dict,'print')
+c
+      ier=<a href="../fapi/printf.html">fdds_printf</a>('size.axis(1)','%d\n\0',n)
+    </pre>
+
+    This resetting of the Dictionary would not be necessary if the axes
+    are referred to by their actual names. For example the above code
+    could have been replaced by:
+
+    <pre>
+      ier=<a href="../fapi/printf.html">fdds_printf</a>('axis','t x y\n\0')
+      ier=<a href="../fapi/printf.html">fdds_printf</a>('size.t','%d\n\0',n) 
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

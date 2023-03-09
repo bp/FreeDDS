@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Program Flow</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+    <style type="text/css">
+      .DDS  {font-size:26px; color:#990000;}
+      .NON  {font-size:26px;}
+      .DDS2 {font-size:18px; color:#990000;}
+    </style>
+  </head>
+
+  <body style="color:#000000">
+    <script type="text/javascript">header("codeslinger","prgm_flow")</script>
+    <!*********************************************************************>
+
+Go to the <a href="../developers.html">Data Flow</a> to see how data flows through DDS programs.
+
+    <pre>
+<center>
+<hr>
+<span style="font-size:26px;color:#000099">Basic program flow for a common DDS application</span>
+(<span class="DDS">This color indicates use of DDS API</span>)
+<hr>
+</center><span style="font-size:16px;color:#000000">
+<span class="NON">Initialize Title</span>
+      information transfered to output dictionary
+
+<span class="DDS">Open the print file</span>
+      the print file is for logging I/O and runtime information
+
+<span class="DDS">Open the input</span>
+
+<span class="DDS">Retrieve data characteristics</span>
+      sizes, origins, deltas of all axes
+
+<span class="DDS">Set defaults for and retrieve other parameters</span>
+      some may be from input dictionary, others from the user.
+
+<span class="DDS">Open the output</span>
+      only an ascii dictionary until the first seek or binary i/o
+
+<span class="DDS">Allocate arrays</span>
+
+<span class="NON">Set up the algorithm</span>
+      precompute constant scalars, vectors, etc. needed by the algorithm
+
+<span class="NON">Loop over input data</span>
+      <span class="DDS2">read</span>
+      apply algorithm
+      <span class="dds2">write</span>
+<span class="NON">End Loop</span>
+
+<span class="DDS">Clean up</span>
+      free allocated memory, close files
+
+<span class="NON">End</span>
+    </span></pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

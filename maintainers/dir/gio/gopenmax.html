@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Directories (gio - gopenmax)
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","dir","gio","gopenmax")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("gio")</script><h2>
+
+    <h2>gopenmax - set/get/reset the number of open file descriptors 
+      for GIO streams.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "gio.h"</b><br/>
+
+    <b>int gopenmax(GIO_OPEN_MAX_OPTION </b><i>option</i><b>, ...);
+    </b>
+    <h2>DESCRIPTION</h2>
+    This function provides a way for the application to set, get, or reset
+    the maximum number of open file descriptors allowed within the GIO
+    library. This is not a hard limit. It simply determines the point a which
+    <b>GFILE</b> streams marked for file descriptor caching (as determined
+    by a leading "c" in the <i>type </i> argument to <b>gopen</b>, or
+    <b>greopen</b>) become candidates for temporary closing.
+    Of these the stream with the least recently used file descriptor
+    is selected for closing.
+    If no such stream exists the GIO library will try to open new
+    files anyway until a process or system limit is reached.
+
+    <p/>
+    The argument <i>option</i> may be one of the following enumeration
+      values:
+
+    <pre>
+<b>GIO_OPEN_MAX_GET</b>    Return the current limit.
+
+<b>GIO_OPEN_MAX_SET</b>    Set and return the new limit as
+                    specified by the second argument,
+                    a positive value of type <b>int</b>.
+
+<b>GIO_OPEN_MAX_INCR</b>   Add to (or subtract from) the
+                    current limit according to the
+                    second argument, a positive 
+                    (or negative) value of type <b>int</b>.
+                    Return the new limit.
+
+<b>GIO_OPEN_MAX_RESET</b>  Reset the limit to its default
+                    value and return it. (This default
+                    varies among operating systems.)
+    </pre>
+
+    <h2>RETURN VALUE</h2>
+    The function returns the limit on open file descriptors after applying
+    any changes requested by the arguments. If there is an error the
+    function returns a negative value.
+
+    <h2>FILES</h2>
+    $DDSROOT/include/gio.h<br/>
+    $DDSROOT/lib/$TARCH/libgio.a
+
+    <h2>AUTHOR</h2>
+    T. A. Griffin, (Jan 1997)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

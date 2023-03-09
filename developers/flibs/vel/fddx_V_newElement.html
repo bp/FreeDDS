@@ -1,0 +1,32 @@
+
+    <h2>fddx_V_newElement - read a new velocity parameter.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fddx_vel.h&gt;</b>
+    <p>
+      <b>integer fddx_V_newElement(</b><i>alias</i><b>)
+    </b><dl><dd>
+        <b>character*(*)</b><i>alias</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>fddx_V_newElement</b> reads a new velocity Element.<br>
+      The type of element can be defined by the user.<br>
+      Currently 3D grids and single values are implemented.<br>
+      For a 3D grid, <b>fddx_V_newElement</b> scans for a keyword defined by "<i>alias</i>" and the velocity from a file.<br>
+      For a constant value, <b>fddx_V_newElement</b> scans for a keyword defined by "<i>alias</i>_single" followed by a value.<br>
+      If both "<i>alias</i>" and "<i>alias</i>_single" are specified, then <b>fddx_V_newElement</b> returns an error.
+    </p>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>alias</i>", specifies the keyword prefix to use. (see description above).<br>
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>fddx_V_newElement</b> returns a tag to the newly created velocity parameter. In the event of an error, it will return -1.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

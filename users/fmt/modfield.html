@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Fmt Control (MOD_FIELD)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","fmt","modfield")</script>
+    <!*********************************************************************>
+
+    <p>
+      Fields within structures may be added, deleted or modified, using 
+      operators <code>(+, -, *, -+, *+)</code>.  This allows Trace Headers
+      to be extensible.
+
+    <pre>
+ Operator   Definition
+ --------   ----------
+ +          append members named by the operand
+ -          delete all previous members named by the operand
+ *          replace members named by the operand
+ -+         delete and append members named by the operand
+ *+         replace  or append members named by the operand
+    </pre>
+
+    <p>
+      Operators are processed from left to right. For example given:
+
+    <pre>
+typedef struct {int   a, b, c;} old_xyz;
+typedef struct {float d, e, f;} add_xyz;
+typedef struct {void  b, e;} drop_xyz;
+    </pre>
+
+      a new revised "drop_xyz" structure can be compose by:
+
+    <pre>
+typedef struct { + old_xyz; + add_xyz; - drop_xyz;} drop_xyz;
+    </pre>
+
+    resulting in:
+
+    <pre>
+typedef struct {int   a, c; float d, f;} xyz;
+    </pre>
+
+    <p>
+      The end user may explicitly add, drop or modify fields in the
+      generic DDS format simply by specifying the Definition, 
+      "<code>MOD_FIELD</code>".  For example, the following Definition
+      will add (or modify) headers "<b>a</b>" and "<b>b</b>" in the 
+      structure as floating point values, add (or replace at the end)
+      header "<b>c</b>" as an integer value and drop head "<b>d</b>"
+      all together.
+
+    <pre>
+MOD_FIELD= *+ float a, b; -+ int c; - void d;
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

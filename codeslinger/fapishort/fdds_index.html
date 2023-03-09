@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Fortran Api (fdds_index)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","fdds_index")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapishort")</script>
+
+    <h2>fdds_index - field index within DDS type</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_index(</b><i>bin_tag, field_tag, 
+        prime</i><b>)
+      </b><dl><dd>
+        <b>integer </b><i>bin_tag
+        </i><br>
+        <b>integer </b><i>field_tag
+        </i><br>
+        <b>integer </b><i>prime
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    This function returns the index of a field within a DDS type.
+    The index is an array subscript relative to a DDS <i>prime</i> type.
+    This allows the field value to be accessed within a type buffer.
+
+    <h2>ARGUMENTS</h2>
+    "<i>bin_tag</i>" is a binary tag, previously obtained from 
+    <a href="fddx_in.html">fddx_in.</a>
+    It specifies a binary data stream.
+
+    <p>
+      "<i>field_tag</i>" is a tag returned by
+      <a href="fdds_member.html">fdds_member.</a>
+      It locates a field within the trace structure of the data stream.
+
+    <p>
+      "<i>prime</i>" identifies a DDS prime type.
+      It must be compatible with the field's prime type.
+      The field offset must be compatible with the type's precision,
+      a fractional index would be useless.
+      An error is issued, if these assumptions are violated.
+
+    <p>
+      Symbolic names for DDS prime types are provided by <b>fdds.h</b>.
+      They correspond to Fortran types on the host computer.
+      This allows the <i>prime</i> argument to be host independent.
+      Possible values include:
+
+        <pre>
+Host Dependent values
+prime                   Host Type
+-----                   ---------
+DDS_CHARACTER           character
+DDS_INTEGER             integer
+DDS_INTEGER2            integer2
+DDS_LOGICAL             logical
+DDS_LOGICAL1            logical1
+DDS_REAL                real
+DDS_DOUBLE              double
+DDS_COMPLEX             complex
+DDS_DBL_CPX             double complex
+        </pre>
+
+    <h2>OUTPUT</h2>
+    The return value is the zero-based index of <i>field</i> within
+    <i>bin_tag</i> assuming elements of size <i>prime</i>,
+    or -1 if an error occurred.
+
+    <h2>EXAMPLE</h2>
+    <pre>
+      integer bin, field
+      integer i_RecNum, RecNum
+      integer*2 buf_i2(*)
+      ...
+c  index to RecNum field (integer*2)
+      field = fdds_member(bin, 0, 'RecNum')
+      i_RecNum = 1 + fdds_index(bin, field, DDS_INTEGER2)
+      ...
+      RecNum = buf_i2(i_RecNum)
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

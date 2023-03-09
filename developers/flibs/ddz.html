@@ -1,0 +1,128 @@
+<html>
+  <body>
+
+    <h2>Introduction</h2>
+
+    <p><b>libddz</b> extends DDS to allow flexible host-dependent sample type
+    mapping in the form of convenience routines. Flexible host-dependent
+    mapping is useful when double precision data are input and precision needs
+    to be maintained, or when a program is designed to manipulate input samples,
+    regardless of type, without risk of losing information.</p>
+
+    <p>Note that <b>libddz</b> maps between different host-dependent types of the
+      same genus. It cannot map between types in different genuses. For example,
+      a <i>float</i> can be mapped to a <i>double</i>, but cannot be mapped to a
+      <i>complex</i> nor a <i>complex double</i>.
+    </p>
+
+    <p>As with the other DDS convenience routines, the developer need not contend
+    with DDS dictionaries or internal buffer binaries. If any errors occur, they
+    will be handled by the regular <b>fdds_prterr</b> routine which keeps track
+    of errors.</p>
+
+    <p>After opening a file for input with <b>fddx_mapin</b>, <b>fddx_mapin2</b>,
+    <b>fddx_hdtin</b>, or <b>fddx_hdtin2</b>, all of the other <b>fddx</b>
+    convenience routines can use the resulting bin tag as though the file had
+    been opened with <b>fddx_in</b>, <b>fddx_in2</b>, etc.</p>
+
+    <h2>Functions and their purpose</h2>
+
+    <table width="95%" border=0 rules="none" frame="void"
+           cols="2" cellspacing="0" cellpadding="5">
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_getdict"><b>fddz_getdict</b></a>
+        </td>
+        <td><p>
+          Get the name of a dictionary when only the BIN_TAG is known
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_hdtin"><b>fddz_hdtin</b></a>
+        </td>
+        <td><p>
+          Open a DDS dataset for input passing samples mapped to the
+          host-dependent type
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_hdtin2"><b>fddz_hdtin2</b></a>
+        </td>
+        <td><p>
+          Open a DDS dataset for input, passing headers and mapping samples to
+          the host-dependent type
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_hdtype"><b>fddz_hdtype</b></a>
+        </td>
+        <td><p>
+          Detect the host-dependent type of a field
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_intype"><b>fddz_intype</b></a>
+        </td>
+        <td><p>
+          Interrogate a DDS dataset for input sample genus and host-dependent
+          type
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_mapin"><b>fddz_mapin</b></a>
+        </td>
+        <td><p>
+          Open a DDS dataset for input, passing samples mapped to an application
+          specific host-dependent type
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_mapin2"><b>fddz_mapin2</b></a>
+        </td>
+        <td><p>
+          Open a DDS dataset for input, passing headers and mapping samples to
+          an application specific host-dependent type
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_md5sum"><b>fddz_md5sum</b></a>
+        </td>
+        <td><p>
+          Get the md5sum of a buffer
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_scann"><b>fddz_scann</b></a>
+        </td>
+        <td><p>
+          Get the name of a definition found by fdds_scan*()
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_sysconf"><b>fddz_sysconf</b></a>
+        </td>
+        <td><p>
+          Get system configuration information
+        </p> </td>
+      </tr>
+      <tr>
+        <td valign="top">
+          <a href="flibs.php?lib=ddz&api=fddz_title"><b>fddz_title</b></a>
+        </td>
+        <td><p>
+          Print the standard DDS title block to a dictionary in print mode
+        </p> </td>
+      </tr>
+</table>
+
+  </body>
+</html>
