@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Glossary of DDS Terms</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      .h1 {font: bold 50px serif;color:red}
+      .h2 {font: bold 30px serif;text-align:center}
+      .a  {font: bold 30px serif}
+      dt  {font-weight: bold}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","glossary")
+    </script>
+    <!*********************************************************************>
+
+<H2 class="h2">
+<A HREF="#A" class="a">A</A>
+<A HREF="#B" class="a">B</A>
+C
+<A HREF="#D" class="a">D</A>
+<A HREF="#E" class="a">E</A>
+<A HREF="#F" class="a">F</A>
+<A HREF="#G" class="a">G</A>
+<A HREF="#H" class="a">H</A>
+I
+J
+<A HREF="#K" class="a">K</A>
+L
+M
+N
+O
+<A HREF="#P" class="a">P</A>
+Q
+R
+<A HREF="#S" class="a">S</A>
+<A HREF="#T" class="a">T</A>
+U
+<A HREF="#V" class="a">V</A>
+W
+X
+Y
+Z
+</H2>
+
+<HR SIZE="5">
+
+<H1 class="h1"><A NAME="A"></A>A</H1>
+<DL>
+  <DT>alias
+  <DD>A list of possible <i>names</i> for a definition,
+    separated by spaces. Used by fdds_in, fdds_out, and the fdds_scan*
+    functions.
+</DL>
+
+<H1 class="h1"><A NAME="B"></A>B</H1>
+<DL>
+  <DT>bin, bin_tag
+  <DD>An integer used by DDS to identify a binary data stream.<br><br>
+
+  <DT>bootstrap dict
+  <DD>par: and cmd: dictionaries glued together.<br><br>
+
+  <DT>buf, in_buf, out_buf
+  <DD>A memory buffer. 'in_' and 'out_' are used to elaborate on 
+    direction of information/data transport.
+</DL>
+
+<H1 class="h1"><A NAME="D"></A>D</H1>
+<DL>
+  <DT>data_alias
+  <DD>An alias used to define overrides for
+  input and output binary data file names.<br> E.g.&nbsp;&nbsp;
+  '<b>in=</b> <i>in_dict</i>&nbsp;&nbsp;
+  <b>in_data=</b> <i>file.segy</i>'&nbsp;&nbsp;
+  on a command line will cause <i>in_dict</i> to use <i>file.segy</i>
+  as the binary data file, regardless of the any other file specified
+  within <i>in_dict</i>.<br><br>
+
+  <DT>DATA_PATH
+  <DD>A variable used to override the path to any
+  data files written.  DATA_PATH=/dat22/users/workspace  will cause all
+  binary data files to be written to /dat22/users/workspace, even when
+  the command is executed from a different location and out= points to
+  a different location.  The path can be overridden by specifying
+  a specific full path name with the <i>out_data</i> (or similar) alias.<br><br>
+
+  <DT>DATA_SUFFIX
+  <DD>A suffix automatically appended to an output alias (e.g. <i>out=</i>)
+  name to distinguish a dictionary from the binary data it refers to.
+  This can be overridden by using <i>out_data= bin_name</i>.  The current
+  default value for <b>DATA_SUFFIX</b> is "_@" but can be changed by specifying
+  a different suffix value.<br><br>
+
+  <DT>DDS type
+  <DD>A type of variable known to DDS. E.g.
+  DDS_INTEGER, DDS_REAL, or DDS_COMPLEX. Used by <b>cdds_index</b>, and
+  <b>fdds_index</b> to describe the type of value for which the index
+  is used.<br><br>
+
+  <DT>definition ['<b>name=</b> <i>value</i>']
+  <DD>The '<b>name=</b> part of the definition cannot contain white space
+  and always ends with <b>'='</b>. The <i>value</i> part of a defintion
+  can be zero or more <i>tokens</i> separated by white space.
+  <i>value</i> can span many lines. A definition ends when a new
+  <b>name=</b> is found. For example, 'axis= t x y' is a
+  common definition.<br><br>
+
+  <DT>dict, dictionary
+  <DD>A collection of definitions. If it is a 'data dictionary', the 
+    definitions describe a binary data set. If it
+    is a 'command line' or 'parfile' dictionary, definitions are used to
+    control the behavior of the application.
+</DL>
+
+<H1 class="h1"><A NAME="E"></A>E</H1>
+<DL>
+  <DT>extended dictionaries
+  <DD>xx
+</DL>
+
+<H1 class="h1"><A NAME="F"></A>F</H1>
+<DL>
+  <DT>field
+  <DD>A member of a SEQUENCE. Think of SEQUENCE as a
+  structure that describes each data trace within a dataset. 
+  If SEQUENCE is a segy trace, it is a structure containing many 
+  trace headers, followed by the Samples. Any
+  single header is a field and the segy 'Samples' field is an
+  array containing many values.<br><br>
+
+  <DT>field_genus
+  <DD>The genus of a field (E.g. float, int,
+  complex).<br><br>
+
+  <DT>field_name
+  <DD>The name associated with a single field. E.g.
+  'Samples', or 'SrcX'.<br><br>
+
+  <DT>field_tag
+  <DD>An identifier of a specific field with a Sequence.<br><br>
+
+  <DT>flags
+  <DD>xx<br><br>
+
+  <DT>fmt
+  <DD>A character string describing format conversion
+  attributes to apply to a list of other arguments. Used by
+  <b>fdds_scanf</b>, <b>fdds_printf</b>, <b>fdds_prtcon</b>, and
+  friends. It is the same format as used by the "C" compiler language.<br><br>
+
+  <DT>format_alias
+  <DD>An alias used to define overrides for input
+  and output binary data.  E.g.&nbsp;&nbsp;
+  '<b>in=</b> <i>in_dict</i>&nbsp;&nbsp;<b>in_format=</b> <i>fcubex</i>'&nbsp;&nbsp;
+  on a command line will cause DDS to treat data associated with
+  <i>in_dict</i> as <i>fcubex</i> data, regardless of the format
+  specified within <i>in_dict</i>.
+</DL>
+
+<H1 class="h1"><A NAME="G"></A>G</H1>
+<DL>
+  <DT>genus
+  <DD>The general class of a data object. E.g. 'integer', 'float',
+  and 'complex' are genus values that do not imply precision.<br><br>
+
+  <DT>genus_tag
+  <DD>xx
+</DL>
+
+<H1 class="h1"><A NAME="H"></A>H</H1>
+<DL>
+  <DT>hist
+  <DD>A character string used by DDS to identify a dictionary<br><br>
+
+  <DT>host-dependent type
+  <DD>xx
+</DL>
+
+<H1 class="h1"><A NAME="K"></A>K</H1>
+<DL>
+  <DT>key
+  <DD>xx<br><br>
+
+  <DT>keyword options
+  <DD>xx
+</DL>
+
+<H1 class="h1"><A NAME="P"></A>P</H1>
+<DL>
+  <DT>prime
+  <DD>xx<br><br>
+
+  <DT>prime type
+  <DD>xx<br><br>
+
+  <DT>PRINT_PATH
+  <DD>xx
+</DL>
+
+<H1 class="h1"><A NAME="S"></A>S</H1>
+<DL>
+  <DT>SEQUENCE
+  <DD>xx
+</DL>
+
+<H1 class="h1"><A NAME="T"></A>T</H1>
+<DL>
+  <DT>tag
+  <DD>A location within a SEQUENCE of some specific information.
+  In order to extract SrcX from a SEG-Y trace, you must know it's tag. Access
+  to the information is then available through trace(srcx_tag)<br><br>
+
+  <DT>title
+  <DD>Information about an application recorded in the dictionary
+  of outputs.<br><br>
+
+  <DT>token
+  <DD>xx
+</DL>
+
+<H1 class="h1"><A NAME="V"></A>V</H1>
+<DL>
+  <DT>value
+  <DD>A default to use when none of the aliases match definitions.
+</DL>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

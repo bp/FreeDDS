@@ -1,0 +1,202 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Tutorial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("developers","ctutorial")</script>
+    <!*********************************************************************>
+
+    <h4>
+      Overview and tutorial on the "C" Application Program Interface 
+      (API) to the Data Dictionary System.
+    </h4>
+
+    <h2>INCLUDE FILES</h2>
+    "C" application programs should include "cdds.h". The DDS application 
+    makefiles will setup the appropriate include path. Each "C" program
+    should define "<b>_POSIX_SOURCE</b>" and "<b>ANSI</b>" and should
+    call "<a href="capi/setargcv.html">setargcv</a>" before any other
+    DDS call in order to get the command line parameters initialized into
+    DDS.
+
+<pre>
+#include &lt;cdds.h&gt;
+</pre>
+    
+    <p>
+      <b>cdds.h</b> provides the declarations required to access the DDS 
+      "C" API routines.  It also defines symbolic names for API constants
+      which can be used in the following examples:
+
+    <pre>
+#include &lt;cdds.h&gt;
+      integer ier, i, bin, tag, ndx, rank, size[<b>RANK_MAX</b>];
+      const char *out_dict, name[80];
+      BIN_TAG out_bin;
+      float *data;
+      ...
+      rank = cdds_scank("axis", "");
+      cdds_scanf("size", "");
+      for (i=0;i&lt;rank,i++) {
+         cdds_scanf("", "%d", size[i]);
+      }
+      ...
+      /* enforce array limits when reading */
+      cdds_scanf(data, "%80s", name);
+      ...
+      /* get index to trace header */
+      tag = cdds_member(out_bin, 0, "SrPtXC");
+      ndx = cdds_index(out_bin, tag, <b>DDS_FLOAT</b>);
+      data = cdds_malloc(size(1)*sizeof(float));
+      ...
+      /* open binary output stream */
+      out_bin = cdds_open(out_dict, "out_format", "out_data", "w+");
+    </pre>
+
+    <ul>
+      <li>Max Character String Sizes (Integer type suitable for character lengths and Character type suitable for scanf and printf usage.)
+
+        <pre>
+<b><u>Integer        Character       Max Characters </u></b>
+PATHNAME_MAX   PATHNAME_MAXQ   full filenames 
+DEFNNAME_MAX   DEFNNAME_MAXQ   definition names
+AXISNAME_MAX   AXISNAME_MAXQ   axis names
+UNITNAME_MAX   UNITNAME_MAXQ   units 
+BASENAME_MAX   BASENAME_MAXQ   base names (not used)
+        </pre>
+
+      <li>Symbolic names are defined for DDS prime types that correspond 
+        to "C" types on the host computer. For example, DDS_FLOAT is 
+        "float4" when compiled on the Sun, and "float8x" when compiled on
+        a Linux machine. This allows programs to remain portable and efficient,
+        when defining and accessing fields within type buffers. These can
+        be used for <b>cdds_get</b><i>xx</i>, <b>cdds_put</b><i>xx</i> 
+        and <b>cdds_index</b> routines.
+
+        <pre>
+DDS_VOID       void
+DDS_PTR        void*
+DDS_CHAR       char
+DDS_SCHAR      signed char
+DDS_SHORT      short
+DDS_INT        int
+DDS_LONG       long
+DDS_LLONG      long long
+DDS_UCHAR      unsigned char
+DDS_USHORT     unsigned short
+DDS_UINT       unsigned int
+DDS_ULONG      unsigned long
+DDS_ULLONG     unsigned long long
+DDS_FLOAT      float
+DDS_DOUBLE     double
+DDS_LDOUBLE    long double
+DDS_CPX        complex               (Extensions)
+DDS_DBLCPX     double complex        (Extensions)
+DDS_LDBLCPX    long double complex   (Extensions)
+        </pre>
+
+      <li>Symbolic names are defined for DDS types that are independent
+        of the host data types.
+
+        <pre>
+DDS_ASCII1         ascii
+DDS_EBCDIC1        ebcdic
+DDS_INTEGER1       1-byte integer
+DDS_INTEGER2       2-byte integer
+DDS_INTEGER2X      2-byte integer (Little Endian)
+DDS_INTEGER4       4-byte integer
+DDS_INTEGER4X      4-byte integer (Little Endian)
+DDS_INTEGER8       8-byte integer
+DDS_INTEGER8X      8-byte integer (Little Endian)
+DDS_UNSIGNED1      1-byte unsigned 
+DDS_UNSIGNED2      2-byte unsigned 
+DDS_UNSIGNED2X     2-byte unsigned (Little Endian)
+DDS_UNSIGNED4      4-byte unsigned 
+DDS_UNSIGNED4X     4-byte unsigned (Little Endian)
+DDS_UNSIGNED8      8-byte unsigned
+DDS_UNSIGNED8X     8-byte unsigned (Little Endian)
+DDS_FLOAT4         4-byte ieee float
+DDS_FLOAT4X        4-byte ieee float (Little Endian)
+DDS_FLOAT4IBM      4-byte ibm float
+DDS_FLOAT8         8-byte ieee float
+DDS_FLOAT8X        8-byte ieee float (Little Endian)
+DDS_FLOAT8IBM      8-byte ibm float
+DDS_FLOAT16        16-byte ieee float
+DDS_COMPLEX8       8-byte ieee complex
+DDS_COMPLEX8X      8-byte ieee complex (Little Endian)
+DDS_COMPLEX8IBM    8-byte ibm complex
+DDS_COMPLEX16      16-byte ieee complex
+DDS_COMPLEX16X     16-byte ieee complex (Little Endian)
+DDS_COMPLEX16IBM   16-byte ibm complex
+DDS_COMPLEX32      32-byte ieee complex
+        </pre>
+
+      <li>Predefined API types (typedef).
+
+        <pre>
+typedef int BIN_TAG   (Binary Tag type)
+typedef int SYM_TAG   (Symbol Tag type
+        </pre>
+
+      <li>DDS_DEBUG options. DDS application debug control (on, off,
+        one-time).  Application users may set debug flags by defining 
+        dds_debug, DDS_DEBUG, dds_dump, or DDS_DUMP.  Flags set by 
+        calling <a href="capi/check.html">cdds_check</a> are OR'd 
+        with defn flags.
+
+        <pre>
+DDS_DBG_HEAP      (check heap once, right now)
+DDS_DBG_ALLOC     (check heap on each allocation)
+DDS_DBG_FREE      (check heap on each free)
+DDS_DBG_CALL      (check heap on each DDS API call)
+DDS_DBG_TRACE     (trace all API calls)
+DDS_DBG_SCANNER   (trace compiler scanner)
+DDS_DBG_SYMBOL    (dump binary symbol tables)
+DDS_DBG_UNCOMPILE (dump ddsUncompileFmt stacks)
+DDS_DBG_BINARY    (dump binary ? tables)
+DDS_DBG_PANIC     (dump binary tables on panic)
+        </pre>
+
+      <li>Other utility predefined parameters
+        <pre>
+RANK_MAX       maximum axis rank (9)      
+DDS_TRUE_KEY   true TRUE True t T yes YES Yes y Y
+DDS_FALSE_KEY  false FALSE False f F no NO No n N
+DDS_HELP_KEY   help HELP Help -help -HELP -Help -h -H -?
+DDS_HELP_ALIAS help HELP Help -help -HELP -Help
+        </pre>
+    </ul>
+
+    <p>
+      <b>cfft.h</b> provides definitions needed for the cfft wrapper
+      routines.
+
+    <h2>LIBRARY FILES</h2>
+    The DDS application makefiles will setup the appropriate library paths
+    and libraries.  <b>libdds3.a</b> contains all the DDS API routines;
+    <b>libgio.a</b> contains the routines for the GIO I/O routines;
+    <b>libchost.a</b> contains the "C" host-dependent routines.
+    
+    <h2>FILES</h2>
+    <pre>
+$DDSROOT/include/cdds.h          "C" DDS interface
+$DDSROOT/include/cfft.h          "C" FFT interface
+
+$DDSROOT/lib/$TARCH/libdds3.a    DDS library
+$DDSROOT/lib/$TARCH/libgio.a     GIO library
+$DDSROOT/lib/$TARCH/libchost.a   "C" Host-dependent lib
+    </pre>
+   
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

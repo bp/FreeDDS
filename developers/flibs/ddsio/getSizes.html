@@ -1,0 +1,33 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>getSizes - Returns this data object's sizes</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>integer(kind=DPI), dimension(:) function getSizes(</b><i>ifile</i><b>)</b>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"getSizes"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure returns the sizes of the dimensions of this data object. If multiple
+      files are merged along a specified axis, then the merged axis size is properly computed.
+      <br><br>
+      If <i>ifile</i> is specified, then this procedure returns the sizes of the given
+      file of this data object.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	use Precision_mod, only : DPI
+	
+	type(DdsObject)   :: inData
+	integer(kind=DPI) :: inSizes(3)
+	
+	call inData%open('r', 'in')
+	inSizes = inData%getSizes()
+      </pre>
+      
+  </body>
+</html>

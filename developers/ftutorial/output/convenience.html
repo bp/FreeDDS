@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Tutorial (Output - Convenience)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ftutorial","output","convenience")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Open Internal Output Buffer</h2>
+
+    <p>
+      There are four Fortran Convenience routines for opening an output
+      dataset. These routines simplify the process by hiding the opening
+      of separate dictionaries and by hiding the extra internal binaries 
+      for the double buffering that's required.  These routines actually
+      only preallocates a binary, but does not actually open up the output
+      until forced to by some seek or write function.  This way the output
+      format can be modified first by the developer.
+
+    <p>
+      <a href="../../fxapi/out.html">fddx_out</a> opens an output dataset
+      based on an input binary but can be modified before final opening.
+
+    <p>
+      <a href="../../fxapi/outhdr.html">fddx_outhdr</a> opens an output 
+      dataset, specifically defining selected header words.
+
+    <p>
+      <a href="../../fxapi/mod.html">fddx_mod</a> reopens a dataset for
+      modification.
+
+    <p>
+      <a href="../../fxapi/mod2.html">fddx_mod2</a> reopens a dataset with
+      headers for modification.
+
+      <pre>
+      out_bin=<a href="../../fxapi/out.html">fddx_out</a>('out','stdout:',title,in_bin)
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>('fmt:SAMPLE_TYPE',
+     *    'typedef complex SAMPLE_TYPE;\n\0')
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>('size.axis(1)','%d\n\0',nout)
+            
+c     Force open the actual binary file by simply seeking to the beginning
+      ier=<a href="../../fapi/lseek.html">fdds_lseek</a>(out_bin,0,0,SEEK_SET)
+      if (ier.lt.0) then
+         ier=fdds_prterr('Unable to open output dataset\n\0')
+      endif
+    </pre>
+
+    <! -------------------------------------------------------------------->
+    <hr/>
+    <h2>Open Output From Scratch</h2>
+
+    <p>
+      If you need to generate an output dataset with no input dataset, then
+      you will need to create a dummy input dictionary first with:
+
+    <pre>
+      in_bin=<a href="../../fxapi/in.html">fddx_in</a>(' ',' ',title)
+    </pre>
+
+    <p>
+      and then use this dummy input binary, <b>in_bin</b>, when opening
+      any output datasets.  You will need to define the actual format
+      for example by:
+
+    <pre>
+      out_bin=<a href="../../fxapi/out.html">fddx_out</a>('out','stdout:',title,in_bin)
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>('fmt:ASP_TRACE','typedef struct {\n\0')
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>(' ','integer StaCor;\n\0')
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>(' ',float SrcX;\n\0')
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>(' ',SAMPLE_TYPE Samples[axis_size(1)];\n\0')
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>(' ',} ASP_TRACE;\n\0')
+  
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>('fmt:SAMPLE_TYPE',
+     *    'typedef float SAMPLE_TYPE;\n\0')
+
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>('axis','t x y\n\0')
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>('size.t','%d\n\0',nt)
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>('size.x','%d\n\0',nx)
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>('size.y','%d\n\0',ny)
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>('delta.t','%f\n\0',si)
+      ier=<a href="../../fapi/printf.html">fdds_printf</a>('format','asp\n\0')
+            
+c     Force open the actual binary file by simply seeking to the beginning
+      ier=<a href="../../fapi/lseek.html">fdds_lseek</a>(out_bin,0,0,SEEK_SET)
+      if (ier.lt.0) then
+         ier=fdds_prterr('Unable to open output dataset\n\0')
+      endif
+    </pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

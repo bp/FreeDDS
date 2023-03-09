@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Directories (cmd)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","dir","cmd")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      This directory contains all the DDS application codes, each one under
+      it's own unique directory by application name.
+
+    <p>
+      <code>${<var>DDSROOT</var>}/src/cmd</code>: 
+    Subdirectory containing a directory for each of the applications.
+    Each application directory will contain:
+
+    <ul>
+      <li>Local scripts:
+        <ul>
+          <li>BuildAll - Build all applications for all remote hosts
+          <li>BuildHost - Build all applications for current host
+        </ul>
+      <li>Local files under each application directory:
+        <ul>
+          <li><b>Makefile</b> - make file to build &amp; install
+            the startup script, and executable and, if it exists,
+            the man page
+          <li>architecture-dependent subdirecties containing the 
+            working build files
+          <li>source code
+          <li>man page
+        </ul>
+      </li>
+    </ul>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

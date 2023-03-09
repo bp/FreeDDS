@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','data')</script>
+
+    <img src="xsd_FileSelectionWindow.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+    <p>
+      Selecting (<b>File&rarr;Open&nbsp;Data</b>) (or after restarting the server from 
+      <b>File&rarr;Restart&nbsp;Server</b>) will bring up the "Seismic File" window
+      used for selecting a data file to open.  There are four different directories
+      that can be setup along with four different hosts. One or more wildcard 
+      characters, "<b>*</b>", can be used in the path name (not in part of the
+      directory path).  The Hosts for each directory can be setup the same as 
+      specified by <a href="server.html">Start Server</a>. These can be saved for
+      future reference by selecting <b>Options&rarr;Project&nbsp;Defaults</b> (See
+      <a href="savingloading.html">Saving/Loading</a>).  
+     </p>
+    
+     <p>
+      Selecting one of the four directory toggles ("Dir #") will display all the 
+      subdirectories and files in the "Directories" and "Files" areas.  Anytime a
+      directory change is made, the server may be restarted if the "Host" changes.
+      Double click on a subdirectory to move up or down the directory tree. To select 
+      a file either click on the file and press the "OK" button; or simply double click
+      on the file name.  To change a directory path after making a change either press
+      the "Update" button or press the "Enter" key while the cursor is in the directory
+      path. Press the "Cancel" button to close the window. 
+    </p>
+
+     <p>
+      When a file is selected, the ddsServer attempts to open the file, auto-detecting
+      the dataset format unless a Data Format is specified.  The ddsServer then sends
+      the dataset axis information back to XSD.  That information along with previous
+      parameters are setup in the new "Server Parameters" window.  The previous 
+      parameters are taken from the window from which the <b>File&rarr;Open&nbsp;Data</b>
+      selection was made.  The main window provide default parameters.  The "Server
+      Parameters" window allows you to:
+    </p>
+    <br clear="all" />
+  
+    <ol>
+      <li><a href="data/definition.html">Override the axis definitions</a></li>
+      <li><a href="data/selection.html">Select the subset of data to display</a></li>
+      <li><a href="data/parameters.html">Setup the plotting parameters</a></li>
+    </ol>
+
+    <img src="xsd_DataParameters.jpg" alt="">
+    <br clear="all" />
+    <ul>
+      <li>Once all the parameters are setup, pressing the <b>"OK"</b> button will read,
+        process, fetch and display the data in a Display Window.</li>
+      <li><b>"Load Parms"</b> button loads parameters from a selected file.</li>
+      <li><b>"Save Parms"</b> button saves the current parameters to a selected 
+        file.</li>
+      <li><b>"Previous Settings"</b> button loads parameters from the previous displayed
+        data.  This get reset every time data is displayed.  The previous settings
+        parameters are saved, so if you kill XSD and restart it later, those parameters
+        are still available for recalling.</li>
+      <li><b>"Reset Definition"</b> button resets the data definition parameters from the
+        selected dataset.</li>
+      <li>The <b>"Cancel"</b> button closes the window.</li>
+    </ul>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

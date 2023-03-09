@@ -1,0 +1,329 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (asp.fmt.dds)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","asp","aspfmt")
+    </script>
+    <!*********************************************************************>
+
+    <pre>
+fmt:ASP_TRACE= typedef void ASP_TRACE;
+
+fmt:*:asp=               /* root for "asp" format */
+   typedef ASP_TRACE SEQUENCE;
+   /* PREAMBLE not applicable */
+   /* EPILOGUE not applicable */
+fmt:*:cube=   typedef CUBE_TRACE SEQUENCE;
+fmt:*:fcube=  typedef FCUBE_TRACE SEQUENCE;
+fmt:*:fcubex= typedef FCUBEX_TRACE SEQUENCE;
+fmt:*:dcube=  typedef DCUBE_TRACE SEQUENCE;
+fmt:*:dcubex= typedef DCUBEX_TRACE SEQUENCE;
+fmt:*:ccube=  typedef CCUBE_TRACE SEQUENCE;
+fmt:*:ccubex= typedef CCUBEX_TRACE SEQUENCE;
+fmt:*:icube=  typedef ICUBE_TRACE SEQUENCE;
+fmt:*:icubex= typedef ICUBEX_TRACE SEQUENCE;
+fmt:*:i2cube= typedef I2CUBE_TRACE SEQUENCE;
+fmt:*:i2cubex=typedef I2CUBEX_TRACE SEQUENCE;
+fmt:*:i1cube= typedef I1CUBE_TRACE SEQUENCE;
+fmt:*:sep=    typedef SEP_TRACE SEQUENCE;
+
+fmt:asp= typedef ASP_TRACE SEQUENCE;
+fmt:cube=   typedef CUBE_TRACE SEQUENCE;
+fmt:fcube=  typedef FCUBE_TRACE SEQUENCE;
+fmt:fcubex= typedef FCUBEX_TRACE SEQUENCE;
+fmt:dcube=  typedef DCUBE_TRACE SEQUENCE;
+fmt:dcubex= typedef DCUBEX_TRACE SEQUENCE;
+fmt:ccube=  typedef CCUBE_TRACE SEQUENCE;
+fmt:ccubex= typedef CCUBEX_TRACE SEQUENCE;
+fmt:icube=  typedef ICUBE_TRACE SEQUENCE;
+fmt:icubex= typedef ICUBEX_TRACE SEQUENCE;
+fmt:i2cube= typedef I2CUBE_TRACE SEQUENCE;
+fmt:i2cubex=typedef I2CUBEX_TRACE SEQUENCE;
+fmt:i1cube= typedef I1CUBE_TRACE SEQUENCE;
+fmt:sep= typedef SEP_TRACE SEQUENCE;
+
+fmt:*:asp.ASP_TRACE=           /* ASP_TRACE, given any other format */
+   typedef struct {            /* structure for binary data */
+         + SEQUENCE;           /* SEQUENCE members from previous format */
+         - GREEN_PREFIX;
+         - GREEN_SUFFIX;
+         defn_value("default:","MOD_FIELD")  /* default changes */
+         defn_value("par:","MOD_FIELD")      /* user changes */
+         defn_value("override:","MOD_FIELD") /* override changes */
+      } ASP_TRACE;             /* standard name for default "trace" */
+
+fmt:usp:asp.ASP_TRACE=         /* ASP_TRACE, given usp format */
+   typedef struct {            /* structure for binary data */
+         + SEQUENCE;           /* SEQUENCE members from previous format */
+         - GREEN_PREFIX;
+         - GREEN_SUFFIX;
+         defn_value("default:","MOD_FIELD")  /* default changes */
+         defn_value("par:","MOD_FIELD")      /* user changes */
+         defn_value("override:","MOD_FIELD") /* override changes */
+         - int usp_trace_pad;  /* garbage */
+      } ASP_TRACE;             /* standard name for default "trace" */
+
+fmt:segy:asp.ASP_TRACE=        /* ASP_TRACE, given segy format */
+   typedef struct {            /* structure for binary data */
+         + SEQUENCE;           /* SEQUENCE members from previous format */
+         - GREEN_PREFIX;
+         - GREEN_SUFFIX;
+         defn_value("default:","MOD_FIELD")  /* default changes */
+         defn_value("par:","MOD_FIELD")      /* user changes */
+         defn_value("override:","MOD_FIELD") /* override changes */
+         - int segy_trace_pad; /* garbage */
+      } ASP_TRACE;             /* standard name for default "trace" */
+
+fmt:segy:asp.ASP_TRACE=
+   typedef struct {
+      + int
+         SGRNum,     /* SGR number */
+         SGRAmp,     /* SGR PreAmp Gain, Filter */
+         FlReFN,     /* Field Record File Number */
+         FlStNm,     /* SGR Field Station Number */
+         PREPIn,     /* PREP Initiation Static */
+         InStUn,     /* Initiation Static Unapplied */
+         InStAp,     /* Initiation Static Applied */
+         PREPRc,     /* PREP Reception Static */
+         RcStUn,     /* Reception Static Unapplied */
+         RcStAp,     /* Reception Static Applied */
+         ToStAp,     /* Total Static Applied */
+         ToTmAA,     /* Total Timing Adjust Applied */
+         ToStUn,     /* Total Static Unapplied */
+         ToTmAU,     /* Total Timing Adjust Unapplied */
+         SrComp,     /* Source component xyz code */
+         RcComp,     /* Receiver component xyz code */
+         SrStat,     /* Source floating datum static */
+         RcStat,     /* Receiver floating datum static */
+         TrHdID,     /* Trace Header Identifier */
+         SrRcAz,     /* Source-to-Receiver Azimuth */
+         SrPtXC,     /* Src Point X-Coordinate 3D */
+         SrPtYC,     /* Src Point Y-Coordinate 3D */
+         RcPtXC,     /* Rec Point X-Coordinate 3D */
+         RcPtYC,     /* Rec Point Y-Coordinate 3D */
+         SrRcMX,     /* Src Rec Midpoint X 3D */
+         SrRcMY,     /* Src Rec Midpoint Y 3D */
+         CDPBCX,     /* CDP Bin Center X Coordinate */
+         CDPBCY,     /* CDP Bin Center Y Coordinate */
+         InTrCn,     /* Incremental Trace Counter */
+         FlDtEl,     /* Floating Datum Elev this CDP */
+         MulSkw,     /* Multiplex Skew (ms*1000) */
+         PerSPO,     /* Perpendicular Src Pt Off y */
+         InlSPO,     /* Inline Src Pt Off x */
+         TiLiIx[6],  /* Tie Line Indicator 1-6 */
+         TVPT01,     /* Time of Time-Vel Pair */
+         TVPV01,     /* Velocity of Time-Vel Pair */
+         TVPT02, TVPV02, TVPT03, TVPV03, TVPT04, TVPV04,
+         TVPT05, TVPV05, TVPT06, TVPV06, TVPT07, TVPV07,
+         TVPT08, TVPV08, TVPT09, TVPV09, TVPT10, TVPV10,
+         TVPT11, TVPV11, TVPT12, TVPV12, TVPT13, TVPV13,
+         TVPT14, TVPV14, TVPT15, TVPV15, TVPT16, TVPV16,
+         TVPT17, TVPV17, TVPT18, TVPV18, TVPT19, TVPV19,
+         TVPT20, TVPV20,
+         RedVel,     /* Reduction Velocity for vred */
+         RedTim,     /* Time of first sample for vred */
+         VPick1,     /* Auto Static Pick 1 */
+         VPick2,     /* Auto Static Pick 2 */
+         LRcCDP,     /* Last Record CDP */
+         CabDep,     /* Cable Depth */
+         WDepDP,     /* Water Depth Above Depth Point */
+         DPOPer,     /* Depth Point Offset Perpendicular */
+         ShtDep,     /* shot depth */
+         UphlTm,     /* uphole time in ms */
+         DpPtLt,     /* depth pt lat (deg* 10^5) */
+         DpPtLn,     /* depth pt lon (deg* 10^5) */
+         FoldNm,     /* fold */
+         RecNum,     /* record number */
+         TrcNum,     /* trace number */
+         SrcPnt,     /* src point above this depth pt */
+         SrcLoc,     /* src location ind mult by 10 */
+         PrRcNm,     /* permanent record number PRI */
+         PrTrNm,     /* permanent trace number PTI */
+         SrPtEl,     /* source point elevation */
+         SrPrLt,     /* source point lat (deg* 10^5) */
+         SrPrLn,     /* source point lon (deg* 10^5) */
+         DstUsg,     /* unsigned trace distance */
+         RecInd,     /* rec location index	GI */
+         DstSgn,     /* signed trace distance */
+         GrpElv,     /* group elevation */
+         LinInd,     /* line index 3D */
+         DphInd,     /* depth index */
+         DePtEl,     /* depth point elevation */
+         RfSrEl,     /* reference surface elevation */
+         StaCor,     /* static correction, dead 30000 */
+         DatShf,     /* datum shift */
+         SoPtNm;     /* source point number */
+      + SAMPLE_TYPE Samples[axis_size(1)]; /* time series */
+         defn_value("default:","MOD_FIELD")  /* default changes */
+         defn_value("par:","MOD_FIELD")      /* user changes */
+         defn_value("override:","MOD_FIELD") /* override changes */
+   } ASP_TRACE;
+
+$fmt:segy1:asp.ASP_TRACE=fmt:segy:asp.ASP_TRACE /* ASP_TRACE, given segy1 format */
+
+$fmt:su:asp.ASP_TRACE= fmt:segy:asp.ASP_TRACE   /* ASP_TRACE, given su format */
+
+fmt:CUBE_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} CUBE_TRACE;
+fmt:FCUBE_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} FCUBE_TRACE;
+fmt:FCUBEX_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} FCUBEX_TRACE;
+fmt:DCUBE_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} DCUBE_TRACE;
+fmt:DCUBEX_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} DCUBEX_TRACE;
+fmt:CCUBE_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} CCUBE_TRACE;
+fmt:CCUBEX_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} CCUBEX_TRACE;
+fmt:ICUBE_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} ICUBE_TRACE;
+fmt:ICUBEX_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} ICUBEX_TRACE;
+fmt:I2CUBE_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} I2CUBE_TRACE;
+fmt:I2CUBEX_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} I2CUBEX_TRACE;
+fmt:I1CUBE_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} I1CUBE_TRACE;
+fmt:SEP_TRACE=
+   typedef struct { SAMPLE_TYPE Samples[axis_size(1)];} SEP_TRACE;
+
+fmt:*:*.CUBE_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} CUBE_TRACE;
+fmt:*:*.FCUBE_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} FCUBE_TRACE;
+fmt:*:*.FCUBEX_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} FCUBEX_TRACE;
+fmt:*:*.DCUBE_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} DCUBE_TRACE;
+fmt:*:*.DCUBEX_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} DCUBEX_TRACE;
+fmt:*:*.CCUBE_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} CCUBE_TRACE;
+fmt:*:*.CCUBEX_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} CCUBEX_TRACE;
+fmt:*:*.ICUBE_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} ICUBE_TRACE;
+fmt:*:*.ICUBEX_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} ICUBEX_TRACE;
+fmt:*:*.I2CUBE_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} I2CUBE_TRACE;
+fmt:*:*.I2CUBEX_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} I2CUBEX_TRACE;
+fmt:*:*.I1CUBE_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} I1CUBE_TRACE;
+fmt:*:*.SEP_TRACE=
+   typedef struct { + SAMPLE_TYPE Samples[axis_size(1)];} SEP_TRACE;
+
+fmt:SEQUENCE= typedef ASP_TRACE SEQUENCE;
+fmt:GREEN_PREFIX= typedef int GREEN_PREFIX;
+fmt:GREEN_SUFFIX= typedef int GREEN_SUFFIX;
+
+comment=
+*********************************************************************
+********  asp or cube formats must already be defined or ************
+********  it must be explicitly defined by the program.  ************
+*********************************************************************
+fmt:*:fcube.SAMPLE_TYPE=  typedef float4 SAMPLE_TYPE;
+fmt:*:fcubex.SAMPLE_TYPE= typedef float4x SAMPLE_TYPE;
+fmt:*:dcube.SAMPLE_TYPE=  typedef float8 SAMPLE_TYPE;
+fmt:*:dcubex.SAMPLE_TYPE= typedef float8x SAMPLE_TYPE;
+fmt:*:ccube.SAMPLE_TYPE=  typedef complex8 SAMPLE_TYPE;
+fmt:*:ccubex.SAMPLE_TYPE= typedef complex8x SAMPLE_TYPE;
+fmt:*:icube.SAMPLE_TYPE=  typedef integer4 SAMPLE_TYPE;
+fmt:*:icubex.SAMPLE_TYPE= typedef integer4x SAMPLE_TYPE;
+fmt:*:i2cube.SAMPLE_TYPE= typedef integer2 SAMPLE_TYPE;
+fmt:*:i2cubex.SAMPLE_TYPE=typedef integer2x SAMPLE_TYPE;
+fmt:*:i1cube.SAMPLE_TYPE= typedef integer1 SAMPLE_TYPE;
+fmt:*:sep.SAMPLE_TYPE=    typedef float4 SAMPLE_TYPE;
+
+comment=
+*********************************************************************
+********  SURFER'S  GUIDE  TO  STRUCT/UNION  ENHANCEMENTS  **********
+*********************************************************************
+
+comment= SUMMARY of STRUCT/UNION MEMBER OPERATORS
+
+   struct {+ aaa; - bbb; * ccc; -+ ddd; *+ eee;} xyz;
+          ^^^    ^^^    ^^^    ^^^^    ^^^^
+      +,  append member, if name is unique
+      -,  delete member, if it exists
+      *,  replace member, if it exists
+      -+, delete and append member
+      *+, replace or append member
+
+   Members are composed from left, to right.  Example:
+      given:
+         typedef struct {int   a, b, c;}  old_xyz;
+         typedef struct {float d, e, f;}  add_xyz;
+         typedef struct {void  b, e;}     drop_xyz;
+      compose:
+         typedef struct {+ old_xyz; + add_xyz; - drop_xyz} xyz;
+      results:
+         typedef struct {int a,   c; float d,   f;} xyz;
+
+comment=
+*********************************************************************
+
+comment= default sort field translation
+ 
+sort:old_fmt.old_sort_field:new_fmt= new_sort_field
+ 
+sort:segy.FieldRecNum:asp= PrRcNm
+sort:segy.Spare.Hdr.RecNum:asp= RecNum
+sort:segy.CdpTrcNum:asp= TrcNum
+sort:segy.FieldTrcNum:asp= PrTrNm
+sort:segy.Spare.Hdr.SoPtNm:asp= SoPtNm
+sort:segy.Spare.Hdr.RecInd:asp= RecInd
+sort:segy.Spare.Hdr.SrcPnt:asp= SrcPnt
+sort:segy.CdpNum:asp= DphInd
+sort:segy.SrcX:asp= SrPtXC
+sort:segy.SrcY:asp= SrPtYC
+sort:segy.GrpX:asp= RcPtXC
+sort:segy.GrpY:asp= RcPtYC
+sort:segy.DstSgn:asp= DstSgn
+ 
+sort:segy1.FieldRecNum:asp= PrRcNm
+sort:segy1.Spare1.Hdr.RecNum:asp= RecNum
+sort:segy1.CdpTrcNum:asp= TrcNum
+sort:segy1.FieldTrcNum:asp= PrTrNm
+sort:segy1.Spare1.Hdr.SoPtNm:asp= SoPtNm
+sort:segy1.Spare1.Hdr.RecInd:asp= RecInd
+sort:segy1.Spare1.Hdr.SrcPnt:asp= SrcPnt
+sort:segy1.CdpNum:asp= DphInd
+sort:segy1.SrcX:asp= SrPtXC
+sort:segy1.SrcY:asp= SrPtYC
+sort:segy1.GrpX:asp= RcPtXC
+sort:segy1.GrpY:asp= RcPtYC
+sort:segy1.DstSgn:asp= DstSgn
+ 
+sort:su.FieldRecNum:asp= PrRcNm
+sort:su.Spare.Hdr.RecNum:asp= RecNum
+sort:su.CdpTrcNum:asp= TrcNum
+sort:su.FieldTrcNum:asp= PrTrNm
+sort:su.Spare.Hdr.SoPtNm:asp= SoPtNm
+sort:su.Spare.Hdr.RecInd:asp= RecInd
+sort:su.Spare.Hdr.SrcPnt:asp= SrcPnt
+sort:su.CdpNum:asp= DphInd
+sort:su.SrcX:asp= SrPtXC
+sort:su.SrcY:asp= SrPtYC
+sort:su.GrpX:asp= RcPtXC
+sort:su.GrpY:asp= RcPtYC
+sort:su.DstSgn:asp= DstSgn
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

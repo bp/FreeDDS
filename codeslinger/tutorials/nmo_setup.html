@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (multiple inputs)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","nmo_setup")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+c***********************************************************************
+c
+c Set up the NMO process
+c
+c***********************************************************************
+
+      subroutine nmo_setup
+     :      ( cmp_in, cmp_out, geom, vel, work, ntrc, nhdr,
+     :        n1,n2,n3, d1,d2,d3, o1,o2,o3, isx,isy,igx,igy,idead )
+
+      implicit none
+
+c Arguments
+      integer ntrc, nhdr, n1,n2,n3
+      integer isx,isy, igx,igy, idead
+      real    d1,d2,d3, o1,o2,o3
+
+      real    cmp_in(n1,ntrc), cmp_out(n1,ntrc)
+      real    geom(nhdr,ntrc)
+      real    vel(n1,n2,n3)
+      real    work(n1,9)
+
+c Locals
+      integer iv2,iv3, itrc, nlive, i1
+      real    src_x,src_y, grp_x,grp_y, cmp_x,cmp_y, off_x,off_y, offset
+      logical ldead
+
+c-----------------------------------------------------------------------
+
+c
+c Get the XY coordinate for this CMP
+c
+      cmp_x=0.0
+      cmp_y=0.0
+      nlive=0
+
+      do itrc=1,ntrc
+
+         src_x=geom(isx,itrc)
+         src_y=geom(isy,itrc)
+         grp_x=geom(igx,itrc)
+         grp_y=geom(igy,itrc)
+         ldead=(geom(idead,itrc).ne.0)
+
+         if (.not.ldead) then
+            cmp_x=cmp_x + (src_x+grp_x)/2.0
+            cmp_y=cmp_y + (src_y+grp_y)/2.0
+            nlive=nlive+1
+         endif
+
+      enddo
+
+      cmp_x=cmp_x/real(nlive)
+      cmp_y=cmp_y/real(nlive)
+
+c
+c Locate the nearest neighbor velocity trace
+c
+      iv2 = nint((cmp_x-o2)/d2) + 1
+      iv3 = nint((cmp_y-o3)/d3) + 1
+
+      iv2 = max(1,min(n2,iv2))
+      iv3 = max(1,min(n3,iv3))
+
+c
+c Loop over traces, get the offset and do the NMO
+c
+      do itrc=1,ntrc
+
+         src_x=geom(isx,itrc)
+         src_y=geom(isy,itrc)
+         grp_x=geom(igx,itrc)
+         grp_y=geom(igy,itrc)
+         ldead=(geom(idead,itrc).ne.0)
+
+         if (ldead) then
+
+            do i1=1,n1
+               cmp_out(i1,itrc)=0.0
+            enddo
+
+         else
+
+            off_x = src_x-grp_x
+            off_y = src_y-grp_y
+            offset= sqrt(off_x*off_x + off_y*off_y)
+
+            call <a href="apply_nmo.html">apply_nmo</a>
+     :           ( cmp_in(1,itrc), cmp_out(1,itrc), vel(1,iv2,iv3), n1,
+     :             offset, 0.0, d1, work(1,1), work(1,2), work(1,6) )
+
+         endif
+
+      enddo
+
+c
+c All done
+c
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

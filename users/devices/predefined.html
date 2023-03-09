@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Devices (Predefined Tapes)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","devices","predefined")
+    </script>
+    <!*********************************************************************>
+
+    <h3>Predefined Tape Configurations:</h3>
+
+    <p>&bull; 1/2" ROUND TAPE MEDIA<pre>
+tape_NRZI= type tape density 800 passes 1 length 2400'
+           gap 1.2 duty .95 min_block 1 max_block 32k
+           opt_block 10k rate 500k
+
+tape_PE=   type tape density 1600 passes 1 length 2400'
+           gap 1.2 duty .95 min_block 1 max_block 32k
+           opt_block 10k rate 500k
+
+tape_GCR=  type tape density 6250 passes 1 length 2400'
+           gap .6 duty .95 min_block 1 max_block 32k
+           opt_block 32k rate 500k</pre>
+
+    <p>&bull; 1/2" IBM 3480 CARTRIDGE TAPE MEDIA<pre>
+tape_3480= type tape density 37871 passes 1 length 530' 
+           gap .2 duty .95 min_block 1 max_block 1m 
+           opt_block 32k rate 500k</pre>
+
+    <p>&bull; 1/4" CARTRIDGE TAPE MEDIA<pre>
+tape_Q11/24_450= type tape density 1000 passes 9 length 450' 
+           gap 1.6 duty .94 min_block 512 max_block 512 
+           opt_block 512 rate 500k</pre>
+
+    <p>&bull; EXABYTE EXB-8200 TAPE MEDIA (P6)<pre>
+tape_X_256= type tape density 466033 passes 1 length 48' 
+           gap 0 duty .96 min_block 1 max_block 1m 
+           opt_block 32k rate 250k
+
+tape_P6-15= type tape density 466033 passes 1 length 48' 
+           gap 0 duty .96 min_block 1 max_block 1m 
+           opt_block 32k rate 250k</pre>
+
+    <p>&bull; EXABYTE EXB-8200 TAPE MEDIA (P5)<pre>
+tape_P5-90= type tape density 466033 passes 1 length 366' 
+           gap 0 duty .97 min_block 1 max_block 1m 
+           opt_block 32k rate 250k</pre>
+
+    <p>&bull; EXABYTE EXB-8500 TAPE MEDIA (P6)<pre>
+tape_X_256_H= type tape density 932066 passes 1 length 48' 
+           gap 0 duty .93 min_block 1 max_block 1m 
+           opt_block 32k rate 500k</pre>
+
+    <p>&bull; EXABYTE EXB-8500 MEDIA (P5)<pre>
+tape_P5-15_H= type tape density 932066 passes 1 length 69' 
+           gap 0 duty .93 min_block 1 max_block 1m 
+           opt_block 32k rate 500k</pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

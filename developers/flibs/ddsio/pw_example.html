@@ -1,0 +1,116 @@
+<h2>Parallel write example</h2>
+
+Example of how to use DdsIO module to read/write files on one node or using N-to-1 parallel write.
+Can be run with
+<br><br>
+./pw_example in=indata out=junk1 out2=junk2 out3=junk3 parallel=junkp np=1<br>
+./pw_example in=indata out=junk1 out2=junk2 out3=junk3 parallel=junkp np=2
+
+<h3>Makefile:</h3>
+<pre>
+  Name := pw_example
+  F90Srcs := pw_example.F90
+
+  F90 :=x
+  MPI :=x
+  Libs := DdsIO ddz
+  PrjLibs := libDdsIO libddz
+
+  include ${DDSROOT}/etc/MakeVariables
+
+  include ${DDSROOT}/etc/MakeRules
+  
+</pre>
+
+<h3>pw_example.F90:</h3>
+
+<pre>
+
+program pw_example
+
+use MyMPI_mod
+use DdsIO_mod
+
+implicit none
+
+real, allocatable, dimension(:,:,:) :: data
+
+type(DdsObject) :: inData
+type(DdsObject) :: parallelOutData, outData, outData2, outData3
+
+integer, parameter :: NDIM=3
+integer :: nsize(NDIM)
+integer :: nx, ny, nz, nz_pnode, nz_start, nz_end
+integer :: i, ier
+integer(kind=8) :: ier8
+
+call initMyMPI()
+
+ier = fdds_dict( 'par:', 'scan' )
+
+!------------------------------------------------------------------------------
+! Use DdsObject to open and read a file
+!------------------------------------------------------------------------------
+
+call inData%open('r', 'in')
+nsize = inData%getSizes()
+nx = nsize(1)
+ny = nsize(2)
+nz = nsize(3)
+ier = fdds_prtcon('NODE%4d: nx=%d  ny=%d  nz=%d\n\0',myid,nx,ny,nz)
+
+allocate(data(nx,ny,nz))
+call inData%read( data )
+ier = fdds_prtcon('NODE%4d: finished reading in\n\0',myid)
+
+!------------------------------------------------------------------------------
+! Use DdsObject on one node to write file
+!------------------------------------------------------------------------------
+
+if ( myid == 0 ) then
+   call outData%open( 'w', 'out', inherit=inData )
+   call outData%write( data )
+   ier = fdds_prtcon('finished writing out\n\0')
+
+   ! --- to change any of the attribute
+   ! call outData2%setAttr( 'title', 'DdsIO module test' )
+   ! call outData2%setAttr( 'size', [2*nx, ny, nz] )
+   ! call outData2%setAttr( 'delta', [1.0, -2.0, -3.0] )
+   ! call outData2%setAttr( 'origin', [-9.0, -10.0, -11.0] )
+   ! call outData2%setAttr( 'zip', .TRUE. )
+   call outData2%open( 'w', 'out2', inherit=inData )
+   call outData2%write( data )
+   ier = fdds_prtcon('finished writing out2\n\0')
+
+   !--- create a new file from scratch
+   call outData3%setAttr( 'rank', 4 )
+   call outData3%setAttr( 'axes', 'nx ny nz nh' )
+   call outData3%setAttr( 'size', (/nx, ny, nz, 2/) )
+   call outData3%setAttr( 'delta', (/1.0,-2.0,-3.0, 4.0/) )
+   call outData3%setAttr( 'origin', (/-9.0,-10.0,-11.0, 0.0/) )
+   call outData3%open ( 'w', 'out3' )
+   do i = 1, 2
+      call outData3%write( data )
+   enddo
+   ier = fdds_prtcon('finished writing out3\n\0')
+
+endif
+
+!------------------------------------------------------------------------------
+! Use DdsObject across multiple MPI nodes to perform N-to-1 parallel IO write
+!------------------------------------------------------------------------------
+
+nz_pnode = 1 + (nz-1)/nodes
+nz_start = 1 + myid*nz_pnode
+nz_end = min(nz,nz_start+nz_pnode-1)
+ier = fdds_prtcon('myid=%d, nz_start=%d, nz_end=%d\n\0', myid, nz_start, nz_end)
+
+call parallelOutData%open( 'pw', 'parallel', inherit=inData )
+ier8 = parallelOutData%seekTo( i3=nz_start )
+call parallelOutData%write( data(1:nx,:,nz_start:nz_end) )
+ier = fdds_prtcon('NODE%4d: finished writing parallel output\n\0',myid)
+
+call finalMyMPI()
+
+end program pw_example
+</pre>

@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran FFT (fft_crfftm)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fft","crfftm")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fft")</script>
+
+    <h2>fft_crfftm - multiple complex-real 1D FFT's</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fft.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90fft.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fft_crfftm(</b><i>scale, n1, m, ld1, data, iopt</i><b>)
+      </b><dl><dd>
+        <b>real    </b><i>scale
+        </i><br>
+        <b>integer </b><i>n1
+        </i><br>
+        <b>integer </b><i>m
+        </i><br>
+        <b>integer </b><i>ld1
+        </i><br>
+        <b>real    </b><i>data(ld1,m)
+        </i><br>
+        <b>integer </b><i>iopt
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    The function, "<b>fft_crfftm</b>", performs multiple complex-to-real
+    FFT's. The complex-to-real FFT is done with a positive exponential sign.
+
+    <h2>INPUT</h2>
+    The parameter, "<i>scale</i>", specified the scale factor to be applied
+    to the data.
+
+    <p>
+      The size parameter, "<i>n1</i>", specifies the 1D FFT size.  It must
+      be setup as mixed radix values (must be even) in order to allow the
+      FFT's to be more efficient.  It is recommended to use
+      <a href="nrfft5.html">fft_nrfft5</a> to calculate these values.
+
+    <p>
+      The number of 1D traces parameter, "<i>m</i>", specifies the number of
+      1D FFT's to do at a time.
+
+    <p>
+      The leading dimension parameter, "<i>ld1</i>", specifies the leading
+      dimension of the data array in number of real values.  It must be
+      even and at least "n1" + 2.
+
+    <p>
+      The real array, "<i>data</i>", is the I/O array for the FFT's.  This
+      is performed "in place".  The input complex data must be packed into
+      teh first "n1"+2 real array locations in a typical half-complex format.
+
+    <p>
+      The parameter, "<i>iopt</i>", is used to specify any other
+      information that is unique to a specific FFT implementation.
+      Currently, the use is for specifying whether to measure or estimate
+      the FFT's when using FFTW routines.  The "<b>fft.h</b>" header
+      defines <b>FFT_MEASURE</b> and <b>FFT_ESTIMATE</b>, besides defining
+      the FFT functions, as integer.
+
+    <h2>OUTPUT</h2>
+    The FFT results are returned in the real data array and the returned
+    value is zero "0" if successful.  A value of "-1" is returned if the
+    arguments are invalid.  Otherwise, a value unique to each FFT
+    implementation is returned.
+
+    <h2>EXAMPLE</h2>
+    <pre>
+      integer :: fft_size, complex_vals, m, fft_flag
+      integer :: ier
+      real    :: fft_scale
+      real, allocatable :: data(:,:)
+      complex           :: cdata
+      pointer(ptr_cdata, cdata)
+
+      fft_size = fft_nrfft5(100)
+      complex_vals = fft_size/2+1
+      m = 10
+
+      ! allocate real data, but have complex data point to same location
+      allocate(data(2*complex_vals, m))
+      ptr_cdata = loc(data(1,1))
+
+      ...
+      fft_flag = FFT_ESTIMATE
+
+      ! forward FFT
+      fft_scale = 1.0D+00/(dble(fft_size))
+      ier = fft_rcfftm(fft_scale, fft_size, m, 2*complex_vals, data, fft_flag)
+
+      ! can now access complex data as cdata(complex_vals, m)
+
+      ! inverse FFT
+      fft_scale = 1.0
+      ier = fft_crfftm(fft_scale, fft_size, m, 2*complex_vals, data, fft_flag)
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Phuong Vu, <b>HPC</b><br/>
+    Jerry Ehlers, <b>EPTG</b>
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

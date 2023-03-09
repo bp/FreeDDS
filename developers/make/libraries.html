@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers make libraries</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","make","libraries")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Application libraries built within the Makefile</h2>
+
+    <p>
+      The DDS make structure allows a developer to create and maintain any desired
+      application library within the Makefile. Simply define the set of source files  
+      as with any application.  However, define the library name with 
+      "<code>LibName=</code><var>libname</var>", and define a project name with
+      "<code>PrjName=</code><var>prjname</var>". For example, with the following Makefile 
+      (assuming all the source code is in the same directory):
+    </p>
+
+<pre style="font-weight:bold">
+LibName:= sort
+PrjName:= sort_utils
+FSrcs  := sort.F 
+CSrcs  := sort.c subs.c++
+LibHdrs:= sort.h
+.
+.
+.
+</pre>
+ 
+    <p>
+      you will create the "<b>libsort.a</b>" library with "<code>make</code>". 
+      Running "<code>make install</code>" will install that library under the directory
+      "<code>${DDSROOT}/lib/sort_utils/...</code>".
+      If any headers files are defined with "<code>LibHdrs</code>" then they will
+      be installed under "<code>${DDSROOT}/include/sort_utils</code>".
+    </p>
+
+    <p>
+      <u>NOTE</u>: It is reccommended to make the name of the library (as well as the 
+      name of the source directory) start with "lib".  If not, the Makefile will add "lib" 
+      to the name of the compiled library.
+    </p>
+
+    <p>
+      These libraries are installed under <code>${DDSROOT}/lib/${PrjName}/...</code>
+      to facilitate the creation of project-specific libraries that are separate from the
+      distributed/stable DDS libraries.  Since these libraries are installed in different
+      directories from the other DDS libraries, applications that use them need to
+      specify the library and project names. E.g.
+    <p>
+<pre style="font-weight:bold">
+Libs   := sort
+PrjLibs:= sort_utils
+</pre>
+    </p>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications (ddscan)</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','ddscan','AH')</script>
+   
+    <p>
+      Entering the "Dump All Headers" command ("<code>AH</code>") will dump
+      trace headers from all selected headers (see "<code>SR</code>").
+      The example shown below was setup with "<code>st 5 15 2</code>" 
+      and "<code>sr 3 10 3</code>" .
+    </p>
+
+    <pre style="margin-left: 50px">
+<b>ah</b>
+
+
+                       --- Header Dump ---
+
+               Rec #   Trc #      LinInd      StaCor      RecInd
+ Trc     167:       3       5           0         -31         197
+ Trc     169:       3       7           0         -29         199
+ Trc     171:       3       9           0         -26         201
+ Trc     173:       3      11           0         -25         205
+ Trc     175:       3      13           0         -30         207
+ Trc     177:       3      15           0         -35         209
+ Trc     410:       6       5           0         -24         200
+ Trc     412:       6       7           0         -26         203
+ Trc     414:       6       9           0         -23         206
+ Trc     416:       6      11           0         -28         208
+ Trc     418:       6      13           0         -33         210
+ Trc     420:       6      15           0         -33         212
+ Trc     653:       9       5           0         -32         208
+ Trc     655:       9       7           0         -38         210
+ Trc     657:       9       9           0         -37         212
+ Trc     659:       9      11           0         -45         214
+ Trc     661:       9      13           0         -40         216
+ Trc     663:       9      15           0         -45         218
+</pre>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

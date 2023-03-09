@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Templates (Template 5)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script type="text/javascript">
+      if (location.search.search("remove=") >= 0) {
+         var tmp = "position:absolute;left:-9999px;";
+      } else {
+         var tmp = "";
+      }
+      document.write("<style type='text/css'>.comment "
+         +"{color:#c00000;"+tmp+"}<\/style>");
+
+      function setRemoveOption() {
+         var tmp;
+         if (location.search.search("remove=") >= 0) {
+            tmp = "'Add Tutorial Comments'";
+         } else {
+            tmp = "'Remove Tutorial Comments'";
+         }
+         document.write("<center><form><input type='button' value="
+            +tmp+" onclick='toggleComments();'><\/form><\/center>");
+      }
+
+      function toggleComments() {
+         if (location.search.search("remove=") >= 0) {
+            document.location.search = "";
+         } else {
+            location = "?remove=";
+         }
+      }
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+
+  <body>
+   <p>
+      These are a series of "C" routines, callable by Fortran, to simplify writing codes that require a raytracer.<br>
+      A generic API allows implementation details to be hidden and for the user to specify the type of raytracer at run-time.<br>
+      The only currently implemented method is isotropic.
+    </p>
+    <p>
+      Below is an brief example code iliustrating how to use the library.<br>
+      Note that the <i>shootrays</i> library also uses the <i>vel</i> and </i>rungekutta</i> libraries.
+    </p>
+    <p>
+
+    <!*********************************************************************>
+
+    <script type="text/javascript">setRemoveOption();</script>
+
+    <pre>
+   
+<span class="comment">
+c***********************************************************************<br>
+c                                                                      *<br>
+c                  B P A M O C O    C O R P O R A T I O N              *<br>
+c             PROPRIETARY  -  TO BE MAINTAINED IN CONFIDENCE           *<br>
+c                            COPYRIGHTED 2010                          *<br>
+c***********************************************************************<br>
+c
+c     The standard DDS Makefile to compile this code looks like this:
+c
+c     Name     := newProgram
+c     F77Srcs  := code.F
+c     Libs     := shootrays rungekutta vel
+c
+c     include ${DDSROOT}/etc/MakeVariables
+c     include ${DDSROOT}/etc/MakeRules
+c
+</span>
+
+</font>
+      program testF
+      implicit none
+
+#include &lt;fdds.h&gt;
+#include &lt;fddx_vel.h&gt;
+#include &lt;fddx_rungekutta.h&gt;
+#include &lt;fddx_raytracer.h&gt;
+
+      integer  ier,ii
+      integer  vel_tag
+      integer  rk1
+      integer  rt_tag
+      real     output(1)
+      pointer  (ptr_output,output)
+
+      ier = fdds_openpr( 'test_shoot', 'test_shoot' )
+      if ( ier .gt. 0 ) then
+         print *,' '
+         print *,'==========================================='
+         print *, 'Fortran Example for libshootrays.'
+         print *, 'Specify a velocity with vp= or vp_single=.'
+         print *, 'Specify a Runge-Kutta method  with rk=rk2|rk4.'
+         print *, 'Specify a raytracer with raytracer=isotropic.'
+         print *,'==========================================='
+         print *,' '
+         stop
+      endif
+
+<span class="comment">
+c     Create a new, empty velocity structure.
+c     We need to fill it later either by calling a fddx_request* function,
+c     Or, in this case, the raytracer will fill it with whatever elements
+c     are needed for the type of raytracer the user has requested.
+</span>
+      vel_tag = <a href="flibs.php?lib=vel&api=fddx_V_new">fddx_V_new</a>( '' )
+
+<span class="comment">
+c     get the Runge-Kutta method that we will use to advance the ray.
+c     the user can choose the method 
+</span>
+      rk1 = <a href="flibs.php?lib=rungekutta&api=fddx_RK_new">fddx_RK_new</a>( '', 6, <a href="flibs.php?lib=shootrays&api=fddx_RT_RHS">fddx_RT_RHS</a> )
+      ier = <a href="flibs.php?lib=rungekutta&api=fddx_RK_show">fddx_RK_show</a>( rk1 )
+
+      rt_tag = <a href="flibs.php?lib=shootrays&api=fddx_RT_new">fddx_RT_new</a>( '', vel_tag, rk1 )
+      if ( rt_tag .lt. 0 ) ier = fdds_closepr()
+
+<span class="comment">
+c     print out a summary of what parameters were found for the velocity.
+</span>
+      ier = <a href="flibs.php?lib=vel&api=fddx_V_new">fddx_V_show</a>( vel_tag )
+
+<span class="comment">
+c     specify what ray attributes we need on the output.
+c     and allocate memory for the output.
+</span>
+      if ( <a href="flibs.php?lib=shootrays&api=fddx_RT_requestOut">fddx_RT_requestOut</a>( rt_tag, fddx_RT_X  )   .lt. 0 ) ier=fdds_prterr('Raytracer does not output X!\n\0')
+      if ( <a href="flibs.php?lib=shootrays&api=fddx_RT_requestOut">fddx_RT_requestOut</a>( rt_tag, fddx_RT_Y  )   .lt. 0 ) ier=fdds_prterr('Raytracer does not output Y!\n\0')
+      if ( <a href="flibs.php?lib=shootrays&api=fddx_RT_requestOut">fddx_RT_requestOut</a>( rt_tag, fddx_RT_Z  )   .lt. 0 ) ier=fdds_prterr('Raytracer does not output Z!\n\0')
+      if ( <a href="flibs.php?lib=shootrays&api=fddx_RT_requestOut">fddx_RT_requestOut</a>( rt_tag, fddx_RT_TIME ) .lt. 0 ) ier=fdds_prterr('Raytracer does not output Time!\n\0')
+      ptr_output = fdds_malloc( 4*<a href="flibs.php?lib=shootrays&api=fddx_RT_maxSteps">fddx_RT_maxSteps</a>( rt_tag )*sizeof_real )
+
+      ier = <a href="flibs.php?lib=shootrays&api=fddx_RT_setBounds">fddx_RT_setBounds</a>( rt_tag, -1000, 2000, -2000, 2000, 0, 999 )
+
+      ier = <a href="flibs.php?lib=shootrays&api=fddx_RT_show">fddx_RT_show</a>( rt_tag )
+
+<span class="comment">      
+c     trace the ray 
+</span>
+      ier = <a href="flibs.php?lib=shootrays&api=fddx_RT_traceRay">fddx_RT_traceRay</a>( rt_tag, 1000., 1000., 50., 45.0*asin(1.0)/90., 45.0*asin(1.0)/90., output )
+
+<span class="comment">      
+c     print out some results
+</span>
+      ier = fdds_prtmsg('The ray has %d points.\n\0', <a href="flibs.php?lib=shootrays&api=fddx_RT_numSteps">fddx_RT_numSteps</a>( rt_tag ) );
+      if ( <a href="flibs.php?lib=shootrays&api=fddx_RT_error">fddx_RT_error</a>( rt_tag ) .ne. 0 )  then
+         ier = fdds_prterr('Raytracer return error=%d!\n\0',ier);
+      else
+         do ii = 0,<a href="flibs.php?lib=shootrays&api=fddx_RT_numSteps">fddx_RT_numSteps</a>( rt_tag )-1
+            ier=fdds_prtmsg('x=%g y=%g z=%g tt=%g\n\0',
+     $           output(ii*4+1),output(ii*4+2),
+     $           output(ii*4+3),output(ii*4+4))
+         end do
+      endif
+ 
+      ier = fdds_closepr()
+      end
+ 
+</pre>
+
+    <!*********************************************************************>
+  </body>
+</html>

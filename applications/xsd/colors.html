@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','colors')</script>
+
+    <img src="xsd_ColorMenu.jpg" alt="" align="right" style="padding: 0 0 20px 20px">
+    <p>Each Display Window has it's own colormap which can be edited, saved and/or
+      loaded.  Additionally, there are 12 colors that can be assigned to different pick
+      segments or cursor.  Of these 12 colors one is "white", one is "black" and the
+      other 10 are editable.</p>
+
+    <br clear='all' />
+
+    <ul>
+      <li><u><b>Pick Segment Colors</b></u><br />
+        <ul>
+          <li><u>Edit Segment Color:</u><br /> 
+            <img src="xsd_ColorWindow.jpg" alt="" align="left" style="padding:10px 20px 0 0">
+            <img src="xsd_ColorChoicesWindow.jpg" alt="" align="right" style="padding: 10px 0 0 20px">
+            This option allows you to select colors for the pick segment. A color palette 
+            Window pops up. Select one of the available 12 colors.  Select a segment by
+            pressing the <b>left mouse button</b> to select a segment or press the
+            <b>right mouse button</b> to deselect a segment.  Once a segment is selected
+            press the <b>left mouse button</b> again to assign the selected color to the
+            selected pick segment.  The color will effect the picks, the lines between the
+            picks, any segment <a href="labels.html">label</a> and/or number. The colors
+            are consistent across all of the Display Windows.</li>
+
+          <li><u>Edit Color Palette:</u><br />
+            This option will pop-up the color palette window.  Select one of the 10
+            available colors to change.  Click on one of the available colors in the
+            scroll-able list and the press the "<code>Set&nbsp;Color</code>" button to
+            assign that color.  Alternatively, just double click on one of the available
+            colors to assign it.  Repeat this for any of the other 10 colors on the palette.
+            Press the "<code>Return</code>" button to close the palette window.
+            <br clear='all' /></li>
+        </ul>
+      </li>
+
+      <li><u><b>Cursor Colors</b></u><br />
+        <ul>
+          <li><u>Edit Local Cursor Color:</u><br />
+            <img src="xsd_CursorColorWindow.jpg" alt="" align="right" style="padding: 0 0 0 20px">
+            This option will pop-up a Cursor Color Window.  Select the color by specifying
+            the Red, Green and Blue color values (each from 0 to 255) in that order.  Any
+            values not given will default to 0.  Press the "<code>OK</code>" button to
+            accept the color or "<code>Cancel</code>" to close the window.  This color
+            is only applied to the cursor for this Display Window.<br clear='all' /></li>
+      
+          <li><u>Edit Global Cursor Color:</u><br />
+            This option Is the same as  the "Edit Local Cursor Color" except the color is
+            applied to the cursor in all the Display Windows.</li>
+        </ul>
+      </li>
+
+      <li><u><b>Colormaps</b></u><br />
+        <ul>
+          <li><u>Load Local Colormap:</u><br />
+            <img src="xsd_ColormapScale.jpg" alt="" align="right" style="padding: 0 0 0 20px">
+            This option will pop-up a Colormap Selection Window. Select a colormap file and
+            press the "<code>OK</code>" button to load it.  The colormap will be applied
+            to the current Display Window only.</li>
+
+          <li><u>Load Global Colormap:</u><br />
+            This option is similar toe the "<code>Load Local Colormap</code>" except the
+            loaded colormap will be set as the Global Colormap and will be applied to all
+            the current Display Windows and any newly created Display Windows.</li>
+
+          <li><u>Use Global Colormap:</u><br />
+            This option will apply the Global Colormap to the current Display Window.</li>
+
+          <li><u>Show Colormap Scale:</u><br />
+            This option will pop-up a window displaying the colormap display scale for the
+            current Display Window.<br clear='all' /></li>
+
+          <li><u>Edit Colormap:</u><br />
+            <img src="xsd_ColormapEditWindow.jpg" alt="" align="right" style="padding: 0 0 0 20px">
+            This option will pop-up the Colormap Editor Window. You can "<code>Load</code>"
+            a colormap to edit or the colormap currently loaded.  Select which colors (Red,
+            Green and/or Blue) to edit then click a <b>mouse button</b> in the window to
+            alter the color values.  You can press a button and drag the cursor to change
+            the values.  You can change the "<code># of points</code>" anywhere from 2 to
+            200 to specify the number of control points used in the edit window.  The
+            colors are interpolated between these points. Press the "<code>Save</code>"
+            button to save the colormap; press the "<code>Apply</code>" button to apply
+            the colormap to the current Display Window.  Press the "<code>Flip</code>"
+            button to flip (or reverse) the colormap.  Press "<code>Quit</code>" to close
+            the Colormap Editor.<br clear='all' /></li>
+        </ul>
+      </li>
+    </ul>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

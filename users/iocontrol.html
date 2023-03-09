@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users IO Control</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","iocontrol")</script>
+    <!*********************************************************************>
+
+    <p>
+      I/O Data in DDS applications are controlled by the use of "alias"
+      names (not to be confused with "alias" Definitions) in identifying
+      each input and output dataset.  The "alias" name generally
+      specifies the Dictionary associated with a dataset. These 
+      Dictionaries specify the format and binary data filename. 
+      The user can override each dataset's "<code>format</code>" and 
+      "<code>data</code>" (binary filename) Definition.  However, if you
+      define "<code>format</code>" or "<code>data</code>" directly, then
+      that would override those Definitions for each input dataset that
+      might be associated with the application.  (Likewise, any command
+      line or par file parameter like "<code>axis=</code>" or
+      "<code>delta.t=</code>" would apply to each input dataset to the
+      application.)
+
+    <p>
+      So to get around this DDS uses a modified Definition name for each
+      dataset base on each alias name 
+      (eg. <code><var>alias</var>_format</code>).  So for example if you
+      have an input dataset identified as "<code>in</code>", you can
+      override it's format by specifying "<code>in_format=</code>".
+      For example a full specification of an input and output dataset
+      might look like:
+
+    <pre>
+in= line34
+in_data= Hline34_@
+in_format= ccube
+out= line34_migrated
+out_data= Hline34_migrated_@
+out_format= fcube
+    </pre>
+
+    <p>
+      If you look at a created dataset's Dictionary you may see this 
+      override Definition (eg. "<code>in_format=fcube</code>") that came
+      as an input parameter followed by DDS creating an alias Definition
+      for the format (eg. "<code>$format=in_format</code>").  The next 
+      time DDS tries to open up this dataset, it will look backwards 
+      through the Dictionary for "<code>format=</code>".  When it finds
+      "<code>$format=in_format</code>" it will then change it's search 
+      to "<code>in_format=</code>" and continue searching backward from
+      that point.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','data','selection')</script>
+
+    <ul>
+      <li><u>Axis Selection:</u><br />
+        Select the subset of the dataset to display by selecting the <b>"Start"</b>, 
+        <b>"End"</b> and <b>"Inc"</b> values for each corresponding axis. Don't worry about
+        the sign of the <b>"Inc"</b> values because the signs will get reset after based
+        on the  <b>"Start"</b> and <b>"End"</b> values.  Thus <b>"End"</b> can be greater
+        than <b>"Start"</b>, resulting in the axis being displayed in reverse order.
+        <br /><br />
+
+        By default the axis selection is based on axis index values from "1" through the
+        <b>"Size"</b> values.  However, you can change the selection based on Delta/Origin
+        or Base/Step as selected from the <b>"Select by:"</b> option list.
+        <br /><br />
+        <center><img src="xsd_ParmSelection.jpg" alt=""></center>
+        <br /></li>
+
+      <li><u>Axis Order:</u><br />
+        Select whether an axis is displayed vertically or horizontally by selecting the
+        <b>"Plot Vertical"</b> toggle on or off for each corresponding axis.
+        Select the order by which the axes are displayed by selecting the
+        <b>"Plot Order"</b> option lists for each corresponding axis. The axes plotted 
+        vertically will always be plotted first (lower order) than the horizontally 
+        plotted axes.  Selecting the order for any axis will be limited and will adjust 
+        the order for all the axes based on the Plot Vertical toggles.  For example if
+        you want to plot several time slices with y-axis vertical and x-axis horizontally
+        and each time slice across horizontally, then select y-axis vertically, t-axis
+        and x-axis horizontally, and the t,x,y axes in 3,2,1 Plot Order (the y-axis will
+        be forced to be Plot Order 1).<br /><br /></li>
+
+      <li><u>Reset Selection:</u><br />
+        You can also setup the data selection from a currently displayed window by selecting
+        the Window Id # from the <b>"Data Selection from:"</b> option list.</li>
+    </ul>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

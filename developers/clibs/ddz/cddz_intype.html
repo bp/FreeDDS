@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>cddz_intype - interrogate a DDS dataset for input sample genus and host-dependent type</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b><br>
+    <b>#include "cddz.h"</b>
+    <p>
+      <b>BIN_TAG cddz_intype(</b><i>alias, value, title, genus, host_type</i><b>)</b>
+      <dl><dd>
+        <b>const char </b><i>*alias</i><br>
+        <b>const char </b><i>*value</i><br>
+        <b>const char </b><i>*title</i></br>
+        <b>const char </b><i>**genus</i></br>
+        <b>const char </b><i>**host_type</i>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"cddz_intype"</b> enables flexible, host-dependent
+    sample type mapping. It is used in conjunction with <b>"cddz_mapin"
+    </b> or <b>"cddz_mapin2"</b> to open a file in 2 stages. Between
+    the <i>intype</i> and <i>mapin</i> calls, the program can decide
+    on the mapping to perform based on information returned in
+    arguments <i>genus</i> and <i>host_type</i>. The BIN_TAG and
+    argument <i>alias</i> should not be changed between <i>intype</i>
+    and <i>mapin</i> calls.
+    <p>
+    After opening a file for input with <b>"cddz_intype"</b> the input
+    dictionary will be left open for scanning. The open process  will
+    look for "<i>alias</i>" for the dictionary, "<i>alias</i><b>_data</b>"
+    for overriding the binary, and "<i>alias</i><b>_format</b>" for
+    overriding the format. The input parameter "<i>value</i>" is the
+    default value (eg. "stdin:") used for a fallback in cases where
+    "<i>alias</i>" is not specified by the user. The input parameter
+    "<i>title</i>" should be a brief one line description of the application
+    program.  It will return a BIN_TAG associated with the external binary
+    upon successful opening, a value of -2 if the dataset is not specified
+    and no default value is given.
+
+    <h2>LIMITATIONS</h2>
+    Convenience routines have a limitation where the <i>alias</i> argument
+    can only have a single alias name.
+
+   <h2> EXAMPLE</h2>
+   <pre>
+BIN_TAG    in_tag,buf_tag;
+const char *title, *genus, *hdt_in, *hdt_mapto;
+ ...
+in_tag=cddz_intype("in","stdin:",title,&genus,&hdt_in);
+if (!strcmp(genus,"integer")) hdt_mapto="long long";
+if (!strcmp(genus,"float"))   hdt_mapto="double";
+if (!strcmp(genus,"complex")) hdt_mapto="complex double";
+buf_tag=cddz_mapin("in","stdin:",title,&hdt_mapto,&in_tag);
+ ...
+   </pre>
+
+   <h2>SEE ALSO</h2>
+   <pre>
+<a href="clibs.php?lib=ddz&api=cddz_hdtype">cddz_hdtype</a> Retrieve host-dependent type of a field
+<a href="clibs.php?lib=ddz&api=cddz_mapin">cddz_mapin</a> Open a buffer with specific Sample maping
+<a href="clibs.php?lib=ddz&api=cddz_mapin2">cddz_mapin2</a> Open a buffer with specific Sample maping
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

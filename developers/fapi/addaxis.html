@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_addaxis)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","addaxis")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_addaxis - add a new axis to a DDS dictionary</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_addaxis(</b><i>dict, num, name</i><b>)
+      </b><dl><dd>
+        <b>character*(*) </b><i>dict
+        </i><br>
+        <b>integer       </b><i>num
+        </i><br>
+        <b>character*(*) </b><i>namd
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    This function is used to add a new axis to the dictionary, "<i>dict</i>".
+    The new axis will have a name of "<i>name</i>" and will be 
+    the <i>num</i>'th axis (numbering from 1). 
+    The dictionary will be left opened in the "print" mode
+    for inclusion of any axis parameters such as size, delta and orgiin.
+    The name should not conflict with any other axis name.
+    The <i>num</i> value must be between 1 and 1 more than the current rank
+    and it cannot be create any more than <b>RANK_MAX</b> axes. 
+  
+    <p>
+      The function returns a non-zero value if an error is detected,
+      and zero otherwise.
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="rmaxis.html">fdds_rmaxis</a> Remove axis
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

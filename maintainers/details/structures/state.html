@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (state)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","structures","state")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      These are the private global variables and constants which make up
+      the nucleus of DDS.</p>
+
+
+    <h2>Globals:</h2>
+    <pre>
+DDS_BOOLEAN dds_initialized; /* true iff cdds_init has been called */
+DDS_STATE dds_state;         /* global state flags */
+
+DDS_DEBUG dds_debug_user;    /* user debug flags */
+DDS_DEBUG dds_debug_api;     /* API debug flags */
+int dds_yy_flex_debug;       /* scanner trace flag */
+
+pid_t dds_cmd_pid;           /* process id */
+char *dds_cmd_name;          /* command name, argv[0] */
+char *dds_cmd_rev;           /* command revision, from openpr */
+char *dds_cmd_ddsrev;        /* dds revision */
+char *dds_cmd_ddsdat;        /* dds date */
+char *dds_cmd_user;          /* user name */
+char *dds_cmd_date;          /* starting date */
+char *dds_cmd_host;          /* host name */
+char *dds_cmd_cwd;           /* current working directory */
+char *dds_cmd_home;          /* user home directory */
+
+char *dds_project_dict;      /* "$CWD/project.dds" or NULL */
+char *dds_ddsrc_dict;        /* "$HOME/.ddsrc" or NULL */
+char *dds_base_dict;         /* "par:  env:  ./project  ~/.ddsrc" */
+
+DDS_STRING dds_path;         /* last DDS_PATH search path */
+
+DDS_BOOLEAN *dds_sislgbuf;   /* kludge for usp large buffer */
+                                     /*    NULL unless emulating usp. */
+                                     /*    TRUE == on, FALSE == off.  */
+
+DDS_TABLE dds_prime_table;   /* prime type symbol table */
+
+DDS_STACK dds_prime_tag;     /* array of (DDS_SYM*) values. */
+                                     /*  Subscripts are SYM_TAG values */
+                                     /*    for symbols exported to API.*/
+
+DDS_STRING dds_data_path;    /* data path   definition alias */
+DDS_STRING dds_data_suffix;  /* data suffix definition alias */
+
+DDS_BOOLEAN dds_openpr;      /* flag indicating print file open */
+
+DDS_STACK dds_tmp;           /* stack for temporary data */
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

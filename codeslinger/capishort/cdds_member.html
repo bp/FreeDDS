@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger "C" Api (cdds_member)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","cdds_member")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capishort")</script>
+
+    <h2>
+      cdds_member - fetch field tag within DDS structures
+    </h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>FIELD_TAG cdds_member(</b><i>bin_tag, field_tag, field_name</i><b>);
+      </b><dl><dt><dd>
+        <b>BIN_TAG </b><i>bin_tag
+        </i><br>
+        <b>FIELD_TAG </b><i>field_tag
+        </i><br>
+        <b>const char </b>*<i>field_name
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cdds_member</b> returns the tag of a structure member in a DDS
+    data stream. The name of the structure member is given by
+    <i>field_name</i>, the structure is identified by the
+    <i>field_tag</i> for a given <i>bin_tag</i>. If
+    <i>field_tag</i> is zero, it defaults to the SEQUENCE (a trace)
+    within <i>bin_tag</i>. If <i>field_name</i> is blank, the value
+    returned will be the tag of the first member of the structure.
+    <i>field_name</i> can include structure names relative to the
+    <i>field_tag</i> (eg. "Spare.Hdr.RecNum") or can specify the
+    first member of a substructure (e.g. "TmMsS1_union.").
+    The returned tag should be the <i>field_tag</i> used in
+    <a href="cdds_index.html">cdds_index</a> and
+    <a href="cdds_get.html">cdds_get</a>.
+
+    <p>
+      USP NOTE: if the <i>field_name</i> is "Horz..."
+      and the member cannot be found, the "Horz" will be replaced with
+      "TVPT" and tried again so that "Horz01" through "Horz20" can be
+      overloaded and used in the cdds_getff and cdds_putff calls.
+
+    <h2>ARGUMENTS</h2>
+    "<i>bin_tag</i>" is the tag of an open binary, previously obtained
+    from <a href="cddx_in.html">cddx_in</a>. It specifies a binary stream.
+
+    <p>
+      "<i>field_tag</i>" is the tag of a structure within
+      <i>bin_tag</i>.  A value of "0" (zero) always refers to an entire
+      trace.
+
+    <p>
+      "<i>field_name</i>" is the name of the structure member to locate.
+      If <i>field_name</i> is zero length or blank, the tag returned
+      will be for the first member in the structure.
+
+    <h2>OUTPUT</h2>
+    The return value is the <i>field_tag</i> associated with the desired
+    structure member or -1 if no member is found.
+
+    <p>
+      USP NOTE: if the <i>field_name</i> is "Horz...", the
+      return value is the negative ( &lt; -1) of the actual <i>field_tag</i>.
+      This is a signal to <b>cdds_getr</b>, telling it to invoke
+      <b>cdds_getff</b> with the absolute value of the <i>field_tag</i>.
+
+    <h2>EXAMPLE</h2>
+    <pre><b>
+   /* find index of header RecNum */
+   int ndx, rec, *ibuf;
+   BIN_TAG bin;
+   FIELD_TAG tag;
+   ...
+   tag = cdds_member(bin, 0, "RecNum");
+   ndx = cdds_index(bin, tag, DDS_INT);
+   rec = ibuf[ndx];
+   ...
+    </b></pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="cdds_index.html">cdds_index</a> Query field index
+<a href="cdds_get.html"  >cdds_get</a>   Get a field
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

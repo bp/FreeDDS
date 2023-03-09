@@ -1,0 +1,21 @@
+
+    <h2>segy_write - write a segy trace</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <p>
+      <b>subroutine segy_write(</b><i>fd, buf, nsmp</i><b>)
+    </b><dl><dd>
+        <b>integer </b><i>fd</i><br>
+        <b>real(*) </b><i>buf</i><br>
+        <b>integer </b><i>nsmp</i><br>
+        </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    The routine, "<b>segy_write</b>", writes a trace to the segy
+    file identified by the file descriptor, <i>fd</i>, returned from
+    "<b>segy_out</b>". The array, <i>buf</i> must contain the segy
+    trace header in the first 240 bytes followed by <i>nsmp</i> number
+    of data samples.  The return value will be "1" if successful; otherwise
+    "0" is returned.
+    </p>

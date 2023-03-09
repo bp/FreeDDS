@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','server')</script>
+
+    <ul>
+      <li>
+        <img src="xsd_FileMenu.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+        XSD will start a remote ddsServer upon the first time data is loaded 
+        (<b>File&rarr;Open Data</b>), anytime the remote server dies, or upon specific 
+        restarting by the user (<b>File&rarr;Restart&nbsp;Server</b>). There are additional
+        menu items available in each of the data display window.
+        <br clear='all' />
+      </li>
+
+      <li>
+        <img src="xsd_StartupWindow.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+        Normally the "Server Startup" window will provide the following methods for starting
+        the ddsServer.  Specify the "Host Computer" based on these options to control how
+        the ddsServer gets (re)started.  Specify the "Login" username if it is different
+        on the remote host.
+        <br clear='all' />
+
+        For example if you want to connect to a remote machine named, "roger", (and optionally
+        a local port of "55060" forwarded remotely to "roger") then the "Host Computer"
+        parameter can be:<br /><br />
+        <table align='center' border='1' cellspacing='0' cellpadding='5'
+          style='font-family:monospace;background:#f0f0f0'>
+            <tr><td>=</td><td>Specifies the local machine</td></tr>
+            <tr><td>roger</td><td>Use "rsh" to connect to "roger"</td></tr>
+            <tr><td>!roger</td><td>Use "ssh" to connect to "roger"</td></tr>
+            <tr><td>55060:=</td><td>Connect thru localhost port 55060 to localhost</td></tr>
+            <tr><td>55060:roger</td><td>Connect thru port 55060 then "rsh" to "roger"</td></tr>
+            <tr><td>55060:!roger</td><td>Connect thru port 55060 then "ssh" to "roger"</td></tr>
+        </table><br />
+      </li>
+
+      <li>
+        <img src="xsd_StartupWindow2.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+        XSD can be setup to connect remotely through a local port by default so you don't have to
+        keep specifying the port each time. For example if you have local port 55060 forwarded
+        through "ssh" to a remote port 22, then running:
+        <pre>
+        xsd port=55060
+        </pre>
+        will bring up a slightly modified set of connection options:
+        <br clear='all' /><br />
+
+        <table align='center' border='1' cellspacing='0' cellpadding='5'
+          style='font-family:monospace;background:#f0f0f0'>
+            <tr><td>=</td><td>Specifies the local machine</td></tr>
+            <tr><td>:=</td><td>Connect thru localhost port 55060 to localhost</td></tr>
+            <tr><td>roger</td><td>Connect thru port 55060 then "rsh" to "roger"</td></tr>
+            <tr><td>!roger</td><td>Connect thru port 55060 then "ssh" to "roger"</td></tr>
+        </table><br /><br />
+      </li>
+
+      <li>
+        <b><u>NOTE:</u></b> you can setup ssh to use keys instead of password to make it
+        easier to connect through ssh;  Follow this example to setup the public/private
+        rsa key pair:
+        <pre>
+> <b>ssh-keygen -t rsa</b>
+generating public/private rsa key pair.
+Enter file in which to save the key (/home/rob/.ssh/id_rsa):
+
+Enter passphrase (empty for no passphrase):
+
+Enter same passphrase again:
+
+Your identification has been saved in /home/rob/.ssh/id_rsa.
+Your public key has been save in /home/rob/.ssh/id_rsa.pub.
+The key fingerprint is:
+a6:5c:c3:eb:18:94:0b:06:a1:a6:29:58:fa:80:0a:bc rob@localhost
+> <b>cat .ssh/id_rsa.pub > /.ssh/authorized_keys</b>
+> <b>chmod 0700 .ssh</b>
+> <b>chmod 0600 .ssh/id_rsa</b>
+        </pre>
+      </li>
+    </ul>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

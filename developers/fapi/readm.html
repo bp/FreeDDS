@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_readm)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","readm")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_readm - read DDS binary stream and map buffer</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_readm(</b><i>in_bin, in_tag, out_bin, out_tag, out_buf, count</i><b>)
+      </b><dl><dd>
+        <b>integer </b><i>in_bin
+        </i><br>
+        <b>integer </b><i>in_tag
+        </i><br>
+        <b>integer </b><i>out_bin
+        </i><br>
+        <b>integer </b><i>out_tag
+        </i><br>
+        <b>integer </b><i>out_buf(*)
+        </i><br>
+        <b>integer </b><i>count
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    This function reads data from a binary stream and maps it into a type
+    buffer.
+
+    <h2>INPUT</h2>
+    <i>In_bin</i> is a binary tag, previously obtained from 
+    <b>fdds_open</b>. It specifies an input binary stream.
+
+    <p>
+      <i>in_tag</i> is a field tag, previously obtained eg. from
+      <b>fdds_member</b>. It specifies a tag associated with <i>in_bin</i>.
+      This provides a scale factor for <i>count</i>. If <i>in_tag</i>
+      is zero (nominal), it defaults to the <i>SEQUENCE</i> (trace type)
+      associated with <i>in_bin</i>.
+
+    <p>
+      <i>Out_bin</i> is a binary tag, previously obtained from
+      <b>fdds_open</b>. It specifies an output binary stream.
+
+    <p>
+      <i>out_tag</i> is a field tag, previously obtained, for example, from
+      <b>fdds_member</b>. It specifies a tag associated with <i>out_bin</i>.
+      This provides a scale factor for <i>count</i>. If <i>out_tag</i> is
+      zero (nominal), it defaults to the <i>SEQUENCE</i> (trace type)
+      associated with <i>out_bin</i>.
+
+    <p>
+      Data is read into <i>out_buf</i>. The minimum size is <i>count</i> 
+      times the size of <i>out_tag</i>.
+
+    <h2>OUTPUT</h2>
+    A byte sequence is copied from <i>in_bin</i> into a temporary buffer.
+    Data is moved from the buffer to <i>out_buf</i>, while converting from
+    <i>in_tag</i> to <i>out_tag</i>. <b>fdds_readm</b> is preferable to
+    executing <b>fdds_read</b> and <b>fdds_map</b> directly.
+
+    <p>
+      The return value is the number of types actually read and mapped.
+      EOF is returned if an error occurred before any transfer.
+
+    <h2>EXAMPLES</h2>
+    In fixed-format Fortran:
+    <pre>
+      #include &lt;fdds.h&gt;
+      integer in_bin, out_bin
+      integer out_buf(*)
+      ...
+!     read 10 traces into type buffer
+      j = fdds_readm(in_bin, 0, out_bin, 0, out_buf, 10)
+    </pre>
+
+    <p>
+    In free-format F90:
+    <pre>
+      #include &lt;f90dds.h&gt;
+      integer in_bin, out_bin
+      integer out_buf(*)
+      ...
+!     read 10 traces into type buffer
+      j = fdds_readm(in_bin, 0, out_bin, 0, out_buf, 10)
+    </pre>
+
+    <p>
+    Using the DDS module: <br>
+    (Note that the DDS module requires that data arrays passed to I/O
+    functions be 1 dimensional.)
+    <pre>
+      use dds
+      
+      integer :: in_bin, out_bin, nsmp, ntrc, itrc
+      real, allocatable :: buffer(:,:)
+      
+      allocate(buffer(nsmp, ntrc))
+      ! read 10 traces into type buffer
+      do itrc=1,10
+        ier = fdds_readm(in_bin, 0, out_bin, 0, buffer(:,itrc), 1)
+      enddo
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="read.html">fdds_read</a>
+<a href="map.html">fdds_map</a>
+<a href="write.html">fdds_write</a>
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

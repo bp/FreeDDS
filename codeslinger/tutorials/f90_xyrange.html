@@ -1,0 +1,288 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (work with headers)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","f90_xyrange.F90")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+!***********************************************************************
+!
+! Get the range of values in user selected headers
+! Use source/receiver XY headers as defaults
+!
+! An example of resonably defensive and robust coding.
+!
+!***********************************************************************
+
+      program f90_xyrange
+
+      implicit none
+
+#include &lt;<a href="../resources/f90dds.h.html">f90dds.h</a>&gt;
+
+! Define F90 precision for real*8 variables
+      integer,parameter :: DP=selected_real_kind(15,300)
+
+! For DDS functions. Arguments and return values
+      character(LEN=11) :: prog='f90_xyrange'
+      character(LEN=80) :: Title
+      integer ier, fd_in
+
+! Data attributes
+      integer n1,n2,n3, ntrc_words
+
+! Internal dynamic array
+      real,allocatable :: record(:,:)
+
+! Internal arrays for headers and results
+      character(LEN=DEFNNAME_MAX),allocatable :: Hdrs(:)
+      integer,allocatable       :: ihdr_tag(:)
+      real(KIND=DP),allocatable :: hdr_min(:)
+      real(KIND=DP),allocatable :: hdr_max(:)
+
+! Internal scalar values and loop counters
+      character(LEN=DEFNNAME_MAX) :: SrcX,SrcY, GrpX,GrpY
+      integer       :: i2,i3, ihdr, nhdr, ntr
+      real(KIND=DP) :: hdr_here
+
+!-------------------------------------------------------------------
+!
+! Initialize the Title
+!
+      Title=prog//': Get the range of selected trace header words'
+
+!
+! Open the print file and dump command-line help as requested
+!
+      ier=<a href="../fapishort/fdds_openpr.html">fdds_openpr</a>(prog,'')
+      if (ier.gt.0) call help(prog,Title)
+
+!
+! Retrieve alternate headers from user parameters
+!
+      ier=<a href="../fapishort/fdds_dict.html">fdds_dict</a>('par:','scan')
+
+      ! set defaults names for source/receiver XY headers
+      SrcX='SrPtXC'
+      SrcY='SrPtYC'
+      GrpX='RcPtXC'
+      GrpY='RcPtYC'
+
+      ! get user overrides for default header names
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('SrcX srcx','%s\0',SrcX)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('SrcY srcy','%s\0',SrcY)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('GrpX grpx','%s\0',GrpX)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('GrpY grpy','%s\0',GrpY)
+
+      ! Retrieve alternate method, a list of interesting headers
+      nhdr=0
+      nhdr=<a href="../fapishort/fdds_scank.html">fdds_scank</a>('Hdrs hdrs','')
+
+      if (nhdr.gt.0) then
+         allocate(Hdrs(nhdr))
+         do ihdr=1,nhdr
+           ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('','%s\0',Hdrs(ihdr))
+         enddo
+      else
+         nhdr=4
+         allocate(Hdrs(nhdr))
+         Hdrs(1)=SrcX
+         Hdrs(2)=SrcY
+         Hdrs(3)=GrpX
+         Hdrs(4)=GrpY
+      endif
+
+!
+! Open input. Retrieve data characteristics when open is successful
+!
+      fd_in=<a href="../fapishort/fddx_in2.html">fddx_in2</a>('in','stdin:',Title)
+
+      if (fd_in.lt.0) then
+
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Opening input data\n\0')
+
+      else
+
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(1)','%d\0',n1)
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(2)','%d\0',n2)
+         n3=<a href="../fapishort/fdds_axis_prod.html">fdds_axis_prod</a>(3)
+
+         ntrc_words=fdds_prec(fd_in,0)/SIZEOF_REAL
+         if (ntrc_words.le.0) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Cannot determine trace length\n\0')
+         endif
+
+         allocate(ihdr_tag(nhdr))
+
+         ! Go find the headers within the trace structure
+         do ihdr=1,nhdr
+            ihdr_tag(ihdr)=<a href="../fapishort/fdds_member.html">fdds_member</a>(fd_in,0,Hdrs(ihdr))
+            if (ihdr_tag(ihdr).eq.-1) then
+               ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a> &amp;
+                     ('Header %s is not available. FATAL.\n\0', &amp;
+                      Hdrs(ihdr))
+            endif
+         enddo
+
+      endif
+
+!
+! Check whether any errors were reported.
+! If so, clean up and terminate now.
+!
+      if (<a href="../fapishort/fdds_errors.html">fdds_errors</a>().gt.0) then
+         if (allocated(Hdrs))     deallocate(Hdrs)
+         if (allocated(ihdr_tag)) deallocate(ihdr_tag)
+         if (fd_in.ge.0)          ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+         ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+         stop
+      endif
+
+!
+! Allocate arrays for input data and results
+!
+      allocate(record(ntrc_words,n2))
+      allocate(hdr_min(nhdr),hdr_max(nhdr))
+
+!
+! Initialize the min/max header values
+!
+      hdr_min(:) = +huge(hdr_here)
+      hdr_max(:) = -huge(hdr_here)
+
+!
+! Loop over input data, set min/max values
+! Stop on all DDS-detectable errors
+!
+      do i3 = 1,n3
+
+         ntr=<a href="../fapishort/fddx_read.html">fddx_read</a>(fd_in,record,n2)
+
+         if (ntr.ne.n2) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Reading record %d: %d traces\n\0',i3,ntr)
+         else
+            ! Get the ranges
+            do i2 = 1, n2
+               do ihdr=1,nhdr
+                  ier=<a href="../fapishort/fdds_get.html">fdds_get</a>d(fd_in,ihdr_tag(ihdr), &amp;
+                                record(:,i2),0,hdr_here,1)
+                  if (ier.eq.0) then
+                     ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a> &amp;
+                           ('Failed to "get" header with tag %d\n\0', &amp;
+                            ihdr_tag(ihdr))
+                  else
+                     hdr_min(ihdr)=min(hdr_min(ihdr),hdr_here)
+                     hdr_max(ihdr)=max(hdr_max(ihdr),hdr_here)
+                  endif
+               enddo
+            enddo
+         endif
+
+         if (<a href="../fapishort/fdds_errors.html">fdds_errors</a>().gt.0) then
+            deallocate(Hdrs)
+            deallocate(ihdr_tag)
+            deallocate(hdr_min)
+            deallocate(hdr_max)
+            deallocate(record)
+            ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+            ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+            stop
+         endif
+
+      enddo
+
+!
+! Report results
+!
+      ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('\n\0')
+      do ihdr=1,nhdr
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('Range for header %15s: %lg to %lg\n\0', &amp;
+                         Hdrs(ihdr),hdr_min(ihdr),hdr_max(ihdr))
+      enddo
+      ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('\n\0')
+
+!
+! Clean up
+!
+      deallocate(Hdrs)
+      deallocate(ihdr_tag)
+      deallocate(hdr_min)
+      deallocate(hdr_max)
+      deallocate(record)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+      ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+
+!
+! Stop
+!
+      stop
+      end
+
+
+
+
+!***********************************************************************
+!
+! subroutine to print help when requested on the command line
+!
+!***********************************************************************
+
+      subroutine help(prog,Title)
+
+      implicit none
+
+      character prog*(*), Title*(*)
+
+      write(0,*)''
+      write(0,*)trim(Title)
+      write(0,*)''
+      write(0,*)' Parameter......Meaning........................Default'
+      write(0,*)''
+      write(0,*)'  in=[dict]     input dictionary                stdin:'
+      write(0,*)''
+      write(0,*)'  SrcX=[Hdr1]   Override for SrcX header        SrPtXC'
+      write(0,*)'  SrcY=[Hdr2]      "      "  SrcY   "           SrPtYC'
+      write(0,*)'  GrpX=[Hdr3]      "      "  GrpX   "           RcPtXC'
+      write(0,*)'  GrpX=[Hdr4]      "      "  GrpY   "           RcPtYC'
+      write(0,*)''
+      write(0,*)'  hdrs=[Hdr1 Hdr1 Hdr3 ...]                       none'
+      write(0,*)'                Define headers with list'
+      write(0,*)''
+      write(0,*)'  verbose=[y|n] verbose output                      no'
+      write(0,*)''
+      write(0,*)'  USAGE:'
+      write(0,*)'    '//trim(prog)//' in=[in_dict]'
+      write(0,*)'       [ SrcX=[Hdr1] SrcY=[Hdr2]'
+      write(0,*)'         GrpX=[Hdr3] GrpY=[Hdr4] verbose=[y|n] ]'
+      write(0,*)''
+      write(0,*)'  or'
+      write(0,*)'    '//trim(prog)//' in=[in_dict]'
+      write(0,*)'       [ hdrs=[Hdr1 Hdr2 Hdr3 ... ] verbose=[y|n] ]'
+      write(0,*)''
+
+      stop
+
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

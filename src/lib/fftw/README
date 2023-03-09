@@ -1,4 +1,0 @@
-FFTW is to provide fft support for systems that do not have their own better libraries.  The fftw/Makefile is built to handle dds-specific make macros & rules.
-
-JWE - Jan 2009
-

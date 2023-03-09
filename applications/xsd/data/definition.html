@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','data','definition')</script>
+
+    <center><img src="xsd_ParmDefinition.jpg" alt=""></center>
+
+    <p>
+      After opening a dataset, XSD takes the dataset axis information and sets up the data 
+      definition portion of the "Server Parameters" Window. You can override any of these
+      parameters (with the exception of the size of the first axis) including changing the
+      <b>"Axis Rank"</b> (# of dimensions).  Change any of the <b>"Axis"</b> names to appear
+      on the plots.  Change the <b>"Delta'</b>, <b>"Origin'</b>, <b>"Base"</b> and 
+      <b>"Step"</b> to allow selecting and/or displaying relative to them.  For example
+      time axis is always setup in seconds from DDS.  If you wish to display time in msec,
+      then just change the corresponding <b>"Delta"</b> value (units are not displayed).
+      Change the <b>"Axis Rank"</b> and/or Axis <b>"Sizes"</b>, but beware that selecting
+      parameters beyond the dataset will prevent the ddsServer from being able to read the
+      data.
+      <br /><br />
+      
+      You can select data definition parameters from any currently displayed window by 
+      selecting the window's Id # from the <b>"Data Definition from:"</b> option list. 
+      Alternatively, you can press the <b>"Reset Definition"</b> button to reset the
+      definition parameters from the dataset.
+    </p>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

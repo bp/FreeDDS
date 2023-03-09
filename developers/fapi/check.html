@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_check)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","check")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>
+      fdds_check - DDS, check memory heap
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer fdds_check(</b><i>flags</i><b>)
+      </b><dl><dt><dd>
+        <b>integer </b><i>flags</i></dl>
+    <h2>DESCRIPTION</h2>
+    This function allows the application to control debug checking. The
+    "<i>flags</i>" field is an integer and can be any of the DDS_DEBUG
+    flags listed below. Successive invokation of <b>fdds_check</b> causes
+    multiple debug flags to be OR'd together. The return value is the
+    debug flag combination before <b>fdds_check</b> is invoked so that
+    it can be used to restore the original state when needed. Similar
+    functionality, though with less control, is available by using
+    run-time parameter
+    <a href="../../users/debug.html">dds_debug=</a> <i>debug flags</i>.
+
+    <h2>Flags</h2>
+    <pre>
+    DDS_DBG_HEAP      (check heap once, right now)
+    DDS_DBG_ALLOC     (check heap on each allocation)
+    DDS_DBG_FREE      (check heap on each free)
+    DDS_DBG_CALL      (check heap on each DDS API call)
+    DDS_DBG_TRACE     (trace all API calls)
+    DDS_DBG_SCANNER   (trace compiler scanner)
+    DDS_DBG_SYMBOL    (dump binary symbol tables)
+    DDS_DBG_UNCOMPILE (dump ddsUncompileFmt stacks)
+    DDS_DBG_BINARY    (dump binary ? tables)
+    DDS_DBG_PANIC     (dump binary tables on panic)
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May 1996)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

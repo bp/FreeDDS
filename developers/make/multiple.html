@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers make multiple</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","make","multiple")
+    </script>
+    <!*********************************************************************>
+  
+    <h2>Multiple codes within same Makefile</h2>
+
+    <p>
+      The DDS make structure allows a developer to maintain multiple codes within
+      the same directory and Makefile.  Simply define the set of source files
+      separately for each application or library by prefixing the application or
+      library name onto the "FSrcs" and/or "CSrcs" definitions 
+      ("<var>name</var><code>FSrcs</code>" and/or "<var>name</var><code>CSrcs</code>"). 
+      Then when using "<code>make</code>" append "<code>Name=</code><var>name</var>" 
+      onto the command line. For example, with the following Makefile 
+      (assuming all the source code is in the same directory):
+    </p>
+
+<pre style="font-weight:bold">
+freqFSrcs  := freq.F t2w.F w2t.F
+
+ddscanFSrcs:= ddscan.F
+.
+.
+.
+</pre> 
+    <p>
+      you could make the "ddscan" application with: "<code>make Name=ddscan</code>" and 
+      "<code>make install Name=ddscan</code>".  Or with "<code>make Name=freq</code>" the 
+      "freq" program will be built.
+    </p>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

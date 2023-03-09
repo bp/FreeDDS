@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Dataset (Piped)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","datasets","piped")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      When piping a dataset form one application to another, by default,
+      the binary is attached to the Dictionary so that they can both be
+      passed from "<code>stdout:</code>" of one process to 
+      "<code>stdin:</code>" of another process. When piping to a non-DDS
+      program that expects only a Standard Format binary (and no DDS
+      Dictionary) then use "<code>out_data=stdout:</code>" to cause DDS to
+      pass only the binary (see <a href="iocontrol.html">I/O Control</a>). 
+      In addition, when passing USP binary data thru a pipe, DDS keeps the
+      data in host-dependent formats (eg. Little Endian on Linux) to be
+    compatible with USP programs.
+
+    <p>
+      Two restrictions arise when piping data:
+    <ol>
+      <li>Piped data <u>cannot</u> be randomly accessed. 
+        A few applications may need to perform random I/O and thus will
+        not work for piped data. For example, many migration codes
+        accumulate the results into the output data, thus reading and
+        writing traces multiple times.
+        <br/><br/>
+
+      <li>Piped data <u>cannot</u> be accessed by MPI codes.  However,
+        if only one MPI node accesses data, then a temporary "named pipe"
+        can be  setup (see man page for mknod; eg. "mknod pipename p").
+        One process can write to the named pipe and the other can read
+        from it just so long there is no seeks done and only one node 
+        is accessing the pipe.
+    </ol>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

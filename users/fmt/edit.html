@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Fmt Control (edit:)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","fmt","edit")</script>
+    <!*********************************************************************>
+
+    <p>
+      The end user may request special trace editting. The edit control 
+      flags allow the end users to request special processing on an axis 
+      basis. Keywords are used to request or reject individual features.
+      Traces can be dropped or zeroed, for example, depending on sort
+      trace header values. SEGY may contain seismic and auxiliary traces
+      and an application may want only the seismic, or auxiliary, or both.
+      Initially, all functions are turned off. Certain axis specific
+      editting is also available.
+
+    <p>
+      Editting is controlled by Edit Flags specified by:
+
+    <pre>edit:<var>alias</var>= <var>options</var></pre>
+
+    where:
+    <ul>
+      <li><var>alias</var> is either the I/O alias name or <b>*</b>
+      <li><var>options</var> is any combinations of the allowable options listed below
+    </ul>
+
+    <p>
+      For example:
+
+    <pre>
+edit:in= async.x pad.2
+edit:*= drop_dead
+edit:*=no_edit</pre>
+
+    <p>
+      Two key internal editing flags are:
+
+    <dl>
+      <dt><b>dense</b>
+      <dd>Flags the axis to be dense which will turn on padding dead traces.
+          (NOTE: all lower axes, except axis 1, need to be dense also.)
+      <dt><b>sync</b>
+      <dd>Flags the axis to by synchronous which causes the expected value
+          for this axis to be reset whenever the index for the next higher 
+          axis changes.  This could cause the ordinal value to be reset or
+          traces to be padded.
+    </dl>
+
+    <p>
+      Flags are initially turned off unless set by the specific data
+      format attributes.  The allowable options include:
+    <pre>
+Flag          Purpose
+-----------   ------------------------------------------
+zero_dead     zero traces flagged as dead (usp,segy,segy1,su ONLY)
+drop_dead     drop traces flagged as dead (usp,segy,segy1,su ONLY)
+drop_live     drop traces not flagged as dead (usp,segy,segy1,su ONLY)
+drop_aux      drop traces flagged as neither dead nor data 
+              (segy,segy1,su ONLY)
+
+no_edit       clears the <b>dense</b> &amp; <b>sync</b> flags for all axes (defaults)
+dense.<var>axis</var>    sets the <b>dense</b> flag for this axis
+              (Can also be set as a <a href="../formats/attributes.html">format attribute</a>)
+sparse.<var>axis</var>   clears the <b>dense</b> flag for this axis
+sync.<var>axis</var>     sets the <b>sync</b> flag for this axis
+              (Can also be set as a <a href="../formats/attributes.html">format attribute</a>)
+async.<var>axis</var>    clears the <b>sync</b> flag for this axis
+pad.<var>axis</var>      pad dead traces when reading even if <b>dense</b> is not set
+              (Also sets the <b>sync</b> flag)
+apad.<var>axis</var>     pad dead traces when reading even if <b>dense</b> is not set
+
+upper.<var>axis</var>    skip traces if ordinal value &gt;= size.axis
+lower.<var>axis</var>    skip traces if ordinal value &lt; 0
+window.<var>axis</var>   skip traces if ordinal value within 
+              "0" and (size.axis - 1)
+error.<var>axis</var>    produce errors if the axis ordinal is out-of-range
+warn.<var>axis</var>     produce warnings if the axis ordinal is out-of-range
+force.<var>axis</var>    forces the axis ordinal index to the expected value
+              (This may be necessary when using the ordinal function)
+reject.<var>axis</var>   reject traces if the axis ordinal is not what is expected
+
+    Where "<var>axis</var>" is the axis name or axis number.
+    </pre>
+    
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

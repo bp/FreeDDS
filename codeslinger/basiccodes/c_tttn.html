@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (access samples)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","c_tttn.c")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+/***********************************************************************
+ *
+ * Data independent (removable) scaling using t**n functions
+ *
+ ***********************************************************************/
+
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;math.h&gt;
+#include &lt;<a href="../resources/cdds.h.html">cdds.h</a>&gt;
+
+
+/* Macros */
+#define MAX(x,y)  ((x) &gt; (y) ? (x) : (y))
+
+
+/* Function prototypes */
+void help(char *prog, char *Title);
+
+void cmdln(float *alpha, double *power, float *eps,
+           int*inverse, int*verbose);
+
+void compute_gain(float *gain, double *times, int n1,float o1,float d1,
+                  float alpha, double power, float eps, int inverse);
+
+
+/* main */
+int main(int argc, char **argv)
+{
+
+/* For DDS functions. Arguments and return values */
+   char  *prog, *Title;
+   int   ier;
+   BIN_TAG fd_in,fd_out;
+   long long ier_ll, izero_ll=0;
+
+/* Data attributes */
+   int   n1,n2,n3;
+   float d1, o1;
+
+/* User parameters */
+   int    verbose, inverse;
+   float  alpha, eps;
+   double power;
+
+/* Internal dynamic array */
+   float  *record, *gain;
+   double *times;
+
+/* Internal scalar values and loop counters */
+   int    n2_in,n2_out, i1,i2,i3, is;
+   int    remainder;
+
+/*-------------------------------------------------------------------*/
+
+/* Initialize */
+   setargcv(argc, argv);
+   prog="c_tttn";
+   Title="c_tttn: Time varying, data independent scaling";
+
+/* Open the print file and dump command-line help is requested */
+   ier=<a href="../capishort/cdds_openpr.html">cdds_openpr</a>(prog,"");
+   if (ier&gt;0) help(prog,Title);
+
+/* Open input file */
+   fd_in=<a href="../capishort/cddx_in.html">cddx_in</a>("in","stdin:",Title);
+
+/* Retrieve data characteristics */
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(1)","%d",&amp;n1);
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("size.axis(2)","%d",&amp;n2);
+   n3=<a href="../capishort/cdds_axis_prod.html">cdds_axis_prod</a>(3);
+
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("delta.axis(1)","%f",&amp;d1);
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("origin.axis(1)","%f",&amp;o1);
+
+/* Retrieve command line and parfile parameters */
+   cmdln(&amp;alpha, &amp;power, &amp;eps, &amp;inverse, &amp;verbose);
+
+/* Open the output */
+   fd_out=<a href="../capishort/cddx_out.html">cddx_out</a>("out","stdout:",Title,fd_in);
+   ier_ll=<a href="../capishort/cdds_lseek8.html">cdds_lseek8</a>(fd_out,0,izero_ll,SEEK_SET);
+
+/* Allocate arrays */
+   gain=(float*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>(n1*sizeof(float));
+   times=(double*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>(n1*sizeof(double));
+   record=(float*)<a href="../capishort/cdds_malloc.html">cdds_malloc</a>(n1*n2*sizeof(float));
+
+/* Set up the gain curve */
+   compute_gain(gain, times, n1,o1,d1, alpha,power,eps, inverse);
+
+/* Loop over input data, read-scale-write */
+   for (i3=0; i3&lt;n3; i3++) {
+
+      remainder=(i3+1)%10;
+      if ( verbose &amp;&amp; !remainder) {
+         ier=<a href="../capishort/cdds_prtcon.html">cdds_prtcon</a>("Record %5d of %5d\n",i3+1,n3);
+      }
+
+      n2_in=<a href="../capishort/cddx_read.html">cddx_read</a>(fd_in,record,n2);
+      if (n2_in != n2) {
+         <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Reading record %d. %d traces read\n",i3+1,n2_in);
+         break;
+      }
+
+      for (i2=0; i2&lt;n2; i2++) {
+         for (i1=0; i1&lt;n1; i1++) {
+            is = n1*i2+i1;
+            record[is] = record[is] * gain[i1];
+         }
+      }
+
+      n2_out=<a href="../capishort/cddx_write.html">cddx_write</a>(fd_out,record,n2);
+      if (n2_out != n2) {
+         <a href="../capishort/cdds_prterr.html">cdds_prterr</a>("Writing record %d. %d traces written\n",i3+1,n2_out);
+         break;
+      }
+
+   }
+
+/* Clean up */
+   <a href="../capishort/cdds_free.html">cdds_free</a>(gain);
+   <a href="../capishort/cdds_free.html">cdds_free</a>(times);
+   <a href="../capishort/cdds_free.html">cdds_free</a>(record);
+   ier=<a href="../capishort/cdds_close.html">cdds_close</a>(fd_in);
+   ier=<a href="../capishort/cdds_close.html">cdds_close</a>(fd_out);
+   ier=<a href="../capishort/cdds_closepr.html">cdds_closepr</a>();
+
+/* Exit */
+   exit(0);
+}
+
+
+
+
+/* Function help */
+void help( char *prog, char *Title)
+{
+   fprintf(stderr,"\n");
+   fprintf(stderr," %s\n",Title);
+   fprintf(stderr,"\n");
+   fprintf(stderr," out_data = alpha * in_data * t**power\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr," Parameter....Meaning........................Default\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  in=         input dictionary                stdin:\n");
+   fprintf(stderr,"  out=        output dictionary              stdout:\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  alpha=      linear scale factor                1.0\n");
+   fprintf(stderr,"  power=      exponent for time scale factor     2.0\n");
+   fprintf(stderr,"  eps=        addend for inverse scaling to   1.0e-6\n");
+   fprintf(stderr,"                prevent divide by zero\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  inverse=    perform inverse of scaling          no\n");
+   fprintf(stderr,"  verbose=    verbose output                      no\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  USAGE: %s in=[in_dict] out=[out_dict] \\\n",prog);
+   fprintf(stderr,"            [ alpha=[alpha] power=[power] eps=[eps] \\\n");
+   fprintf(stderr,"             inverse=[y|n] verbose=[y|n] ]\n");
+   fprintf(stderr,"\n");
+
+   exit(0);
+}
+
+
+
+
+/* Function cmdln - retrieve command line and parfile definitions */
+void cmdln(alpha, power, eps, inverse, verbose)
+
+   float  *alpha, *eps;
+   double *power;
+   int    *inverse, *verbose;
+
+{
+   int ier;
+
+   ier=<a href="../capishort/cdds_dict.html">cdds_dict</a>("par:","scan");
+
+   *alpha=1.0;
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("alpha a","%f",alpha);
+
+   *power=2.0;
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("power exp","%lf",power);
+
+   *eps=1.0E-6;
+   ier=<a href="../capishort/cdds_scanf.html">cdds_scanf</a>("eps","%f",eps);
+
+   *inverse=(<a href="../capishort/cdds_scank.html">cdds_scank</a>("inverse",DDS_TRUE_KEY)&gt;0);
+   *verbose=(<a href="../capishort/cdds_scank.html">cdds_scank</a>("verbose",DDS_TRUE_KEY)&gt;0);
+}
+
+
+
+
+/* Function compute_gain - computes the gain function */
+void compute_gain(float *gain, double *times, int n1,float o1,float d1,
+                  float alpha, double power, float eps, int inverse)
+{
+   int i1;
+
+/* Initialize vector of times */
+   for (i1=0; i1&lt;n1; i1++) times[i1] = o1 + d1*i1;
+
+/* Catch invalid power functions ( negative_time**non_integer ) */
+   if (power != (double)((long long)power)) {
+      for (i1=0; i1&lt;n1; i1++) times[i1] = MAX(0.0,times[i1]);
+   }
+
+/* Catch possible divide by zero */
+   if (inverse) {
+      for (i1=0; i1&lt;n1; i1++) {
+         if (times[i1] == 0.0) times[i1]=times[i1]+eps;
+      }
+   }
+
+/* Go fill the gain vector */
+   for (i1=0; i1&lt;n1; i1++) gain[i1] = alpha * pow(times[i1],power);
+
+/* Invert as needed */
+   if (inverse) {
+      for (i1=0; i1&lt;n1; i1++) gain[i1] = 1.0/gain[i1];
+   }
+}
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

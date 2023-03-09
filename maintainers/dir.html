@@ -1,0 +1,138 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Directories</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+    <style type="text/css"> 
+       .head {background-color:#c0ffff;border-style:solid;border-width:1px;}
+       .data1 {background-color:#ffffc0;border-style:solid;border-width:0 0 1 1;}
+       .data2 {background-color:#ffffc0;border-style:solid;border-width:0 1 1 1;}
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","dir")
+    </script>
+    <!*********************************************************************>
+
+    <h3>Source Locations:</h3>
+
+    You should have your environment variable, "<var>DDSROOT</var>",
+    set to the base directory for DDS.  All the DDS libraries and 
+    infrastructure are currently contained in approximately 175 files with
+    a total of 92000 lines of code. In addition there are approximately
+    190 application programs which in themselves have nearly 390000 lines
+    of code.<br/><br/>
+
+    <table align="center" width="90%" border="0" cellspacing="0"
+      cellpadding="5">
+        <tr>
+          <td class='head' colspan="2">
+            Library source code is found under <u><b>src/lib</b></u>:
+          </td>
+        </tr>
+        <tr valign='top'>
+          <td class='data1'>host</td>   
+          <td class='data2'>Host specific functions. Also contains 
+            makefiles and DDS internals scripts</td>
+        </tr>
+        <tr valign='top'>
+          <td class='data1'>gio</td>    
+          <td class='data2'>Low level I/O routines, similar to C std I/O</td>
+        </tr>
+        <tr valign='top'>
+          <td class='data1'>dds3</td>   
+          <td class='data2'>DDS, compiled with optimization</td>
+        </tr>
+        <tr valign='top'>
+          <td class='data1'>fft</td>    
+          <td class='data2'>generic wrapper for FFT (uses fftw by 
+            default)</td>
+        </tr>
+        <tr valign='top'>
+          <td class='data1'>fftw</td>   
+          <td class='data2'>Fastest Fourier Transform in the West (fftw,
+            rfftw); used when system specific tuned FFT's not available</td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr>
+          <td class='head' colspan="2">
+           Application source codes are found under <u><b>src/cmd</b></u>:
+          </td> 
+        </tr>
+        <tr>
+          <td class='data1'> ...</td>    
+          <td class='data2'>One subdirectory for each application</td>
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr>
+          <td class='head' colspan="2">
+           User utility scripts are found under <u><b>src/scripts</b></u>:
+          </td> 
+        </tr>
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr>
+          <td class='head' colspan="2">
+            DDS documentation <u><b>doc</b></u>:
+          </td> 
+        </tr>
+        <tr>
+          <td class='data1'>html</td>    
+          <td class='data2'>DDS Web pages</td>
+        </tr>
+        <tr>
+          <td class='data1'> ...</td>    
+          <td class='data2'>each application has it's own man page</td>
+        </tr>
+    </table>
+
+    <h3>Installation Locations:</h3>
+
+    You should have your environment variables, "<var>DDS_DIST</var>"
+    setup for the applications installation.<br/>
+
+    <table align="center" width="90%" border="0" cellspacing="0"
+      cellpadding="5">
+        <tr><td colspan="2">&nbsp;</td></tr>
+        <tr>
+          <td class='head' colspan="2">
+            Distributed files get installed under:
+          </td> 
+        </tr>
+        <tr valign="top">
+          <td class='data1'>lib</td>    
+          <td class='data2'>archive libraries get installed under
+            architecture-dependent subdirectories</td>
+        </tr>
+        <tr valign="top">
+          <td class='data1'>include</td>    
+          <td class='data2'>"C" include files (Fortran includes get
+            installed under archtecture-specific subdirs.)</td>
+        </tr>
+        <tr valign="top">
+          <td class='data1'>etc</td>    
+          <td class='data2'>Makefile components</td>
+        </tr>
+        <tr valign="top">
+          <td class='data1'>bin</td>    
+          <td class='data2'>DDS internal utility scripts</td>
+        </tr>
+        <tr valign="top">
+          <td class='data1'>${<i>DDS_DIST</i>}/bin</td>    
+          <td class='data2'>DDS user utility scripts</td>
+        </tr>
+        <tr valign="top">
+          <td class='data1'>${<i>DDS_DIST</i>}/man/mbs/man3</td>    
+          <td class='data2'>each DDS application manpage</td>
+        </tr>
+    </table>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

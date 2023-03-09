@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>seekTo - Seeks from beginning of file to the start of trace</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>integer(kind=DPI) function seekTo(</b><i>i2, i3, i4, i5, i6, i7, debug</i><b>)</b>
+      <dl><dd>
+	  <b>integer(kind=DPI), optional, intent(in) :: </b><i>i2, i3, i4, i5, i6, i7</i><br>
+	  <b>logical, optional, intent(in)           :: </b><i>debug</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"seekTo"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure seeks from the beginning of a file to the start of the trace specified
+      by the input parameters <i>i2</i>-<i>i7</i>. This procedure works on data objects in
+      read, write, or parallel write mode, as well as on data objects containing multiple
+      files (seeking to the correct trace offset in the correct input file).
+      Internally, this procedure calls <b>fdds_lseek8</b>.
+      <br><br>
+      If any of the input parameters are missing, they have an assumed value of 1. Therefore,
+      calling <b>"seekTo"</b> without any parameters seeks to the beginning of the file(s).
+      If <i>debug</i> is specified as true, then the seek information is reported to the 
+      console via the function <b>fdds_prtcon</b>.
+      
+      <h2>OUTPUTS</h2>
+      Any errors reported by <b>fdds_lseek8</b> are passed through this function and returned
+      to the developer. Otherwise, it returns the new offset location.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	use Precision_mod, only : DPI
+	
+	type(DdsObject)      :: inData, outData
+	integer(kind=DPI), allocatable :: inSizes(:)
+	real, allocatable    :: buffer(:,:,:)
+	integer(kind=DPI)    :: iz, ier
+	
+	! open input data in read mode
+	call inData%open('r','in')
+	allocate(inSizes(3))
+	inSizes = inData%getSizes()
+	allocate(buffer(inSizes(1), inSizes(2), inSizes(3)))
+	
+	! open output data in write mode
+	call outData%open('w','out')
+	
+	! read entire 3D volume to buffer, and then write record-by-record
+	call inData%read(buffer)
+	do iz = 1, inSizes(3)
+	    
+	    ier = outData%seekTo(i3=iz)
+	    call outData%write(buffer(:,:,i3))
+            
+	enddo
+	
+	! close data
+	call inData%close()
+	call outData%close()
+	deallocate(inSizes, buffer)
+      </pre>
+      
+  </body>
+</html>

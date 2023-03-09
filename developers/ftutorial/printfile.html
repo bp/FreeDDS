@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Tutorial (Print Messages)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ftutorial","printfile")
+    </script>
+    <!*********************************************************************>
+
+    <ul>
+      <li>
+        <a href="../fapi/prtmsg.html">fdds_prtmsg</a> prints a message to
+        the printout file (if opened) or to the terminal (via stderr:).
+        It is always advisable to print back out what the program read in
+        for the user parameters.  This will document what parameters the 
+        program is using.  If the user had any typo's, then this will reflect
+        a possible different value than expected.  Also, most typo's will
+        result in a parameter definition not being read and should indicate
+        this at the end of the printout file.  A typical printout of user
+        parameters may look something like:
+
+        <pre>
+      ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\n*** USER PARAMETERS ***\n\n\0')
+      ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\tscale = %g\n\0',scale)
+      ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\tnsout = %d\n\0',nsout)
+      ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\tmute values:\0')
+      do i=1,n
+          ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>(' %d\0',mute(i))
+      enddo
+      ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\n\0')
+      ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\tmode  = %s\n\0',mode)
+      ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\n\0')
+
+      if (mem .le. 0) then
+          ier=<a href="../fapi/prterr.html">fdds_prterr</a>('MEMORY ALLOCATED = %f MB\n\0', mem)
+      else
+          if (verbose) then
+              ier=<a href="../fapi/prtcon.html">fdds_prtcon</a>('Memory allocated = %f MB\n\0', mem)
+          else
+              ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('Memory allocated = %f MB\n\0', mem)
+          endif
+      endif
+        </pre>
+
+      <li>
+        <a href="../fapi/prtcon.html">fdds_prtcon</a> prints a message to
+        the printout file (if opened) <u>and</u> to the terminal.  So this
+        is appropriate for WARNING type messages.<br/><br/>
+
+      <li>
+        <a href="../fapi/prterr.html">fdds_prterr</a> prints a message to
+        the printout file and to the terminal with "ERROR: " tacked onto 
+        the beggining of the message.  In addition, DDS keeps track of the 
+        number of these error messages which can be retrieved by
+        <a href="../fapi/errors.html">fdds_errors</a>.  When a program
+        is terminated with a call to 
+        <a href="../fapi/closepr.html">fdds_closepr</a> the number of these
+        API errors is printed out, a status message is given (indicating
+        Normal or Abnormal completion) and a return status is given from
+        the executable of 0 for Normal or non-zero for Abnormal completion.
+
+    </ul>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

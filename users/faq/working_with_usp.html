@@ -1,0 +1,136 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users FAQ</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","faq","usp")</script>
+    <!*********************************************************************>
+  <a name=dds2usp></a>
+
+<h3>Piping from a DDS to a USP code</h3>
+    <p>
+      The typical confusion here is that, by default, DDS programs will write the dictionary followed by the data file.<br>
+      So, the following will <b>NOT</b> work:
+    <pre>
+      <code>
+	bridge in= input.segy out_format=usp | scan -V | more
+	bridge in= input.segy out_format=usp out=stdout: | scan -V | more
+      </code>
+    </pre>
+    <p>
+      because scan is a USP code and does not understand the DDS dictionaries.<br>
+      But this is not a problem because we can tell the DDS code to write out <i>only</i> the USP file by specifying <b>out_data=</b> instead of <b>out=</b>:
+    <pre>
+      <code>
+	bridge in= input.segy out_format=usp out_data=stdout: | scan -V | more
+      </code>
+    </pre>
+  </p>
+
+    <a name=usp2dds></a>
+    <h3>Piping from a USP code to a DDS code<font color=red>(and recovering lost axis information!)</font></h3>
+    <p>
+      DDS automatically detects USP input data (or segy input data) and so you CAN pipe directly from a USP code to a DDS code.<br>
+      For example:
+    <pre>
+      <code>
+	utop -N input.usp -R32 | dds_in
+      </code>
+    </pre>
+    Additionally, it is possible to recover the DDS axis information that was lost when using USP!<br>
+    DDS stores that information in the USP line header, and it can be recovered by specifying the input  format to be <b><i>usp hlh_cube</i></b>.<br>
+    For example, let's create a 4D file:
+
+    <pre>
+      <code>
+	makemodel | bridge out_format=usp out=tmp4D axis=x y z w size.z=5 size.w=20
+      </code>
+    </pre>
+
+Now check the dimensions with
+      <code>
+	dds_in in=tmp4D
+      </code>
+and we see a 4D file:
+    <pre>
+      <code>
+DICTIONARY: tmp4D	
+BIN FILE  : tmp4D_@	 (File exists)
+BIN FORMAT: usp
+DATA TYPE : float4
+X2LINES   : no
+axis  :          x          y          z          w
+size  :        100        100          5         20
+origin:   0.000000   0.000000   0.000000         0.
+delta :  25.000000  25.000000  25.000000         1.
+units :          ?          ?          ?          ?
+sort  :          ?     TrcNum     RecNum          ?
+base  :          ?          ?          ?          ?
+step  :          ?          ?          ?          ?
+      </code>
+    </pre>
+
+Now, let's pipe though a usp program, and then check the dimensions of the output:
+<pre>
+<code>
+bridge in=tmp4D out_format=usp out_data=stdout: | scale -amp 1.0 -O tmp.usp
+dds_in in=tmp.usp
+</code>
+</pre>
+and, as expected, we see a 3D file, with the usual USP axis names of <i>t, x</i> and <i>y</i>:<br>
+<pre>
+<code>
+DICTIONARY: tmp.usp	
+BIN FILE  : tmp.usp	 (File exists)
+BIN FORMAT: usp
+DATA TYPE : float4
+X2LINES   : no
+axis  :          t          x          y
+size  :        100        100        100
+origin:          0         0.         0.
+delta :      0.001         25         25
+units :        sec usp_xy_units? usp_xy_units?
+sort  :          ?     TrcNum     RecNum
+base  :          ?          ?          ?
+step  :          ?          ?          ?
+</code>
+</pre>
+
+Now for the magic trick! Let's bring back the missing axis information!<br>
+<font color=red>Note:</font> that we can do this in any DDS program, <font color=red>BUT</font> we have experienced
+issues with certain combinations of datasets and programs.<br>
+When piping you will need to specify in=stdin: rather than letting it default.<br>
+If you find it still does not work, then pass the data through <i>bridge</i> immediately after the usp program. <br>
+We use <code>dds_in  in=tmp.usp in_format=usp hlh_cube</code> here in order to see the axis info:<br>
+
+<pre>
+<code>
+DICTIONARY: tmp.usp	
+BIN FILE  : tmp.usp	 (File exists)
+BIN FORMAT: usp
+DATA TYPE : float4
+X2LINES   : no
+axis  :          x          y          z          w
+size  :        100        100          5         20
+origin:   0.000000   0.000000   0.000000         0.
+delta :         25  25.000000  25.000000         1.
+units : usp_xy_units?          ?          ?          ?
+sort  :          ?     TrcNum     RecNum          ?
+base  :          ?          ?          ?          ?
+step  :          ?          ?          ?          ?
+</code>
+</pre>
+
+  </p>
+    
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

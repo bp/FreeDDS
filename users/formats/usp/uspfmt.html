@@ -1,0 +1,436 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (usp.fmt.dds)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","usp","uspfmt")
+    </script>
+    <!*********************************************************************>
+   
+    <pre>
+fmt:*:usp= /* "usp" format description */
+   typedef USP_LINE  PREAMBLE;
+   typedef USP_TRACE SEQUENCE;
+   /* EPILOGUE not applicable */
+
+alias:fmt:usp= fmt:*:usp
+
+fmt:*:usp.USP_FLAGS=
+   typedef enum {
+      USP_UnitFl_FEET \= 0,
+      USP_UnitFl_METERS \= 1,
+      USP_MutFlg_YES \= 0,
+      USP_MutFlg_NO \= 1,
+      USP_Format_short \= 1,
+      USP_Format_float \= 3,
+      USP_StaCor_DEAD \= 30000
+   } USP_FLAGS;
+
+fmt:*:usp.USP_UnitFl=
+   typedef enum2 {
+      USP_UnitFl_FEET \= 0,
+      USP_UnitFl_METERS \= 1
+   } USP_UnitFl;
+
+fmt:*:usp.USP_MutFlg=
+   typedef enum2 {
+      USP_MutFlg_YES \= 0,
+      USP_MutFlg_NO \= 1
+   } USP_MutFlg;
+
+fmt:*:usp.USP_Format=
+   typedef enum2 {
+      USP_Format_short \= 1,
+      USP_Format_float \= 3
+   } USP_Format;
+
+fmt:*:usp.USP_StaCor=
+   typedef enum2 {
+      USP_StaCor_DEAD \= 30000
+   } USP_StaCor;
+
+fmt:*:usp.USP_LINE=
+   typedef align(1) struct {
+      GREEN_PREFIX line_green_prefix;
+      USP_CHAR
+         EqpCod,     /*   0: Equipment code */
+         CrwNam[6],  /*   1: Crew Six Characters */
+         DatTyp,     /*   7: Data Type */
+         DgTrkS[2],  /*   8: Digital Truck System */
+         PrcNam[10], /*  10: Processor Name */
+         PrcNam_GAP[4],
+         PrcDat[8],  /*  24: Processing Date */
+         OACLin[8],  /*  32: OAC Line, 7 char right just */
+         JobNum[8];  /*  40: JOB Number 7 char right just */
+      USP_INT
+         NumTrc,     /*  48: number traces per record */
+         NumRec,     /*  52: number records per line */
+         SmpInt,     /*  56: sample interval (* UnitSc) */
+         NumSmp;     /*  60: number samples per trace */
+      USP_SHORT
+         Format,     /*  64: format code */
+         IndAdj,     /*  66: index adjustment */
+         OpGrFl;     /*  68: Opposite/Between Group Flag */
+      USP_CHAR
+         OpGrFl_GAP[2],
+         SrtTyp[2];  /*  72: Sort Type (0 FIFO, 1 LgArrow, 2 max/min) */
+      USP_SHORT 
+         CDPFld;     /*  74: CDP Fold */
+      USP_CHAR
+         GrpInt[4];  /*  76: Group Interval */
+      union {USP_INT
+         DtInFl,     /*  80: Data Indicator Flag */
+         Dy1000;     /*  80: Record interval*1000 (MBS) */
+      } _DtInFl;
+      USP_SHORT
+         MxSPEl,     /*  84: Max Source Point Elevation */
+         MnSPEl,     /*  86: Min Source Point Elevation */
+         MxRSEL,     /*  88: Max Ref Surface Elevation */
+         MnRSEL,     /*  90: Min Ref Surface Elevation */
+         MxGrEl,     /*  92: Maximum group Elevation */
+         MnGrEl,     /*  94: Minimum group Elevation */
+         MxTrSt,     /*  96: Maximum trace Static */
+         MnTrSt;     /*  98: Minimum trace Static */
+      USP_CHAR
+         LinDir[4];  /* 100: Line Direction e.g., N45E */
+      USP_INT 
+         AERcPr;     /* 104: Accumulative Est Rec Proc */
+      USP_SHORT
+         OrNTRC,     /* 108: Original traces Per Record */
+         OrNREC;     /* 110: Original Number records */
+      USP_FLOAT 
+         MutVel;     /* 112: Muting Velocity */
+      USP_SHORT
+         ZDMuTm,     /* 116: Zero Distance Mutine Time */
+         IntInc;     /* 118: interpolation increment */
+      union {USP_INT
+         WatVel,     /* 120: Water Velocity */
+         RefVel;     /* 120: SLNT Reference Velocity (MBS) */
+      } _WatVel;
+      USP_SHORT
+         MxShDp,     /* 124: Maximum Shot Depth */
+         MnShDp,     /* 126: Minimum Shot Depth */
+         MxUHTm,     /* 128: Maximum Uphole Time */
+         MnUHTm,     /* 130: Minimum Uphole Time */
+         MxTrOf,     /* 132: Maximum traverse Offset */
+         MnTrOf;     /* 134: Minimum traverse Offset */
+      union {USP_SHORT
+         RATTrc,     /* 136: RATS Traces per Record */
+         AnglSt;     /* 136: SLNT Starting Angle (MBS) */
+      } _RATTrc;
+      union {USP_SHORT
+         RATFld,     /* 138: RATS Fold */
+         AngInc;     /* 138: SLNT Angle Increment (MBS) */
+      } _RATFld;
+      USP_SHORT
+         UnitFl,     /* 140: Units Flag (0 feet, 1 meters) */
+         FrstSP,     /* 142: 1st SP Number on Line */
+         DpN1SP,     /* 144: Dep Pt Num Below 1st Src Pt */
+         NmDpIn,     /* 146: Num Dep Pt Int per Unit Inc */
+         StWdFl,     /* 148: Static Wd Flag (0 old, > new) */
+         DptInt;     /* 150: Depth Point interval */
+      union {USP_INT
+         TmMsSl,     /* 152: Time of First Slice (* UnitSc) */
+         Dx1000;     /* 152: Trace interval*1000 (MBS) */
+      } _TmMsSl;
+      union {USP_INT
+         TmSlIn,     /* 156: Time Slice increment in ms */
+         Dz1000;     /* 156: Depth Interval*1000 (MBS) */
+      } _TmSlIn;
+      USP_FLOAT 
+         TmMsFS;     /* 160: Time of First Sample (* UnitSc) */
+      USP_INT 
+         NTrLnS;     /* 164: Number Traces/Line Sorted In */
+      USP_SHORT
+         PltDir,     /* 168: Plot Direction */
+         LgRfEl,     /* 170: Log Reference Elevation */
+         MnLnIn,     /* 172: Minimum line Index */
+         MxLnIn,     /* 174: Maximum line Index */
+         MnDpIn,     /* 176: Minimum depth Index */
+         MxDpIn;     /* 178: Maximum depth Index */
+      USP_FLOAT
+         ILClIn,     /* 180: In Line Cell Increment */
+         CLClIn;     /* 184: Cross Line Cell Increment */
+      USP_SHORT
+         ReSpFm,     /* 188: Reserved Special Format */
+         VlFnRF;     /* 190: Vel Func Ref Flag (0 RI, 1 DI) */
+      USP_CHAR
+         OACUsr[4],  /* 192: OAC USER Field */
+         LinNam[8];  /* 196: Line Name */
+      USP_SHORT
+         MutFlg;     /* 204: Mute Flag (0 yes, 1 no) */
+      USP_CHAR
+         SPBias[2];  /* 206: Shot point Bias */
+      USP_SHORT 
+         SpBiFl;     /* 208: Shot Point Bias Flag */
+      USP_CHAR
+         APIWNo[12], /* 210: API Well Number */
+         APIWNo_GAP[2]; /* 222: */
+      USP_FLOAT 
+         NmSpMi;     /* 224: Number Shot points per Mile */
+      USP_CHAR
+         NmSpMi_GAP[368], /* 228: */
+         NmSpMi_GAP2[4];  /* 596: */
+      union {USP_SHORT
+         VelFun[200];  /* 600: velocity function */
+         struct {
+            USP_SHORT
+               MinVel,  /* 600: Minimum velocity (MBS) */
+               MaxVel,  /* 602: Maximum velocity (MBS) */
+               Nx_Pad,  /* 604: No of Padded Traces (in X) */
+               Nx_Win,  /* 606: No of Traces in Window (in X) */
+               Nx_Rec,  /* 608: No of Windowed Records (in X) */
+               NxLine,  /* 610: Number of Lines (in X) */
+               Nx_Trc,  /* 612: Number of Traces (in X) */
+               Ny_Pad,  /* 614: No of Padded Traces (in Y) */
+               Ny_Win,  /* 616: No of Traces in Window (in Y) */
+               Ny_Rec,  /* 618: No of Windowed Records (in Y) */
+               NyLine,  /* 620: Number of Lines (in Y) */
+               Ny_Trc,  /* 622: Number of Traces (in Y) */
+               MCTrSp,  /* 624: Multicomponent trace spacing (MC) */
+               NumCmp,  /* 626: Number of Components (MC) */
+               MCLE01,  /* 628: Component (MC) */
+               MCLE02,  /* 630: Component (MC) */
+               MCLE03,  /* 632: Component (MC) */
+               MCLE04,  /* 634: Component (MC) */
+               MCLE05,  /* 636: Component (MC) */
+               MCLE06,  /* 638: Component (MC) */
+               MCLE07,  /* 640: Component (MC) */
+               MCLE08,  /* 642: Component (MC) */
+               MCLE09,  /* 644: Component (MC) */
+               MCLE10,  /* 646: Component (MC) */
+               MCLE11,  /* 648: Component (MC) */
+               MCLE12,  /* 650: Component (MC) */
+               MCLE13,  /* 652: Component (MC) */
+               MCLE14,  /* 654: Component (MC) */
+               MCLE15,  /* 656: Component (MC) */
+               MCLE16,  /* 658: Component (max 16 in list) (MC) */
+               MC_GAP[10], /* 660: Left a little hole for MC stuff */
+               OrNSMP;  /* 680: Original Number of Samples/Trace */
+            align(2) float4   /* FKFLT fake float kludge */
+               AziIln,  /* 682: In-Line Azimuth */
+               AziXln,  /* 686: Cross-Line Azimuth */
+               HrzNul;  /* 690: Null Horizon Flag Value */
+            USP_SHORT   /* deprecated, retained for padding only */
+               T_Unit;  /* 694: Time Units (0\=ms, 1\=micro-sec) */
+            float4   /* FKFLT fake float kludge */
+               UnitSc,  /* 696: Smp Units Multiplier (1.0 is sec) */
+                        /*    Default is 0.001 (msec). */
+                        /*    See SmpInt, TmMsSl and TmMsFS. */
+               SmpFlt,  /* 700: Flt Pt Sample Interval */
+               MaxAmp,  /* 704: Maximum Absolute Amplitude */
+               AvgAmp,  /* 708: Average Absolute Amplitude */
+               RmsAmp;  /* 712: RMS Absolute Amplitude */
+            USP_SHORT   /* deprecated, retained for padding only */
+               VelTyp,  /* 716: Velocity Type (0:RMS, 1:Avg, 2:Int, 3:Inst) */
+               WlfCol,  /* 718: Wavelet Low Frequency cutoff level */
+               WavBas,  /* 720: Wavelet Basis */
+               WavMom,  /* 722: Wavelet Moment */
+               WlfCo1,  /* 724: Wavelet Low Frequency cutoff level 1 */
+               WavBa1,  /* 726: Wavelet Basis 1 */
+               WavMo1,  /* 728: Wavelet Moment 1 */
+               WlfCo2,  /* 730: Wavelet Low Frequency cutoff level 2 */
+               WavBa2,  /* 732: Wavelet Basis 2 */
+               WavMo2;  /* 734: Wavelet Moment 2 */
+            float4   /* FKFLT fake float kludge */
+               FreQst,  /* 736: Frequency Start */
+               FreQnd;  /* 740: Frequency End */
+         } _MinVel;
+      } _VelFun;
+      USP_SHORT
+         HlhEnt,     /* Number of Entries in HLH */
+         HlhByt;     /* Number of Bytes in HLH */
+      unsigned1 HlhBuf[USP_HLH_SIZE];  /* HLH buffer (sizes and char) */
+      unsigned1 usp_line_pad[USP_LINE_PAD]; 
+   } USP_LINE;
+
+fmt:*:usp.USP_TRACE=
+   typedef align(1) struct {
+      GREEN_PREFIX green_prefix;
+      USP_SHORT
+         SGRNum,     /* SGR number */
+         SGRAmp;     /* SGR PreAmp Gain, Filter */
+      USP_INT SGRDat;  /* SGR Julian Date Recorded */
+      USP_SHORT
+         FlReFN,     /* Field Record File Number */
+         FlStNm,     /* SGR Field Station Number */
+         PREPIn,     /* PREP Initiation Static */
+         InStUn,     /* Initiation Static Unapplied */
+         InStAp,     /* Initiation Static Applied */
+         PREPRc,     /* PREP Reception Static */
+         RcStUn,     /* Reception Static Unapplied */
+         RcStAp,     /* Reception Static Applied */
+         ToStAp,     /* Total Static Applied */
+         ToTmAA,     /* Total Timing Adjust Applied */
+         ToStUn,     /* Total Static Unapplied */
+         ToTmAU,     /* Total Timing Adjust Unapplied */
+         SrComp,     /* Source component xyz code */
+         RcComp,     /* Receiver component xyz code */
+         SrStat,     /* Source floating datum static */
+         RcStat,     /* Receiver floating datum static */
+         TrHdID,     /* Trace Header Identifier */
+         SrRcAz;     /* Source-to-Receiver Azimuth */
+      USP_INT 
+         SrPtXC,     /* Src Point X-Coordinate 3D */
+         SrPtYC,     /* Src Point Y-Coordinate 3D */
+         RcPtXC,     /* Rec Point X-Coordinate 3D */
+         RcPtYC,     /* Rec Point Y-Coordinate 3D */
+         SrRcMX,     /* Src Rec Midpoint X 3D */
+         SrRcMY,     /* Src Rec Midpoint Y 3D */
+         CDPBCX,     /* CDP Bin Center X Coordinate */
+         CDPBCY,     /* CDP Bin Center Y Coordinate */
+         InTrCn;     /* Incremental Trace Counter */
+      USP_SHORT
+         FlDtEl,     /* Floating Datum Elev this CDP */
+         MulSkw,     /* Multiplex Skew (ms*1000) */
+         PerSPO,     /* Perpendicular Src Pt Off y */
+         InlSPO,     /* Inline Src Pt Off x */
+         TiLiIx[6],  /* Tie Line Indicator 1-6 */
+         TVPT01,     /* Time of Time-Vel Pair */
+         TVPV01,     /* Velocity of Time-Vel Pair */
+         TVPT02, TVPV02, TVPT03, TVPV03, TVPT04, TVPV04,
+         TVPT05, TVPV05, TVPT06, TVPV06, TVPT07, TVPV07,
+         TVPT08, TVPV08, TVPT09, TVPV09, TVPT10, TVPV10,
+         TVPT11, TVPV11, TVPT12, TVPV12, TVPT13, TVPV13,
+         TVPT14, TVPV14, TVPT15, TVPV15, TVPT16, TVPV16,
+         TVPT17, TVPV17, TVPT18, TVPV18, TVPT19, TVPV19,
+         TVPT20, TVPV20,
+         RedVel,     /* Reduction Velocity for vred */
+         RedTim,     /* Time of first sample for vred */
+         VPick1,     /* Auto Static Pick 1 */
+         VPick2,     /* Auto Static Pick 2 */
+         LRcCDP,     /* Last Record CDP */
+         CabDep,     /* Cable Depth */
+         WDepDP,     /* Water Depth Above Depth Point */
+         DPOPer,     /* Depth Point Offset Perpendicular */
+         ShtDep,     /* shot depth */
+         UphlTm;     /* uphole time in ms */
+      USP_INT 
+         DpPtLt,     /* depth pt lat (deg* 10^5) */
+         DpPtLn;     /* depth pt lon (deg* 10^5) */
+      USP_SHORT
+         FoldNm,     /* fold */
+         RecNum,     /* record number */
+         TrcNum,     /* trace number */
+         SrcPnt,     /* src point above this depth pt */
+         SrcLoc,     /* src location ind mult by 10 */
+         PrRcNm,     /* permanent record number PRI */
+         PrTrNm,     /* permanent trace number PTI */
+         SrPtEl;     /* source point elevation */
+      USP_INT 
+         SrPrLt,     /* source point lat (deg* 10^5) */
+         SrPrLn;     /* source point lon (deg* 10^5) */
+      USP_SHORT
+         DstUsg,     /* unsigned trace distance */
+         RecInd,     /* rec location index	GI */
+         DstSgn,     /* signed trace distance */
+         GrpElv,     /* group elevation */
+         LinInd,     /* line index 3D */
+         DphInd,     /* depth index */
+         DePtEl,     /* depth point elevation */
+         RfSrEl,     /* reference surface elevation */
+         StaCor,     /* static correction, dead 30000 */
+         DatShf,     /* datum shift */
+         SoPtNm;     /* source point number */
+      ascii1
+         SoPtAl, /* source point alphabetic sufix */
+         SoPtBi; /* source point bias /10000 */
+      SAMPLE_TYPE Samples[axis_size(1)]; /* time series */
+      unsigned1 usp_trace_pad[USP_TRACE_PAD];
+   } USP_TRACE;
+
+comment= deferred ...
+      union {
+         struct {ascii1
+            SoPtAl, /* source point alphabetic sufix */
+            SoPtBi; /* source point bias /10000 */
+         } _SoPtAl;
+         USP_SHORT ESPNum;  /* energy source point number */
+      } _SoPtAl;
+
+comment= default sort field translation
+
+sort:old_fmt.old_sort_field:new_fmt= new_sort_field
+
+sort:segy.FieldRecNum:usp= PrRcNm
+sort:segy.CdpTrcNum:usp= TrcNum
+sort:segy.FieldTrcNum:usp= PrTrNm
+sort:segy.Spare.Hdr.RecNum:usp= RecNum
+sort:segy.Spare.Hdr.SoPtNm:usp= SoPtNm
+sort:segy.Spare.Hdr.RecInd:usp= RecInd
+sort:segy.Spare.Hdr.SrcPnt:usp= SrcPnt
+sort:segy.SrcX:usp= SrPtXC
+sort:segy.SrcY:usp= SrPtYC
+sort:segy.GrpX:usp= RcPtXC
+sort:segy.GrpY:usp= RcPtYC
+sort:segy.CdpNum:usp= DphInd
+sort:segy.SrcX:usp= SrPtXC
+sort:segy.SrcY:usp= SrPtYC
+sort:segy.GrpX:usp= RcPtXC
+sort:segy.GrpY:usp= RcPtYC
+sort:segy.DstSgn:usp= DstSgn
+
+sort:segy1.FieldRecNum:usp= PrRcNm
+sort:segy1.CdpTrcNum:usp= TrcNum
+sort:segy1.FieldTrcNum:usp= PrTrNm
+sort:segy1.Spare1.Hdr.RecNum:usp= RecNum
+sort:segy1.Spare1.Hdr.SoPtNm:usp= SoPtNm
+sort:segy1.Spare1.Hdr.RecInd:usp= RecInd
+sort:segy1.Spare1.Hdr.SrcPnt:usp= SrcPnt
+sort:segy1.SrcX:usp= SrPtXC
+sort:segy1.SrcY:usp= SrPtYC
+sort:segy1.GrpX:usp= RcPtXC
+sort:segy1.GrpY:usp= RcPtYC
+sort:segy1.CdpNum:usp= DphInd
+sort:segy1.SrcX:usp= SrPtXC
+sort:segy1.SrcY:usp= SrPtYC
+sort:segy1.GrpX:usp= RcPtXC
+sort:segy1.GrpY:usp= RcPtYC
+sort:segy1.DstSgn:usp= DstSgn
+
+sort:su.FieldRecNum:usp= PrRcNm
+sort:su.CdpTrcNum:usp= TrcNum
+sort:su.FieldTrcNum:usp= PrTrNm
+sort:su.Spare.Hdr.RecNum:usp= RecNum
+sort:su.Spare.Hdr.SoPtNm:usp= SoPtNm
+sort:su.Spare.Hdr.RecInd:usp= RecInd
+sort:su.Spare.Hdr.SrcPnt:usp= SrcPnt
+sort:su.SrcX:usp= SrPtXC
+sort:su.SrcY:usp= SrPtYC
+sort:su.GrpX:usp= RcPtXC
+sort:su.GrpY:usp= RcPtYC
+sort:su.CdpNum:usp= DphInd
+sort:su.SrcX:usp= SrPtXC
+sort:su.SrcY:usp= SrPtYC
+sort:su.GrpX:usp= RcPtXC
+sort:su.GrpY:usp= RcPtYC
+sort:su.DstSgn:usp= DstSgn
+
+comment= the following are created explicitly by "open".
+
+explicit_fmt:*:usp.USP_ADJUST= /* USP format adjustments */
+   typedef enum {
+      USP_LINE_PAD \= 0,      /* byte size of line header pad */
+      USP_TRACE_PAD \= 0,     /* byte size of trace pad */
+      USP_HLH_SIZE \= 0       /* byte size of HlhBuf */
+} USP_ADJUST;
+
+fmt:USP_CHAR=         typedef ascii1 USP_CHAR;
+fmt:USP_SHORT=        typedef integer2 USP_SHORT;
+fmt:USP_INT=          typedef integer4 USP_INT;
+fmt:USP_FLOAT=        typedef float4 USP_FLOAT;
+fmt:SAMPLE_TYPE=      typedef float4 SAMPLE_TYPE;
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

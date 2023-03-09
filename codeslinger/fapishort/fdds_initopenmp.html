@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Fortran Api (fdds_initopenmp)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","fdds_initopenmp")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapishort")</script>
+
+    <h2>fdds_initopenmp - initialize the DDS system for OpenMP parallelization</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <p>
+      <b>integer fdds_initopenmp( )
+
+      </b><h2>DESCRIPTION</h2>
+    <b>fdds_initopenmp</b> is used to initialize the DDS system for OpenMP
+    parallelization. If OpenMP is available it scans the command line for
+    "nproc" and calls "omp_set_num_threads" to set the number or processors
+    to use. The default value for "nproc" is 1.  The return value is
+    "nproc". If OpenMP is not available it simply returns 1.
+
+    <p>
+      NOTE: <b>fdds_openmp</b> is not defined in fdds.h. Developers need to
+      add the declaration
+      <p>
+      <code>&nbsp;&nbsp;&nbsp;integer fdds_initopenmp</code>
+      <p>
+      to any routine that uses it.
+
+      <h2>WARNING</h2>
+     DDS is <b>NOT</b> thread safe. You should take care to avoid using
+     the DDS API within parallel regions.
+
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="fdds_initmpi.html">fdds_initmpi</a> Initialize DDS for MPI
+<a href="../OpenMP-4.0-Fortran.pdf">Summary of OpenMP 4.0 for Fortran</a>
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (Feb 2006)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

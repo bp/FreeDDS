@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Common Pitfalls</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","pitfalls")
+    </script>
+    <!*********************************************************************>
+
+  <h3>Trying too hard</h3>
+    DDS can be awkward. Especially when using
+    older, distributed applications as templates. Many older programs were
+    written before the advent of the convenience routines and therefore use
+    the more flexible, but mind-numbing, double buffering technique. This
+    always obscures the intended purpose of the application.<br><br>
+
+    When practical, start with templates in the
+    <a href="basiccodes.html"><b>Basic Example Codes</b></a>
+    area.
+
+<br><br>
+  <h3>Bad format strings passed to fdds_scanf and fdds_printf</h3>
+    The <b>'fmt'</b> arguments used for the <b>fdds_scanf</b>,
+    <b>fdds_printf</b>, <b>fdds_prtcon</b> and friends <b>MUST</b> use the
+    NULL terminator <b>'\0'</b>. Fortran-to-C character string hand-offs
+    are notoriously troublesome. The NULL terminator is a stable solution
+    to this problem.
+
+<br><br>
+  <h3>Too few arguments in varargs area of *dds_printf</h3>
+    The number of arguments converted by the <b>*dds_printf</b>,
+    <b>*dds_prtcon</b>, <b>*dds_prtmsg</b>, and <b>*dds_prterr</b> functions
+    will exactly match the format conversion requests in the <b>'fmt'</b>
+    argument. If you pass fewer variables than the conversion requests,
+    the program will nearly always die.
+
+<br><br>
+  <h3>Scanning for parameters from the wrong dictionary</h3>
+    It's easy to forget which dictionary is in <b>'scan'</b> mode. 
+    Remember that after opening an input dataset, the input dictionary 
+    is set for scanning and when opening an output dataset, the output
+    dictionary is set for printing.  However, when interleaving scans of 
+    data dictionaries with scans of the <b>par:</b> dictionary, it may save 
+    headaches to precede each block of scans with <b>*dds_dict</b> or 
+    <b>*ddx_dict</b>, as appropriate.
+
+<br><br>
+  <h3>Wrong file permissions for input</h3>
+    Ocasionally, failure to have write permissions to a file has been known
+    to cause read failures. This is known to happen when copying read-only
+    data from a DVD to a hard disk. (A fix to this was reported May, 2009)
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

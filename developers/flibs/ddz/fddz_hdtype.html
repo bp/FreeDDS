@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>fddz_hdtype - Detect the host-dependent type of a field</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "fdds.h"</b><br>
+    <b>#include "fddz.h"</b>
+    <p>
+      <b>integer function fddz_hdtype(</b><i>host_type, bin_tag, field_tag</i><b>)</b>
+      <dl><dd>
+        <b>character </b><i>host_type*(*)</i><br>
+        <b>integer </b><i>bin_tag</i><br>
+        <b>integer </b><i>field_tag</i><br>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"fddz_hdtype"</b> returns the host-dependent type for a
+    field. Host-dependent type is uniquely determined by the combination of
+    "genus" and "precision". The table below shows the association between
+    genus, precision, and host-dependent type.
+
+    <pre>
+                           bytes of
+genus     host_type        precision   FORTRAN type       note
+
+integer   signed char          1       N/A                 #
+integer   short                2       integer*2           +
+integer   int                  4       integer
+integer   long long            8       integer*8           +
+ 
+float     float                4       real
+float     double               8       double precision
+float     long double         16       real*16             +
+
+complex   complex              8       complex
+complex   complex double      16       double complex      +
+complex   complex long        32       N/A                 #
+
++ not part of F77 specification - often available anyway
+# not part of F77 specification - no implementations known to author
+    </pre>
+
+    <h2>INPUT</h2>
+    <i>bin_tag</i> is  a  binary tag, previously obtained from cdds_open. It
+    specifies a particular binary stream. <i>field_tag</i> is the tag of the
+    field for which the host-dependent type is desired. It can be found with
+    <b>"fdds_member"</b>.
+
+    <h2>OUTPUT</h2>
+    A value of -1 is returned on any error.
+
+   <h2> EXAMPLE</h2>
+   <pre>
+integer bin, tag, ier
+character RecNum_type*(*), Sample_type*(*)
+ ...
+c host_type of RecNum field
+tag = fdds_member(bin, 0, "RecNum")
+ier = fddz_hdtype(RecNum_type, bin, tag)
+ ...
+c host_type of Samples field
+tag = cdds_member(bin, 0, "Samples")
+ier = fddz_hdtype(Sample_type, bin, tag)
+   </pre>
+
+   <h2>SEE ALSO</h2>
+   <pre>
+<a href="fapi/member.html">fdds_member</a> Fetch a field tag within DDS structure
+<a href="fapi/genus.html">fdds_genus</a> Get genus of a field
+<a href="fapi/prec.html">fdds_prec</a> Byte count for a field
+<a href="fapi/count.html">fdds_count</a> Field element count
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

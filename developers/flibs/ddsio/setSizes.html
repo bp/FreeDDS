@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>setSizes - Sets this data object's sizes for multiple files</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>procedure setSizes(</b><i>nsize, irank, ifile</i><b>)</b>
+      <dl><dd>
+	<b>integer(kind=DPI), intent(in) :: </b><i>nsize(:)</i><br>
+	<b>integer, optional, intent(in) :: </b><i>irank</i><br>
+	<b>integer, optional, intent(in) :: </b><i>ifile</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"setSizes"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure sets the size of each rank of each file associated with this data
+      object using <i>nsize(:)</i>.
+      <br><br>
+      If <i>irank</i> is specified, then only the first element of <i>nsize</i> is used
+      to set the size of rank <i>irank</i>.
+      <br><br>
+      If <i>ifile</i> is not specified, this procedure sets the sizes for all files
+      with a merged axis. If <i>ifile</i> is specified and within the range of files
+      associated with this data object, this procedure only sets the size of the single
+      file indexed by <i>ifile</i>.
+      <br><br>
+      NOTE: <b>"setSizes"</b> only effects files in read mode. To set the size of a file
+      in write mode, use <b>data%setAttr('size', sizes)</b>.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	
+	type(DdsObject) :: inData
+	
+	call inData%setSizes([100, 100, 100])
+	
+	call inData%open('r', 'in')
+      </pre>
+      
+  </body>
+</html>

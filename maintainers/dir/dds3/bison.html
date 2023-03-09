@@ -1,0 +1,297 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Directories (dds3 - bison)
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","dir","dds3","bison")
+    </script>
+    <!*********************************************************************>
+    <h2>bison - GNU Project parser generator (yacc replacement)</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>bison
+    </b>[
+    <b>-b</b><i> file-prefix
+    </i>] [
+    <b>--file-prefix=</b><i>file-prefix
+    </i>] [
+    <b>-d
+    </b>] [
+    <b>--defines
+    </b>] [
+    <b>-l
+    </b>] [
+    <b>--no-lines
+    </b>] [
+    <b>-o</b><i> outfile
+    </i>] [
+    <b>--output-file=</b><i>outfile
+    </i>] [
+    <b>-p</b><i> prefix
+    </i>] [
+    <b>--name-prefix=</b><i>prefix
+    </i>] [
+    <b>-t
+    </b>] [
+    <b>--debug
+    </b>] [
+    <b>-v
+    </b>] [
+    <b>--verbose
+    </b>] [
+    <b>-V
+    </b>] [
+    <b>--version
+    </b>] [
+    <b>-y
+    </b>] [
+    <b>--yacc
+    </b>] [
+    <b>-h
+    </b>] [
+    <b>--help
+    </b>] [
+    <b>--fixed-output-files
+    </b>]
+    file
+    <h2>DESCRIPTION</h2>
+    <i>Bison
+    </i>is a parser generator in the style of
+    <i>yacc</i>(1).
+    It should be upwardly compatible with input files designed
+    for
+    <i>yacc</i>.
+    <p>
+      Input files should follow the
+      <i>yacc
+      </i>convention of ending in
+      <b>.y</b>.
+      Unlike
+      <i>yacc</i>,
+      the generated files do not have fixed names, but instead use the prefix
+      of the input file.
+      For instance, a grammar description file named
+      <b>parse.y
+      </b>would produce the generated parser in a file named
+      <b>parse.tab.c</b>,
+      instead of
+      <i>yacc</i>'s
+      <b>y.tab.c</b>.
+    <p>
+      This description of the options that can be given to
+      <i>bison
+      </i>is adapted from the node
+      <b>Invocation
+      </b>in the
+      <b>bison.texinfo
+      </b>manual, which should be taken as authoritative.
+    <p>
+      <i>Bison
+      </i>supports both traditional single-letter options and mnemonic long
+      option names.  Long option names are indicated with
+      <b>--
+      </b>instead of
+      <b>-</b>.
+      Abbreviations for option names are allowed as long as they
+      are unique.  When a long option takes an argument, like
+      <b>--file-prefix</b>,
+      connect the option name and the argument with
+      <b>=</b>.
+    <h3>OPTIONS</h3>
+    <dl>
+      <dt><b>-b</b><i> file-prefix
+        </i><dd>
+        <br>
+      <dt><b>--file-prefix=</b><i>file-prefix
+        </i><dd>
+        Specify a prefix to use for all
+        <i>bison
+        </i>output file names.  The names are
+        chosen as if the input file were named
+        <i>file-prefix</i><b>.c</b>.
+      <dt><b>-d
+        </b><dd>
+        <br>
+      <dt><b>--defines
+        </b><dd>
+        Write an extra output file containing macro definitions for the token
+        type names defined in the grammar and the semantic value type
+        <b>YYSTYPE</b>,
+        as well as a few
+        <b>extern
+        </b>variable declarations.
+        <p>
+          If the parser output file is named
+          <i>name</i><b>.c</b>
+          then this file
+          is named
+          <i>name</i><b>.h</b>.
+        <p>
+          This output file is essential if you wish to put the definition of
+          <b>yylex
+          </b>in a separate source file, because
+          <b>yylex
+          </b>needs to be able to refer to token type codes and the variable
+          <b>yylval</b>.
+      <dt><b>-l
+        </b><dd>
+        <br>
+      <dt><b>--no-lines
+        </b><dd>
+        Don't put any
+        <b>#line
+        </b>preprocessor commands in the parser file.
+        Ordinarily
+        <i>bison
+        </i>puts them in the parser file so that the C compiler
+        and debuggers will associate errors with your source file, the
+        grammar file.  This option causes them to associate errors with the
+        parser file, treating it an independent source file in its own right.
+      <dt><b>-o</b><i> outfile
+        </i><dd>
+        <br>
+      <dt><b>--output-file=</b><i>outfile
+        </i><dd>
+        Specify the name
+        <i>outfile
+        </i>for the parser file.
+        <p>
+          The other output files' names are constructed from
+          <i>outfile
+          </i>as described under the
+          <b>-v
+          </b>and
+          <b>-d
+          </b>switches.
+      <dt><b>-p</b><i> prefix
+        </i><dd>
+        <br>
+      <dt><b>--name-prefix=</b><i>prefix
+        </i><dd>
+        Rename the external symbols used in the parser so that they start with
+        <i>prefix
+        </i>instead of
+        <b>yy</b>.
+        The precise list of symbols renamed is
+        <b>yyparse</b>,
+        <b>yylex</b>,
+        <b>yyerror</b>,
+        <b>yylval</b>,
+        <b>yychar</b>,
+        and
+        <b>yydebug</b>.
+        <p>
+          For example, if you use
+          <b>-p c</b>,
+          the names become
+          <b>cparse</b>,
+          <b>clex</b>,
+          and so on.
+      <dt><b>-t
+        </b><dd>
+        <br>
+      <dt><b>--debug
+        </b><dd>
+        Output a definition of the macro
+        <b>YYDEBUG
+        </b>into the parser file,
+        so that the debugging facilities are compiled.
+      <dt><b>-v
+        </b><dd>
+        <br>
+      <dt><b>--verbose
+        </b><dd>
+        Write an extra output file containing verbose descriptions of the
+        parser states and what is done for each type of look-ahead token in
+        that state.
+        <p>
+          This file also describes all the conflicts, both those resolved by
+          operator precedence and the unresolved ones.
+        <p>
+          The file's name is made by removing
+          <b>.tab.c
+          </b>or
+          <b>.c
+          </b>from the parser output file name, and adding
+          <b>.output
+          </b>instead.
+        <p>
+          Therefore, if the input file is
+          <b>foo.y</b>,
+          then the parser file is called
+          <b>foo.tab.c
+          </b>by default.  As a consequence, the verbose
+          output file is called
+          <b>foo.output</b>.
+      <dt><b>-V
+        </b><dd>
+        <br>
+      <dt><b>--version
+        </b><dd>
+        Print the version number of
+        <i>bison
+        </i>and exit.
+      <dt><b>-h
+        </b><dd>
+        <br>
+      <dt><b>--help
+        </b><dd>
+        Print a summary of the options to
+        <i>bison
+        </i>and exit.
+      <dt><b>-y
+        </b><dd>
+        <br>
+      <dt><b>--yacc
+        </b><dd>
+        <br>
+      <dt><b>--fixed-output-files
+        </b><dd>
+        Equivalent to
+        <b>-o y.tab.c</b>;
+        the parser output file is called
+        <b>y.tab.c</b>,
+        and the other outputs are called
+        <b>y.output
+        </b>and
+        <b>y.tab.h</b>.
+        The purpose of this switch is to imitate
+        <i>yacc</i>'s
+        output file name conventions.
+        Thus, the following shell script can substitute for
+        <i>yacc</i>:
+    </dl>
+    <dl><dd>
+        <b>bison -y $*</b>
+    </dl>
+    <p>
+      The long-named options can be introduced with `+' as well as `--',
+      for compatibility with previous releases.  Eventually support for `+'
+      will be removed, because it is incompatible with the POSIX.2 standard.
+    <h2>FILES</h2>
+    /usr/local/lib/bison.simple	simple parser
+    <br>
+    /usr/local/lib/bison.hairy	complicated parser
+    <h2>SEE ALSO</h2>
+    <i>yacc</i>(1)
+    <br>
+    The
+    <i>Bison Reference Manual</i>,
+    included as the file
+    <b>bison.texinfo
+    </b>in the
+    <i>bison
+    </i>source distribution.
+   
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

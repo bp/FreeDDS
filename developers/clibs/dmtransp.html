@@ -1,0 +1,1251 @@
+<!-- Creator     : groff version 1.18.1.1 -->
+<!-- CreationDate: Wed Jun 26 14:27:04 2013 -->
+<!-- Severe manual hacking required to get it right. -mjo -->
+<html>
+<head>
+<meta name="generator" content="groff -Thtml, see www.gnu.org">
+<meta name="Content-Style" content="text/css">
+<title>dmtranspose</title>
+</head>
+<body>
+
+<h1 align=center>dmtranspose</h1>
+<a href="#NAME">NAME</a><br>
+<a href="#Description">Description</a><br>
+<a href="#Functions and their purpose">Functions and their purpose</a><br>
+<a href="#Individual functions syntax and description">
+  Individual functions - syntax and description
+</a><br>
+<a href="#Named Constants">Named Constants</a><br>
+<a href="flibs/dmtransp/F_example">Fortran Example</a><br>
+<a href="flibs/dmtransp/C_example">C Example</a><br>
+<a href="#BUGS">BUGS</a><br>
+<a href="#AUTHORS">AUTHORS</a><br>
+
+<hr>
+<a name="NAME"></a>
+<h2>NAME</h2>
+
+<!-- INDENTATION -->
+<!-- Tables are used to get 40 pixels of indentation for all paragraphs in
+     this document -->
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+  <tr valign="top" align="left">
+    <td width="40"></td>  <!-- horizontal space -->
+    <td>
+      <p><b>dmtranspose</b> &minus; Transpose the slow axis of a distributed memory
+      array to be the fast axis</p>
+    </td>
+</table>
+
+<a name="Description"></a>
+<h2>Description</h2>
+<table width="95%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+  <tr valign="top" align="left">
+  <td width="40"></td>  <!-- horizontal space -->
+  <td>
+    <p>
+    The library libdmtransp.a is a small collection of functions to simplify
+    setup and execution of a specific distributed-memory transpose. If you have a
+    large array with only the slowest axis distributed across several hosts in an
+    MPI communicator, <b>DMTranspose</b> will make the slowest axis the fast axis.
+    </p>
+
+    <p align="center">
+    E.g. transpose (n1,n2,n3,...,nLast) to order (nLast,n1*n2*n3*...)
+    </p>
+
+    <p>
+    This is useful for functions like 1D Fourier transforms where the presence
+    of all samples on an axis is required to compute the complete operation.
+    </p>
+
+    <p>
+    Notice that after the transpose, sizes n1,n2,n3,... are not preserved, but
+    size n1*n2*n3*... remains the same.  It&rsquo;s just been divided among hosts
+    at the most convenient places for the transpose operation. The output of a
+    forward transpose is always 2D with the 2nd axis distributed among MPI ranks.
+    </p>
+
+    <p>
+    <b>DMTranspose</b> uses MPI for communication between hosts. The default MPI
+    calls are non blocking functions which allows a transpose to be started at
+    one point in an application and completed sometime later when results are
+    actually needed.  Other application code can be running concurrently with
+    the transpose. <b>DMTranspose</b> also allows either in-place or
+    out-of-place transpose results. Upon launching the transpose, a copy of the
+    input is made, so the input can be manipulated while the transpose executes.
+    The output array should not be manipulated or used by the application until
+    the transpose finishes. Once the setup process is complete, both forward and
+    inverse transposes can be executed alternately using the same DMT Handle.
+    </p>
+  </td>
+</table>
+
+<a name="Functions and their purpose"></a>
+<h2>Functions and their purpose</h2>
+
+<table width="95%" border=0 rules="none" frame="void"
+       cols="3" cellspacing="0" cellpadding="10">
+  <tr>
+    <td width="10"></td>
+    <td valign="top"><p><b>DMT_init</b></p></td>
+    <td><p>
+      Initialize the DMT Handle with index ranges for the decomposed array.
+      </p> </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td valign="top"><p><b>DMT_getval</b></p></td>
+    <td> <p>
+      Allows users to retrieve a single value from the DMT Handle. Information
+      such as beginning and ending indices for the distributed axis, and local
+      allocation size for the distributed axis is available.
+    </p> </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td valign="top"><p><b>DMT_setval</b></p></td>
+    <td> <p>
+      Allows users to set the communication method and the length of axis 1 of the
+      transposed array. (Useful if padded outputs are useful.)
+    </p> </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td valign="top"><p><b>DMT_commit</b></p></td>
+    <td><p>
+      Finish internal allocations and NUMA memory layout.
+    </p> </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td valign="top"><p><b>DMTranspose</b></p></td>
+    <td><p>Execute the transpose.</p></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td valign="top"><p><b>DMT_free</b></p></td>
+    <td><p>
+      Free all the internal transpose resources.
+    </p></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td valign="top"><p><b>DMT_teamlist</b></p></td>
+    <td> <p>
+      List host names and index values for the entire MPI communicator.
+    </p> </td>
+  </tr>
+</table>
+
+<a name="Individual functions syntax and description"></a>
+<h2>Individual functions - syntax and description</h2>
+
+<table width="95%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+
+  <tr>
+    <td width="40"></td>
+    <td><p><b>For all procedures</b></p></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td width="100"><p>C</p></td>
+          <td align="left"><p># include &lt;dmtransp.h&gt;</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td width="100"><p align="left">Fortran</p></td>
+          <td align="left"><p align="left">use dmtransp_mod</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+  <tr height="20"></tr>  <!-- vertical space -->
+
+<!-- Start DMT_init description -->
+  <tr>
+    <td></td>
+    <td><p><b>DMT_init</b></p></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>C syntax</p>
+            <pre>
+     DMT_Handle *DMT_init(MPI_Comm COMM, int ndim, int *sizes, int DMT_type)
+            </pre>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>Fortran syntax</p>
+            <pre>
+     type(c_ptr) function DMT_init(COMM,ndim,sizes,DMT_type)
+        integer COMM,ndim,sizes(*),DMT_type
+            </pre>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Arguments</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>COMM</p></td>
+          <td><p>The MPI communicator</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>ndim</p></td>
+          <td><p>The number of dimensions represented in vector sizes(*)</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>sizes</p></td>
+          <td><p>The lengths of all axes of the distributed array</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>DMT_type&nbsp;&nbsp;&nbsp;</p></td>
+          <td><p>The type of samples to be transposed</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height="20"></tr>  <!-- vertical space -->
+  <tr>
+    <td></td>
+    <td>
+      <table cols="4">
+        <tr>
+          <td width="120"></td>
+          <td>Available DMT_types:</td>
+        </tr>
+        <tr height=10></tr>  <!-- vertical space -->
+        <tr>
+          <td></td>
+          <td valign="top">DMT_INTEGER4</td>
+          <td valign="top">DMT_INT</td>
+          <td>4-byte integer</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top">DMT_INTEGER8</td>
+          <td valign="top">DMT_LLONG&nbsp;&nbsp;&nbsp;</td>
+          <td>8-byte integer<td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top">DMT_REAL</td>
+          <td valign="top">DMT_FLOAT</td>
+          <td>4-byte floating point</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top">DMT_DOUBLE</td>
+          <td></td>
+          <td>8-byte floating point</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top">DMT_COMPLEX</td>
+          <td></td>
+          <td>8-byte complex floating point</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top">DMT_DOUBLE_COMPLEX</td>
+          <td></td>
+          <td>16-byte complex floating point</td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height="20"></tr>  <!-- vertical space -->
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Description</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>
+            <b>DMT_init</b> initializes the Handle for the transpose
+            and decides how the distributed-memory array should be
+            decomposed for the given MPI communicator.
+          </p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height="20"></tr>  <!-- vertical space -->
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Return value</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>
+            <b>DMT_init</b> returns a C pointer to the DMT Handle or
+            NULL if an error occurs.
+          </p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- End of DMT_init description -->
+
+  <tr height="20"></tr>   <!-- vertical space -->
+
+<!-- Start DMT_getval description -->
+  <tr>
+    <td></td>
+    <td><p><b>DMT_getval</b></p></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>C syntax</p>
+            <pre>
+     long long DMT_getval(DMT_Handle *Handle, int Key)
+            </pre>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>Fortran syntax</p>
+            <pre>
+     integer(KIND=c_long_long) function DMT_getval(Handle,Key)
+        type(c_ptr) :: Handle
+        integer     :: Key
+            </pre>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Arguments</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>Handle</p></td>
+          <td><p>The DMT Handle</p></td>
+        </tr>
+        <tr>
+          <td></td>  <!-- horizontal space -->
+          <td><p>Key</p></td>
+          <td><p>
+            Key word for value to retrieve (<b>L</b> == <b>L</b>ast axis of input)
+          </p></td>
+        </tr>
+        <tr height="20"></tr>  <!-- vertical space -->
+        <tr>
+          <td></td>
+          <td></td>
+          <td>
+            <table cols="2">
+              <tr>
+                <td>Available Keys:</td>
+              </tr>
+              <tr height=10></tr>  <!-- vertical space -->
+              <tr>
+                <td valign="top">DMT_IL1_LCL</td>
+                <td>The 1st index of <b>L</b> on this MPI rank</td>
+              </tr>
+              <tr>
+                <td valign="top">DMT_ILN_LCL</td>
+                <td>The last index of <b>L</b> on this MPI rank<td>
+              </tr>
+              <tr>
+                <td valign="top">DMT_NL_LCL</td>
+                <td># of <b>L</b> values on this MPI rank.</td>
+              </tr>
+              <tr>
+                <td valign="top">DMT_I21_OUT_LCL</td>
+                <td>1st index of 2nd output axis on this MPI rank</td>
+              </tr>
+              <tr>
+                <td valign="top">DMT_I2N_OUT_LCL</td>
+                <td>last index of 2nd output axis on this MPI rank</td>
+              </tr>
+              <tr>
+                <td valign="top">DMT_N2_OUT_LCL&nbsp;&nbsp;&nbsp;</td>
+                <td>
+                  Size of 2nd axis after transpose (used in declaring threaded arrays)
+                </td>
+              </tr>
+              <tr>
+                <td valign="top">DMT_N1_TILE</td>
+                <td>1st dimension of arrays sent/received by MPI</td>
+              </tr>
+              <tr>
+                <td valign="top">DMT_N2_TILE</td>
+                <td>2nd dimension of arrays sent/received by MPI</td>
+            </tr>
+          </table>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height="20"></tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Description</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>
+            <b>DMT_getval</b> retrieves a single value from the
+            Handle. Values can be used any way the application sees fit.
+            </p><p>
+            The local part of the distributed-memory array input to the
+            forward transpose must have at least max(1,DMT_NL_LCL) elements
+            allocated for the last axis. The local part of the
+            distributed-memory transpose result should have at least
+            nLast*max(1,DMT_N2_OUT_LCL) total elements. The max()
+            conditions for allocation sizes are required for problems that
+            use a communicator with more ranks than values being sent
+            and/or received.
+            </p><p>
+            The output array may also have extra elements allocated for the
+            L axis. This is to allow DMTranspose to hand back padded
+            arrays that can be sent directly to other processes (such as a
+            Real-to-Complex FFT) that require padded lengths. If padded
+            transpose results are desired, function DMT_setval should be
+            used to increase the DMT_NL_OUT value in the Handle.
+          </p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height=20></tr>  <!-- vertical space -->
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Return value</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>
+            <b>DMT_getval</b> returns one of the index values or
+            sizes listed above. If Key is not recognized, it returns
+            DMT_NOT_A_VALUE. If the Handle has not been initialized, it
+            returns DMT_NOT_INITIALIZED.
+          </p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- End of DMT_getval description -->
+
+  <tr height="20"></tr>   <!-- vertical space -->
+
+<!-- Start DMT_setval description -->
+  <tr>
+    <td></td>
+    <td><p><b>DMT_setval</b></p></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>C syntax</p>
+            <pre>
+     int DMT_setval(DMT_Handle *Handle, int Key, long long Value)
+            </pre>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>Fortran syntax</p>
+            <pre>
+     integer(KIND=c_int) function DMT_setval(Handle,Key,Value)
+        type(c_ptr)               :: Handle
+        integer(KIND=c_int)       :: Key
+        integer(KIND=c_long_long) :: Value
+            </pre>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Arguments</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>Handle</p></td>
+          <td><p>The DMT Handle</p></td>
+        </tr>
+        <tr>
+          <td></td>  <!-- horizontal space -->
+          <td><p>Key</p></td>
+          <td><p>
+            Key word for value to retrieve
+          </p></td>
+        </tr>
+        <tr>
+          <td></td>  <!-- horizontal space -->
+          <td><p>Value</p></td>
+          <td><p>
+            The new value for Key
+          </p></td>
+        </tr>
+        <tr height="20"></tr>  <!-- vertical space -->
+        <tr>
+          <td></td>
+          <td></td>
+          <td>
+            <table cols="2">
+              <tr>
+                <td>Available Keys:</td>
+              </tr>
+              <tr height=10></tr>  <!-- vertical space -->
+              <tr>
+                <td valign="top">DMT_NL_OUT</td>
+                <td width="20"></td>  <!-- horizontal space -->
+                <td>The length of the first axis after the transpose</td>
+              </tr>
+              <tr>
+                <td valign="top">DMT_METHOD</td>
+                <td width="20"></td>  <!-- horizontal space -->
+                <td>The MPI communication mehtod (Default: DMT_MPI_IA2A)</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+        <tr height=20></tr>  <!-- vertical space -->
+        <tr>
+          <td></td>
+          <td></td>
+          <td>
+            <table cols="2">
+              <tr>
+                <td>Communication Methods:</td>
+              </tr>
+              <tr height=10></tr>  <!-- vertical space -->
+              <tr>
+                <td valign="top">DMT_MPI_IA2A</td>
+                <td width="20"></td>  <!-- horizontal space -->
+                <td>Use MPI_Ialltoallv (Default)</td>
+              </tr>
+              <tr>
+                <td valign="top">DMT_MPI_ISEND</td>
+                <td width="20"></td>  <!-- horizontal space -->
+                <td>Use MPI_Isend/MPI_Irecv (requires MPI_THREAD_MULTIPLE)</td>
+              </tr>
+              <tr>
+                <td valign="top">DMT_MPI_A2A</td>
+                <td width="20"></td>  <!-- horizontal space -->
+                <td>Use MPI_alltoallv for communication</td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height="20"></tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Description</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>
+            <b>DMT_setval</b> sets a single value in the Handle. Users can
+            change the MPI functions used for communication and increase the
+            length of the L axis after the forward transpose.
+            </p><p>
+            Increasing the value of DMT_NL_OUT is useful when the result of a
+            forward transpose needs to be in a padded array. (e.g. if it is to
+            be used for an in-place Real-to-Complex FFT). The output array must be
+            allocated with enough space for the padded size.
+            </p><p>
+            The default communication method is to use MPI_Ialltoallv. Developers
+            can also choose to use MPI_Alltoallv or MPI_Isend/MPI_Irecv if those
+            are better for a given problem size. <b>When DMT_METHOD is changed to
+            DMT_MPI_ISEND, MPI must be initiated with MPI_THREAD_MULTIPLE.</b>
+          </p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height=20></tr>  <!-- vertical space -->
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Return value</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>
+            <b>DMT_setval</b> returns DMT_SUCCESS when successful,
+            DMT_SIZE_ERROR if DMT_NL_OUT is smaller that the value of sizes(L)
+            used in DMT_init, or DMT_COMMIT_ERROR if the Handle is already
+            committed.
+          </p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- End of DMT_setval description -->
+
+  <tr height="20"></tr>   <!-- vertical space -->
+
+<!-- Start DMT_commit description -->
+  <tr>
+    <td></td>
+    <td><p><b>DMT_commit</b></p></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>C syntax</p>
+            <pre>
+     int DMT_commit(DMT_Handle *Handle)
+            </pre>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>Fortran syntax</p>
+            <pre>
+     integer function DMT_commit(Handle)
+        type(c_ptr) :: Handle
+            </pre>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Arguments</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>Handle</p></td>
+          <td><p>The DMT Handle</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height="20"></tr>  <!-- vertical space -->
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Description</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>
+            <b>DMT_commit</b> Finishes allocations and NUMA
+            initialization of internal arrays.
+          </p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- End of DMT_commit description -->
+
+  <tr height="20"></tr>  <!-- vertical space -->
+
+<!-- Start DMTranspose description -->
+  <tr>
+    <td></td>
+    <td><p><b>DMTranspose</b></p></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>C syntax</p>
+            <pre>
+     int DMTranspose(DMT_Handle *Handle, void *in_data, void *out_data,
+                     _Bool llaunch, _Bool lfinish, _Bool linverse)
+            </pre>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>Fortran syntax</p>
+            <pre>
+     integer function DMTranspose(Handle, ptr_in_data, ptr_out_data,
+                                  llaunch, lfinish, linverse)
+        type(c_ptr)          :: Handle, ptr_in_data, ptr_out_data
+        logical(KIND=c_bool) :: llaunch, lfinish, linverse
+            </pre>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Arguments</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>Handle</p></td>
+          <td><p>The DMT Handle</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>in_data</p></td>
+          <td><p>C only - array of input data cast as (void*)</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>out_data</p></td>
+          <td><p>C only - array of output data cast as (void*)</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>ptr_in_data</p></td>
+          <td><p>Fortran only - C pointer to input data</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>ptr_out_data</p></td>
+          <td><p>Fortran only - C pointer to output data</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>llaunch</p></td>
+          <td><p>Flag to launch the transpose</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>lfinish</p></td>
+          <td><p>Flag to finish the transpose</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>linverse</p></td>
+          <td><p>Flag to transpose out_data to in_data</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height="20"></tr>  <!-- vertical space -->
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Description</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td>
+            <p><b>DMTranspose</b> actually does the forward or inverse
+            transpose. Arrays in_data and out_data can be the same
+            (pointers ptr_in_data and ptr_out_data in Fortran) or
+            different.</p>
+
+            <p>When llaunch=.true. and lfinish=.false.,
+            <b>DMTranspose</b> returns immediately after the MPI function
+            starting the communication returns control to DMTranspose.
+            When llaunch=.false. and lfinish=.true. <b>DMTranspose</b> will
+            skip the transpose function, wait for all the communication to
+            complete, and copy results to out_data before returning. When
+            llaunch=lfinish=.true. the entire process is forced to complete
+            before control is given back to the calling application.</p>
+
+            <p>When linverse=.false., in_data is transposed to out_data.
+            When linverse=.true., out_data is transposed to in_data. The
+            same Handle can be used for both forward and inverse
+            transposes; it should be initialized with values for the
+            forward transpose.</p>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- End of DMTranspose description -->
+
+  <tr height="20"></tr>   <!-- vertical space -->
+
+<!-- Start DMT_free description -->
+  <tr>
+    <td></td>
+    <td><p><b>DMT_free</b></p></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>C syntax</p>
+            <pre>
+     int DMT_free(DMT_Handle *Handle)
+            </pre>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>Fortran syntax</p>
+            <pre>
+     integer function DMT_free(Handle)
+        type(c_ptr) :: Handle
+            </pre>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Arguments</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>Handle</p></td>
+          <td><p>The DMT Handle</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height="20"></tr>  <!-- vertical space -->
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Description</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>
+            <b>DMT_free</b> frees all resources used by the DMT Handle.
+          </p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- End of DMT_free description -->
+
+  <tr height="20"></tr>   <!-- vertical space -->
+
+<!-- Start DMT_teamlist description -->
+  <tr>
+    <td></td>
+    <td><p><b>DMT_teamlist</b></p></td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>C syntax</p>
+            <pre>
+     int DMT_teamlist(DMT_Handle *Handle)
+            </pre>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td><p>Fortran syntax</p>
+            <pre>
+     integer function DMT_teamlist(Handle)
+        type(c_ptr) :: Handle
+            </pre>
+          </td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Arguments</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>Handle</p></td>
+          <td><p>The DMT Handle</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr height="20"></tr>  <!-- vertical space -->
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td><p>Description</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="2" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="80"></td>  <!-- horizontal space -->
+          <td><p>
+            <b>DMT_teamlist</b> prints a list of the array
+            decomposition to stderr. Host names of each rank in the MPI
+            communicator are included. This is optional and provided to
+            facilitate understanding of how the transpose breaks down
+            the problem.
+          </p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+<!-- End of DMT_teamlist description -->
+
+</table>
+<!-- Termination of Individual functions table -->
+
+<a name="Named Constants"></a>
+<h2>Other Named Constants</h2>
+
+<table width="95%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+
+  <tr>
+    <td width="40"></td>  <!-- horizontal space -->
+    <td><p>
+      Several named constants are made available through use of dmtransp.h and
+      dmtransp_mod. Among them are the DMT_type values and DMT_getval Keys
+      listed above. Named constants that can be returned by the other functions
+      are listed here:
+    </p></td>
+  </tr>
+  <tr height="20"></tr>  <!-- vertical space -->
+  <tr>
+    <td></td>
+    <td>
+      <table width="100%" border=0 rules="none" frame="void"
+             cols="3" cellspacing="0" cellpadding="0">
+        <tr>
+          <td width="40"></td>  <!-- horizontal space -->
+          <td valign="top"><p>DMT_SUCCESS</p></td>
+          <td><p>Successful completion of function</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top"><p>DMT_NOT_INITIALIZED</p></td>
+          <td><p>Attempt to use a Handle that is not initialized</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top"><p>DMT_NOT_COMMITTED</p></td>
+          <td><p>Attempt to use a Handle that is not committed</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top"><p>DMT_NOT_A_VALUE</p></td>
+          <td><p>Attempt to retrieve a non existent Key</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top"><p>DMT_TYPE_NOT_KNOWN</p></td>
+          <td><p>Attempt to use a data type not known to dmtranspose</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top"><p>DMT_COMMIT_ERROR</p></td>
+          <td><p>Attempt to recommit a committed Handle</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top"><p>DMT_ALLOC_ERROR</p></td>
+          <td><p>Error allocating internal resources</p></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td valign="top"><p>DMT_LAUNCHED</p></td>
+          <td><p>The transpose has been launched but not finished</p></td>
+        </tr>
+      </table>
+    </td>
+  </tr>
+
+</table>
+
+<a name="BUGS"></a>
+<h2>BUGS</h2>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+  <tr valign="top" align="left">
+    <td width="40"></td> <!-- horizontal space -->
+    <td>
+      <p>None known.</p>
+      <p>For bug reports or feature requests, refer to http://ddsdevel.bpweb.bp.com</p>
+    </td>
+  </tr>
+</table>
+
+<a name="AUTHORS"></a>
+<h2>AUTHORS</h2>
+<table width="100%" border=0 rules="none" frame="void"
+       cols="3" cellspacing="0" cellpadding="0">
+  <tr valign="top" align="left">
+    <td width="40"></td> <!-- horizontal space -->
+    <td><big>M.J. O&rsquo;Brien</td> <td><big>&minus; Allied Geophysics, Inc.</td>
+  </tr>
+  <tr>
+    <td></td>
+    <td><big>Xin Wang</td> <td><big>&minus; HPC</td>
+  </tr>
+</table>
+
+<table width="100%" border=0 rules="none" frame="void"
+       cols="2" cellspacing="0" cellpadding="0">
+  <tr height="20"></tr>  <!-- vertical space -->
+  <tr valign="top" align="left">
+    <td width="40"></td> <!-- horizontal space -->
+  </tr>
+  <tr>
+    <td></td>
+    <td><big>For bug reports or feature requests, refer to http://ddsdevel.bpweb.bp.com</td>
+  </tr>
+</table>
+<hr>
+</body>
+</html>

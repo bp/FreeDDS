@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (str)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","str")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Str:</h2>
+
+    <p>
+      DDS Strings are used for convenience when dealing with character strings.
+    </p>
+
+    <p>
+      DDS Tokens are a character sequence, delimited by white space, and double
+      quotes.  Within quoted tokens, special characters ('"', '=', '\') must be 
+      escaped with '\'.</p> 
+
+    <pre>
+<b><u>Structures:</u></b>
+    DDS_STRING - String Structure defined in dds_sring.h
+    DDS_TOKEN  - Token Structure defined in dds_sring.h
+
+
+<b><u>Globals:</u></b>
+    DDS_STRING DDS_NULL_STRING; /* constant NULL String used for initialization */
+    DDS_STRING dds_warn_msg;    /* last warning message */
+    DDS_STRING dds_error_msg;   /* last error   message */
+    DDS_STRING dds_debug_msg;   /* last debug   message */
+    DDS_STRING dds_data_path;   /* default output binary filename path */
+    DDS_STRING dds_data_suffix; /* default output binary filename suffix */
+    DDS_STRING dds_path;        /* last DDS_PATH; where to search for user-defined
+                                   xxx.fmt and xxx.dds description files */
+    DDS_TOKEN DDS_NULL_TOKEN;   /* constant NULL Token; not used */
+    DDS_TOKEN dds_scan_token;   /* scan token value and next char* */
+
+
+<b><u>Files:</u></b>
+    ftncpy.c     - Copy string into fortran character array (pad blanks)
+                   (Used in STR_TO_FTN_STR macro for Fortran interface API's)
+    strcat.c     - Concatenate one string onto DDS_STRING
+    strcat2.c    - Concatenate two strings onto DDS_STRING
+    strcat3.c    - Concatenate three strings onto DDS_STRING
+    strcat4.c    - Concatenate four strings onto DDS_STRING
+    strcat5.c    - Concatenate five strings onto DDS_STRING
+    strcatn.c    - Concatenate sized strings onto DDS_STRING
+    strcpy.c     - Copy string into DDS_STRING
+    strcpymin.c  - Copy string into DDS_STRING, with minimum size
+    strcpycat2.c - Copy string and concatenate one more string onto DDS_STRING
+    strcpycat3.c - Copy string and concatenate two more strings onto DDS_STRING
+    strcpycat4.c - Copy string and concatenate three more strings onto DDS_STRING
+    strcpycat5.c - Copy string and concatenate four more strings onto DDS_STRING
+    strcpycat6.c - Copy string and concatenate five more strings onto DDS_STRING
+    strcpycat7.c - Copy string and concatenate six more strings onto DDS_STRING
+    strcpycat8.c - Copy string and concatenate seven more strings onto DDS_STRING
+    strcpyn.c    - Copy sized string into DDS_STRING
+    strcpynb.c   - Copy sized string (without trailing blanks) into DDS_STRING
+    strfree.c    - Free DDS_STRING buffer
+    string.c     - Malloc and initialize simple string
+    stringn.c    - Malloc and initialize simple sized string
+    strset.c     - Set (malloc and initialize) DDS_STRING
+    strsetmin.c  - Set (malloc and initialize) min DDS_STRING
+    strsetn.c    - Set (malloc and initialize) min sized DDS_STRING
+    token.c      - Parse or count tokens, within token list
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

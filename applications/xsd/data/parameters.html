@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','data','parameters')</script>
+
+    <ul>
+      <li><u>Scaling Type:</u><br />
+        The data Samples are rescaled by:
+        <pre>
+color_scale = (end_color-start_color+1)/2.0
+start_color = 38
+end_color   = 253
+raster[*] = offset + scale * color_scale * Sample[*]</pre>
+        then clipped to the color scale range and converted to single bytes before
+        sending the data back to XSD.  The "<code>Scalar</code>", "<code>Offset</code>", 
+        "<code>Range Min</code>" and "<code>Range Max</code>" are used to define this 
+        scaling, depending on the type of scaling selected.  Only the parameters that
+        are used for any selected type is enabled. 
+        <ul>
+          <li><b>Fixed Scaling:</b>
+            <pre>
+scale = <b>Scalar</b>*color_scale
+offset= start_color + color_scale * (1+<b>Offset</b>/50)</pre>
+          </li>
+          <li><b>Maximum Scaling:</b>
+            <pre>
+scale = <b>Scalar</b>*color_scale/max(abs(Samples[*]))
+offset= start_color + color_scale * (1+<b>Offset</b>/50)</pre>
+          </li>
+          <li><b>Range Scaling:</b>
+            <pre>
+scale = 2*color_scale/(<b>Range Max</b>-<b>Range Min</b>)
+offset= start_color - scale*<b>Range Min</b></pre>
+          </li>
+          <li><b>Rng Historgram Scaling:</b>
+            <pre>
+max = <b>Scalar</b> percentile fraction of amplitude range
+min = (1-<b>Scalar</b>) percentile fraction of amplitude range
+scale = <b>Scalar</b>*2*color_scale/(max-min)
+offset= start_color - scale*min</pre>
+          </li>
+          <li><b>Abs Histogram Scaling:</b>
+            <pre>
+max = <b>Scalar</b> percentile fraction of absolute amplitude range
+scale = color_scale/max
+offset= start_color + color_scale*(1+<b>Offset</b>/50)</pre>
+          </li>
+          <li><b>MinMax Scaling:</b>
+            <pre>
+min = min(Samples[*])
+max = max(Samples[*])
+scale = <b>Scalar</b>*2*color_scale/(max-min)
+offset= start_color + color_scale - <b>Scalar</b>*(max+min)/2</pre>
+          </li>
+        </ul>
+        
+        <center><img src="xsd_ParmParameters.jpg" alt=""></center>
+        <br /></li>
+
+      <li><u>Exponential Scaling:</u><br />
+        By selecting a non-zero value for "<code>Scale Exponent</code>", exponential 
+        scaling will be applied on the axis specified by "<code>Exp Axis:</code>". 
+        For example if exponential is done on the first axis, then the Samples are 
+        scaled by:
+        <pre>
+Samples[<i>i</i>] = Samples[<i>i</i>] * (<i>i</i>-1)**<b>Scale Exponent</b>
+        </pre>
+      </li>
+
+      <li><u>Plot Options:</u><br />
+        <ul>
+          <li>Select the parameters used for a currently displayed window by selecting
+            the Window Id # from the <b>"Use Parameters from:"</b> option list.</li>
+
+          <li>Select the colormap used for a currently displayed window by selecting
+            the Window Id # from the <b>"Use the Colors from:"</b> option list.</li>
+
+          <li>Set the <b>"Plot Axes"</b> toggle to plot the Axis annotation</li>
+
+          <li>set the <b>"Invert Data Samples"</b> to plot the data inverted</li>
+
+          <li>Zoom in on the data by selecting the axis zoom factors 
+            (<b>"Horizontal Zoom"</b> and <b>"Vertical Zoom"</b>) for each desired
+            horizontal or vertical direction.</li>
+        </ul>
+      </li>
+
+      <li><u>Retrieval Options:</u><br />
+        <ul>
+          <li>Set the <b>"Retrieve Trace Headers"</b> toggle if you want the trace 
+            headers passed to xsd from the ddsServer.</li>
+
+          <li>Set the <b>"Generate Multiple Windows"</b> toggle to generate multiple
+            windows at once.  A window will be displayed for each selected value for
+            the axis defined by the <b>"Multiple Axis:"</b> selection.  If
+            <b>"Hide Multiple Windows"</b> is selected, then the windows will come up
+            as "Hidden" windows (windows can be exposed either thru the Window&rarr;Expose
+            or Window&rarr;Global menu selection).  If <b>"Create Animation Window"</b>
+            is selected, then the windows will also be put into an 
+            <a href="../windows/animation.html">"Animation Window"</a>.</li>
+
+        </ul>
+      </li>
+    </ul>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

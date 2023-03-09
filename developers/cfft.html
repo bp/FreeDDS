@@ -1,0 +1,70 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" FFT Routines</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","cfft")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("cfft","cfft")</script>
+
+    <h1>
+      <img src="../images/book_q.gif" alt="">
+      Table of Contents
+    </h1>
+
+    <p>
+      These FFT convenience wrappers are intended to provide a few basic 
+      generic fft routines on our various platforms.  As libraries and/or 
+      system change we should only have to update these wrappers, without 
+      having to modify each source program that needs to do fft's. Each
+      program utilizing these routines should include the following file:
+
+    <pre>
+#include &lt;cfft.h&gt;
+    </pre>
+
+    <table>
+        <tr>
+          <td align=left valign=top>
+            <ul>
+              <li><a href="cfft/nrfft5.html">cfft_nrfft5</a>&nbsp;-&nbsp;radix&nbsp;2,3,5&nbsp;size<br/>
+              <li><a href="cfft/nrfft5odd.html">cfft_nrfft5odd</a>&nbsp;-&nbsp;radix&nbsp;3,5&nbsp;even&nbsp;size<br/><br/>
+
+              <li><a href="cfft/ccfftm.html">cfft_ccfftm</a>&nbsp;-&nbsp;multiple&nbsp;complex-complex&nbsp;FFT's<br/>
+              <li><a href="cfft/ccfft2d.html">cfft_ccfft2d</a>&nbsp;-&nbsp;complex-complex&nbsp;2D&nbsp;FFT<br/>
+              <li><a href="cfft/ccfft3d.html">cfft_ccfft3d</a>&nbsp;-&nbsp;complex-complex&nbsp;3D&nbsp;FFT<br/><br/>
+
+              <li><a href="cfft/rcfftm.html">cfft_rcfftm</a>&nbsp;-&nbsp;multiple&nbsp;real-complex&nbsp;FFT's<br/>
+              <li><a href="cfft/rcfft2d.html">cfft_rcfft2d</a>&nbsp;-&nbsp;real-complex&nbsp;2D&nbsp;FFT<br/>
+              <li><a href="cfft/rcfft3d.html">cfft_rcfft3d</a>&nbsp;-&nbsp;real-complex&nbsp;3D&nbsp;FFT<br/><br/>
+
+              <li><a href="cfft/crfftm.html">cfft_crfftm</a>&nbsp;-&nbsp;multiple&nbsp;complex-real&nbsp;FFT's<br/>
+              <li><a href="cfft/crfft2d.html">cfft_crfft2d</a>&nbsp;-&nbsp;complex-real&nbsp;2D&nbsp;FFT<br/>
+              <li><a href="cfft/crfft3d.html">cfft_crfft3d</a>&nbsp;-&nbsp;complex-real&nbsp;3D&nbsp;FFT<br/><br/>
+
+              <li><a href="cfft/zzfftm.html">cfft_zzfftm</a>&nbsp;-&nbsp;multiple&nbsp;double&nbsp;precision&nbsp;complex-complex&nbsp;FFT's<br/>
+              <li><a href="cfft/zzfft2d.html">cfft_zzfft2d</a>&nbsp;-&nbsp;double&nbsp;precision&nbsp;complex-complex&nbsp;2D&nbsp;FFT<br/>
+              <li><a href="cfft/zzfft3d.html">cfft_zzfft3d</a>&nbsp;-&nbsp;double&nbsp;precision&nbsp;complex-complex&nbsp;3D&nbsp;FFT<br/>
+            </ul>
+          </td>
+        </tr>
+    </table>
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

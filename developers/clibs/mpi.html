@@ -1,0 +1,38 @@
+
+    <p>
+      These are a series of "C" routines to simplify parallel code development
+      when using MPI. Parallel programming is 
+      non-trivial. The goal of these routines is to provide a framework for 
+      the developer, so that they may concentrate on the algorithm, rather 
+      than the parallelism. That said, thought should be given to the level 
+      of parallelism required in any application. If the level of parallelism 
+      is too fine (the <i>jobs</i> are too short) then there is a potential 
+      for a bottleneck with the inter-process communication. If the level of 
+      parallelism is too coarse (the <i>jobs</i> are too long), then you may 
+      not be able to use many threads.
+    </p>
+
+    <p>Similarly, some algorithms can be divided into <i>balanced</i> jobs which will all take a similar length of time, while others
+      may be very unbalanced.<br>
+      See the <a href="ftemplates/f_template5.html">fortran USP-style template example</a> for using these functions
+      for trace by trace, or record by record, processing with balanced work;<br>
+      and the <a href="ftemplates/f_template4.html">fortran master-slave template example</a>
+      for using these functions when the parallelization leads to unbalanced work.<br>
+    </p>
+
+
+    <h2>Tips For Debugging MPI Codes Using the Convenience Routines</h2>
+    <p>
+      When debugging a program that uses MPI and the master-slave setup, it 
+      can be difficult to figure out on which node the error occured.<br>
+      I have found the following setup to be useful:</p>
+      <ul>
+	<li>Try using only 2 MPI nodes: node 0 will be the master, node 1 will 
+        be the slave.</li>
+	<li>Run the code with the parameter <code>masterslave_debug=1</code>.
+        This will cause the Master to print a message and stop after sending
+        a job to the Slave. Hence, any errors should come from the Slave,
+        and the debugging problem is reduced to a single thread.</li>
+      </ul>
+    
+

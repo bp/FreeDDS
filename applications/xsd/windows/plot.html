@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','windows','plot')</script>
+
+    <p>From any Display Window select "Window&rarr;Plot/Save&nbsp;Image" to pop-up the
+      "Print Parameters Window".  (It will be different for Animation Windows).</p>
+
+    <ul>
+      <li><u><b>From Single Display Windows:</b></u><br />
+        <img src="xsd_PrintWindow.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+        Select this button to send the image to a printer and/or create a gif or
+        tiff file of the image. The "Print Parameters Window" will pop-up.  Set 
+        the following fields then press the "<code>OK</code>" button to submit the
+        request or "<code>Cancel</code>" to simply close the window.
+
+        <ul>
+          <li>"<code>Plot Title</code>" - text to add at the top of the output image</li>
+          <li>"<code>Horizontal Title</code>" - text to add along the horizontal axis</li>
+          <li>"<code>Vertical Title</code>" - text to add along the vertical axis</li>
+          <li>"<code>Border in pixels</code>" - size of the border around the image</li>
+          <li>"<code>Output file</code>" - specify the name of the image file to
+            create for the "gif" or "tiff" file. If left blank, no file is created.
+            A suffix of ".gif" or ".tiff" will be added if not specified.</li>
+          <li>"<code>Note file</code>" - name of file containing "notes" (in the form
+            of an ascii text file) to be added to the output image</li>
+          <li>"<code>Printer Name</code>" - specify the name of a printer which to
+            print the file.  If left blank, no file it printed.</li>
+          <li>"<code>Scale (DPI)</code>" - the scale factor in "Dots Per Inch" which is
+            used when creating "tiff" files</li>
+          <li>"<code>GIF Format</code>" - specifies the output to be a "gif" format
+            file</li>
+          <li>"<code>TIFF Format</code>" - specifies the output to be a "tiff" format
+            file</li>
+          <li>"<code>Color Scale</code>" - specifies whether to include a color Scale
+            on the image</li>
+          <li>"<code>Save current settings</code>" - specifies saving the current 
+            settings for the Print Parameters Window</li>
+        </ul>
+        <br clear='all' /></li>
+
+      <li><u><b>From Animation Display Windows:</b></u><br />
+        <img src="xsd_PrintWindow2.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+        If "Window&rarr;Plot/Save&nbsp;Image" is selected from an 
+        <a href="animation.html">Animation Window</a> then the "Print Parameters Window"
+        will be modified. The output file will be created as an animated "gif" file. 
+
+        <ul>
+          <li>"<code>Plot Title</code>" - text to add at the top of the output image.
+            This can include special format characters to allow the title to vary
+            with each animation image.
+            
+            <ul>
+              <li>"<code>%[#]g#</code>" - this is the way to include the axis value from 
+                any axis for each animation image.  The first "#" optionally specifies the 
+                length of the field.  The second "#" specifies the number of decimal digits
+                to display.  For example if each animation image is a time slice for different
+                times, you can use "%6g3" to display values in a format like " 3.025".</li>
+
+              <li>"<code>%s</code>" - this is the way to include the file base name for each
+                image.  This is useful when the various animation images were taken from 
+                different files.</li>
+            </ul>
+          </li>
+
+          <li>"<code>Horizontal Title</code>" - text to add along the horizontal axis</li>
+          <li>"<code>Vertical Title</code>" - text to add along the vertical axis</li>
+          <li>"<code>Delays (msec)</code>" - the time to delay between each image. 
+            Multiple values can be specified with each one being applied the each
+            corresponding animation image.  If there are fewer Delays than images, then
+            the last value will be used for the remaining images.  If there are more
+            Delays than images, then the last Delay values will not be used.</li>
+           <li>"<code>NumLoops</code>" - specify the number of times to loop through
+            all the images.  A value of "0" will cause the animated "gif" to loop
+            indefinitely.</li>
+          <li>"<code>Output gif file/base</code>" - specify the name of the "gif" 
+            file. A suffix of ".gif" will be added if not specified.</li>
+          <li>"<code>Display Axis</code>" - specifies annotating the axes</li>
+          <li>"<code>Save individual files</code>" - specifies saving each animated
+            image to separate files</li>
+          <li>"<code>Save current settings</code>" - specifies saving the current 
+            settings for the Print Parameters Window</li>
+        </ul>
+        <br clear='all' /></li>
+   </ul>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

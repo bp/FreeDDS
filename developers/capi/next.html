@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_next)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","next")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_next - fetch field tag within DDS structures
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+    <b>FIELD_TAG cdds_next(</b><i>bin_tag, field_tag</i><b>);</b>
+    <dl><dt><dd>
+        <b>BIN_TAG</b> <i>bin_tag </i><br>
+	<b>FIELD_TAG</b> <i>field_tag</i>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cdds_next</b> returns the tag associated with the field of the next 
+    member or object from the member or object defined by <i>field_tag</i>
+    within the current structure.  A return value of -1 indicates 
+    <i>field_tag</i> is the last member or object.
+
+    <h2>INPUT</h2>
+    <i>bin_tag</i> is the tag associated with an open binary, previously
+    obtained from <a href="open.html">cdds_open.</a>  It specifies a
+    particular binary stream.
+
+    <p/>
+      <i>field_tag</i> is the tag associated with a particular field known
+      by <i>bin_tag</i>.
+
+    <h2>OUTPUT</h2>
+    The return value is the field tag associate with the desired object 
+    or -1 if none found.  
+
+    <h2>EXAMPLE</h2>
+    <pre>
+int ndx, rec, *ibuf;
+BIN_TAG bin;
+FIELD_TAG tag, ptag;
+...
+/* find index of header, RecNum */
+tag = cdds_member(bin, 0, "RecNum");
+ndx = cdds_index(bin, tag, DDS_INT);
+rec = ibuf[ndx];
+...
+/* find all trace header tags  */
+tag = cdds_member(bin, 0, "");
+while (tag)
+{
+   ptag = cdds_prime(bin, tag);
+   ...
+   tag = cdds_next(bin, tag);
+}
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="prec.html">cdds_prec</a> Field precision
+<a href="count.html">cdds_count</a> Field count
+<a href="align.html">cdds_align</a> Field alignment
+<a href="genus.html">cdds_genus</a> Field generic type
+<a href="name.html">cdds_name</a> Field name
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

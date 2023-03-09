@@ -1,0 +1,119 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_member)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","member")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_member - fetch field tag within DDS structures
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+    <b>FIELD_TAG cdds_member(</b><i>bin_tag, field_tag, field_name</i><b>);</b>
+    <dl><dt><dd>
+        <b>BIN_TAG</b> <i>bin_tag </i><br>
+        <b>FIELD_TAG</b> <i>field_tag </i><br>
+	<b>const char *</b><i>field_name</i>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cdds_member</b> returns the tag associated with the given 
+    <i>field_name</i> that is a member of the structure associated with
+    the tag, <i>field_tag</i>.  If <i>field_tag</i> is zero, 
+    it defaults to the SEQUENCE (trace type) associated with <i>bin_tag</i>.
+    If <i>field_name</i> is blank, the returned value will be the tag 
+    associated with the first member of the structure. 
+    <i>field_name</i> can include structure names relative
+    to the <i>field_tag</i> (eg. "Spare.Hdr.RecNum") or can specify the
+    first member of a substructure (eg. "TmMsS1_union.").
+    The functions, <b>cdds_next, cdds_prev</b> and <b>cdds_parent</b> allow
+    traversing through the structure's members.
+    The returned tag is the value that should be used in routines
+    <a href="index.html">cdds_index</a>
+    and
+    <a href="get.html">cdds_get.</a>
+
+    <p>
+      NOTE: for the cdds_member, if the <b>field_name</b> is "Horz..." and 
+      the member cannot be found, the "Horz" will be replaced with "TVPT"
+      and tried again so that "Horz01" thru "Horz20" can be overloaded and
+      used in the cdds_getff and cdds_putff calls.
+
+    <h2>INPUT</h2>
+    <i>bin_tag</i> is the tag associated with an open binary, previously
+    obtained from <a href="open.html">cdds_open.</a> It specifies a
+    particular binary stream.
+
+    <p>
+      <i>field_tag</i> is the tag associated with a particular field known
+      by <i>bin_tag</i>.
+
+    <p>
+      <i>field_name</i> is a string that names a member or object field 
+      within <i>field_tag</i>.  If <i>field_name</i> is zero length or
+      blank, the returned tag defaults to the first member or object in
+      the structure, <i>field_tag</i>.
+
+    <h2>OUTPUT</h2>
+    The return value is the field tag associate with the desired object 
+    or -1 if none found.  
+
+    <p>
+      NOTE: for cases where "Horz..." was used in cdds_member, then the
+      return value is the negative ( &lt; -1) of the associated field so
+      that <b>cdds_getf</b> will know to divert the call to
+      <b>cdds_getff</b> with the absolute value of the tag.
+
+    <h2>EXAMPLE</h2>
+    <pre>
+      int ndx, rec, *ibuf;
+      BIN_TAG bin;
+      FIELD_TAG tag, ptag;
+      ...
+      // find index of header RecNum
+      tag = cdds_member(bin, 0, "RecNum");
+      ndx = cdds_index(bin, tag, DDS_INT);
+      rec = ibuf[ndx];
+      ...
+      /* find all trace header tags  */
+      tag = cdds_member(bin, 0, "");
+      while (tag)
+      {
+          ptag = cdds_prime(bin, tag);
+          ...
+          tag = cdds_next(bin, tag);
+      }
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="prec.html">cdds_prec</a> Field precision
+<a href="count.html">cdds_count</a> Field count
+<a href="align.html">cdds_align</a> Field alignment
+<a href="genus.html">cdds_genus</a> Field generic type
+<a href="name.html">cdds_name</a> Field name
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

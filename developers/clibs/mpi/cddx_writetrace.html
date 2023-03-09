@@ -1,0 +1,53 @@
+
+    <h2>cddx_writetrace - map headers and write traces.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;pcddx.h&gt;</b>
+    <p>
+      <b>int cddx_writetrace(</b><i>bin, buflen, nsamp, ntrace, buf, tr_tag, samples, numtags, tags, hvals</i><b>)
+    </b><dl><dd>
+        <b>int </b><i>bin</i><br>
+        <b>int </b><i>buflen</i><br>
+        <b>int </b><i>nsamp</i><br>
+        <b>int </b><i>ntrace</i><br>
+        <b>float *</b><i>buf</i><br>
+        <b>int </b><i>tr_tag</i><br>
+        <b>float *</b><i>samples</i><br>
+        <b>int </b><i>numtags</i><br>
+        <b>int *</b><i>tags</i><br>
+        <b>float *</b><i>hvals</i><br>
+    </dd></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cddx_writetrace</b> inserts the samples and headers into the trace buffer and writes out the traces.<br>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>bin</i>", specifies the binary tag of the file.
+    </p><p>
+      The parameter, "<i>buflen</i>", specifies the length of the trace buffer.
+    </p><p>
+      The parameter, "<i>nsamp</i>", specifies the number of samples in the trace buffer.
+    </p><p>
+      The parameter, "<i>ntrace</i>", specifies the number of traces to write.
+    </p><p>
+      The parameter, "<i>buf</i>", specifies the trace buffer.
+    </p><p>
+      The parameter, "<i>tr_tag</i>", specifies the tag to the trace Samples.
+    </p><p>
+      The parameter, "<i>samples</i>", specifies the buffer for the samples.
+    </p><p>
+      The parameter, "<i>numtags</i>", specifies the number of header values to be inserted.
+    </p><p>
+      The parameter, "<i>tags</i>", specifies tags to the trace headers to be inserted.<br>
+      The header values are only inserted if the tag values are >= 0.
+    </p><p>
+      The parameter, "<i>hvals</i>", specifies the buffer for the header values.
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_writetrace</b> returns the number traces that were successfully written to file.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

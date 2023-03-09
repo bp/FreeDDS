@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (segy Trace Header)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","segy1","trchdr")
+    </script>
+    <!*********************************************************************>
+
+   <p>
+      The default fields that make up the <b>SEGY1_TRACE</b> structure are 
+      defined in
+      "<code>${DDSROOT}/src/lib/dds3/segy1.fmt.dds</code>"
+      and may be modified by editing that file and putting it into a
+      directory defined by "<code>${DDS_PATH}</code>".
+      These defaults are summarized by their nominal offset, name, type,
+      and element count.    
+
+    <pre>
+Off  Name                 Type<sup>&dagger;</sup>       N Comment
+---- -------------------- ----------  - -------------------------------------------
+*    segy_green           SEGY_INT    0 "SEGY green word prefix"
+0    LineTrcNum           SEGY_INT    1 "Trace sequence number within line"
+4    ReelTrcNum           SEGY_INT    1 "Trace sequence number within reel"
+8    FieldRecNum          SEGY_INT    1 "Original field record number"
+12   FieldTrcNum          SEGY_INT    1 "Trc # within original field rec"
+16   SrcPtNum             SEGY_INT    1 "Energy source point number"
+20   CdpNum               SEGY_INT    1 "CDP ensemble number"
+24   CdpTrcNum            SEGY_INT    1 "Trc # within the CDP ensemble"
+28   TrcIdCode            SEGY_SHORT  1 "Trc identification code: 1-8"
+30   VertStack            SEGY_SHORT  1 "# of vertically summed traces"
+32   HorzStack            SEGY_SHORT  1 "# of horizontally stacked traces"
+34   DataUse              SEGY_SHORT  1 "Data use (1 production, 2 test)"
+36   DstSgn               SEGY_INT    1 "Signed src-rcv distance"
+40   GrpElev              SEGY_INT    1 "Receiver group elevation"
+44   SrcElev              SEGY_INT    1 "Surface elevation at source"
+48   SrcDepth             SEGY_INT    1 "Src depth below surface (positive)"
+52   GrpDatum             SEGY_INT    1 "Datum elevation at receiver group"
+56   SrcDatum             SEGY_INT    1 "Datum elevation at source"
+60   WatDepthSrc          SEGY_INT    1 "Water depth at source"
+64   WatDepthGrp          SEGY_INT    1 "Water depth at group"
+68   ElevScaler           SEGY_SHORT  1 "Scalar to be applied to elevations"
+70   XYScaler             SEGY_SHORT  1 "Scalar to be applied to coordinates"
+72   SrcX                 SEGY_INT    1 "Source coordinate X"
+76   SrcY                 SEGY_INT    1 "Source coordinate Y"
+80   GrpX                 SEGY_INT    1 "Group coordinate X"
+84   GrpY                 SEGY_INT    1 "Group coordinate Y"
+88   XYUnits              SEGY_SHORT  1 "Coordinate units (1:length 2:arc sec)"
+90   WeathVel             SEGY_SHORT  1 "Weathering velocity"
+92   SubWeathVel          SEGY_SHORT  1 "Subweathering velocity"
+94   UpholeTmSrc          SEGY_SHORT  1 "Uphole time at source"
+96   UpholeTmGrp          SEGY_SHORT  1 "Uphole time at group"
+98   SrcStatic            SEGY_SHORT  1 "Source static correction"
+100  GrpStatic            SEGY_SHORT  1 "Group static correction"
+102  TotalStatic          SEGY_SHORT  1 "Total static applied"
+104  LagTmBreak           SEGY_SHORT  1 "Lag time A. Time in ms"
+106  LagTmSrc             SEGY_SHORT  1 "Lag time B. Time in ms"
+108  LagTmSmpOne          SEGY_SHORT  1 "Delay recording time. Time in ms"
+110  MuteStart            SEGY_SHORT  1 "Mute time--start"
+112  MuteEnd              SEGY_SHORT  1 "Mute time--end"
+114  TrcNumSmp            SEGY_SHORT  1 "Number of samples in this trace"
+116  TrcSmpInt            SEGY_SHORT  1 "Sample interval (usec) for this trace"
+118  GainType             SEGY_SHORT  1 "Gain type of field instruments: 1-4"
+120  GainConst            SEGY_SHORT  1 "Instrument gain constant"
+122  GainInit             SEGY_SHORT  1 "Instrument early or initial gain (db)"
+124  CorrFlag             SEGY_SHORT  1 "CorrFlag (1 no, 2 yes)"
+126  SwpFreqStart         SEGY_SHORT  1 "Sweep frequency at start"
+128  SwpFreqEnd           SEGY_SHORT  1 "Sweep frequency at end"
+130  SwpLength            SEGY_SHORT  1 "Sweep length in ms"
+132  SwpType              SEGY_SHORT  1 "Sweep type (1:linear 2:par 3:exp 4:other)"
+134  SwpTprStart          SEGY_SHORT  1 "Start Sweep taper length (msec)"
+136  SwpTprEnd            SEGY_SHORT  1 "End Sweep taper length (msec)"
+138  SwpTprType           SEGY_SHORT  1 "Taper type (1:linear 2:cos^2 3:other)"
+140  AntiAliasFreq        SEGY_SHORT  1 "Alias filter frequency, if used"
+142  AntiAliasSlope       SEGY_SHORT  1 "Alias filter slope"
+144  NotchFreq            SEGY_SHORT  1 "Notch filter frequency, if used"
+146  NotchSlope           SEGY_SHORT  1 "Notch filter slope"
+148  LowCutFreq           SEGY_SHORT  1 "Low cut frequency, if used"
+150  HighCutFreq          SEGY_SHORT  1 "High cut frequency, if used"
+152  LowCutSlope          SEGY_SHORT  1 "Low cut slope"
+154  HighCutSlope         SEGY_SHORT  1 "High cut slope"
+156  Date.DateYear        SEGY_SHORT  1 "Year data recorded"
+158  Date.DateDay         SEGY_SHORT  1 "Day of year"
+160  Date.DateHour        SEGY_SHORT  1 "Hour of day (24 hour clock)"
+162  Date.DateMin         SEGY_SHORT  1 "Minute of hour"
+164  Date.DateSec         SEGY_SHORT  1 "Second of minute"
+166  DateType             SEGY_SHORT  1 "Time basis code (1:local 2:gmt 3:other)"
+168  TrcWeight            SEGY_SHORT  1 "Trace weighting factor"
+170  RollSwtch1           SEGY_SHORT  1 "Geophone group # of roll switch pos 1"
+172  RollTrace1           SEGY_SHORT  1 "Geophone group # of trace number one"
+174  RollTraceN           SEGY_SHORT  1 "Geophone group # of last trace"
+176  RollGapSize          SEGY_SHORT  1 "Gap size (total # of groups dropped"
+178  OverTravel           SEGY_SHORT  1 "Overtravel associated with taper"
+180  CDPBCX               SEGY_INT    1 "CDP Bin Center X Coordinate"
+184  CDPBCY               SEGY_INT    1 "CDP Bin Center Y Coordinate"
+188  LinInd               SEGY_INT    1 "Line Index"
+192  DphInd               SEGY_INT    1 "Depth Index (crossline index)"
+196  SrcLoc               SEGY_INT    1 "Source Index times 10"
+200  SrcLocScaler         SEGY_SHORT  1 "Source Index scaler"
+202  TrcUnit              SEGY_SHORT  1 "Trace value measurement unit"
+204  TranConstMan         SEGY_INT    1 "Transduction Constant - mantissa"
+208  TranConstExp         SEGY_SHORT  1 "Transduction Constant - exponent"
+210  TranUnits            SEGY_SHORT  1 "Transduction Units"
+212  DevId                SEGY_SHORT  1 "Device/Trace Identifier"
+214  MsecScaler           SEGY_SHORT  1 "Scalar to be applied to times"
+216* Spare1.I1            unsigned1  24 "Unassigned--for optional information"
+216* Spare1.I2            integer2   12 "Unassigned--for optional information"
+216* Spare1.I4            integer4    6 "Unassigned--for optional information"
+216* Spare1.F4            float4      6 "Unassigned--for optional information"
+216* Spare1.F4ibm         float4ibm   6 "Unassigned--for optional information"
+216* Spare1.Hdr.SrRcMX    SEGY_INT    1 "Source-Receiver Mid Point X Coordinate"
+220* Spare1.Hdr.SrRcMY    SEGY_INT    1 "Source-Receiver Mid Point Y Coordinate"
+224* Spare1.Hdr.SrcPnt    SEGY_SHORT  1 "Source Point above this Depth Pt"
+226* Spare1.Hdr.SoPtNm    SEGY_SHORT  1 "Source point Number"
+228* Spare1.Hdr.RecInd    SEGY_SHORT  1 "Receiver Location Index (GI)"
+230* Spare1.Hdr.RecNum    SEGY_SHORT  1 "USP RecNum"
+232* Spare1.Hdr.FlReFN    SEGY_SHORT  1 "Field Record File #"
+234* Spare1.Hdr.CdpStatic SEGY_SHORT  1 "Total Static Applied"
+236* Spare1.Hdr.DePtEl    SEGY_SHORT  1 "Depth Point Elevation"
+238* Spare1.Hdr.FlDtEl    SEGY_SHORT  1 "Floating Datum Elevation"
+240  Samples              *          -1 "trace samples"
+*    segy_PadTrace        unsigned1   0 "excess bytes after trace samples"
+*    segy_GREEN           SEGY_INT    0 "SEGY green word suffix"
+    </pre>
+
+    <p>
+      &nbsp;&nbsp;&nbsp;&nbsp;where <code>*</code> indicates overloading of
+      fields for the same byte locations.
+
+    <p>
+      The Spare trace header fields begins at byte offset 216 in the 
+      <b>segy1</b> format which accommodates 24 bytes of non-standard, 
+      but often vital, information.  This spare area is a union
+      (Fortran equivalences) which is used to divide the spare area
+      into meaningful fields. The entire area can be accessed as an array 
+      of integers or floats, using I1, I2, I4, F4, and F4ibm.
+      Locations commonly used by contractors have also been predefined
+      (see, for example, RecInd, and RecNum).
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

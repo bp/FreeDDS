@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran FFT (fft_nrfft5odd)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fft","nrfft5odd")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fft")</script>
+
+    <h2>fft_nrfft5odd - return odd mixed radix 2,3,5 sizes</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fft.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90fft.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fft_nrfft5odd(</b><i>n</i><b>)
+      </b><dl><dd>
+        <b>integer </b><i>n
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    The function, "<b>fft_nrfft5odd</b>", is provided for determining an 
+    appropriate <u>odd</u> radix 2,3,5 value to pad out to for the FFT's. Given 
+    the integer input, "<i>n</i>", the function returns the integer <b>M</b>
+    such that <b>M</b> is the smallest number greater than or equal to
+    "<i>n</i>" such that <b>M = 2**i * 3**j * 5**k</b> where <b>i</b>,
+    <b>j</b> &amp; <b>k</b> are non-negative integers.
+
+    <h2>AUTHOR</h2>
+    Phuong Vu, <b>HPC</b><br/>
+    Jerry Ehlers, <b>EPTG</b>
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

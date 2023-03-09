@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>initMyMPI - Initializes MPIX and OpenMP for DdsIO</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use MyMPI_mod</b>
+    <p>
+      <b>subroutine initMyMPI(</b><i>rank, np, nProcessors</i><b>)</b>
+      <dl><dd>
+	<b>integer, optional, intent(in) :: </b><i>rank</i><br>
+	<b>integer, optional, intent(in) :: </b><i>np</i><br>
+	<b>integer, optional, intent(in) :: </b><i>nProcessors</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"initMyMPI"</b> initializes MPIX and OpenMP for the <b>MyMPI_mod</b>
+      module which is used by the <b>DdsIO_mod</b> module. If none of the inputs
+      are specified, then this subroutine internally calls both 
+      <b>fdds_initmpix()</b> and <b>fdds_initopenmp()</b>. If all of the inputs
+      are specified, then this subroutine simply uses these inputs to set the
+      module parameters without calling these DDS initialization routines.
+      <br><br>
+      This subroutine must be called before any <b>DdsIO</b> data object is opened 
+      in parallel writing mode; otherwise the MPI ranks will not properly write
+      to file. Also, after this initialization, any function that uses <b>MyMPI_mod</b>
+      has access to the module variables <i>myid</i> (rank, myrank, etc), <i>nodes</i>
+      (np, numRanks, ranks, etc), and <i>nproc</i> (numProcs, nThreads, etc).
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	program test
+	
+	    use MyMPI_mod
+	    use DDS, only : fdds_prtcon
+	    
+	    integer :: ier
+	    
+	    call initMyMPI()
+	    
+	    ier = fdds_prtcon('rank= %d, np= %d, nproc= %d\n\0', myid, nodes, nproc)
+	    
+	    call finalMyMPI()
+	    
+	end program test
+      </pre>
+      
+  </body>
+</html>
+

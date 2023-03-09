@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Convenience (fddx_dict)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fxapi","dict")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fxapi")</script>
+
+    <h2>fddx_dict - change DDS dictionary access</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fddx_dict(</b><i>bin_tag, mode</i><b>)
+      </b><dl><dd>
+        <b>integer </b><i>bin_tag
+        </i><br>
+        <b>character(*) </b><i>mode
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    Routine, <b>"fddx_dict"</b>, is provided to setup an internal buffer
+    dictionary associated with the given BIN_TAG for scanning or printing
+    depending on the input <i>"mode"</i> (eg. "scan" or "print").
+    A return value &lt; 0 indicates an error.
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Convenience (fddx_getdict)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fxapi","getdict")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fxapi")</script>
+
+    <h2>fddx_getdict - retrieve the DDS dictionary name</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fddx_getdict(</b><i>dict, bin_tag</i><b>)
+      </b><dl><dd>
+        <b>character(*) </b><i>dict
+        </i><br>
+        <b>integer </b><i>bin_tag
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    Routine, <b>"fddx_getdict"</b>, returns the internal buffer Dictionary
+    associated with the given <i>bin_tag</i>.  If the binary is opened for
+    output, then the output Dictionary is returned.  This provides a way 
+    of modifying a dictionary after the binary has been written and closed.
+    A return value &lt; 0 indicates an error; otherwise a 0 is returned.
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

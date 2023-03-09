@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>finalMyMPI - Finalizes MPI for a program</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use MyMPI_mod</b>
+    <p>
+      <b>subroutine finalMyMPI()</b>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"finalMyMPI"</b> finalizes MPI for both the <b>MyMPI_mod</b> module
+      and the program itself. Internally, this subroutine calls <b>mpi_finalize</b>.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	program test
+	
+	    use MyMPI_mod
+	    use dds, only : fdds_prtcon
+	
+	    integer :: ier
+	
+	    call initMyMPI()
+	
+	    ier = fdds_prtcon('rank= %d, np= %d, nproc= %d\n\0', myid, nodes, nproc)
+	
+	    call finalMyMPI()
+	
+	end program test
+      </pre>
+      
+  </body>
+</html>

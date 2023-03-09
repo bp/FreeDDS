@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users FAQ</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","faq","segy_card3200")</script>
+    <!*********************************************************************>
+  
+    <p>
+      If you need to modify the EBCDIC header of a segy file, simply define
+      <b>segy_card3200</b> (for either <b>segy</b> or <b>segy1</b> format).
+      This definition is defined as up to 40 tokens, each one up to 80 
+      characters.  The following example can be used to convert a file to a 
+      segy1 format dataset and specify the EBCDIC header (the single quotes
+      (<b>'</b>) are only needed when used on the command line and are not 
+      needed in a par file):
+
+<pre>
+bridge in=dataset out=out.data out_format=segy1 \
+'segy_card3200= "line1 First Line" "line2 \"quote\" something" line3\=nothing line4' 
+</pre>
+
+    <p>
+      Running ddscan on the output file and dumping the lineheader will
+      give:
+
+<pre>
+        --- Line Header: PREAMBLE (3200 bytes) ---
+
+ -FIELD-   -OFST- -LEN- -BYTS-      -VALUE- -TYPE-
+ card3200      0  3200   3200               ebcdic1 
+      "line1 First Line                                                                "
+      "line2 "quote" something                                                         "
+      "line3\=nothing                                                                  "
+      "line4"
+</pre>
+
+    <p>
+      The double quotes (<b>"</b>) around <b>"quote"</b> must be escaped with 
+      <b>"\"</b> if they are to be part of the EBCDIC header.  Also, any equal 
+      sign (<b>=</b>) that is intended to be part of the header must also be 
+      escaped; otherwise the equal symbol will terminate the <b>segy_card3200</b>
+      definition and start a new definition.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

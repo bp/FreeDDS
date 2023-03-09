@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Dictionaries (parfile)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","dictionaries","parfile")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Parfiles are dictionaries too (par:)</h2>
+
+    Parfiles are text files that define run time parameters for DDS programs.
+    They are useful when the application uses an extensive set of parameters
+    that is awkward to include on the command line. The following is an
+    example of using a parfile with program <b>compute</b>:<br>
+
+    <p>
+    <b>compute par=</b> <i>par_compute</i>
+
+    <p>
+    The parfile, <i>par_compute</i>, might contain the definitions below.
+
+
+    <p>
+    <hr>
+    <p>
+<pre>
+
+comment= Average 3 datasets, clip result to range 1500 - 4785
+
+in= in_dict_1 in_dict_2 in_dict_3
+out= out_dict
+
+mode= add
+scale= 0.3333 0.3333 0.3334
+funct=clip   min=1500   max=4785
+
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

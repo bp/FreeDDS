@@ -1,0 +1,35 @@
+
+    <h2>cddx_V_requestSmoothVp - read a SmoothVp parameter.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;cddx_vel.h&gt;</b>
+    <p>
+      <b>int cddx_V_requestSmoothVp(</b><i>vel_tag, critical</i><b>)
+    </b><dl><dd>
+        <b>int</b><i> vel_tag</i><br>
+        <b>int</b><i> critical</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>cddx_V_requestSmoothVp</b> reads a SmoothVp parameter.<br>
+    </p>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>vel_tag</i>", specifies a velocity with which to associate this SmoothVp parameter.<br>
+      The keyword prefix for the users is "<i>smoothVp</i>". See also function <b>fddx_V_newElement</b>.
+    </p>
+    <p>
+      The parameter, "<i>critical</i>", specifies whether this parameter is critical.<br>
+      If "<i>critical</i>" is non-zero and <b>cddx_V_requestSmoothVp</b> is unable to find a suitable SmoothVp parameter, then a DDS error is printed.<br>
+      NOTE that in the event of an error the program continues in order to allow for clean stopping of MPI codes.
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_V_requestSmoothVp</b> returns a tag to the newly created SmoothVp parameter.<br>
+    If it is unable to create SmoothVp, then it will return -1.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

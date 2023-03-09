@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Dataset (Sliced)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","datasets","sliced")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      There is a DDS Application Program (see "mergeND") that can merge 
+      together multiple datasets in several different ways.  However, it
+      would be nice to be able to combine multiple datasets without having
+      to read, process and write the data output another combined dataset
+      taking up more processing time and disk space.  Using a 
+      "<b>sliced</b>" dataset can combine multiple, conformable datasets
+      directly by creating a super, sliced Dictionary.
+    </p>
+
+    <p>
+      A "<b>sliced</b>" can be created simply by creating a master DDS 
+      super Dictionary containing a format, axis, size, and other 
+      appropriate data Definitions. Each file <u>MUST</u> be identical
+      in axis and size's, and assumed to be the same in delta's, origin's
+      and etc.  The new "<code>axis</code>" definition in the super
+      Dictionary will contain an extra axis token representing the multiple
+      files.  The "size" Definitions must reflect the correct sizes for
+      each axis with the "size" of the extra slice axis equal to the 
+      number of sliced datasets. (Actually, multiple axes can be sliced
+      as long as the product of all the sliced axes equals the total
+      number of datasets specified by the new "<code>data=</code>"
+      Definition).  The format Definition must reflect the format for
+      each of the files as well as a "slice" attribute (such as 
+      "<code>slice.h</code>" or "<code>slice.3</code>") indicating which
+      axis is sliced (multiple axes can be sliced). 
+      The data Definition must be a list of datasets containing the same
+      number of dataset names as defined by the corresponding "size"
+      Definition for the "sliced" axis. See the following example:
+    </p>
+
+    <pre>
+axis=t x z y
+size.t=150
+size.x=81
+size.y=30
+size.z=4
+delta.t=0.002
+units.t=sec
+format=usp slice.z
+data=Offset1000.data
+     Offset2000.data
+     Offset3000.data 
+     Offset4000.data
+    </pre>
+
+    <p>
+      <b>NOTE1:</b> Slicing of datasets CANNOT be nested.  In otherwords, 
+      all actual non-sliced files MUST be specified by the "data=" 
+      definition in the super dictionary.
+    </p>
+
+    <p>
+      <b>NOTE2:</b> any history Definitions that need to be carried on must
+      be in the super Dictionary.  To retain history, it's a good idea to copy
+      one of the individual dataset dictionaries and modify it by adding the
+      new essential Definitions ("<b>axis=</b>", "<b>format=</b>", 
+      "<b>data=</b>", and "size", "delta" and "origin" for the newly
+      created sliced axis).
+    </p>
+
+    <p>
+      Better yet, use the DDS script utility, "<code>makedict</code>" which
+      does all this for you.
+    </p>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

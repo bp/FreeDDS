@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Directories (fftw)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","dir","fftw")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      This directory contains the fftw routines.  These are only fall-back
+      routines for when we don't have a good alternative on a specify
+      platform.  The make files have been modified to use the DDS
+      make file structure instead of what comes with fftw.
+
+    <p>
+    <code>${<var>DDSROOT</var>}/src/lib/fftw</code>:
+    Generates <u><b>libfftw.a</b></u>, <u><b>librfftw.a</b></u>,
+    <u><b>fftw.h</b></u> and <u><b>rfftw.h</b></u> (fftw routines
+    for when there is no other host-dependent fft library) for building
+    DDS applications. 
+
+    <ul>
+      <li>Local files &amp; directories:
+        <ul>
+          <li><b>Makefile</b> - master fftw make file 
+        </ul>
+      <li>Libraries that gets installed under ${DDSROOT}/lib:
+        <ul>
+          <li><b>libfftw.a</b> - fftw complex-complex API routines 
+            available to be used by fft wrappers
+          <li><b>librfftw.a</b> - rfftw real-complex API routines
+            available to be used by fft wrappers
+        </ul>
+      <li>Include files that gets installed under ${DDSROOT}/include:
+        <ul>
+          <li><b>fftw.h</b> - fftw include file available to be used
+            by fft wrappers
+          <li><b>rfftw.h</b> - rfftw include file available to be
+            used by fft wrappers
+        </ul>
+    </ul>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

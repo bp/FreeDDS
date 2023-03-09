@@ -1,0 +1,112 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (segy Binary Header)
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","segy","binhdr")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      The <b>segy</b> binary header, <b>SEGY_BINARY</b>, contains a
+      sequence of fields taking up 400 bytes in length. The field values, 
+      associated with the binary data, are also available as Dictionary 
+      Definitions by preceding their names with "<code>segy_</code>"
+      (eg. <code>segy_LineNum=</code>). They may be examined in the
+      Dictionary by end users or retrieved by applicationprograms.
+      End users may override any of the field values associated
+      with binary input data.  For example:
+
+    <pre>
+comment= override binary header value
+segy_NumTrc= 48
+segy_SmpInt= 8000
+segy_NumTrc= 1048
+    </pre>
+
+    <p>
+      The first two above could just as well have been specified by their
+      corresponding axis Definitions (assuming the default "axis= t x y"):
+
+    <pre>
+size.x= 48
+delta.axis(1)=8.0
+units.axis(1)=usec
+    </pre>
+
+    <p>
+      The default fields that make up the <b>SEGY_BINARY</b> structure are 
+      defined in
+      "<code>${DDSROOT}/src/lib/dds3/segy.fmt.dds</code>"
+      and may be modified by editing that file and putting it into a
+      directory defined by "<code>${DDS_PATH}</code>".
+      These defaults are summarized by their nominal offset, name, type,
+      and element count.   
+
+<pre>
+Off  Name              Type<sup>&dagger;</sup>       N Comment
+---  --------------   ----------   - --------------------------------------------------
+*    segy_green       SEGY_INT     0 "SEGY green word prefix"
+0    JobNum           SEGY_INT     1 "Job identification number"
+4    LineNum          SEGY_INT     1 "Line number (only one line per reel)"
+8    ReelNum          SEGY_INT     1 "Reel number"
+12   NumTrc           SEGY_SHORT   1 "Number of data traces per record"
+14   NumAux           SEGY_SHORT   1 "Number of auxiliary traces per record"
+16   SmpInt           SEGY_SHORT   1 "Sample interval in u-sec (this reel)"
+18   OrigSmpInt       SEGY_SHORT   1 "Sample interval in u-sec (original)"
+20   NumSmp           SEGY_SHORT   1 "Number of samples per trace (this reel)"
+22   OrigNumSmp       SEGY_SHORT   1 "Number of samples per trace (original)"
+24   FmtCode          SEGY_SHORT   1 "Sample format code (1:f4ibm 2:i, 3:i2 5:f4 8:i1)"
+26   CdpFold          SEGY_SHORT   1 "CDP fold (expected traces per CDP ensemble)"
+28   SortCode         SEGY_SHORT   1 "Trace sorting code (1:none 2:CDP 3:fold 4:stack)"
+30   VertSumFlag      SEGY_SHORT   1 "Vertical sum code (1 none, n sum)"
+32   SwpFreqStart     SEGY_SHORT   1 "Sweep frequency at start"
+34   SwpFreqEnd       SEGY_SHORT   1 "Sweep frequency at end"
+36   SwpLength        SEGY_SHORT   1 "Sweep length (m-sec)"
+38   SwpCode          SEGY_SHORT   1 "Sweep type code (1 linear, 2 par, 3 exp)"
+40   SwpChan          SEGY_SHORT   1 "Trace number of sweep channel"
+42   SwpTprStart      SEGY_SHORT   1 "Sweep trace taper length in m-sec, start"
+44   SwpTprEnd        SEGY_SHORT   1 "Sweep trace taper length in m-sec, end"
+46   SwpTprType       SEGY_SHORT   1 "Taper type (1 linear, 2 cos^2)"
+48   CorrFlag         SEGY_SHORT   1 "CorrFlag data traces (1 no, 2 yes)"
+50   GainFlag         SEGY_SHORT   1 "Binary gain recovered (1 yes, 2 no)"
+52   AmpFlag          SEGY_SHORT   1 "Amplitude recovery method (1:no 2:sph 3:agc)"
+54   UnitsFlag        SEGY_SHORT   1 "Measurement system (1 meters, 2 feet)"
+56   PolarityFlag     SEGY_SHORT   1 "Impulse signal polarity (1 neg, 2 pos)"
+58   VibLagFlag       SEGY_SHORT   1 "Vibratory polarity code: 1-8"
+60   SpareBin.I1      unsigned1   40 "Unassigned--for optional information"
+60   SpareBin.I2      integer2    20 "Unassigned--for optional information"
+60   SpareBin.I4      integer4    10 "Unassigned--for optional information"
+60   SpareBin.F4      float4      10 "Unassigned--for optional information"
+60   SpareBin.F4ibm   float4ibm   10 "Unassigned--for optional information"
+100  SegyFmt          SEGY_SHORT   1 "Segy Format (0100x for Rev 1)"
+102  FixedLength      SEGY_SHORT   1 "Fixed Trace Length flag"
+104  NumHdr           SEGY_SHORT   1 "Number of Extended Textual Headers"
+106  Unassigned       SEGY_SHORT   1 "Unassigned"
+180  Spare2Bin.I1     unsigned1  292 "Unassigned--for optional information"
+180  Spare2Bin.I2     integer2   146 "Unassigned--for optional information"
+180  Spare2Bin.I4     integer4    73 "Unassigned--for optional information"
+180  Spare2Bin.F4     float4      73 "Unassigned--for optional information"
+180  Spare2Bin.F4ibm  float4ibm   73 "Unassigned--for optional information"
+400  PadBinary        unsigned1    0 "excess bytes after binary header"
+*    segy_GREEN       SEGY_INT     0 "SEGY green word suffix"
+    </pre>
+
+    <p class='footnote'/>
+      <code><sup>&dagger;</sup></code> See 
+      <a href="../../datatypes.html">Data Types</a> for more
+      details.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

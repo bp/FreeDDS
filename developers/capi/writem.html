@@ -1,0 +1,111 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_writem)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","writem")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_writem - DDS, write binary stream and map buffer
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>int cdds_writem(</b><i>out_bin, out_tag, in_bin, in_tag, in_buf, count</i><b>);
+      </b><dl><dt><dd>
+        <b>BIN_TAG </b><i>out_bin
+        </i><br>
+        <b>FIELD_TAG </b><i>out_tag
+        </i><br>
+        <b>BIN_TAG </b><i>in_bin
+        </i><br>
+        <b>FIELD_TAG </b><i>in_tag
+        </i><br>
+        <b>void *</b><i>in_buf
+        </i><br>
+        <b>int </b><i>count
+        </i></dl>
+
+    <P>
+      [ <A HREF="#input">Input</A> 
+      | <A HREF="#output">Output</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+    <h2>DESCRIPTION</h2>
+    This functions maps data from a type buffer
+    and write it into a binary stream.
+    <a name="input"></a><h2>INPUT</h2>
+    <i>Out_bin</i> is a binary tag, previously obtained from 
+    <a href="open.html">cdds_open.</a>
+    It specifies an output binary stream.
+    <p>
+      <i>out_tag</i> is a field tag, previously obtained eg. from 
+      <a href="member.html">cdds_member.</a>
+      It specifies a tag associated with <i>out_bin</i>.
+      This provides a scale factor for <i>count</i>.
+      If <i>out_tag</i> is zero (nominal), it defaults to the <i>SEQUENCE</i> 
+      (trace type) associated with <i>out_bin</i>.
+    <p>
+      <i>In_bin</i> is a binary tag, previously obtained from 
+      <a href="open.html">cdds_open.</a>
+      It specifies an input binary stream.
+    <p>
+      <i>in_tag</i> is a field tag, previously obtained eg. from 
+      <a href="member.html">cdds_member.</a>
+      It specifies a tag associated with <i>in_bin</i>.
+      This provides a scale factor for <i>count</i>.
+      If <i>in_tag</i> is zero (nominal), it defaults to the <i>SEQUENCE</i> 
+      (trace type) associated with <i>in_bin</i>.
+    <p>
+      Data is written from <i>in_buf</i>.
+      The minimum size is <i>count</i> times the size of <i>in_tag</i>.
+      <a name="output"></a><h2>OUTPUT</h2>
+    Data is moved from <i>out_buf</i> to a temporary buffer,
+    while converting from <i>in_tag</i> to <i>out_tag</i>.
+    A byte sequence is copied from the buffer into <i>out_bin</i>.
+    <b>cdds_writem</b> is preferable to executing 
+    <a href="write.html">cdds_write</a>and
+    <a href="map.html">cdds_map</a>directly.
+
+    <p>
+      The return value is the number of types actually mapped and written.
+      EOF is returned, if an error occurred before any transfer.
+      <a name="examples"></a><h2>EXAMPLES</h2>
+    <dl><dt><dd>
+        <pre>
+          <b>
+            BIN_TAG in_bin, out_bin;
+            char *out_buf;
+            ...
+            /* write 10 traces from type buffer */
+            cdds_writem(out_bin, 0, in_bin, 0, in_buf, 10);
+          </b></pre>
+        <b></b></dl>
+    <h2>SEE ALSO</h2>
+    <pre>
+      <a href="write.html">cdds_write</a> Write data into binary stream
+      <a href="map.html">cdds_map</a> Map data between formats
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

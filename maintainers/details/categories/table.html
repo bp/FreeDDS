@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (table)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","table")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Table:</h2>
+
+    <p>
+      Dictionaries, definitions, and compilers all use "hash" tables. Hash
+      tables are setup for storing and retrieving Dictionaries, Keywords,
+      Primetypes, definitions (for each dictinary, DDS_DICT), and symbols 
+      (for each binary DDS_BIN). When practical, all related data is kept
+      in the same table. Page management is more efficient than general 
+      heap support.</p>
+
+    <p>
+      A hash table is summarized by a DDS_TABLE structure. Storage for
+      DDS_ITEMs in DDS_TABLE is described by DDS_PAGE. Pages also contain
+      name strings and other non-DDS_ITEM data. Data can be appended to the
+      active DDS_PAGE in DDS_TABLE.  When the active page overflows, a new 
+      page is allocated.  Previous pages are chained together via their 
+      initial entry.  Only the last DDS_ITEM in the active page can be deleted.</p>
+
+    <p>
+      Each entry in a hash table begins with a DDS_ITEM_CLASS struct.
+      It keeps the basic description for an individual entry.
+      Extended entries must inherit DDS_ITEM_CLASS (first member).
+      Additional attributes are appended to the structure as needed.
+      Examples include DDS_DEFN, DDS_DICT, and DDS_KEYWORD.</p>
+
+    <p>
+      Support functions operate on DDS_TABLE, DDS_ITEM and DDS_PAGE. Data in
+      a hash page may be <b>"named"</b>, <b>"anonymous"</b>, or <b>"un-linked"</b>.</p>
+   
+    <dl style="padding: 0 0 0 50px">
+      <dt><b><u>named:</u></b> definitions, dictionaries, typedefs, variables.</dt>
+      <dd>Data is found using hash table lookup (fast, extendable).
+        The "named" entries can be used to delimit an anonymous list.</dd>
+
+      <dt><b><u>anonymous:</u></b> nested blocks, array types, control info. </dt>
+      <dd>Anonymous entries have zero length string names.  They do <u>not</u>
+        appear in the hash table itself.  They <u>do</u> appear in the double
+        linked list ("older", "newer") of all entries, along with "named" hash
+        table entries.  Data is found by linearly searching double linked lists.
+        Anonymous lists are delimited by named hash table items; they share
+        the same list and chronological sequence. The "hash" and "chain" values
+        may be overloaded, i.e. used for other purposes if the the item is
+        anonymous.</dd>
+    
+      <dt><b><u>un-linked:</u></b> strings, constants, variables, arrays.</dt>
+      <dd>Arbitary data may be pushed onto the same stack used by 
+        the hash table to manage named and un-named items.
+        Data is found using extended attributes on table entries
+        and references from outside the table structure.</dd>
+    </dl>
+ 
+    <pre>
+<b><u>Structures:</u></b> defined in dds_table.h
+    DDS_TABLE - hash table descriptor (see DDS_STACK and DDS_ITEM)
+    DDS_PAGE  - page descriptor for hash table items
+    DDS_ITEM  - generic item descriptor for hash table entries 
+
+<b><u>Globals:</u></b>
+    DDS_TABLE dds_prime_table;    /* prime type symbol table     */
+    DDS_TABLE *dds_symbol;        /* generic global symbol table */
+
+
+<b><u>Files:</u></b>
+    tableinit.c     - Initialize hash table descriptor
+    tablepush.c     - Push "size" bytes ("align" offset) onto table
+    tablepushstr.c  - Push string onto table
+    tablepushchar.c - Push one char for contigous array onto table
+    tablepushitem.c - Create and zero "named" item onto hash table
+    tablelookup.c   - Lookup "named" hash table entry
+    tablerehash.c   - Rehash "named" hash table entries
+    tableunhash.c   - Unhash "indexed" hash table entry
+                         Unlink item from hash table "chain" and overflow "chain".
+                         Retain item on hash table list "newer" and "older".
+    tableterm.c     - Terminate "named" hash table
+    hash.c          - Compute hash key, given name string
+    primeup.c       - Return prime number >= num
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger DDS Resources</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+
+  <body>
+    <script type="text/javascript">
+      header("codeslinger","resources")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Other DDS Resources</h2>
+
+    Since no project is completely straight forward, the following resources
+    are sometimes useful in solving problems with 'make', understanding variables
+    set by DDS, and getting the true story behind what DDS functions really do.
+
+    <h3>Manipulating 'make'</h3>
+    <ul>
+      <li><u>$DDSROOT/src/lib/host/<b>HostDir</b></u> -
+      &nbsp;&nbsp;List architecture-dependent paths for include files,
+      libraries, objects, and executables.
+
+      <p>
+      <li><u>$DDSROOT/src/lib/host/<b>HostComp</b></u> -
+      &nbsp;&nbsp;Reports compiler information, compiler flags, linker,
+      and linker flags for the target architecture.
+
+      <p>
+      <li><u>$DDSROOT/src/lib/host/<b>HostMP</b></u> -
+      &nbsp;&nbsp;Reports OpenMP and MPI flags for compiler and linker,
+      shows the libraries used, paths to those libraries and the mpirun
+      executable.
+
+      <p>
+      <li><u>$DDSROOT/etc/<b>MakeVariables</b></u> -
+      &nbsp;&nbsp;Sets many variables used during 'make'. Users are able
+      to replace or modify these as warranted... add/remove compile flags,
+      libraries, include paths.
+
+      <p>
+      <li><u>$DDSROOT/etc/<b>MakeRules</b></u> -
+      &nbsp;&nbsp;Sets rules for various targets. Useful as a go-by if
+      boutique rules are needed.
+    </ul>
+
+    <h3>Source Code Variables set by DDS</h3>
+    <ul>
+      <li><a href="resources/fdds.h.html">
+      <b>$DDSROOT/include/${TArchBinDir}${CompVer}/fdds.h</b></a><br>
+      &nbsp;&nbsp;&nbsp;Architecture-dependent #include file for F77
+      <p>
+      <li><a href="resources/f90dds.h.html">
+      <b>$DDSROOT/include/${TArchBinDir}${CompVer}/f90dds.h</b></a><br>
+      &nbsp;&nbsp;&nbsp;Architecture-dependent #include file for F90
+      <p>
+      <li><a href="resources/cdds.h.html"><b>$DDSROOT/include/cdds.h</b></a><br>
+      &nbsp;&nbsp;&nbsp;#include file for C
+      <p>
+      <li><a href="resources/fft.h.html"><b>$DDSROOT/include/fft.h</b></a><br>
+      &nbsp;&nbsp;&nbsp;F77 #include file fft wrappers
+      <p>
+      <li><a href="resources/f90fft.h.html"><b>$DDSROOT/include/f90fft.h</b></a><br>
+      &nbsp;&nbsp;&nbsp;F90 #include file fft wrappers
+      <p>
+      <li><a href="resources/cfft.h.html"><b>$DDSROOT/include/cfft.h</b></a><br>
+      &nbsp;&nbsp;&nbsp;C #include file fft wrappers
+    </ul>
+
+    <h3>When the Documentation isn't Enough</h3>
+    <ul>
+      <li><b>$DDSROOT/src/lib/dds3/*.c</b></u></a> - The DDS <i>truth</i>
+      <li><b>$DDSROOT/src/lib/dds3/*.h</b></u></a> - Header files used by libdds.a
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<pre class=man>XERBLA(3)                   BLAS routine                  XERBLA(3)
+
+
+
+<b>NAME</b>
+       XERBLA - Error handler for the BLAS routines
+
+<b>SYNOPSIS</b>
+       SUBROUTINE XERBLA( SRNAME, INFO )
+
+           CHARACTER*6    SRNAME
+
+           INTEGER        INFO
+
+<b>PURPOSE</b>
+       XERBLA   is  an  error handler for the BLAS and LAPACK routines.  It is
+       called by a routine if an input parameter has an invalid value.  A mes-
+       sage is printed and execution stops.
+
+
+
+<b>ARGUMENTS</b>
+       SRNAME  (input) CHARACTER*6
+               The name of the routine which called XERBLA.
+
+       INFO    (input) INTEGER
+               The  position of the invalid parameter in the parameter list of
+               the calling routine.
+
+</pre>

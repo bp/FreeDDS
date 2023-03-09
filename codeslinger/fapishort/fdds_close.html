@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Fortran Api (fdds_close)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","fdds_close")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapishort")</script>
+
+    <h2>fdds_close - Close DDS binary stream</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_close(</b><i>bin</i><b>)
+      </b><dl><dd>
+        <b>integer </b><i>bin
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    This function closes a data stream used for binary i/o.
+    Buffers are flushed, memory is freed and associated dictionaries
+    are closed.
+
+    <h2>ARGUMENTS</h2>
+    "<i>bin</i>" is a binary tag, previously obtained from 
+    <a href="fddx_in.html">fddx_in</a> or <a href="fddx_out.html">fddx_out</a>. 
+
+    <h2>OUTPUT</h2>
+    The return value is zero, or negative if an error occurred.
+
+    <h2>EXAMPLE</h2>
+    <pre>
+integer bin
+...
+c  close binary tag
+j = fdds_close(bin)
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="fddx_in.html">fddx_in</a> Open input
+<a href="fddx_out.html">fddx_out</a> Open output
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+
+    <h2>segy_init - initialize the segy I/O interface datatype</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <p>
+      <b>integer segy_init(</b><i>n</i><b>)
+    </b><dl><dd>
+        <b>integer </b><i>n</i><br>
+        </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    The routine, "<b>segy_init</b>", sets the segy Samples data type.
+    If this is not called, the default will be ibm floating point (1).
+    The return value is always "1".
+    </p>
+
+    <ul>
+      <li>1: ibm  floating point</li>
+      <li>2: ieee floating point (big endian)</li>
+      <li>3: ieee floating point (little endian)</li>
+    </ol>
+

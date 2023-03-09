@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>cddz_hdtin - open a DDS dataset for input, passing samples mapped to the host-dependent type</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b>
+    <br>
+    <b>#include "cddz.h"</b>
+    <p>
+      <b>BIN_TAG cddz_hdtin(</b><i>alias, value, title</i><b>)</b>
+      <dl><dd>
+        <b>const char </b><i>*alias</i><br>
+        <b>const char </b><i>*value</i><br>
+        <b>const char </b><i>*title</i>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"cddz_hdtin"</b> opens an input dataset. All headers will
+    be dropped leaving the "Samples" starting at the first value of each trace.
+    Samples are mapped to the host-dependent version of the sample type in the
+    input file. The dataset is open with "r+" so that it can be modified.
+    <p>
+    After opening a file for input with <b>"cddz_hdtin"</b> the input
+    buffer dictionary will be left open for scanning. The open process 
+    will look for "<i>alias</i>" for the dictionary,
+    "<i>alias</i><b>_data</b>" for overriding the
+    binary, and "<i>alias</i><b>_format</b>" for overriding the format.
+    The input parameter "<i>value</i>" is the default value 
+    (eg. "stdin:") used for a fallback in cases where "<i>alias</i>" is
+    not specified by the user.  The input parameter "<i>title</i>"
+    should be a brief one line description of the application program. 
+    It will return a BIN_TAG associated with the internal binary upon
+    successful opening, a value of -2 if the dataset is not specified
+    and no default value is given, otherwise a value of -1 to signify 
+    an open failure.
+
+    <h2>LIMITATIONS</h2>
+    Convenience routines have a limitation where the <i>alias</i> argument
+    can only have a single alias name.
+
+   <h2> EXAMPLE</h2>
+   <pre>
+BIN_TAG    in_tag;
+FIELD_TAG  smpl_tag;
+int        *int_buf, ier, iprec,count;
+float      *flt_buf;
+double     *dbl_buf;
+const char *title, *genus;
+ ...
+in_tag=cddz_hdtin("in","stdin:",title);
+smpl_tag=cdds_member(in_tag,0,"Samples");
+genus=cdds_genus(in_tag,smpl_tag);
+iprec=cdds_prec(in_tag,smpl_tag)/cdds_count(in_tag,smpl_tag);
+ ...
+if (!strcmp(genus,"float")) {
+   if(iprec == sizeof(float))   ier=cddx_read(in_tag,flt_buf,count);
+   if(iprec == sizeof(double))  ier=cddx_read(in_tag,dbl_buf,count);
+} else {
+   if (!strncmp(genus,"int",3)) ier=cddx_read(in_tag,int_buf,count);
+}
+ ...
+   </pre>
+
+   <h2>SEE ALSO</h2>
+   <pre>
+<a href="clibs.php?lib=ddz&api=cddz_hdtype">cddz_hdtype</a> Retrieve host-dependent type of a field
+<a href="clibs.php?lib=ddz&api=cddz_intype">cddz_intype</a> Open a file and get host-dependent type of Samples
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

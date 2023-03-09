@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_info)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","info")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_info - control writing to a print file &amp; console</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+    <b>integer function fdds_info(</b><i>enable</i><b>)
+    </b><dl><dd>
+        <b>integer </b><i>enable
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_info</b> is used to enable or disable printing data
+    information when a file is opened up depending on whether <i>enable</i>
+    is True (1) or False (0).  Be default, printing of this information is
+    enabled by <b>fdds_openpr</b>.  This can be useful when opening and
+    reopening the same file(s) repeatedly.  The return value is always 0.
+ 
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="openpr.html">fdds_openpr</a> Open a printfile
+<a href="savepr.html">fdds_savepr</a> Redirect to printfile
+<a href="prthdr.html">fdds_prthdr</a> Print header
+<a href="sprintf.html">fdds_sprintf</a> Print to string
+<a href="prtmsg.html">fdds_prtmsg</a> Print a message
+<a href="prtcon.html">fdds_prtcon</a> Print to console
+<a href="prterr.html">fdds_prterr</a> Print error message
+<a href="errors.html">fdds_errors</a> Query errors
+<a href="closepr.html">fdds_closepr</a> Close printfile
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

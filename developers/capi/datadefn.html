@@ -1,0 +1,96 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_datadefn)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","datadefn")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_datadefn - DDS, create filename for binary output.
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+    <b>const char *cdds_datadefn(</b><i>data_dict, data_alias</i><b>);</b>
+    <dl><dt><dd>
+        <b>const char *</b> <i>data_dict </i><br>
+	<b>const char *</b> <i>data_alias</i>
+    </dl>
+
+    <P>
+      [ <A HREF="#input">Input</A> 
+      | <A HREF="#output">Output</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+    <h2>DESCRIPTION</h2>
+    This function creates a filename for binary output.
+    The name is defined in <i>data_dict</i> and returned to the caller.
+    <a name="input"></a><h2>INPUT</h2>
+    <i>Data_dict</i> names one dictionary that describes the binary output.
+    <p>
+      If <i>data_alias</i> is specified (i.e. <b>"out_data"</b>),
+      the user is allowed to override the filename
+      (i.e.<b>out_data= </b><i>name</i>).
+      If an override is not defined, a name is derived automatically.
+      The name is based upon the <i>data_dict</i> name and media.
+      If the dictionary is a regular file,
+      then the data is output to another regular file.
+      The new filename is created using <i>DATA_PATH, DATA_SUFFIX,</i> and
+      the last component of the dictionary name.
+      If the dictionary is NOT a regular file (i.e. pipe, tape, ...),
+      or if <i>data_alias</i> defines a <i>blank</i> name,
+      then binary data is attached to the output dictionary,
+      i.e. they share the same file, pipe stream, or tape media.
+    <p>
+      The values for <i>DATA_PATH </i>and<i> DATA_SUFFIX</i>
+      are retrieved from the <i>extended</i> dictionaries.
+      <a name="output"></a><h2>OUTPUT</h2>
+    If the user defines an override via <i>data_alias</i>,
+    two definitions are appended to <i>data_dict</i>.
+    The first is an alias that references the override
+    (i.e. <b>$data= out_data</b>).
+    The second is an alias that prevents the override from being used again
+    (i.e. <b>$out_data= </b>).
+    <p>
+      The function returns a constant character pointer to a static string.
+      It contains the override defined by the user,
+      or the filename created by <b>cdds_datadefn</b>.
+      The string is over written with each call.
+      <a name="examples"></a><h2>EXAMPLE</h2>
+    <dl><dt><dd>
+        <pre>
+          <b>
+            const char *name, *data_dict = "line73";
+            ...
+            /* change alias used to default data path */
+            /* default is "DATA_PATH" */
+            cdds_printf("data_path=", "CM_DATA_PATH");
+
+            /* create data filename (suffix is "-") or */
+            /* retrieve override "out_data= filename" */
+            name = cdds_datadefn(data_dict, "out_data");
+          </b></pre>
+        <b></b></dl>
+
+    <h2>AUTHOR</h2>
+    Randy Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

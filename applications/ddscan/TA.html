@@ -1,0 +1,256 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications (ddscan)</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','ddscan','TA')</script>
+   
+    <p>
+      Entering the "Trace Header Table" command ("<code>TA</code> &lt;<i>trace number</i>&gt;") 
+      will print the trace header table sorted alphabetically by the FIELD Name exactly 
+      as DDS interprets it for <i>trace number</i>.
+      If no <i>trace number</i> is given, then it prints out the table for the next trace.
+      It beins at trace 1 the first time.  This is an example for a trace table from a 
+      <b>USP</b> file.
+    </p>
+
+    <pre style="margin-left: 50px">
+<b>ta 12</b>
+                 --- Trace Header: trace 12 (860 bytes) ---
+
+ -FIELD-       -OFST- -LEN- -BYTS-    -VALUE-  -TYPE-
+ CDPBCX           72     1      4          0   integer4
+ CDPBCY           76     1      4          0   integer4
+ CabDep          194     1      2          0   integer2
+ DPOPer          198     1      2          0   integer2
+ DatShf          254     1      2          0   integer2
+ DePtEl          248     1      2       4867   integer2
+ DpPtLn          208     1      4          8   integer4
+ DpPtLt          204     1      4         16   integer4
+ DphInd          246     1      2         16   integer2
+ DstSgn          240     1      2       1308   integer2
+ DstUsg          236     1      2       1308   integer2
+ FlDtEl           84     1      2          0   integer2
+ FlReFN           12     1      2          0   integer2
+ FlStNm           14     1      2          0   integer2
+ FoldNm          212     1      2          0   integer2
+ GrpElv          242     1      2       4887   integer2
+ InStAp           20     1      2          0   integer2
+ InStUn           18     1      2          0   integer2
+ InTrCn           80     1      4          0   integer4
+ InlSPO           90     1      2          0   integer2
+ LRcCDP          192     1      2          0   integer2
+ LinInd          244     1      2          0   integer2
+ MulSkw           86     1      2          0   integer2
+ PREPIn           16     1      2          0   integer2
+ PREPRc           22     1      2          0   integer2
+ PerSPO           88     1      2          0   integer2
+ PrRcNm          222     1      2          1   integer2
+ PrTrNm          224     1      2         96   integer2
+ RcComp           38     1      2          0   integer2
+ RcPtXC           56     1      4        100   integer4
+ RcPtYC           60     1      4        753   integer4
+ RcStAp           26     1      2          0   integer2
+ RcStUn           24     1      2          0   integer2
+ RcStat           42     1      2          0   integer2
+ RecInd          238     1      2        200   integer2
+ RecNum          214     1      2          1   integer2
+ RedTim          186     1      2          0   integer2
+ RedVel          184     1      2          0   integer2
+ RfSrEl          250     1      2       4800   integer2
+ SGRAmp            6     1      2          0   integer2
+ SGRDat            8     1      4          0   integer4
+ SGRNum            4     1      2          0   integer2
+ Samples         260   150    600 -.184278E-06 float4  
+ ShtDep          200     1      2          0   integer2
+ SoPtAl          258     1      1            ~ ascii1  
+ SoPtBi          259     1      1            ~ ascii1  
+ SoPtNm          256     1      2        226   integer2
+ SrComp           36     1      2          0   integer2
+ SrPrLn          232     1      4          0   integer4
+ SrPrLt          228     1      4        265   integer4
+ SrPtEl          226     1      2       4847   integer2
+ SrPtXC           48     1      4        150   integer4
+ SrPtYC           52     1      4       2060   integer4
+ SrRcAz           46     1      2     -16090   integer2
+ SrRcMX           64     1      4        125   integer4
+ SrRcMY           68     1      4       1407   integer4
+ SrStat           40     1      2          0   integer2
+ SrcLoc          220     1      2      -1840   integer2
+ SrcPnt          218     1      2          8   integer2
+ StaCor          252     1      2        -31   integer2
+ TVPT01          104     1      2          0   integer2
+ TVPT02          108     1      2          0   integer2
+ TVPT03          112     1      2          0   integer2
+ TVPT04          116     1      2          0   integer2
+ TVPT05          120     1      2          0   integer2
+ TVPT06          124     1      2          0   integer2
+ TVPT07          128     1      2          0   integer2
+ TVPT08          132     1      2          0   integer2
+ TVPT09          136     1      2          0   integer2
+ TVPT10          140     1      2          0   integer2
+ TVPT11          144     1      2          0   integer2
+ TVPT12          148     1      2          0   integer2
+ TVPT13          152     1      2          0   integer2
+ TVPT14          156     1      2          0   integer2
+ TVPT15          160     1      2          0   integer2
+ TVPT16          164     1      2          0   integer2
+ TVPT17          168     1      2          0   integer2
+ TVPT18          172     1      2          0   integer2
+ TVPT19          176     1      2          0   integer2
+ TVPT20          180     1      2          0   integer2
+ TVPV01          106     1      2          0   integer2
+ TVPV02          110     1      2          0   integer2
+ TVPV03          114     1      2          0   integer2
+ TVPV04          118     1      2          0   integer2
+ TVPV05          122     1      2          0   integer2
+ TVPV06          126     1      2          0   integer2
+ TVPV07          130     1      2          0   integer2
+ TVPV08          134     1      2          0   integer2
+ TVPV09          138     1      2          0   integer2
+ TVPV10          142     1      2          0   integer2
+ TVPV11          146     1      2          0   integer2
+ TVPV12          150     1      2          0   integer2
+ TVPV13          154     1      2          0   integer2
+ TVPV14          158     1      2          0   integer2
+ TVPV15          162     1      2          0   integer2
+ TVPV16          166     1      2          0   integer2
+ TVPV17          170     1      2          0   integer2
+ TVPV18          174     1      2          0   integer2
+ TVPV19          178     1      2          0   integer2
+ TVPV20          182     1      2          0   integer2
+ TiLiIx           92     6     12          0   integer2
+ ToStAp           28     1      2          0   integer2
+ ToStUn           32     1      2          0   integer2
+ ToTmAA           30     1      2          0   integer2
+ ToTmAU           34     1      2          0   integer2
+ TrHdID           44     1      2          0   integer2
+ TrcNum          216     1      2         12   integer2
+ UphlTm          202     1      2          0   integer2
+ VPick1          188     1      2          0   integer2
+ VPick2          190     1      2          0   integer2
+ WDepDP          196     1      2          0   integer2
+ green_prefix      0     1      4        856   integer4
+</pre>
+   
+    <p>
+      This is an example for a trace table from a <b>SEGY</b> file.
+    </p>
+
+    <pre style="margin-left: 50px">
+<b>ta 12</b>
+                 --- Trace Header: trace 12 (840 bytes) ---
+
+ -FIELD-           -OFST- -LEN- -BYTS-    -VALUE-   -TYPE-
+ AntiAliasFreq       140     1      2          0   integer2 
+ AntiAliasSlope      142     1      2          0   integer2 
+ CdpNum               20     1      4         16   integer4 
+ CdpTrcNum            24     1      4         12   integer4 
+ CorrFlag            124     1      2          0   integer2 
+ DataUse              34     1      2          0   integer2 
+ Date
+    DateYear         156     1      2          0   integer2 
+    DateDay          158     1      2          0   integer2 
+    DateHour         160     1      2          0   integer2 
+    DateMin          162     1      2          0   integer2 
+    DateSec          164     1      2          0   integer2 
+ DateType            166     1      2          0   integer2 
+ DstSgn               36     1      4       1308   integer4 
+ ElevScaler           68     1      2          1   integer2 
+ FieldRecNum           8     1      4          1   integer4 
+ FieldTrcNum          12     1      4         96   integer4 
+ GainConst           120     1      2          0   integer2 
+ GainInit            122     1      2          0   integer2 
+ GainType            118     1      2          0   integer2 
+ GrpDatum             52     1      4       4800   integer4 
+ GrpElev              40     1      4       4887   integer4 
+ GrpStatic           100     1      2          0   integer2 
+ GrpX                 80     1      4        100   integer4 
+ GrpY                 84     1      4        753   integer4 
+ HighCutFreq         150     1      2          0   integer2 
+ HighCutSlope        154     1      2          0   integer2 
+ HorzStack            32     1      2          0   integer2 
+ LagTmBreak          104     1      2          0   integer2 
+ LagTmSmpOne         108     1      2          0   integer2 
+ LagTmSrc            106     1      2          0   integer2 
+ LineTrcNum            0     1      4         12   integer4 
+ LowCutFreq          148     1      2          0   integer2 
+ LowCutSlope         152     1      2          0   integer2 
+ MuteEnd             112     1      2          0   integer2 
+ MuteStart           110     1      2          0   integer2 
+ NotchFreq           144     1      2          0   integer2 
+ NotchSlope          146     1      2          0   integer2 
+ OverTravel          178     1      2          0   integer2 
+ ReelTrcNum            4     1      4         12   integer4 
+ RollGapSize         176     1      2          0   integer2 
+ RollSwtch1          170     1      2          0   integer2 
+ RollTrace1          172     1      2          0   integer2 
+ RollTraceN          174     1      2          0   integer2 
+ Samples             240   150    600 -.184278E-06 float4ibm
+ Spare
+    I1               180    60     60          0   unsigned1
+    I2               180    30     60          0   integer2 
+    I4               180    15     60          8   integer4 
+    F4               180    15     60          0   float4   
+    F4ibm            180    15     60          0   float4ibm
+    Hdr
+       SpareGAP      180     2      2~~            ebcdic1  
+       SrcPnt        182     1      2          8   integer2 
+       SoPtNm        184     1      2        226   integer2 
+       RecInd        186     1      2        200   integer2 
+       ShotNum       188     1      2          0   integer2 
+       RefStatSrc    190     1      2          0   integer2 
+       RefStatGrp    192     1      2          0   integer2 
+       LinInd        194     1      2          0   integer2 
+       SrRcMX        196     1      4        125   integer4 
+       SrRcMY        200     1      4       1407   integer4 
+       CDPBCX        204     1      4          0   integer4 
+       CDPBCY        208     1      4          0   integer4 
+       DstUsg        212     1      2       1308   integer2 
+       SrRcAz        214     1      2     -16090   integer2 
+       SrcLoc        216     1      2      -1840   integer2 
+       RecNum        218     1      2          1   integer2 
+       FlReFN        220     1      2          0   integer2 
+       CdpStatic     222     1      2          0   integer2 
+       RfSrEl        224     1      2       4800   integer2 
+       DePtEl        226     1      2       4867   integer2 
+       FlDtEl        228     1      2          0   integer2 
+ SrcDatum             56     1      4          0   integer4 
+ SrcDepth             48     1      4          0   integer4 
+ SrcElev              44     1      4       4847   integer4 
+ SrcPtNum             16     1      4          0   integer4 
+ SrcStatic            98     1      2          0   integer2 
+ SrcX                 72     1      4        150   integer4 
+ SrcY                 76     1      4       2060   integer4 
+ SubWeathVel          92     1      2          0   integer2 
+ SwpFreqEnd          128     1      2          0   integer2 
+ SwpFreqStart        126     1      2          0   integer2 
+ SwpLength           130     1      2          0   integer2 
+ SwpTprEnd           136     1      2          0   integer2 
+ SwpTprStart         134     1      2          0   integer2 
+ SwpTprType          138     1      2          0   integer2 
+ SwpType             132     1      2          0   integer2 
+ TotalStatic         102     1      2        -31   integer2 
+ TrcIdCode            28     1      2          1   integer2 
+ TrcNumSmp           114     1      2          0   integer2 
+ TrcSmpInt           116     1      2          0   integer2 
+ TrcWeight           168     1      2          0   integer2 
+ UpholeTmGrp          96     1      2          0   integer2 
+ UpholeTmSrc          94     1      2          0   integer2 
+ VertStack            30     1      2          0   integer2 
+ WatDepthGrp          64     1      4          0   integer4 
+ WatDepthSrc          60     1      4          0   integer4 
+ WeathVel             90     1      2          0   integer2 
+ XYScaler             70     1      2          1   integer2 
+ XYUnits              88     1      2          0   integer2 
+</pre>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

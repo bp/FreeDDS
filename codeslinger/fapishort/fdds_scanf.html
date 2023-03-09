@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Fortran Api (fdds_scanf)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","fdds_scanf")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapishort")</script>
+
+    <h2>fdds_scanf - retrieve definition from DDS dictionary</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources) <br>
+    <p>
+      <b>integer function fdds_scanf(</b><i>alias, fmt</i><b>,</b><i>...)
+      </i><dl><dd>
+        <b>character*(*) </b><i>alias
+        </i><br>
+        <b>character*(*) </b><i>fmt
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_scanf</b> retrieves a definition from a dictionary. The
+    "scan" dictionary(s) must have been previously selected by 
+    <a href="fdds_dict.html">fdds_dict</a>,
+    <a href="fddx_dict.html">fddx_dict</a>, or
+    <a href="fddx_out.html">fddx_out</a>.
+
+    <h2>ARGUMENTS</h2>
+    "<i>alias</i>" is used to set the "position" from which <i>value</i>
+      retrieval starts. It specifies the definition to retrieve.
+      <i>alias</i> may contain multiple names, delimited by white space,
+      or it may be blank. When names are given, the "scan" dictionaries 
+      are searched from bottom-to-top, right-to-left. The newest
+      definition that matches any name is selected and the "position" is
+      set immediately after the "=" of the definition. When <i>alias</i>
+      is blank, the "position" is unchanged. <i>values</i> are processed
+      starting at "position".
+
+    <p>
+    "<i>fmt</i>" is an ANSI C standard format string for the stdio
+      scanf function. It converts optional arguments "..." following
+      the rules of the ANSI C standard for <b>scanf</b>.
+
+    <p>
+      <b>Format strings <u>MUST</u> be terminated with a null
+      character ("\0").</b>
+
+    <p>
+      Optional arguments, "...", are program variables that are set
+      by <b>fdds_scanf</b> if they are present in the "scan" dictionaries.
+
+    <h2>DETAILS</h2>
+      Processing begins at the current "position" in the definition
+      <i>value</i>. Characters are matched and converted, according to
+      <i>fmt</i>, as specified by the ANSI C standard for the stdio
+      <b>scanf</b> function.  The "position" is advanced as the format
+      is processed.  <b>fdds_scanf</b> returns the number of arguments
+      converted and assigned.
+
+    <p>
+      Dictionaries may contain <b>alias:</b> definitions. They define
+      alternate names for "older" definitions. <b>alias:</b> definitions
+      are denoted by a special prefix, "<b>alias:</b><i>defn_name</i>"
+      or "<b>$</b><i>defn_name</i>". The value of an <b>alias:</b>
+      definition is a list of alternate names.
+
+    <p>
+      The following table summarizes conversion specifiers
+      recognized within <i>fmt</i>.
+    <pre>
+fmt        -------- Sun -------- 
+char      Fortran       modifier 
+                      h    l    L
+d         integer     *2   *4   *4 
+i         integer     *2   *4   *4
+o         integer     *2   *4   *4
+u         integer     *2   *4   *4
+x         integer     *2   *4   *4
+c         character   NA   NA   NA
+s         character   NA   NA   NA
+f         real        NA   dp   NA
+e, f, g   real        NA   dp   NA
+p         not char    NA   NA   NA
+n         integer     *2   *4   *4
+[...]     character   NA   NA   NA
+[^...]    character   NA   NA   NA
+%         NA          NA   NA   NA
+    </pre>
+
+    <b>fdds_scanf</b> pads trailing blanks or truncates strings as
+    needed during '%c', '%s' and '%[...]' conversion. Unlike "C", the
+    maximum field width is not required to prevent string overflow.
+
+    <h2>OUTPUT</h2>
+      <b>fdds_scanf</b> returns the number of arguments converted and
+      assigned.
+      <br><br>
+      <b>fdds_scanf</b> returns EOF, if no match is found, if a "scan"
+      definition is not already selected, or if conversion fails prior
+      to the first assignment.
+
+    <h2>EXAMPLES</h2>
+    <pre>
+c  default "alpha" to 3.14, override if defined
+      alpha = 3.14
+      ier = fdds_scanf('alpha', '%f\0', alpha)
+ 
+c  retrieve beta, using defn alias
+      ier = fdds_scanf('beta BETA Beta', '%s\0', beta)
+ 
+c  retrieve mixed data types (string, integer, float)
+      ier = fdds_scanf('gamma', '%s %d %f\0', s, i, r)
+ 
+c  retrieve 1st &amp; 2nd axis sizes
+      ier  = fdds_scanf('size.axis(1)', '%d\0', nsmp)
+      ier  = fdds_scanf('size.axis(2)', '%d\0', ntrc)
+ 
+c  retrieve arbitrary number of float values
+      ier = fdds_scanf('omega', '%f\0',omega(1))
+      n = 0
+      dowhile(ier.eq.1)
+         n = n + 1
+         ier = fdds_scanf(' ', '%f\0', omega(n+1))
+      enddo
+
+c  retrieve alias definition itself
+      ier = fdds_scanf('$name', ' %s\0', alias)
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="fdds_dict.html" >fdds_dict</a>  Select DDS dictionary and set mode
+<a href="fddx_dict.html" >fddx_dict</a>  Select DDS dictionary and set mode
+<a href="fdds_scank.html">fdds_scank</a> Retrieve a definition
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (May, 1994)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

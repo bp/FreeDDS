@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (scan)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","scan")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Scan:</h2>
+
+    <pre>
+<b><u>Structures:</u></b>
+    DDS_DEFN  - Definition structure defined in dds_dict.h
+    DDS_ALIAS - Alias list structure defined in dds_dict.h
+
+
+<b><u>Globals:</u></b>
+    DDS_DEFN  *dds_scan_defn;  /* current scan defn descriptor */
+    DDS_DEFN  *dds_scan_newer; /* newer scan defn descriptor   */
+    DDS_ALIAS *dds_alias_free; /* malloc alias list            */
+    DDS_ALIAS *dds_alias_done; /* unused alias list            */
+
+
+<b><u>Files:</u></b>
+    f_xxx.c      - Fortran API Routines
+                      f_scanv.c f_scant.c f_scantn.c f_scank.c f_scanf.c
+                      f_newer.c f_axis_prod.c f_switch.c f_key.c 
+    c_xxx.c      - "C" API Routines
+                      c_scanv.c c_scant.c c_scantn.c c_scank.c c_scanf.c 
+                      c_newer.c c_axis_prod.c c_switch.c c_key.c 
+    scanfc.c     - Retrieve formatted definition value, C interface.
+    scanff.c     - Retrieve formatted definition value, Fortran interface
+    scandone.c   - De-select current scan dict and defn
+    key.c        - Search remaining value of scan definition for keywords
+    partag.c     - Tag definitions in "par:" dictionary to know if ever used.
+                   Any unused parameters are listed at the end of the printout.
+    defnfind.c   - Find definition from a given dictionary
+    defnnewer.c  - Find next newer definition in a dictionary table
+    defnaxis.c   - Test for and convert "xxx.axis(1)" to "xxx.???" (ie. replace
+                   "axis(#)" with actual axis name)
+    aliasadd.c   - Add alias to definition alias list.
+    aliasdone.c  - Cleanup entire definition alias list.
+    aliasdrop.c  - Drop one alias from definition alias list.
+    aliaslist.c  - Update alias list, given string of definition names.
+    aliasname2.c - Create defn alias names (eg. fmt:n1.n2 fmt:n1.* fmt:*.n2 fmt:*.*)
+    aliasname3.c - Create defn alias names (eg. map:n1:n2.n2 map:*:n2.n3 map:n1:*.n3 ...)
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

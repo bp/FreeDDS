@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Runtime Control</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","runtime")</script>
+    <!*********************************************************************>
+
+    <p>
+      The following Runtime Control parameters are available to control some
+      runtime behaviors of DDS applications.  The names can either be all
+      <u>upper case</u> or all <u>lower case</u>.  
+
+    <p>
+      <b>&bull; <u>DATA_PATH</u></b>
+      defines the path used when creating default filenames for output
+      binary data. When not provided the default path is the current 
+      working directory. Users may setup a default for output binary 
+      data to an alternate file system. It may provide high capacity,
+      alternate charges, or special backups. <b>DATA_PATH</b> is retrieved
+      from the extended Dictionaries.  So it can be specified on the 
+      <u>command line</u> or <u>par file</u> and it will be used in
+      subsequent processing as it remains in the Dictionary history.
+      For example:
+
+    <pre>
+comment= default path for binary output data
+DATA_PATH= /data/gpss83/data1/zrls13/work
+    </pre>
+
+    <p>
+      <b>&bull; <u>DATA_SUFFIX</u></b>
+      defines the suffix used when creating default
+      filenames for output binary data. When not provided the default suffix
+      is "<b>_@</b>". <b>DATA_SUFFIX</b> is retrieved from the extended
+      Dictionaries.  So it can be specified on the <u>command line</u> or
+      <u>par file</u> and it will be used in subsequent processing as it
+      remains in the Dictionary history. For example:
+
+    <pre>
+comment= suffix binary data filenames with ".bin"
+DATA_SUFFIX= .bin
+    </pre>
+
+    <p>
+      <b>&bull; <u>PRINT_PATH</u></b>
+      is used to control the DDS printout file. If not specified, the 
+      printout file is written to the current working directory.  It can be
+      used to define the directory where the printout is to be created or 
+      the filename for the printout itself.  If specified as 
+      "<b>/dev/null</b> no printout is generated and if it is defined
+      <b>PRINT_PATH</b> is retrieved from the DDS base Dictionaries
+      (par: env:) which include the <u>command line</u>, <u>par file</u>,
+      and <u>environment parameter</u> Definitions in that order. For
+      example:
+
+    <pre>
+comment= default path for print files
+PRINT_PATH= /data/gpss83/data1/zrls13/work
+    </pre>
+
+    <p>
+      <b>&bull; <u>DDS_PATH</u></b>
+      defines a search path for special format,
+      "<code><var>format</var>.fmt.dds</code>", and mapping,
+      "<code><var>format</var>.map.dds</code>", Dictionaries used during
+      execution. The Definition may specify multiple directories, delimited 
+      by white space. <b>DDS_PATH</b> is retrieved from the DDS base
+      Dictionaries (par: env:) which include the <u>command line</u>,
+      <u>par file</u>, and <u>environment parameter</u> Definitions in
+      that order. For example:
+
+    <pre>
+comment= give precedence to WEBG defaults
+DDS_PATH= /webg/dds ~/dds
+    </pre>
+
+    <p>
+      <b>&bull; <u>DDS_PATH3</u></b>
+      is identical to <b>DDS_PATH</b>.  It is preferred to use
+      <b>DDS_PATH</b>.
+
+    <p>
+      <b>&bull; <u>DDS_DEBUG</u></b>
+      controls debug printout information (see 
+      <a href="debug.html">Debug Support</a> for details). It is retrieved
+      from the DDS base Dictionaries (par: env:) which include the 
+      <u>command line</u>, <u>par file</u>, and <u>environment parameter</u>
+      Definitions in that order.
+
+    <p>
+      <b>&bull; <u>DDS_DUMP</u></b>
+      is identical to <b>DDS_DEBUG</b>.
+
+      <br/><br/><hr>
+
+    <p>
+      The following Runtime Control parameters are <u>only</u> provided
+      through environmental variables.  They must be <u>all caps</u> only.
+      <b>GIO</b> is the buffered I/O package which is a part of DDS.
+
+    <p>
+      <b>&bull; <u>DDS_START_CMD</u></b> 
+      causes it's value to be inserted in front of the execution of the
+      binary by the startup script.
+
+    <p>
+      <b>&bull; <u>DDS_START_MPI</u></b> 
+      causes it's value to be inserted in front of the mpirun call for the
+      execution of the binary by the startup script.
+
+    <p>
+      <b>&bull; <u>DDS_TIMESTAMP</u></b> 
+      causes a "timestamp" to be put into the printout
+      file.  A value "&lt; 0" is the default which does not provide a
+      timestamp;  a value of "0" will put a timestamp at the beginning
+      of each line; a value "&gt; 0" will print a separate timestamp line
+      after every <var>DDS_TIMESTAMP</var> seconds.
+
+    <p>
+      <b>&bull; <u>DDS_PREALLOC</u></b>
+      is a switch to turn on preallocation for output
+      files.  It is only available on <b>altix</b> systems.  The default,
+      "<b>n</b>" is to not preallocate the output.  A value of "<b>y</b>"
+      will preallocate output files on altix machines.
+
+    <p>
+      <b>&bull; <u>DDS_MNT</u></b>
+      is a switch to specify an alternate mount point for externally
+      mounted directories.  If a file is requested with this prefix
+      directory, then DDS will check to see if the file exists without
+      the prefix.  This allows faster access to locally mounted files.
+      If a file does not exist, then DDS will try the same file with
+      this mount prefix.  The trailing "/" does not have to be
+      specified. The current default is "/hpc/".
+
+    <p>
+      <b>&bull; <u>GIO_TRACE</u></b>
+      turns on GIO tracing to the file named, 
+      "<code>${GIO_TRACE}gio_trace.<var>pid</var></code>".
+
+    <p>
+      <b>&bull; <u>GIO_VERBOSE</u></b>
+      turns on printing GIO verbose messages. 
+
+    <p>
+      <b>&bull; <u>GIO_BLKSIZE</u></b>
+      overrides the GIO Block Size. A value "&lt; 0"
+      will attempt to turn of buffering; a value "&gt; 0" will use that
+      value as the fixed I/O block size.  The default is to allow GIO
+      to adapt to an optimum value with a determined range.
+
+
+    <p>
+      <b>&bull; <u>GIO_BUFMODE</u></b>
+      overrides the GIO buffer mode: "<code>c</code>"
+      to use copy I/O; "<code>m</code>" to use memory mapped I/O; and
+      "<code>r</code>" to use raw I/O.
+
+    <p>
+      <b>&bull; <u>GIO_OPEN_MAX</u></b>
+      overrides the maximum number of open file 
+      descriptors that GIO uses.  The default is to try and detect and 
+      adapt to what GIO determines is the correct value.  If GIO runs
+      out of file descriptors, it then temporarily closes some to manage
+      many more virtual file descriptors with the limit real limit.
+
+      <!*********************************************************************>
+      <script type="text/javascript">footer()</script>
+  </body>
+</html>

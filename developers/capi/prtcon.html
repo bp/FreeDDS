@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_ptrcon)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","prtcon")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_prtcon - write a message to the console
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+    <b>int cdds_prtcon(</b><i>fmt, ...</i><b>);
+    </b><dl><dt><dd>
+        <b>const char *</b><i>fmt
+        </i></dl>
+
+    <P>
+      [ <A HREF="#description">Description</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>cdds_prtcon()</b> writes a message to the console with the program
+    name attached to it. If the print file has been opened, the message
+    will also be written to the print file.  The message is constructed 
+    from a format string, <i>fmt</i>, and option arguments (see
+    <a href="printf.html">cdds_printf</a>). The return value is always 0.
+
+    <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre>
+cdds_prtcon("%d%% complete\n", pct);
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="openpr.html">cdds_openpr</a> open a printout file
+<a href="prtmsg.html">cdds_prtmsg</a> print message
+<a href="prterr.html">cdds_prterr</a> print error message
+<a href="errors.html">cdds_errors</a> check for print errors
+<a href="closrpr.html">cdds_closepr</a> close out &amp; termination
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

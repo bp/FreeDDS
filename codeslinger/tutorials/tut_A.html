@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (access samples)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","tut_A")
+    </script>
+    <!*********************************************************************>
+
+    <hr>
+    <b><font size=+2>Purpose:</font></b>&nbsp;&nbsp;
+      Introduction to a bare minimum of the DDS API
+
+    <p>
+    <b><font size=+2>Task:</font></b>&nbsp;&nbsp;
+    Write a DDS program that reads an entire dataset and finds the average
+    value of data samples.
+
+    <h2>Outline:</h2>
+      <ul>
+        <li>Open a file for access to samples
+        <li>Retrieve data characteristics needed for the task
+           (n1, n2, ..., d1, d2, ...)
+        <li>Allocate an array to hold data
+        <li>Read through the data accumulating a sum of samples
+        <li>Report the result
+        <li>Clean up before exiting
+      </ul>
+
+    <h2>DDS resources:</h2>
+      <ul>
+        <li><a href="../fapishort/fddx_in.html">fddx_in</a> /
+            <a href="../capishort/cddx_in.html">cddx_in</a>
+             - open input (drop headers, pass samples)
+        <li><a href="../fapishort/fdds_scanf.html">fdds_scanf</a> /
+            <a href="../capishort/cdds_scanf.html">cdds_scanf</a>
+             - scan definitions
+        <li><a href="../fapishort/fdds_axis_prod.html">fdds_axis_prod</a> /
+            <a href="../capishort/cdds_axis_prod.html">cdds_axis_prod</a>
+             - product of axis sizes
+        <li><a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a> /
+            <a href="../capishort/cdds_malloc.html">cdds_malloc</a>
+             - allocate memory (needed only for f77)
+        <li><a href="../fapishort/fddx_read.html">fddx_read</a> /
+            <a href="../capishort/cddx_read.html">cddx_read</a>
+             - read data
+        <li><a href="../fapishort/fdds_free.html">fdds_free</a> /
+            <a href="../capishort/cdds_free.html">cdds_free</a>
+             - free memory (needed only for f77)
+        <li><a href="../fapishort/fdds_close.html">fdds_close</a> /
+            <a href="../capishort/cdds_close.html">cdds_close</a>
+             - close dictionary and associated binary
+      </ul>
+
+    <h2>Examples</h2>
+    <table width=80%>
+      <tbody align=center valign=middle>
+        <tr>
+          <td><b><a href="c_avg.html">c_avg.c</a></b></td>
+          <td><b><a href="f_avg.html">f_avg.F</a></b></td>
+          <td><b><a href="f90_avg.html">f90_avg.F90</a></b></td>
+        </tr>
+        <tr>
+          <td><b><a href="c_avg.make.html">Makefile for C</a></b></td>
+          <td><b><a href="f_avg.make.html">Makefile for F77</a></b></td>
+          <td><b><a href="f90_avg.make.html">Makefile for F90</a></b></td>
+          <td><b><a href="avg.make.html">Makefile for all</a></b></td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

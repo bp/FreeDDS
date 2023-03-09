@@ -1,0 +1,98 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran FFT (cfft_zzfft3d)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","cfft","zzfft3d")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("cfft")</script>
+
+    <h2>cfft_zzfft3d - double complex-complex 3D FFT</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;cfft.h&gt;</b>
+    <p>
+      <b>int cfft_zzfft3d(</b><i>isign, scale, n1, n2, n3, ld1, ld2, cdata, iopt</i><b>)
+      </b><dl><dd>
+        <b>int        </b><i>isign
+        </i><br>
+        <b>double     </b><i>scale
+        </i><br>
+        <b>int        </b><i>n1
+        </i><br>
+        <b>int        </b><i>n2
+        </i><br>
+        <b>int        </b><i>n3
+        </i><br>
+        <b>int        </b><i>ld1
+        </i><br>
+        <b>int        </b><i>ld2
+        </i><br>
+        <b>double     </b><i>cdata(ld1,ld2,n3)
+        </i><br>
+        <b>int        </b><i>iopt
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    The function, "<b>cfft_zzfft3d</b>", performs a double
+    complex-to-complex 3D FFT.
+
+    <h2>INPUT</h2>
+    The parameter, "<i>isign</i>", specifies the sign of double complex
+    exponential. It expects a "1" or "-1"; a value of zero "0" is invalid.
+
+    <p>
+      The parameter, "<i>scale</i>", specified the scale factor to be
+      applied to the data.
+
+    <p>
+      The size parameters, "<i>n1</i>", "<i>n2</i>" and "<i>n3</i>",
+      specifies the FFT sizes.  These must be setup as mixed radix values
+      (must be even) in order to allow the FFT's to be more efficient.
+      It is recommended to use <a href="nrfft5.html">cfft_nrfft5</a> to
+      calculate these values.
+
+    <p>
+      The leading dimension parameters, "<i>ld1</i>" and "<i>ld2</i>",
+      specify the leading dimensions of the double array in number of
+      complex values.  If they are the same as the FFT sizes, then the
+      routine will be more efficient.
+
+    <p>
+      The double complex array, "<i>cdata</i>", is the I/O array;
+      This is performed "in place".
+
+    <p>
+      The parameter, "<i>iopt</i>", is used to specify any other
+      information that is unique to a specific FFT implementation.
+      Currently, the use is for specifying whether to measure or estimate
+      the FFT's when using FFTW routines.  The "<b>cfft.h</b>" header
+      defines <b>FFT_MEASURE</b> and <b>FFT_ESTIMATE</b>, besides defining
+      the FFT functions, as integer.
+
+    <h2>OUTPUT</h2>
+    The fft results are returned in the double complex data array and the
+    returned value is zero "0" if successful.  A value of "-1" is returned
+    if the arguments are invalid.  Otherwise, a value unique to each FFT
+    implementation is returned.
+
+    <h2>AUTHOR</h2>
+    Phuong Vu, <b>HPC</b><br/>
+    Jerry Ehlers, <b>EPTG</b>
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

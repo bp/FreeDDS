@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_malloc8)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","malloc8")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_malloc8 - allocate memory</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>pointer fdds_malloc8(</b><i>size</i><b>)
+      </b><dl><dd>
+        <b>real*8 </b><i>size
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_malloc8</b> allocates memory. If zero bytes are requested,
+    then a NULL pointer is returned.  The "real*8" argument is provided to
+    allocate greater than 2 gigabytes of memory. <b>NOTE THAT IT IS A REAL*8
+    ARGUMENT AND NOT AN INTEGER*8 ARGUMENT</b>. The DDS memory routines
+    allow for runtime memory checking. See standard man page for malloc(3).
+
+    <p>
+      The following DDS parameters are predefined for host-dependent
+      Fortran values:
+
+    <pre>
+SIZEOF_INTEGER
+SIZEOF_INTEGER2
+SIZEOF_REAL
+SIZEOF_DOUBLE
+SIZEOF_COMPLEX
+SIZEOF_DBL_CPX
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="malloc.html">fdds_malloc</a> Allocate memory
+<a href="calloc.html">fdds_calloc</a> Allocate memory
+<a href="calloc8.html">fdds_calloc8</a> Allocate memory
+<a href="realloc.html">fdds_realloc</a> Reallocate memory
+<a href="realloc8.html">fdds_realloc8</a> Reallocate memory
+<a href="free.html">fdds_free</a> Free memory
+<a href="memuse.html">fdds_memuse</a> Query allocated memory
+    </pre>
+
+    <h2>EXAMPLE</h2>
+    <pre>
+      real*8 reals
+      real buf(*)
+      pointer(ptr_buf, buf)
+      
+      ptr_buf = fdds_malloc8(reals*SIZEOF_REAL)
+      ...
+      
+      fdds_free(ptr_buf)
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>EPTG</b> (Oct 2006)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+
+    <h2>fddx_V_requestSmoothVp2 - read a SmoothVp2 parameter.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fddx_vel.h&gt;</b>
+    <p>
+      <b>integer fddx_V_requestSmoothVp2(</b><i>vel_tag, critical</i><b>)
+    </b><dl><dd>
+        <b>integer</b><i> vel_tag</i><br>
+        <b>integer</b><i> critical</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>fddx_V_requestSmoothVp2</b> reads a SmoothVp2 parameter.<br>
+    </p>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>vel_tag</i>", specifies a velocity with which to associate this SmoothVp2 parameter.<br>
+      The keyword prefix for the users is "<i>smoothVp2</i>". See also function <b>fddx_V_newElement</b>.
+    </p>
+    <p>
+      The parameter, "<i>critical</i>", specifies whether this parameter is critical.<br>
+      If "<i>critical</i>" is non-zero and <b>fddx_V_requestSmoothVp2</b> is unable to find a suitable SmoothVp2 parameter, then a DDS error is printed.<br>
+      NOTE that in the event of an error the program continues in order to allow for clean stopping of MPI codes.
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>fddx_V_requestSmoothVp2</b> returns a tag to the newly created SmoothVp2 parameter.<br>
+    If it is unable to create SmoothVp2, then it will return -1.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

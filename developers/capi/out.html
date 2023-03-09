@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_out)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","out")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_out - initialize output DDS dictionary for binary data.
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>const char * cdds_out(</b><i>alias, value, history</i><b>);
+      </b><dl><dt><dd>
+        <b>const char *</b><i>alias
+        </i><br>
+        <b>const char *</b><i>value
+        </i><br>
+        <b>const char *</b><i>history
+        </i></dl>
+
+    <p/>
+      [ <A HREF="#description">Description</A> 
+      | <A HREF="#input">Input</A> 
+      | <A HREF="#output">Output</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <hr>
+
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>cdds_out</b> initializes a dictionary for
+    <b>output</b> binary data. If an output dictionary name is specified,
+    any existing contents are discarded. Initialization includes a copy of
+    the dictionary named by <i>history</i>. One dictionary name is
+    returned as the function value. The output dictionary is selected for
+    <i>print</i> mode, before <b>cdds_out</b> returns. The <i>history</i>
+    dictionary, if specified, is selected for <i>scan</i> mode.
+    
+    <p/>
+      Applications may update the dictionary contents
+      by appending (<i>print</i>) definitions.
+      The <b>cdds_open</b> function may also update the dictionary.
+      Changes are frozen, after the binary data is opened.
+
+    <p/>
+      Note: This function changes the <i>scan</i> and <i>print</i>
+      dictionary selection.
+      It implicitly calls <b>cdds_dict</b> to select new names and modes.
+      After a dictionary is initialized, it may be switched between
+      <i>scan</i> and <i>print</i> modes by calling <b>cdds_dict</b>.
+
+      <a name="input"></a><h2>INPUT</h2>
+    <b>cdds_out</b> accepts a dictionary name either indirectly via 
+    <i>alias</i> or by default via <i>value</i>.
+
+    <p/> 
+      Multiple <i>definition</i> names, delimited by white space, may be
+      specified by <i>alias</i>. If specified, the "<b>par:</b>" dictionary
+      is searched. If a definition is found, its value is taken as a
+      dictionary name. This feature is disabled, if a null <i>alias</i> 
+      is specified (i.e. <b>NULL</b>, zero length string, or a string that
+      only contains white space).
+
+    <p>
+      A default dictionary name may be specified by <i>value</i>. The 
+      default is used if the "<b>par:</b>" dictionary does not define
+      <i>alias</i>, or a null <i>alias</i> is specified. If there is no
+      appropriate default, then a null <i>value</i> should be specified.
+      A temporary dictionary is created, if an explicit name is not
+      available.
+
+    <p>
+      The <i>value</i> default is ignored in special cases. These 
+      exceptions make it convenient to use DDS programs with
+      <i>standard</i> formats and non-DDS applications. <b>cdds_out</b>
+      ignores the default, if <i>value</i> is "<b>stdout:</b>", and 
+      "<b>par:</b>" defines "<i>alias</i><b>_data</b>".
+     
+    <p/>
+      The <i>history</i> argument should name a dictionary that contains
+      the processing history. The history is copied when a new dictionary
+      is created. If there is no previous history, then create a basic
+      one using "<code>cdds_in("","",title);</code>".
+
+      <a name="output"></a><h2>OUTPUT</h2>
+    A constant character pointer is returned containing the opened
+    dictionary name and the dictionary is setup for printing definitions.
+
+    <p/>
+      The dictionary is closed and the memory is freed when the associated
+      binary file is closed. However, if the memory for the output dictionary
+      name must be freed then use <a href="malloc.html">cdds_free</a>
+      instead of any other system 'free' routine.
+
+      <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre>
+            
+const char *out_dict;
+                        
+/* derive output dictionary from input */
+out_dict = cdds_out("out", "stdout:", in_dict);
+    </pre>
+
+    Some applications create output, but do not require input. The
+    processing history can be initialized by calling <b>cdds_in</b>
+    with null arguments. Once initialized, it can be passed to
+    <b>cdds_out</b> like a normal input history.  For example:
+
+    <pre>
+const char *in_dict, *out_dict;
+            
+/* begin a new processing history */
+in_dict = cdds_in("", "", "Program: processing from scratch");
+out_dict = cdds_out("out", "stdout:", in_dict);
+    </pre>
+
+    Some applications require intermediate dictionaries. They may be used
+    to describe internal buffer formats or temporary data files.
+    Intermediate dictionaries can be initialized by calling <b>cdds_out</b>.
+    All processing should be reflected in the accumulated history.
+    For example:
+
+    <pre>
+            
+const char *in_dict, *buf_dict, *out_dict, *vel_dict;
+           
+/* open input dictionary */
+in_dict = cdds_in("in", "stdin:", title);
+...            
+/* create intermediate "buf" dictionary */            
+buf_dict = cdds_out("", "", in_dict);            
+...            
+/* open output dictionary */            
+out_dict = cdds_out("out", "stdout:", buf_dict);            
+...
+    </pre>
+
+    Some applications produce auxiliary data, in addition to the primary
+    output. <b>cdds_out</b> is used to initialize these dictionaries.
+    The "<b>out</b>" <i>alias</i> and "<b>stdout:"</b>" default <i>value</i>
+    should be reserved for the primary output data. Typical <i>alias</i>
+    names for auxiliary output are "<b>vel</b>", "<b>geom</b>", 
+    "<b>zmap</b>", etc. Auxiliary output may not have a reasonable default
+    <i>value</i>. For example:
+
+    <pre>            
+const char *in_dict, *model_dict;            
+            
+/* auxiliary output velocity model dictionary */            
+model_dict = cdds_out("vel", "", in_dict);
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="dict.html">cdds_dict</a> Select DDS dictionary and mode
+    </pre>
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

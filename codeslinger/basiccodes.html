@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Basic Example Codes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("codeslinger","basiccodes")</script>
+    <!*********************************************************************>
+
+    <hr>
+      <p>
+      Examples progress from basic to advanced. Later examples build on
+      knowledge gained in earlier ones.
+      Each example code shows how the different functions can be performed.
+      The first few use the DDS API in as simple a form as is practical.
+      Starting with example E, codes start to use more robust programming
+      methods suitable to production applications.
+
+    <hr>
+
+    <ol type=A>
+      <li><b><a href="basiccodes/bc_A.html">Access to data samples</a></b>
+         &nbsp;&nbsp;&nbsp;(program avg)
+         <ul type=disc>
+           <li>Open a binary file (or steam) for input
+           <li>Retrieve data attributes
+           <li>Allocate an array for data
+           <li>Read through the data one trace at a time
+           <li>Clean up DDS resources
+         </ul>
+
+       <p>
+      <li><b><a href="basiccodes/bc_B.html">Access to user parameters</a></b>
+         &nbsp;&nbsp;&nbsp;(program scale)
+         <ul type=disc>
+           <li>Read parameters from command line and parfile 
+           <li>Open a binary file (or steam) for output
+           <li>Read 2D planes of data
+           <li>Write 2D planes of the result
+         </ul>
+
+       <p>
+      <li><b><a href="basiccodes/bc_C.html">Communicate with users</a></b>
+         &nbsp;&nbsp;&nbsp;(program tttn)
+         <ul type=disc>
+           <li>Use DDS print files to log information
+           <li>Acknowledge users request for runtime help
+           <li>Use subroutines or functions for parameter retrieval and algorithm setup
+         </ul>
+
+       <p>
+      <li><b><a href="basiccodes/bc_D.html">Process changes data sizes</a></b>
+         &nbsp;&nbsp;&nbsp;(program transp)
+         <ul type=disc>
+           <li>Adjust output dictionary to reflect process changes in data attributes
+           <li>Deal with data of unknown rank
+         </ul>
+
+       <p>
+      <li><b><a href="basiccodes/bc_E.html">Working around data headers</a></b>
+         &nbsp;&nbsp;&nbsp;(program taper)
+         <ul type=disc>
+           <li>Process data samples, pass trace headers unchanged
+           <li>Use error detection features
+         </ul>
+
+       <p>
+      <li><b><a href="basiccodes/bc_F.html">Process changes type of sample</a></b>
+         &nbsp;&nbsp;&nbsp;(program rcfft)
+         <ul type=disc>
+           <li>Use FFT wrappers to convert REAL samples to COMPLEX
+           <li>Adjust output dictionary to reflect new sample type
+         </ul>
+
+       <p>
+      <li><b><a href="basiccodes/bc_G.html">Working with trace headers</a></b>
+         &nbsp;&nbsp;&nbsp;(programs xyrange, hdr_apply)
+         <ul type=disc>
+           <li>Extract selected headers from input traces for analysis or use
+           <li>Give users the flexibility of defining the headers to grab
+         </ul>
+
+       <p>
+
+       <p>
+<!--
+      <li><b><a href="basiccodes/bc_H.html">Dynamically change trace headers</a></b>
+-->
+      <li><b>Dynamically change trace headers</b> (under development)
+         <ul type=disc>
+           <li>Extend trace structure to add application-specific headers
+           <li>Completely redefine traces to include only a few headers
+           <li>Allow users to easily define header mapping relationships
+         </ul>
+    </ol>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

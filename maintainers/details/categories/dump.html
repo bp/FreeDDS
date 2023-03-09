@@ -1,0 +1,110 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (dump)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","dump")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Dump:</h2>
+
+    <p>
+      These routines are used for dumping information about the binary
+      data as controlled by the user specifying "<code>dds_debug=...</code>"
+      with various keywords.  Check out the
+      <a href="../../../users/debug.html">Debug Support</a> section for
+      the various options.</p>
+
+    <h3>Example header, format of binary data dump</h3>
+    <pre>
+   ***************************************************************
+    DDS:Dump(1) read  bin= 0, data= classic.usp                  
+        Dump(1) media= 0, bias= 0, trc= 123, cube= (*, 23, 5)    
+   ***************************************************************
+    </pre>
+
+
+   <h3> Example contents, format of binary data dump</h3>  
+    <pre>               
+   ***************************************************************
+        Dump(1)    0: SEQUENCE= struct                           
+           Dump(1)    0: usp_green_prefix= 1260                     
+           Dump(1)    4: SGRNum= 0                                  
+           Dump(1)    6: SGRAmp= 0                                  
+   ***************************************************************
+           Dump(1)   92: TiLiIx [6 of 6]= 1 2 3 4 5 6               
+           Dump(1)  104: TVPair [20 of 40]=                         
+              Dump(1)    0:  1  2  3  4  5  6  7  8  9 10           
+              Dump(1)   40: 11 12 13 14 15 16 17 18 19 20           
+   ***************************************************************
+           Dump(1)  260: Samples [20 of 250]=                       
+              Dump(1)    0:  1  2  3  4  5  6  7  8  9 10           
+              Dump(1)   40: 11 12 13 14 15 16 17 18 19 20           
+   ***************************************************************
+           Dump(1)  xxx thing2d [2 of 2][3 of 3]=                   
+              Dump(1)    0: 11 12 13                                
+              Dump(1)   12: 21 22 33                                
+   ***************************************************************
+           Dump(1)  xxx char1d [8 of 8]= "abcdefgh"                 
+   ***************************************************************
+           Dump(1)  xxx char2d [2 of 2][8 of 8]=                    
+           Dump(1)       0: "abcdefgh"                              
+           Dump(1)       8: "ABCDEFGH"                              
+   ***************************************************************
+           Dump(1)  xxx TupleABC struct=                            
+              Dump(1)    0: A= 111                                  
+              Dump(1)    2: B= 222                                  
+              Dump(1)    4: C= 333                                  
+   ***************************************************************
+           Dump(1)  yyy TupleXYZ struct [2 of 2]=                   
+              Dump(1)    0: X= 111                                  
+              Dump(1)    4: Y= 222                                  
+              Dump(1)    8: Z= 333                                  
+              Dump(1)   12: X= 444                                  
+              Dump(1)   16: Y= 555                                  
+              Dump(1)   20: Z= 666                                  
+
+<b><u>Files:</u></b>
+    dumpdatabuf.c   - Dump binary data buffer (recursive)
+    dumpdatatype.c  - Dump data buffer, given its DDS_TYPE
+    dumpdatablock.c - Dump data buffer, given its DDS_BLOCK
+    dumpdataarray.c - Dump data buffer, given its DDS_TYPE array
+    dumpdatadiff.c  - Dump data buffer, difference level
+    dumpdatavalue.c - Dump data buffer value
+    dumpdataopen.c  - Open dump data buffer, given a list of headers
+    dumpdatalist.c  - Dump data buffer, given a list of headers
+    dumpglobal.c    - Dump selected values from global variables
+    dumpblock.c     - Dump DDS_BLOCK
+    dumpblockr.c    - Dump DDS_BLOCK recursively
+    dumpblockrs.c   - Dump DDS_BLOCK recursive symbol
+    dumpexpr.c      - Dump DDS_EXPR
+    dumpitem.c      - Dump DDS_ITEM
+    dumpmember.c    - Dump DDS_MEMBER
+    dumpobject.c    - Dump DDS_OBJECT
+    dumpstack.c     - Dump DDS_STACK
+    dumps.c         - Dump Simple DDS_SYM symbol
+    dumpsym.c       - Dump DDS_SYM
+    dumpsymbol.c    - Dump symbol DDS_BLOCK recursively
+    dumpsymflag.c   - Dump DDS_SYM_FLAG
+    dumptable.c     - Dump DDS_TABLE
+    dumpdeclare.c   - Dump DDS_DECLARE
+    dumppage.c      - Dump DDS_PAGE
+    dumptype.c      - Dump DDS_TYPE
+    dumpreloc.c     - Dump DDS_RELOC
+    dumpbinary.c    - Dump all DDS_BIN and associated symbol tables
+    dumpbinsym.c    - Dump DDS_BIN and associated symbol tables
+    dumpmapin.c     - Dump DDS_MAP for an input binary
+    dumpmapout.c    - Dump DDS_MAP for an output binary
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

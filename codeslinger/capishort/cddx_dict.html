@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger "C" API (cddx_dict)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","cddx_dict")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capishort")</script>
+
+    <h2>cddx_dict - change DDS dictionary access</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b>
+    <p>
+      <b>int function cddx_dict(</b><i>bin_tag, mode</i><b>);
+      </b><dl><dd>
+        <b>BIN_TAG </b><i>bin_tag
+        </i><br>
+        <b>const char </b><i>*mode
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>"cddx_dict"</b> is provided to change the <i>mode</i>
+    of the buffer dictionary associated with the given <i>bin_tag</i>.
+
+    <p>
+    Dictionaries created by <b>cddx_in</b> and <b>cddx_out</b> are not
+    <i>named</i> as the "par:" dictionary is and so <b>cdds_dict</b> is
+    unable to change their mode. <b>cddx_dict</b> enables "scan" and
+    "print" access to these dictionaries through their BIN_TAG.
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

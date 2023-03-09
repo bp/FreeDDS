@@ -1,0 +1,131 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Definitions (Axis)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","defn","axis")</script>
+    <!*********************************************************************>
+
+    <p>
+      Binary data is projected onto a multi-dimensional Cartesian
+      coordinate system. (<b>NOTE:</b> data does not always have to 
+      regularized; sometimes it can be a simple set of unsorted traces.) 
+      DDS supports from one to nine axes. 
+      Each axis is identified by a unique name. The Dictionary which 
+      describes the binary data must define the number of dimensions and
+      their names. It must also define the maximum size for each dimension.
+      The first dimension varies most rapidly, like Fortran arrays. 
+
+    <p>
+      The axes of an N-Dimensional cube is defined by the 
+      "<code>axis=</code>" Definition.  The number of Tokens in the "axis"
+      determines the number of dimensions in the N-Dimensional hypercube.
+      Each axis is identified with it's corresponding Token name.  Each
+      axis name must be a unique string &lt; 32 characters. The 
+      maximum number of dimensions that DDS can currently handle it nine.
+      For example, a 5-dimension cube of data could be identified by:
+
+    <pre>axis= t h x y component</pre>
+
+    <p>
+      Axis Definitions are DDS Definitions associated with a specific axis.
+      Each Definition ends in "<code>.</code>" and the axis name.  For
+      example, the following defines a three dimensional dataset, each of
+      the axes names and sizes.
+
+    <pre>
+axis= t  x  shot
+size.t= 1000
+size.x= 96
+size.shot= 2500</pre>
+
+    <p>
+      Axis names should be consistent and meaningful.  This requires the
+      cooperation of end users (and applications!). Standard axis names
+      include:
+
+    <pre>
+Axis Name(s)    Definition
+-------------   ----------
+t               time
+x, y, z         space
+w               frequency
+kx, ky, kz      wave number transforms
+T, px, py, pz   tau-p transforms
+shot            shot domain (shot station number)
+station         station domain (receiver station number)
+channel         channel domain (recording channel number)
+h, offset       offset domain (relative bin number)
+cdp             common depth point number
+component       multi component (polarization code)
+property        general (Vp, Vs, Density, ... code)
+?               unknown axis</pre>
+    
+    <p>
+      The cube size must be defined for each axis, all of which must be
+      greater than zero. In Fortran '90 terms, this describes the array
+      shape and rank (number of dimensions). Each axis is identified 
+      by it's axis name. For example (assuming "axis= t x y"):
+
+<pre>size.t= <var>n1</var>
+size.x= <var>n2</var>
+size.y= <var>n3</var></pre>
+
+    <p>
+      Each axis has several standard attributes specified.
+      Other attributes may be specific to certain DDS applications.
+      Standard attributes include:
+
+    <pre>
+Name     Definition
+-------  ------------------------------------------------
+origin<sup>&dagger;</sup>  float, coordinate of first sample
+delta<sup>&dagger;</sup>   float, non-zero signed increment between samples
+units<sup>&dagger;</sup>   strings &lt; 32 characters, units associated with
+         origin.axis(n) and delta.axis(n)
+         time: sec, msec, usec
+         space: feet, meters
+         velocity: feet/sec, meters/sec
+         frequency: hz, hertz
+         unknown units: ?
+sort     Trace Header field associated with sort indexing
+         (used for padding dead traces; See <a href="../formats/attributes.html">Format Attributes</a>)
+step     step increment (typically used with Seisworks&copy;)
+base     step origin (typically used with Seisworks&copy;)
+grid     defines an irregular sampling grid (Can be used 
+         with the "dense" format attribute to pad traces)</pre>
+
+    <p>
+      Line headers for standard seismic formats specify some axis
+      parameters. None of them provide sufficient information to define
+      three dimensions with nominal attributes. Standard formats are
+      grossly inadequate for describing hypercubes with higher dimensions.
+
+    <p>
+      Output line headers are constructed from axis definitions.
+      Information is inherently lost, because of header limitations.
+      For USP files, some hypercube information can optionally be stored
+      in the USP HLH (Historical Line Header) for later retrieval by
+      DDS.
+
+    <p>
+      Input line header information is merged into axis definitions.
+      Precedence is given to control parameters defined in the par file.
+      This allows the end user to override an incorrect header value.
+      If not specified, line header information is honored.
+      If not available, the input history can provide a default.
+
+    <p class='footnote'/>
+      <code><sup>&dagger;</sup></code> "origin", "delta" and "units" 
+      of a time axis ("axis" name starting with "t") will normally
+      be converted to seconds ("sec") when opening a dataset.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

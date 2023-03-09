@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Convenience (cddx_in)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","cxapi","in")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("cxapi")</script>
+
+    <h2>cddx_in - open a DDS dataset for input</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b>
+    <p>
+      <b>BIN_TAG function cddx_in(</b><i>alias, value, title</i><b>);
+      </b><dl><dd>
+        <b>const char </b><i>*alias
+        </i><br>
+        <b>const char </b><i>*value
+        </i><br>
+        <b>const char </b><i>*title
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    Routine, <b>"cddx_in"</b>, opens an input dataset. Any input headers
+    will be dropped leaving the "Samples" starting at the first value
+    of each trace; the "Samples" will be host-dependent complex if 
+    input data is complex, otherwise they will be host-dependent float.
+    The dataset is open with "r+" so that is can be modified.
+
+    <p>
+      After opening a file for input the input buffer Dictionary will be
+      left open for scanning (with the cdds_scan routines).  The open
+      process will look for "<i>alias</i>" for the dictionary (or usp,
+      segy or su binary on input), "<i>alias</i><b>_data</b>" for
+      overriding  the binary, and "<i>alias</i><b>_format</b>" for
+      overriding the format. The input parameter, "<i>value</i>", is the
+      default value (eg. "stdin:") used for a fallback in cases where 
+      "<i>alias</i>" is not specified by the user.  The input parameter,
+      "<i>title</i>", should be a brief 
+      one line description of the application program. 
+      Each of these open routines will return a binary tag associated with 
+      the internal binary upon successful opening, a value of -2 if the 
+      dataset is not specified and no default value is given, otherwise 
+      a value of -1 to signify an open failure.
+
+    <p>
+      The opening of output files with "<a href="out.html">cddx_out</a>" or 
+      "<a href="outhdr.html">cddx_outhdr</a>" actually internally delays 
+      the finally creation until the <i>"bin_tag"</i> is used to write or
+      seek.  This allows the developer to make any modifications to the 
+      dictionary prior to using it.  It is reccommended that a call like 
+      "<a href="../capi/lseek.html">cdds_lseek</a>(<i>bin_tag</i><b>, 0, 0,
+        SEEK_SET)"</b> be used to finish the opening process instead of
+      waiting until an actual seek or write needs to be performed. 
+      Afterward, (if old_tag &gt;= 0) headers (not "Samples") from the
+      old_tag to the output bin_tag buffer.
+
+    <p>
+      The specified "<i>sprime</i>" and "<i>hprime</i>" types can be any
+      prime type defined for "<a href="../capi/index.html">cdds_index</a>".
+
+      <h2>EXAMPLES</h2>
+      <pre>
+	int n1, ier;
+	BIN_TAG in_bin = cddx_in2("in", "stdin:", title);
+	
+	ier = cdds_scanf("size.axis(1)", "%d", &n1);
+	
+	float *trace = new float[n1];
+	ier = cddx_read(in_bin, trace, 1);
+      </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

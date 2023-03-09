@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi","capi")</script>
+
+    <center>
+      <h1><img src="../images/book_q.gif" alt="">
+         Table of Contents
+      </h1>
+    </center>
+
+    <h2>FILES</h2>
+    <pre>
+$DDSROOT/include/cdds.h
+$DDSROOT/lib/$TARCH/libdds3.a
+$DDSROOT/lib/$TARCH/libgio.a
+$DDSROOT/lib/$TARCH/libchost.a
+    </pre>
+
+    <table width="100%" cellpadding=0>
+        <tr>
+          <td>
+            <img src="../images/redball.gif" alt="">
+            Dictionary Routines<br/>
+            <ul>
+                <li><a href="capi/in.html">cdds_in</a>&nbsp;-&nbsp;open&nbsp;input&nbsp;dictionary<br/>
+                <li><a href="capi/mod.html">cdds_mod</a>&nbsp;-&nbsp;open&nbsp;modification&nbsp;dictionary<br/>
+                <li><a href="capi/out.html">cdds_out</a>&nbsp;-&nbsp;open&nbsp;output&nbsp;dictionary<br/>
+                <li><a href="capi/dict.html">cdds_dict</a>&nbsp;-&nbsp;select&nbsp;dictionary&nbsp;mode<br/>
+                <li><a href="capi/axis_prod.html">cdds_axis_prod</a>&nbsp;-&nbsp;scan&nbsp;multiple&nbsp;axis&nbsp;sizes<br/>
+                <li><a href="capi/printf.html">cdds_printf</a>&nbsp;-&nbsp;print&nbsp;definitions<br/>
+                <li><a href="capi/printt.html">cdds_printt</a>&nbsp;-&nbsp;print&nbsp;definitions<br/>
+                <li><a href="capi/printv.html">cdds_printv</a>&nbsp;-&nbsp;print&nbsp;definitions<br/>
+                <li><a href="capi/scanf.html">cdds_scanf</a>&nbsp;-&nbsp;scan&nbsp;definitions<br/>
+                <li><a href="capi/scank.html">cdds_scank</a>&nbsp;-&nbsp;scan&nbsp;definitions<br/>
+                <li><a href="capi/scant.html">cdds_scant</a>&nbsp;-&nbsp;scan&nbsp;definitions<br/>
+                <li><a href="capi/scantn.html">cdds_scantn</a>&nbsp;-&nbsp;scan&nbsp;definitions<br/>
+                <li><a href="capi/scanv.html">cdds_scanv</a>&nbsp;-&nbsp;scan&nbsp;definitions<br/>
+                <li><a href="capi/switch.html">cdds_switch</a>&nbsp;-&nbsp;get&nbsp;a&nbsp;switch<br/>
+            </ul>
+
+            <img src="../images/redball.gif" alt="">
+            Binary Field Access<br/>
+            <ul>
+                <li><a href="capi/member.html">cdds_member</a>&nbsp;-&nbsp;query&nbsp;member&nbsp;tag<br/>
+                <li><a href="capi/name.html">cdds_name</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;name<br/>
+                <li><a href="capi/prec.html">cdds_prec</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;precision<br/>
+                <li><a href="capi/count.html">cdds_count</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;count<br/>
+                <li><a href="capi/genus.html">cdds_genus</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;genus<br/>
+                <li><a href="capi/prime.html">cdds_prime</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;primetype<br/>
+                <li><a href="capi/index.html">cdds_index</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;index<br/>
+                <li><a href="capi/offset.html">cdds_offset</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;offset<br/>
+                <li><a href="capi/get.html">cdds_get<i>xx</i></a>&nbsp;-&nbsp;get&nbsp;a&nbsp;field<br/>
+                <li><a href="capi/put.html">cdds_put<i>xx</i></a>&nbsp;-&nbsp;put&nbsp;a&nbsp;field<br/>
+            </ul>
+          </td>
+          <td>
+            <img src="../images/redball.gif" alt="">Binary Data Control<br/>
+            <ul>
+                <li><a href="capi/open.html">cdds_open</a>&nbsp;-&nbsp;open&nbsp;binary<br/>
+                <li><a href="capi/openm.html">cdds_openm</a>&nbsp;-&nbsp;open&nbsp;mapping&nbsp;definition<br/>
+                <li><a href="capi/isreg.html">cdds_isreg</a>&nbsp;-&nbsp;is regular&nbsp;file?<br/>
+                <li><a href="capi/lseek.html">cdds_lseek</a>&nbsp;-&nbsp;trace&nbsp;seek<br/>
+                <li><a href="capi/read.html">cdds_read</a>&nbsp;-&nbsp;read&nbsp;binary<br/>
+                <li><a href="capi/readm.html">cdds_readm</a>&nbsp;-&nbsp;read&nbsp;&amp;nbsp;map<br/>
+                <li><a href="capi/write.html">cdds_write</a>&nbsp;-&nbsp;write&nbsp;binary<br/>
+                <li><a href="capi/writem.html">cdds_writem</a>&nbsp;-&nbsp;map&nbsp;&amp;nbsp;write<br/>
+                <li><a href="capi/map.html">cdds_map</a>&nbsp;-&nbsp;map&nbsp;a&nbsp;field<br/>
+                <li><a href="capi/fflush.html">cdds_fflush</a>&nbsp;-&nbsp;binary&nbsp;flush<br/>
+                <li><a href="capi/close.html">cdds_close</a>&nbsp;-&nbsp;close&nbsp;binary<br/>
+            </ul>
+
+            <img src="../images/redball.gif" alt="">Memory&nbsp;Allocation<br/>
+            <ul>
+                <li><a href="capi/malloc.html">cdds_malloc</a>&nbsp;-&nbsp;memory&nbsp;allocation<br/>
+                <li><a href="capi/malloc.html">cdds_realloc</a>&nbsp;-&nbsp;memory&nbsp;reallocation<br/>
+                <li><a href="capi/free.html">cdds_free</a>&nbsp;-&nbsp;free&nbsp;memory<br/>
+            </ul>
+
+            <img src="../images/redball.gif" alt="">Print&nbsp;Control<br/>
+            <ul>
+                <li><a href="capi/openpr.html">cdds_openpr</a>&nbsp;-&nbsp;open&nbsp;print&nbsp;file<br/>
+                <li><a href="capi/prtmsg.html">cdds_prtmsg</a>&nbsp;-&nbsp;print&nbsp;message<br/>
+                <li><a href="capi/prtcon.html">cdds_prtcon</a>&nbsp;-&nbsp;print&nbsp;to&nbsp;console<br/>
+                <li><a href="capi/prterr.html">cdds_prterr</a>&nbsp;-&nbsp;print&nbsp;error&nbsp;message<br/>
+                <li><a href="capi/errors.html">cdds_errors</a>&nbsp;-&nbsp;return&nbsp;#&nbsp;errors<br/>
+                <li><a href="capi/closepr.html">cdds_closepr</a>&nbsp;-&nbsp;close&nbsp;print&nbsp;file<br/>
+                <li><a href="capi/closepr2.html">cdds_closepr2</a>&nbsp;-&nbsp;close&nbsp;print&nbsp;file<br/>
+            </ul>
+
+            <img src="../images/redball.gif" alt="">Misc&nbsp;Routines<br/>
+            <ul>
+                <li><a href="capi/setargcv.html">setargcv</a>&nbsp;-&nbsp;set&nbsp;arguments<br/>
+            </ul>
+          </td>
+        </tr>
+    </table>
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

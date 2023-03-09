@@ -1,0 +1,58 @@
+<pre class=man>STRTI2(3)                  LAPACK routine                 STRTI2(3)
+
+
+
+<b>NAME</b>
+       STRTI2 - the inverse of a real upper or lower triangular matrix
+
+<b>SYNOPSIS</b>
+       SUBROUTINE STRTI2( UPLO, DIAG, N, A, LDA, INFO )
+
+           CHARACTER      DIAG, UPLO
+
+           INTEGER        INFO, LDA, N
+
+           REAL           A( LDA, * )
+
+<b>PURPOSE</b>
+       STRTI2 computes the inverse of a real upper or lower triangular matrix.
+
+       This is the Level 2 BLAS version of the algorithm.
+
+
+
+<b>ARGUMENTS</b>
+       UPLO    (input) CHARACTER*1
+               Specifies whether the matrix A is upper or lower triangular.  =
+               'U':  Upper triangular
+               = 'L':  Lower triangular
+
+       DIAG    (input) CHARACTER*1
+               Specifies  whether  or  not the matrix A is unit triangular.  =
+               'N':  Non-unit triangular
+               = 'U':  Unit triangular
+
+       N       (input) INTEGER
+               The order of the matrix A.  N &gt;= 0.
+
+       A       (input/output) REAL array, dimension (LDA,N)
+               On entry, the triangular matrix A.  If UPLO = 'U', the  leading
+               n  by n upper triangular part of the array A contains the upper
+               triangular matrix, and the strictly lower triangular part of  A
+               is  not  referenced.   If  UPLO = 'L', the leading n by n lower
+               triangular part of the array A contains  the  lower  triangular
+               matrix, and the strictly upper triangular part of A is not ref-
+               erenced.  If DIAG = 'U', the diagonal elements of  A  are  also
+               not referenced and are assumed to be 1.
+
+               On  exit,  the  (triangular) inverse of the original matrix, in
+               the same storage format.
+
+       LDA     (input) INTEGER
+               The leading dimension of the array A.  LDA &gt;= max(1,N).
+
+       INFO    (output) INTEGER
+               = 0: successful exit
+               &lt; 0: if INFO = -k, the k-th argument had an illegal value
+
+</pre>

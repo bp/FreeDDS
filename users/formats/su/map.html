@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (su Mapping)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" 
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","su","map")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      When converting from another format to <b>su</b>, the Trace Headers 
+      get mapped over to the new format.  Any Trace Header fields that exist
+      in both formats with the same name ("Spare.Hdr.RecNum" is not the
+      same as "RecNum"), automatically get mapped by default.  All other
+      default map Definitions for mapping to <b>su</b> are provided in 
+      "<code>${DDSROOT}/src/lib/dds3/segy.map.dds</code>" (Since <b>su</b>
+	is a subset of <b>segy</b> format. 
+      Each map Definition name is prefixed by "<code>map:*:su.</code>"
+      (or the specific format can be substituted for the "<code>*</code>".
+      (See <a href="../../mapping.html">Mapping</a> for further detail).
+
+    <pre>
+su mapping                usp expression
+-----------------------   ------------------------
+map:usp:su.Date=          datestruct(SGRDat)
+map:usp:su.MuteEnd=       SGRNum
+map:usp:su.DateType=      SGRAmp
+map:usp:su.SrcStatic=     InStAp
+map:usp:su.GrpStatic=     RcStAp
+map:usp:su.SrcX=          SrPtXC
+map:usp:su.SrcY=          SrPtYC
+map:usp:su.GrpX=          RcPtXC
+map:usp:su.GrpY=          RcPtYC
+map:usp:su.SrcDepth=      ShtDep
+map:usp:su.UpholeTmSrc=   UphlTm
+map:usp:su.HorzStack=     FoldNm
+map:usp:su.CdpTrcNum=     TrcNum
+map:usp:su.FieldRecNum=   PrRcNm
+map:usp:su.FieldTrcNum=   PrTrNm
+map:usp:su.SrcElev=       SrPtEl
+map:usp:su.GrpElev=       GrpElv
+map:usp:su.CdpNum=        DphInd
+map:usp:su.GrpDatum=      RfSrEl
+map:usp:su.TotalStatic=   StaCor
+map:usp:su.TrcIdCode=     (StaCor - 30000) ? 1 : 2
+
+
+su mapping              asp expression
+----------------------- ------------------------
+map:asp:su.Date=        datestruct(field(SGRDat,0))
+map:asp:su.MuteEnd=     field(SGRNum, nop)
+map:asp:su.DateType=    field(SGRAmp, nop)
+map:asp:su.SrcStatic=   field(InStAp, nop)
+map:asp:su.GrpStatic=   field(RcStAp, nop)
+map:asp:su.SrcX=        field(SrPtXC, nop)
+map:asp:su.SrcY=        field(SrPtYC, nop)
+map:asp:su.GrpX=        field(RcPtXC, nop)
+map:asp:su.GrpY=        field(RcPtYC, nop)
+map:asp:su.SrcDepth=    field(ShtDep, nop)
+map:asp:su.UpholeTmSrc= field(UphlTm, nop)
+map:asp:su.HorzStack=   field(FoldNm, nop)
+map:asp:su.CdpTrcNum=   field(TrcNum, nop)
+map:asp:su.FieldRecNum= field(PrRcNm, nop)
+map:asp:su.FieldTrcNum= field(PrTrNm, nop)
+map:asp:su.SrcElev=     field(SrPtEl, nop)
+map:asp:su.GrpElev=     field(GrpElv, nop)
+map:asp:su.CdpNum=      field(DphInd, nop)
+map:asp:su.GrpDatum=    field(RfSrEl, nop)
+map:asp:su.TotalStatic= field(StaCor, nop)
+map:asp:su.TrcIdCode=   (field(StaCor, 0) - 30000) ? field(TrcIdCode, 1) : 2
+map:asp:su.ElevScaler=  field(ElevScaler, 1)
+map:asp:su.XYScaler=    field(XYScaler, 1)
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

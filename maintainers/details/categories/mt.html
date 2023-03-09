@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (mt)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","mt")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Mt:</h2>
+
+    <pre>
+<b><u>Files:</u></b>
+    mtfsf.c    - forward space over eof on (tape) drive (called by ddsMediaLoad)
+    mtrew.c    - rewind on (tape) drive (called by ddsSeekSet)
+    mtbsf.c    - backspace space over eof on (tape) drive (not used)
+    mteof.c    - true if (tape) drive status is eof (not used)
+    mteom.c    - true if (tape) drive status is eom (not used)
+    mtweof.c   - write eof on (tape) drive
+    mtload.c   - load (online) tape drive (called by ddsMediaLoad)
+    mtunload.c - Unload (offline) tape drive (called by ddsMediaUnload)
+    mtstatus.c - Warning message on magnetic tape status
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

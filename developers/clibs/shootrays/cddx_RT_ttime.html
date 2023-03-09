@@ -1,0 +1,51 @@
+
+    <h2>cddx_RT_ttime - calculate the traveltime along a segment of a ray.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;cddx_raytracer.h&gt;</b>
+    <p>
+      <b>float cddx_RT_ttime(</b><i>rt_tag, ds0, dt, point0, gpvel0, point1, gpvel1</i><b>)
+    </b><dl><dd>
+        <b>int   </b><i>rt_tag</i><br>
+        <b>float </b><i>ds0</i><br>
+        <b>float </b><i>dt</i><br>
+        <b>float </b><i>point0(3)</i><br>
+        <b>float </b><i>gpvel0(3)</i><br>
+        <b>float </b><i>point1(3)</i><br>
+        <b>float </b><i>gpvel1(3)</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cddx_RT_ttime</b> calculates the traveltime along a segment of a ray from <i>point0</i> to <i>point1</i>.<br>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>rt_tag</i>", specifies which raytracer to use.<br>
+      Use function <b>cddx_RT_new</b> to create the raytracer.
+    </p>
+    <p>
+      The parameter, "<i>ds0</i>", specifies the ray step length.
+    </p>
+    <p>
+      The parameter, "<i>dt</i>", specifies the traveltime from point0 to point1 using the smooth velocity.
+    </p>
+    <p>
+      The parameter, "<i>point0</i>", specifies the start point of the segment.
+    </p>
+    <p>
+      The parameter, "<i>gpvel0</i>", specifies the group velocity at start point of the segment.
+    </p>
+    <p>
+      The parameter, "<i>point1</i>", specifies the end point of the segment.
+    </p>
+    <p>
+      The parameter, "<i>gpvel1</i>", specifies the group velocity at end point of the segment.
+    </p>
+
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_RT_ttime</b> returns the traveltime in the (non-smooth) velocity for the ray to propagate from <i>point0</i> to <i>point1</i>.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

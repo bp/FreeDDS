@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Directories (fft)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","dir","fft")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      This directory contains the <b>fft</b> wrapper routines for "C" and
+      Fortran.  This provides a common interface to all the DDS
+      application programs.  So if  or when we need to change to a different
+      set of fft routines, we simply change these wrappers and relink the
+      application programs.  We will use the faster system-dependent fft
+      routines when available.  But we always have the 
+      <a href="fftw.html">fftw</a> routines to fall back on if better
+      routines are not available for a specific platform.
+
+    <p>
+    <code>${<var>DDSROOT</var>}/src/lib/fft</code>:
+   
+    Generates <u><b>libfft.a</b></u>, <u><b>cfft.h</b></u> and 
+    <u><b>fft.h</b></u> (fft wrappers tying to host-dependent, tuned fft
+    libraries) for building DDS applications.
+    <ul>
+      <li>Local files &amp; directories:
+        <ul>
+          <li>14 source files (1474 lines of code)
+          <li>architecture-dependent subdirecties containing the 
+            working build files
+          <li><b>Makefile</b> - includes other makefiles &amp; 
+            defines architecture Makefile 
+          <li><b>Makefile2</b> - host architecture-dependent makefile
+            information
+        </ul>
+      <li>Libraries that gets installed under ${DDSROOT}/lib:
+        <ul>
+          <li><b>libfft.a</b> - fft API wrappers used by DDS
+            applications
+        </ul>
+      <li>Include files that gets installed under ${DDSROOT}/include:
+        <ul>
+          <li><b>cfft.h</b> - "C" fft wrapper include file used to
+            build DDS applications
+          <li><b>fft.h</b> - FORTRAN fft wrapper include file used
+            to build DDS applications
+        </ul>
+    </ul>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

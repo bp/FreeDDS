@@ -1,0 +1,75 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (dict)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","dict")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Dict:</h2>
+
+    <pre>
+<b><u>Structures:</u></b>
+    DDS_DICT - Dictionary Structure defined in dds_dict.h
+
+
+<b><u>Globals:</u></b>
+    DDS_DICT *dds_scan_dict;       /* current scan dict     */
+    DDS_DICT *dds_scan_first;      /* newest scan dict      */
+    DDS_DICT *dds_scan_last;       /* oldest scan dict      */
+    DDS_DICT *dds_print_first;     /* newest print dict     */
+    DDS_DICT *dds_print_last;      /* oldest print dict     */
+    DDS_DICT *dds_log_dict;        /* log dictionary        */
+    DDS_TABLE dds_dict;            /* dictionary hash table */
+
+
+<b><u>Files:</u></b>
+    f_xxx.c        - Fortran API Routines
+                        f_in.c f_out.c f_mod.c f_dict.c f_copy.c 
+                        f_history.c f_addaxis.c f_rmaxis.c
+    c_xxx.c        - "C" API Routines
+                        c_in.c c_out.c c_mod.c c_dict.c c_copy.c
+                        c_history.c c_addaxis.c c_rmaxis.c 
+    dictinit.c     - Open and initialize one dictionary. This calls many of the
+                     specific types below.
+    dictnew.c      - Create a new DDS_DICT (dictionary hash bucket).  This gets
+                     gets called by many of the specific types below.
+    dictdelete.c   - Close and free DDS_DICT (dictionary hash bucket).
+    dictcmd.c      - Open and initialize "cmd:" dictionary
+    dictpar.c      - Open and initialize "par:" dictionary
+    dictenv.c      - Open and initialize "env:" dictionary
+    dictfd.c       - Open and initialize "fd#:" dictionary
+    dictfile.c     - Open and initialize "filename" dictionary
+    dictstdin.c    - Open and initialize "stdin:" dictionary
+    dictstdout.c   - Open and initialize "stdout:" dictionary
+    dictstderr.c   - Open and initialize "stderr:" dictionary
+    dictlog.c      - Open and initialize "log:" dictionary
+    dicttmp.c      - Open and initialize "tmpxxx:" dictionary
+    dictdevice.c   - Open and initialize "device:" dictionary
+    dictaspfmt.c   - Open and initialize "asp.fmt:" dictionary
+    dictuspfmt.c   - Open and initialize "usp.fmt:" dictionary
+    dictsegyfmt.c  - Open and initialize "segy.fmt:" dictionary
+    dictsegy1fmt.c - Open and initialize "segy1.fmt:" dictionary
+    dictaspmap.c   - Open and initialize "asp.map:" dictionary
+    dictuspmap.c   - Open and initialize "usp.map:" dictionary
+    dictsegymap.c  - Open and initialize "segy.map:" dictionary
+    dictsegy1map.c - Open and initialize "segy1.map:" dictionary
+    tmpdict.c      - Create a unique temporary dictionary name
+    dictload       - Load dictionary definitions creating Definition Table
+                     for each dictionary
+    parload.c      - Load parameter files recursively, reverse token sequence.
+    history.c      - Append one dictionary to another dictionary
+    title.c        - Append cmd_xxx title definitions to print dictionary
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (binary)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","structures","binary")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      These are the data structures used to define the binaries for each
+      dataset.</p>
+
+    <h2>Structures:</h2>
+   <pre>
+DDS_SEAM       - Expression sequence for read, write, or map evaluation
+DDS_OBJECT_REF - Symbol table object reference
+DDS_MEMBER_REF - Symbol table member reference
+DDS_BIN_USP    - Binary descriptor, usp standard
+DDS_BIN_SEGY   - Binary descriptor, segy standard
+DDS_BIN_GEN    - Binary descriptor, generic standard: zip-compressed table
+DDS_AXIS       - Axis description for hyper-cubes
+DDS_CUBE       - Hyper-cube description
+DDS_BIN        - Binary descriptor (one per open binary)
+DDS_MAP        - "map" descriptor, unique combination (see DDS_ROOT.map)
+    </pre>
+
+
+    <h2>Globals:</h2>
+    <pre>
+DDS_BIN *dds_compile;    /* Compile binary descriptor.  The parser and scanner
+                            append symbols to the tables referenced by this. */
+
+DDS_VALUE *dds_map_value;/* Compiler handle to "in" struct. Non-NULL iff 
+                            compiling maps &amp; input buffer type is struct/union */
+
+int dds_map_samples;     /* Switch for cddx_outhdr to turn off mapping Samples */
+
+unsigned dds_bin_max;    /* Maximum number of DDS_BIN pointers */
+DDS_BIN **dds_bin;       /* Binary descriptor table (bin_tag); bin[bin_max] */
+DDS_MAP **dds_map;       /* Map descriptor table (out/in bin_tag); map[bin_max][bin_max] */
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (usp.map.dds)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","usp","uspmap")
+    </script>
+    <!*********************************************************************>
+   
+    <pre>
+write:usp.line_green_prefix= sizeof(USP_LINE) - sizeof(USP_INT)
+write:usp.green_prefix= sizeof(USP_TRACE) - sizeof(USP_INT)
+
+comment= SEGY to USP trace header map.
+   Derived  04/30/93 by Randy Selzler
+   Modified 08/27/01 by Jerry Ehlers for segy Rev 1.0
+   Modified 09/09/04 by Jerry Ehlers for su
+
+map:segy:usp.StaCor= TotalStatic
+map:segy:usp.RcStAp= GrpStatic
+map:segy:usp.InStAp= SrcStatic
+map:segy:usp.ToStAp= field(Spare.Hdr.CdpStatic, nop)
+map:segy:usp.SGRNum= MuteEnd
+map:segy:usp.UphlTm= UpholeTmSrc
+map:segy:usp.ShtDep= SrcDepth
+map:segy:usp.TrcNum= CdpTrcNum
+map:segy:usp.DphInd= CdpNum
+map:segy:usp.PrTrNm= FieldTrcNum
+map:segy:usp.FoldNm= HorzStack
+map:segy:usp.RfSrEl= GrpDatum
+map:segy:usp.GrpElv= GrpElev
+map:segy:usp.SrPtEl= SrcElev
+map:segy:usp.PrRcNm= FieldRecNum
+map:segy:usp.SrPtXC= SrcX
+map:segy:usp.SrPtYC= SrcY
+map:segy:usp.RcPtXC= GrpX
+map:segy:usp.RcPtYC= GrpY
+map:segy:usp.SGRDat= dateint(Date)
+map:segy:usp.SGRAmp= DateType
+map:segy:usp.CDPBCX= field(ident("Spare.Hdr.CDPBCX"), nop)
+map:segy:usp.CDPBCY= field(ident("Spare.Hdr.CDPBCY"), nop)
+map:segy:usp.LinInd= field(ident("Spare.Hdr.LinInd"), nop)
+map:segy:usp.SrcLoc= field(ident("Spare.Hdr.SrcLoc"), nop)
+map:segy:usp.SrRcMX= field(ident("Spare.Hdr.SrRcMX"), nop)
+map:segy:usp.SrRcMY= field(ident("Spare.Hdr.SrRcMY"), nop)
+map:segy:usp.SrcPnt= field(ident("Spare.Hdr.SrcPnt"), nop)
+map:segy:usp.SoPtNm= field(ident("Spare.Hdr.SoPtNm"), nop)
+map:segy:usp.RecInd= field(ident("Spare.Hdr.RecInd"), nop)
+map:segy:usp.RecNum= field(ident("Spare.Hdr.RecNum"), nop)
+map:segy:usp.FlReFN= field(ident("Spare.Hdr.FlReFN"), nop)
+map:segy:usp.ToStAp= field(ident("Spare.Hdr.CdpStatic"), nop)
+map:segy:usp.DePtEl= field(ident("Spare.Hdr.DePtEl"), nop)
+map:segy:usp.FlDtEl= field(ident("Spare.Hdr.FlDtEl"), nop)
+
+map:segy1:usp.StaCor= TotalStatic
+map:segy1:usp.RcStAp= GrpStatic
+map:segy1:usp.InStAp= SrcStatic
+map:segy1:usp.ToStAp= field(Spare1.Hdr.CdpStatic, nop)
+map:segy1:usp.SGRNum= MuteEnd
+map:segy1:usp.UphlTm= UpholeTmSrc
+map:segy1:usp.ShtDep= SrcDepth
+map:segy1:usp.TrcNum= CdpTrcNum
+map:segy1:usp.DphInd= CdpNum
+map:segy1:usp.PrTrNm= FieldTrcNum
+map:segy1:usp.FoldNm= HorzStack
+map:segy1:usp.RfSrEl= GrpDatum
+map:segy1:usp.GrpElv= GrpElev
+map:segy1:usp.SrPtEl= SrcElev
+map:segy1:usp.PrRcNm= FieldRecNum
+map:segy1:usp.SrPtXC= SrcX
+map:segy1:usp.SrPtYC= SrcY
+map:segy1:usp.RcPtXC= GrpX
+map:segy1:usp.RcPtYC= GrpY
+map:segy1:usp.SGRDat= dateint(Date)
+map:segy1:usp.SGRAmp= DateType
+map:segy1:usp.SrRcMX= field(ident("Spare1.Hdr.SrRcMX"), nop)
+map:segy1:usp.SrRcMY= field(ident("Spare1.Hdr.SrRcMY"), nop)
+map:segy1:usp.SrcPnt= field(ident("Spare1.Hdr.SrcPnt"), nop)
+map:segy1:usp.SoPtNm= field(ident("Spare1.Hdr.SoPtNm"), nop)
+map:segy1:usp.RecInd= field(ident("Spare1.Hdr.RecInd"), nop)
+map:segy1:usp.RecNum= field(ident("Spare1.Hdr.RecNum"), nop)
+map:segy1:usp.FlReFN= field(ident("Spare1.Hdr.FlReFN"), nop)
+map:segy1:usp.ToStAp= field(ident("Spare1.Hdr.CdpStatic"), nop)
+map:segy1:usp.DePtEl= field(ident("Spare1.Hdr.DePtEl"), nop)
+map:segy1:usp.FlDtEl= field(ident("Spare1.Hdr.FlDtEl"), nop)
+
+map:su:usp.StaCor= TotalStatic
+map:su:usp.RcStAp= GrpStatic
+map:su:usp.InStAp= SrcStatic
+map:su:usp.ToStAp= field(Spare.Hdr.CdpStatic, nop)
+map:su:usp.SGRNum= MuteEnd
+map:su:usp.UphlTm= UpholeTmSrc
+map:su:usp.ShtDep= SrcDepth
+map:su:usp.TrcNum= CdpTrcNum
+map:su:usp.DphInd= CdpNum
+map:su:usp.PrTrNm= FieldTrcNum
+map:su:usp.FoldNm= HorzStack
+map:su:usp.RfSrEl= GrpDatum
+map:su:usp.GrpElv= GrpElev
+map:su:usp.SrPtEl= SrcElev
+map:su:usp.PrRcNm= FieldRecNum
+map:su:usp.SrPtXC= SrcX
+map:su:usp.SrPtYC= SrcY
+map:su:usp.RcPtXC= GrpX
+map:su:usp.RcPtYC= GrpY
+map:su:usp.SGRDat= dateint(Date)
+map:su:usp.SGRAmp= DateType
+map:su:usp.CDPBCX= field(ident("Spare.Hdr.CDPBCX"), nop)
+map:su:usp.CDPBCY= field(ident("Spare.Hdr.CDPBCY"), nop)
+map:su:usp.LinInd= field(ident("Spare.Hdr.LinInd"), nop)
+map:su:usp.SrcLoc= field(ident("Spare.Hdr.SrcLoc"), nop)
+map:su:usp.SrRcMX= field(ident("Spare.Hdr.SrRcMX"), nop)
+map:su:usp.SrRcMY= field(ident("Spare.Hdr.SrRcMY"), nop)
+map:su:usp.SrcPnt= field(ident("Spare.Hdr.SrcPnt"), nop)
+map:su:usp.SoPtNm= field(ident("Spare.Hdr.SoPtNm"), nop)
+map:su:usp.RecInd= field(ident("Spare.Hdr.RecInd"), nop)
+map:su:usp.RecNum= field(ident("Spare.Hdr.RecNum"), nop)
+map:su:usp.FlReFN= field(ident("Spare.Hdr.FlReFN"), nop)
+map:su:usp.ToStAp= field(ident("Spare.Hdr.CdpStatic"), nop)
+map:su:usp.DePtEl= field(ident("Spare.Hdr.DePtEl"), nop)
+map:su:usp.FlDtEl= field(ident("Spare.Hdr.FlDtEl"), nop)
+  </pre>   
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

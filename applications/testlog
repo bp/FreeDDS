@@ -1,0 +1,13 @@
+Fri Dec 14 17:45:09 CST 2018
+ 
+retesting zoneout on version 12998 (previous version 12998)
+running /tstapps/asi/src/dds/bin/makeremotes module load ddsdevel/ddsdevel-hybrid; make localtests DDS_TEST_DIR='/lustre01/vol0/zjmw36/testdir' - check=x
+Making with "/usr/bin/ssh" on hpcbuild04.hpc.pce.bp.com: module load ddsdevel/ddsdevel-hybrid; make localtests DDS_TEST_DIR='/lustre01/vol0/zjmw36/testdir' - check=x
+Making with "/usr/bin/ssh" on hpcbuild05.hpc.pce.bp.com: module load ddsdevel/ddsdevel-hybrid; make localtests DDS_TEST_DIR='/lustre01/vol0/zjmw36/testdir' - check=x
+
+Check mklog files for results:
+
+mklog.hpcbuild04.hpc.pce.bp.com ( ERRORS detected )
+mklog.hpcbuild05.hpc.pce.bp.com
+
+ 

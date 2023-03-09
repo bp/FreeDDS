@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger  Debugging</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("codeslinger","debugging")</script>
+    <!*********************************************************************>
+
+    <p>
+    <h2>Help from compilers</h2>
+    <h4>At the first hint of trouble, turn on runtime array bounds checking:</h4>
+      <dl>
+        <dt><b>ifort</b></dt>
+          <dd>FCFlags   := ${FCFlags} -check bounds
+          <dd>F90CFlags := ${F90CFlags} -check bounds
+        <br>
+        <dt><b>gfortran</b></dt>
+          <dd>FCFlags   := ${FCFlags} -fbounds-check
+          <dd>F90CFlags := ${F90CFlags} -fbounds-check
+      </dl>
+
+    <h2>DDS print functions and print files</h2>
+    <h4>Debugging with print statement</h4>
+      <ul>
+        <li>Use <a href="fapishort/fdds_prtcon.html">fdds_prtcon</a>.
+          The DDS print functions are much prefered over FORTRAN <code>print</code>
+          and <code>write</code> statements. Unlike <code>print</code> and
+          <code>write</code>, which are commonly buffered, DDS print functions
+          attempt to flush the output buffer so they can almost always help you
+          locate the source of problems.
+        <li>Use <a href="fapishort/fdds_openpr.html">fdds_openpr</a>.
+          An open print file already records much of what DDS does, relieving
+          you, the application developer, from the need to print every <b>#!%$</b>
+          thing in sight.
+        <li>Always have a <a href="debugging/stats.html">statistics routine</a>
+          laying around.
+      </ul>
+
+    <h4>For MPI codes</h4>
+      <ul>
+        <li>Open print files on each host. Print file names include the
+          host name, which allows each host in an MPI team to record what it
+          knows independent of other team members. Using this feature with
+          the DDS print functions can help you identify and locate problems.
+        <li>Use <a href="fapishort/fdds_prtmsg.html">fdds_prtmsg</a> to keep
+          things sane when debugging MPI. <b>fdds_prtcon</b> prints messages
+          without host names to the console. This can get messy. <b>fdds_prtmsg</b>
+          writes messages only to the host-specific print file.
+        <li>Always report node number.
+      </ul>
+
+    <h2>Other DDS options</h2>
+    <h4>On command lines</h4>
+      <ul>
+        <li><a href="../users/debug.html">dds_debug=</a>
+          <i>&nbsp;&nbsp;dbg_call&nbsp;&nbsp;+tmp&nbsp;&nbsp;dbg_heap</i><br>
+
+          Special DDS definition, <b>dds_debug=</b>, gives access to several 
+          verbose DDS options not normally needed, but often useful when solutions
+          are elusive. This can be used at runtime on any DDS program without 
+          having to recompile with a debug switch.  Most notably, the internal 
+          dictionaries created by DDS are saved to files when 
+          <b>dds_debug=</b><i>&nbsp;&nbsp;+tmp</i> is used.  If you are having
+          Segmentation Faults or are suspicious of writing outside arrays, then
+          <b>dds_debug=</b><i>&nbsp;&nbsp;dbg_call -verbose</i> will check the
+          heap stacks for each DDS memory allocation to check if it has been
+          overwritten on either end of the stack.  This check is done
+          everytime a DDS API routine is called.
+      </ul>
+
+    <h4><b>dds_debug=</b> within source code</h4>
+      <ul>
+        <li><a href="../developers/fapi/check.html">fdds_check</a> can be
+          strategically placed in codes to help locate problems.
+      </ul>
+
+    <h2>Compiler options</h2>
+    <h4>Makefile flags</h4>
+      <ul>
+        <li>DEBUG :=x &nbsp;&nbsp;&nbsp;
+        Quickly add debug flags to the compile step
+      </ul>
+
+      <ul>
+        <li>DDS3G :=x &nbsp;&nbsp;&nbsp;
+        When codes die inside DDS functions (it <i>does</i> happen).<br>
+        It may occasionally be useful to watch a debugger step through DDS
+        functions. The DDS3G flag causes applications to link with a debug
+        version of the library. (NOTE: the debug library must already be
+        built.)
+      </ul>
+
+    <h2>Debugging DDS</h2>
+    <h4>To compile DDS and DDS-like functions locally</h4>
+      <ul>
+        <li>IncludeDirs := -I${DDSROOT}/src/lib/dds3 ${IncludeDirs}<br>
+          When DDS functions look buggy, they can be copied to any application
+          source directory and compiled with the application for the purpose of
+          finding a fix. When this is done, the include files used by the
+          library must also be available throught the ${IncludeDirs} variable.
+          <br><br>
+
+          Modifying <b>IncludeDirs</b> like this is also useful when creating
+          boutique DDS-like functions needed by your application.
+      </ul>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','picking','segments')</script>
+
+    <p>Use the "Segment" menu to select the "<code>Edit Mode</code>" which controls 
+      editing picks within existing segments.  Segments are defined in a 2D plane as
+      defined by the first plotted vertical axis and first plotted horizontal axis.
+      Segment colors can be edited by selecting the
+      "<a href="../colors.html">Color&rarr;Edit&nbsp;Segment&nbsp;Colors</a>" menu item.</p>
+
+    <ul>
+      <li><u><b>Segment Editing</b></u><br />
+        <ul>
+          <li><img src="xsd_SegmentMenu.jpg" alt="" align="right" style="padding:0 0 0 20px">
+            <u>Add Segments:</u><br />
+            This is the default option when a Display Window is first created.  It will 
+            setup to add new pick segments. Pressing  the <b>left mouse button</b> will
+            set the first pick of a new segment.  Where ever this pick is position
+            determines the 2D segment plane where all picks are contained. Continuing
+            to press the <b>left mouse button</b> will add more picks.  Press the
+            <b>middle mouse button</b> to remove the last pick.  Press the
+            <b>right mouse button</b> to terminate adding more picks and add the working
+            segment to the active segment list for this XSD session. (NOTE: if only a 
+            single pick is made, then the segment will not be created.  If you really
+            desire to have a segment comprised of a single pick, then use 
+            "Segment&rarr;Add&nbsp;Single&nbsp;point&nbsp;Segment".</li>
+
+          <li><u>Add Single Point Segment:</u><br /> 
+            This option creates a segment with only one pick.  Every time the 
+            <b>left mouse button</b> is pressed, a single point segment is created.</li>
+
+          <li><u>Move Segment:</u><br /> 
+            This option moves segments within the established 2D segment plane. To select
+            a segment to move, press the <b>left mouse button</b>.  The selected segment
+            will change color.  Then you can use the <b>left mouse button</b> to drag
+            the segment around, anywhere within the 2D plane.  Press the
+            <b>right mouse button</b> to deselect the segment.  Then either select 
+            another segment or change the "<code>Edit Mode</code>".</li>
+
+          <li><u>Delete Segment:</u><br /> 
+            This option deletes segments.  Press the <b>left mouse button</b> to select
+            a segment (which will be highlighted).  Press the <b>right mouse button</b>
+            to deselect the segment.  When a segment is selected, pressing the 
+            <b>left mouse button</b> a second time will delete the selected segment.</li>
+
+          <li><u>Copy Segments:</u><br /> 
+            <img src="xsd_CopySegmentsWindow.jpg" alt="" align="right" style="padding:0 0 0 20px">
+            This option allows you to copy all the segments from one 2D segment plane to
+            other planes.  For each Axis outside the 2D segment plane select the axis value
+            "<code>From</code>" which to copy the segments.  Then select the axis values
+            to copy the segment to starting from the "<code>To</code>" values through
+            the "<code>End</code>" values incrementing by the "<code>Inc</code>" values.
+            Press the "<code>OK</code>" button to copy the segments or "<code>Cancel</code>"
+            to not copy them.  The "<code>Edit Mode</code> does not change.
+            <br clear="all" /></li>
+
+          <li><u>Duplicate Segment:</u><br /> 
+            This option duplicates segments. Press the <b>left mouse button</b> to select
+            a segment (which will be highlighted).  Press the <b>right mouse button</b>
+            to deselect the segment.  When a segment is selected, pressing the 
+            <b>left mouse button</b> a second time will duplicate the selected segment.
+            The duplicated segment will be offset 3 vertical pixels more.</li>
+
+          <li><u>Refine Segment:</u><br /> 
+            This option will add addition picks in between each existing picks of a
+            selected segment. Press the <b>left mouse button</b> to select a segment 
+            (which will be highlighted).  Press the <b>right mouse button</b> to
+            deselect the segment. Each time the <b>left mouse button</b> is pressed
+            when a segment is selected, addition picks are added halfway between each
+            existing picks.</li>
+
+          <li><u>Split Segment:</u><br /> 
+            This option is used to split an existing segment into two segments. Select
+            a segment by pressing the <b>left mouse button</b> which will highlight the
+            selected segment.  Press the <b>right mouse button</b> to deselect the segment
+            without splitting it or press the <b>left mouse button</b> again to split the
+            segment up at the closest pick point.  No segment is selected after that.</li>
+
+          <li><u>Join Segment:</u><br /> 
+            This option joins two segments. Select a segment by pressing the 
+            <b>left mouse button</b> which will highlight the selected segment and mark
+            the end point of the selected segment (closest to the cursor) with a "&Chi;".
+            Then press the <b>left mouse button</b> again closest to the end point of
+            another segment you wish to join to the selected segment.  Press  the
+            <b>right mouse button</b> to deselect the segment.</li>
+
+          <li><u>Label Segment:</u><br /> 
+            <img src="xsd_LabelWindow.jpg" alt="" align="right" style="padding:0 0 0 20px">
+            This option allows you to label the pick segments. Select a segment by pressing 
+            the <b>left mouse button</b>. Pressing it again will bring up the Input Label
+            Window.  Type in what you want for the label (no blank spaces). Press the
+            "<code>OK</code>" button to accept the change or "<code>Cancel</code>" to 
+            close the Window.<br clear="all" /></li>
+
+          <li><u>Clear All Segments:</u><br /> 
+            This option will remove ALL pick segments.  A verification window will pop-up
+            first to prevent inadvertently clearing them.</li>
+        </ul>
+      </li>
+
+      <li><u><b>Segment I/O</b></u><br />
+        There are two type of XSD pick files.  The "Old Format" is based on the old USP
+        format which only has Samples, Traces and Records (3D).  When dealing with this
+        old format, XSD treats all axes from 3 on as simple records.  The "New Format"
+        pickfile if based on N-Dimensional datasets.  Pick segments are 2D poly-lines 
+        in the plane defined by the first vertical and first horizontal plot axes. 
+        Each segment is associated with the axes by their values.
+        <ul>
+          <li><u>Load Segments:</u><br /> 
+            This option will load previously save pick segments.  A file selection
+            window will pop-up to allow you to select a pickfile to load.  It will 
+            automatically detect whether the pickfile is an "Old Format" or "New Format"
+            pickfile.  The pick segments will be read and displayed on all the Display
+            Windows where the corresponding 2D segment plane exists.</li>
+
+          <li><u>Load Segments Remote:</u><br /> 
+            This is similar to the "<code>Load Segments</code>" option except the pickfile
+            is accessed remotely through the ddsServer.</li>
+
+          <li><u>Load Segments from Surfaces:</u><br /> 
+            <img src="xsd_ReadSurfaceWindow.jpg" alt="" align="right" style="padding:0 0 0 20px">
+            This option will create segment picks by reading surfaces from a dataset. The
+            dataset must have the same axes as the data being displayed except for the
+            display vertical axis which is taken from the surface values.  The surface
+            data selection window has a text widget to read the 
+            "<code>Surface Scale Factor</code>" which is used to scale the surface
+            Sample values to values compatible with the plotted vertical axis scale. The 
+            "<code>Edit Mode</code> does not change.<br clear="all" /></li>
+ 
+         <li><u>Save Segments:</u><br /> 
+            <img src="xsd_SavePicksWindow.jpg" alt="" align="right" style="padding:0 0 0 20px">
+            This option will save all the pick segments to a pickfile. A file selection
+            window will pop-up to allow you to select a pickfile which to save the picks
+            as well.  After selecting a filename to use, a Save Picks Window will pop-up
+            allowing you to select whether to use the "Old Format" or "New Format".  If
+            "<code>Old XSD Pick Format</code>" then the Units and Offsets are enabled
+            to for the old format.</li>
+ 
+         <li><u>Save Segments Remote:</u><br /> 
+            This is similar to the "<code>Save Segments</code>" option except the pickfile
+            is created remotely through the ddsServer.</li>
+
+        </ul>
+      </li>
+
+
+      <li><a name="toggles"></a><u><b>Segment Toggles</b></u><br />
+        <ul>
+          <li><u>Hide Segments</u>: turn this on to hide all the segments from the
+            current Display Window.</li>
+
+          <li><u>Honor Records</u>: turn this on to cause all the segments to appear as
+            though they were each created within the first 2D segment plane in the display.
+            This allows multiple Display Windows displaying different records, to see the
+            same segments for each display.</li>
+
+          <li><u>Segment Labels</u>: turn this on to show any labels associated with the
+            segments.</li>
+
+          <li><u>Segment Numbers</u>: turn this on to show the index numbers associated
+            with each segment in the current Display Window.</li>
+
+          <li><u>Segment Lines</u>: turn this on to display lines between each picks within
+            each of the pick segments in the current Display Window. When this is turned 
+            off then only the picks themselves are shown, each one as a simple "&bull;"
+            (dot).</li>
+        </ul>
+      </li>
+    </ul>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

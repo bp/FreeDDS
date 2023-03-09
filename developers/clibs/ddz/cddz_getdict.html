@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>cddz_getdict - Get the name of a dictionary when only the BIN_TAG is known</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b>
+    <br>
+    <b>#include "cddz.h"</b>
+    <p>
+      <b>const char *cddz_getdict(</b><i>bin_tag</i><b>)</b>
+      <dl><dd>
+        <b>int </b><i>bin_tag</i><br>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"cddz_getdict"</b> finds the name of a dictionary given it's
+    BIN_TAG. This is useful when the name is needed after a file was
+    openned with <b>cddx_in</b> or <b>cddx_out</b> functions.
+
+   <h2> EXAMPLE</h2>
+   <pre>
+int        ier;
+BIN_TAG    fd_in, fd_out, fd_buf_out;
+const char *buf_in_dict, *buf_out_dict, *Title;
+ ...
+/*
+ * Use convenience routines on input but not on output
+ */
+fd_in = cddx_in ("in","stdin:",Title);
+buf_in_dict = cddz_getdict(fd_in);
+buf_out_dict = cdds_out(" "," ",buf_in_dict);
+fd_buf_out = cdds_open(buf_out_dict," "," ","m");
+out_dict = cdds_out(" "," ",buf_out_dict);
+fd_out = cdds_open(out_dict," "," ", "w");
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>setAttr - Sets an attribute for this data object</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>procedure setAttr(</b><i>key, val</i><b>)</b>
+      <dl><dd>
+	  <b>character(len=*), intent(in) :: </b><i>key</i><br>
+	  <b>intent(in)                   :: </b><i>val</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"setAttr"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure sets the attribute labeled by <i>key</i> as <i>val</i> for this
+      data object. Note that the type of <i>val</i> depends on which <i>key</i> is specified.
+      <b>data%setAttr</b> should be called before <b>data%open</b>.
+      <br><br>
+      
+      <table width="90%" border=0 rules="none" frame="void" cols="2" cellspacing="0" cellpadding="5">
+	<tr>
+	  <td valign="top">
+	    'seekopen'
+	  </td>
+	  <td>
+	    <b>logical</b> specifying that the file in write mode should be forced open with a seek when <b>data%open</b> is called.
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'passhdrs'
+	  </td>
+	  <td>
+	    <b>logical</b> specifying that trace headers should also be read from file.
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'zip'
+	  </td>
+	  <td>
+	    <b>logical</b> specifying that file in write mode should have format <i>asp zip</i>.
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'title'
+	  </td>
+	  <td>
+	    <b>character(len=*)</b> specifying the title used to open file through <b>fddx_out</b> or <b>fddx_in</b>.
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'axes'
+	  </td>
+	  <td>
+	    <b>character(len=*)</b> specifying the space-delimited axes of the file in write mode.
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'smpltype'
+	  </td>
+	  <td>
+	    <b>character(len=*)</b> specifying the host-dependent sample type of the input/output file: 'short', 'int', 'float', or 'complex'. Can be set to 'FROM_FILE' for read mode.
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'datapath'
+	  </td>
+	  <td>
+	    <b>character(len=*)</b> specifying the data path of the file in write mode.
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'axesnames'
+	  </td>
+	  <td>
+	    <b>character(len=*), dimension(:)</b> specifying the axes names of the file(s) in read mode.
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'units'
+	  </td>
+	  <td>
+	    <b>character(len=*), dimension(:)</b> specifying the units of the file in write mode.
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'rank'
+	  </td>
+	  <td>
+	    <b>integer</b> specifying the dimensions of the file(s).
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'size'
+	  </td>
+	  <td>
+	    <b>integer, dimension(:)</b> specifying the size of each axis of the file(s).
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'delta'
+	  </td>
+	  <td>
+	    <b>real, dimension(:)</b> specifying the delta of each axis of the file(s).
+	  </td>
+	</tr>
+	<tr>
+	  <td valign="top">
+	    'origin'
+	  </td>
+	  <td>
+	    <b>real, dimension(:)</b> specifying the origin of each axis of the file(s).
+	  </td>
+	</tr>
+	
+      </table>
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	
+	type(DdsObject) :: outData
+	
+	! set attributes for output data
+	call outData%setAttr('rank', 4)
+	call outData%setAttr('axes', 'z x y t')
+	call outData%setAttr('size', [100, 100, 100, 25])
+	call outData%setAttr('delta', [25.0, 25.0, 25.0, .001])
+	call outData%setAttr('origin', [0, 0, 0, 0])
+	call outData%setAttr('units', ['m', 'm', 'm', 'sec'])
+	call outData%setAttr('seekopen', .true.)
+	
+	! open output data in write mode
+	call outData%open('w', 'out')
+	
+	! close data
+	call outData%close()
+      </pre>
+      
+  </body>
+</html>

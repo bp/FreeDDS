@@ -1,0 +1,306 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (change sample type)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","c_rcfft.c")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+/***********************************************************************/
+/*                                                                     */
+/* Use DDS FFT wrappers to convert REAL time-domain data to a          */
+/* ccube of frequency domain data                                      */
+/*                                                                     */
+/***********************************************************************/
+
+#include "stdlib.h"
+#include "stdio.h"
+#include "string.h"
+#include "cdds.h"
+#include "cfft.h"
+
+
+/* Function prototypes */
+void help(char *prog, char *Title);
+
+int IMOD(int numerator, int denominator);
+
+int read_record(
+       BIN_TAG fd_in, float *record,
+       int n1, int n2, int nf, int i3);
+
+
+/* Utility Functions */
+int IMOD(int num, int denom)
+{
+   if ( denom == 0 ) return 0;
+   return num - denom * (int)( num/denom );
+}
+
+
+/* main */
+int main(int argc, char **argv)
+{
+
+/* For DDS functions. Arguments and return values */
+   char  *prog, *Title;
+   int   ier;
+   BIN_TAG fd_in,fd_out;
+   long long ier_ll, izero_ll=0;
+
+/* Data attributes */
+   char  axes[RANK_MAX][AXISNAME_MAX];
+   int   n1,n2,n3, rank;
+   float d1;
+
+/* User parameters */
+   int    verbose;
+
+/* Internal dynamic array */
+   float  *record;
+
+/* Internal scalar values and loop counters */
+   const char *defn;
+   int    i3, irank, nfft, nf;
+   int    fft_flag=FFT_ESTIMATE;
+   float  df, fft_scale=1.0;
+   int    remainder;
+
+/*-------------------------------------------------------------------*/
+
+/****************/
+/* Initialize   */
+/****************/
+   setargcv(argc, argv);
+   prog="c_rcfft";
+   Title="c_rcfft: Real-to-Complex FFT with ccube output";
+
+
+/*****************************************************************/
+/* Open the print file and dump command-line help as requested   */
+/*****************************************************************/
+   ier=cdds_openpr(prog,"");
+   if (ier&gt;0) help(prog,Title);
+
+
+/*********************/
+/* Open input file   */
+/*********************/
+   fd_in=cddx_in("in","stdin:",Title);
+
+
+/***********************************/
+/* Retrieve data characteristics   */
+/***********************************/
+   ier=cdds_scanf("size.axis(1)","%d",&amp;n1);
+   ier=cdds_scanf("size.axis(2)","%d",&amp;n2);
+   n3=cdds_axis_prod(3);
+
+   ier=cdds_scanf("delta.axis(1)","%f",&amp;d1);
+
+   rank=cdds_scank("axis","");
+   for (irank=0; irank&lt;rank; irank++) {
+      cdds_scanf("","%s",axes[irank]);
+   }
+
+
+/********************************************************/
+/* Retrieve other command line and parfile parameters   */
+/********************************************************/
+   ier=cdds_dict("par:","scan");
+
+   verbose=(cdds_scank("verbose",DDS_TRUE_KEY)&gt;0);
+
+
+/********************************************************/
+/* Set up the FFT size and output data size and delta   */
+/* ( df has units Hz per                                */
+/*   https://www.freeusp.org/DDS/users/defn/axis.html ) */
+/********************************************************/
+   nfft=cfft_nrfft5(n1);
+   nf = nfft/2 + 1;
+   df = 1.0/(d1*(float)(nfft));
+
+   if (verbose) {
+      ier=cdds_prtmsg("\n");
+      ier=cdds_prtmsg("  nfft = %d\n",nfft);
+      ier=cdds_prtmsg("  nf   = %d\n",nf);
+      ier=cdds_prtmsg("  df   = %f\n",df);
+      ier=cdds_prtmsg("\n");
+   }
+
+
+/**********************************/
+/* Set up the output dictionary   */
+/**********************************/
+   fd_out=cddx_out("out","stdout:",Title,fd_in);
+   if (fd_out &lt; 0) {
+      ier=cdds_prterr("Opening output dictionary\n");
+      ier=cdds_close(fd_in);
+      ier=cdds_closepr();
+      exit(0);
+   }
+
+
+/**************************************************************/
+/* Print format and modified axis info to output dictionary   */
+/**************************************************************/
+   ier=cdds_printf("","\n");
+   ier=cdds_printf("old_format","ccube\n");
+
+   ier=cdds_printf("axis","w");
+   for (irank=1; irank&lt;rank; irank++) {
+      ier=cdds_printf(""," %s",axes[irank]);
+   }
+   ier=cdds_printf("","\n");
+
+
+/***************************************************************/
+/* Twiddle with the dictionary to get axis names to register   */
+/***************************************************************/
+   ier=cddx_dict(fd_out,"scan");
+   ier=cddx_dict(fd_out,"print");
+
+
+/*******************************************************************/
+/* Print modified size,delta and units info to output dictionary   */
+/*******************************************************************/
+   ier=cdds_printf("","\n");
+   ier=cdds_printf("size.axis(1)","%d\n",nf);
+   ier=cdds_printf("delta.axis(1)","%f\n",df);
+   ier=cdds_printf("units.axis(1)","hz\n");
+
+
+/**************************************/
+/* Define output samples as complex   */
+/**************************************/
+   ier=cdds_printf("","\n");
+   ier=cdds_printf("fmt:SAMPLE_TYPE","typedef complex SAMPLE_TYPE;\n");
+
+
+/**********************************************/
+/* Now actually open the output with a seek   */
+/**********************************************/
+   ier_ll=cdds_lseek8(fd_out,0,izero_ll,SEEK_SET);
+   if (ier_ll &lt; izero_ll) {
+      ier=cdds_prterr("Opening output file\n\0");
+      ier=cdds_close(fd_in);
+      ier=cdds_close(fd_out);
+      ier=cdds_closepr();
+      exit(0);
+   }
+
+
+/**************************/
+/* Allocate data array   */
+/**************************/
+   record=(float*)cdds_malloc(2*nf*n2*sizeof(float));
+
+
+/************************************************/
+/* Loop over input data, read-transform-write   */
+/************************************************/
+   for (i3=0; i3&lt;n3; i3++) {
+
+      remainder=IMOD(i3+1,10);
+      if ( verbose &amp;&amp; !remainder) {
+         ier=cdds_prtcon("Record %5d of %5d\n",i3+1,n3);
+      }
+
+      if (read_record(fd_in, record, n1,n2,nf, i3) != n2 ) {
+         ier=cdds_close(fd_in);
+         ier=cdds_close(fd_out);
+         ier=cdds_closepr();
+         exit(0);
+      }
+
+      ier=cfft_rcfftm(fft_scale,nfft,n2,2*nf,record,fft_flag);
+
+      ier=cddx_write(fd_out,record,n2);
+      if (ier != n2) {
+         ier=cdds_prterr("Writing record %d. %d traces written\n",i3+1,ier);
+         ier=cdds_close(fd_in);
+         ier=cdds_close(fd_out);
+         ier=cdds_closepr();
+         exit(0);
+      }
+
+   }
+
+
+/**************/
+/* Clean up   */
+/**************/
+   cdds_free(record);
+   cdds_close(fd_in);
+   cdds_close(fd_out);
+   cdds_closepr();
+
+
+/**********/
+/* Exit   */
+/**********/
+   exit(0);
+}
+
+
+
+
+/* Function help */
+void help( char *prog, char *Title)
+{
+   fprintf(stderr,"\n");
+   fprintf(stderr," %s\n",Title);
+   fprintf(stderr,"\n");
+   fprintf(stderr," Parameter....Meaning........................Default\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  in=         input dictionary                stdin:\n");
+   fprintf(stderr,"  out=        output dictionary              stdout:\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  verbose=    verbose output                      no\n");
+   fprintf(stderr,"\n");
+   fprintf(stderr,"  USAGE: %s in=[in_dict] out=[out_dict] \\\n",prog);
+   fprintf(stderr,"              verbose=[y|n] ]\n");
+   fprintf(stderr,"\n");
+
+   exit(0);
+}
+
+
+
+/* Function read_record */
+int read_record( BIN_TAG fd_in, float *record,
+                 int n1, int n2, int nf, int i3)
+{
+   int i1,i2,ier;
+
+   i2=0;
+   while ( i2&lt;n2 &amp;&amp; cddx_read(fd_in,&amp;record[i2*2*nf],1)==1 ) {
+      for (i1=n1; i1&lt;2*nf; i1++) record[i2*2*nf+i1]=0.0;
+      i2++;
+   }
+
+   if (i2 != n2) {
+      ier=cdds_prterr("Reading record %d. %d traces read\n",i3+1,i2);
+   }
+   return (i2);
+}
+
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

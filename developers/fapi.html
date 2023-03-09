@@ -1,0 +1,137 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi","fapi")</script>
+
+    <h1>
+      <img src="../images/book_q.gif" alt="">
+      Table of Contents
+    </h1>
+
+    <p>
+    DDS functions are accessible after including the proper header file.
+    <p>
+    <table>
+      <tr>
+        <td><big><b>#include "fdds.h"</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big>Use with fixed-format sources.</big></td>
+      </tr>
+      <tr>
+        <td><big><b>#include "f90dds.h"</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big>Use with free-format sources.</big></td>
+      </tr>
+      <tr>
+        <td valign=top><big><b>use dds</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big> A module with most of DDS defined.
+                 <br>Module read/write functions support 1D buffers only.</big></td>
+      </tr>
+    </table>
+    <p>
+    <table>
+        <tr>
+          <td align=left valign=top>
+
+            <img src="../images/redball.gif" alt="">
+            Dictionary Routines<br/>
+            <ul>
+              <li><a href="fapi/in.html">fdds_in</a>&nbsp;-&nbsp;open&nbsp;input&nbsp;dictionary<br/>
+              <li><a href="fapi/out.html">fdds_out</a>&nbsp;-&nbsp;open&nbsp;output&nbsp;dictionary<br/>
+              <li><a href="fapi/mod.html">fdds_mod</a>&nbsp;-&nbsp;reopen&nbsp;dictionary<br/>
+              <li><a href="fapi/dict.html">fdds_dict</a>&nbsp;-&nbsp;select&nbsp;dictionary&nbsp;mode<br/>
+              <li><a href="fapi/axis_prod.html">fdds_axis_prod</a>&nbsp;-&nbsp;scan&nbsp;axis&nbsp;sizes<br/>
+              <li><a href="fapi/printf.html">fdds_printf</a>&nbsp;-&nbsp;print&nbsp;definitions<br/>
+              <li><a href="fapi/printt.html">fdds_printt</a>&nbsp;-&nbsp;print&nbsp;definitions<br/>
+              <li><a href="fapi/printv.html">fdds_printv</a>&nbsp;-&nbsp;print&nbsp;definitions<br/>
+              <li><a href="fapi/scanf.html">fdds_scanf</a>&nbsp;-&nbsp;scan&nbsp;definitions<br/>
+              <li><a href="fapi/sscanf.html">fdds_sscanf</a>&nbsp;-&nbsp;scan&nbsp;strings<br/>
+              <li><a href="fapi/scank.html">fdds_scank</a>&nbsp;-&nbsp;scan&nbsp;definitions<br/>
+              <li><a href="fapi/scant.html">fdds_scant</a>&nbsp;-&nbsp;scan&nbsp;definitions<br/>
+              <li><a href="fapi/scantn.html">fdds_scantn</a>&nbsp;-&nbsp;scan&nbsp;definitions<br/>
+              <li><a href="fapi/scanv.html">fdds_scanv</a>&nbsp;-&nbsp;scan&nbsp;definitions<br/>
+              <li><a href="fapi/switch.html">fdds_switch</a>&nbsp;-&nbsp;get&nbsp;a&nbsp;switch<br/>
+            </ul>
+
+            <img src="../images/redball.gif" alt="">
+            Binary Field Access<br/>
+            <ul>
+              <li><a href="fapi/member.html">fdds_member</a>&nbsp;-&nbsp;query&nbsp;member&nbsp;tag<br/>
+              <li><a href="fapi/name.html">fdds_name</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;name<br/>
+              <li><a href="fapi/prec.html">fdds_prec</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;precision<br/>
+              <li><a href="fapi/count.html">fdds_count</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;count<br/>
+              <li><a href="fapi/genus.html">fdds_genus</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;genus<br/>
+              <li><a href="fapi/prime.html">fdds_prime</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;primetype<br/>
+              <li><a href="fapi/index.html">fdds_index</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;index<br/>
+              <li><a href="fapi/offset.html">fdds_offset</a>&nbsp;-&nbsp;query&nbsp;field&nbsp;offset<br/>
+              <li><a href="fapi/get.html">fdds_get<i>xx</i></a>&nbsp;-&nbsp;get&nbsp;a&nbsp;field<br/>
+              <li><a href="fapi/put.html">fdds_put<i>xx</i></a>&nbsp;-&nbsp;put&nbsp;a&nbsp;field<br/>
+            </ul>
+          </td>
+
+          <td align=left valign=top>
+
+            <img src="../images/redball.gif" alt="">
+            Binary Data Control<br/>
+            <ul>
+              <li><a href="fapi/open.html">fdds_open</a>&nbsp;-&nbsp;open&nbsp;binary<br/>
+              <li><a href="fapi/openm.html">fdds_openm</a>&nbsp;-&nbsp;open&nbsp;map&nbsp;definition<br/>
+              <li><a href="fapi/isreg.html">fdds_isreg</a>&nbsp;-&nbsp;is regular&nbsp;file?<br/>
+              <li><a href="fapi/lseek.html">fdds_lseek</a>&nbsp;-&nbsp;trace&nbsp;seek<br/>
+              <li><a href="fapi/read.html">fdds_read</a>&nbsp;-&nbsp;read&nbsp;binary<br/>
+              <li><a href="fapi/readm.html">fdds_readm</a>&nbsp;-&nbsp;read&nbsp;&amp;&nbsp;map<br/>
+              <li><a href="fapi/write.html">fdds_write</a>&nbsp;-&nbsp;write&nbsp;binary<br/>
+              <li><a href="fapi/writem.html">fdds_writem</a>&nbsp;-&nbsp;map&nbsp;&amp;&nbsp;write<br/>
+              <li><a href="fapi/map.html">fdds_map</a>&nbsp;-&nbsp;map&nbsp;a&nbsp;field<br/>
+              <li><a href="fapi/fflush.html">fdds_fflush</a>&nbsp;-&nbsp;binary&nbsp;flush<br/>
+              <li><a href="fapi/close.html">fdds_close</a>&nbsp;-&nbsp;close&nbsp;binary<br/>
+            </ul>
+
+            <img src="../images/redball.gif" alt="">
+            Memory&nbsp;Allocation<br/>
+            <ul>
+              <li><a href="fapi/malloc.html">fdds_malloc</a>&nbsp;-&nbsp;memory&nbsp;allocation<br/>
+              <li><a href="fapi/malloc8.html">fdds_malloc8</a>&nbsp;-&nbsp;memory&nbsp;allocation<br/>
+              <li><a href="fapi/calloc.html">fdds_calloc</a>&nbsp;-&nbsp;memory&nbsp;allocation<br/>
+              <li><a href="fapi/calloc8.html">fdds_calloc8</a>&nbsp;-&nbsp;memory&nbsp;allocation<br/>
+              <li><a href="fapi/realloc.html">fdds_realloc</a>&nbsp;-&nbsp;memory&nbsp;reallocation<br/>
+              <li><a href="fapi/realloc8.html">fdds_realloc8</a>&nbsp;-&nbsp;memory&nbsp;reallocation<br/>
+              <li><a href="fapi/free.html">fdds_free</a>&nbsp;-&nbsp;free&nbsp;memory<br/>
+              <li><a href="fapi/memuse.html">fdds_memuse</a>&nbsp;-&nbsp;query&nbsp;allocation<br/>
+            </ul>
+
+            <img src="../images/redball.gif" alt="">
+            Print&nbsp;Control<br/>
+            <ul>
+              <li><a href="fapi/openpr.html">fdds_openpr</a>&nbsp;-&nbsp;open&nbsp;print&nbsp;file<br/>
+              <li><a href="fapi/prtmsg.html">fdds_prtmsg</a>&nbsp;-&nbsp;print&nbsp;message<br/>
+              <li><a href="fapi/prtcon.html">fdds_prtcon</a>&nbsp;-&nbsp;print&nbsp;to&nbsp;console<br/>
+              <li><a href="fapi/prterr.html">fdds_prterr</a>&nbsp;-&nbsp;print&nbsp;error&nbsp;message<br/>
+              <li><a href="fapi/errors.html">fdds_errors</a>&nbsp;-&nbsp;return&nbsp;#&nbsp;errors<br/>
+              <li><a href="fapi/closepr.html">fdds_closepr</a>&nbsp;-&nbsp;close&nbsp;print&nbsp;file<br/>
+              <li><a href="fapi/closepr2.html">fdds_closepr2</a>&nbsp;-&nbsp;close&nbsp;print&nbsp;file<br/>
+            </ul>
+          </td>
+        </tr>
+    </table>
+      
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

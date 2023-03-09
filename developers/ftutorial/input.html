@@ -1,0 +1,132 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Tutorial (Input)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ftutorial","input")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Open External Input Dataset</h2>
+
+    <p>
+      <a href="../fapi/in.html">fdds_in</a> is called to initialize an
+      input dictionary. A temporary dictionary name is returned, along with
+      any dictionaries specified by the user/default. It provides the title
+      and a copy of the bootstrap dictionaries (par:). The resulting 
+      dictionaries are left in "scan" mode.
+
+    <p>
+      This is normally followed by a call to  
+      <a href="../fapi/open.html">fdds_open</a> to open the binary stream
+      associated with the dictionary.
+
+    <pre>
+      ier=<a href="../fapi/in.html">fdds_in</a>(in_dict,'in','stdin:',title)
+      in_bin=<a href="../fapi/open.html">fdds_open</a>(in_dict,'in_format','in_data','r')
+      if (in_bin.lt.0) then
+         ier=fdds_prterr('Unable to open input data\n\0')
+      endif
+c
+      ier=fdds_scanf('size.axis(1)','%d\0',ns)
+    </pre>
+
+    <p>
+      Another example is to open a velocity file with no default.
+
+    <pre>
+      ier=<a href="../fapi/in.html">fdds_in</a>(vel_dict,'vel',' ',title)
+      vel_bin=<a href="../fapi/open.html">fdds_open</a>(vel_dict,'vel_format','vel_data','r')
+    </pre>
+
+    <! -------------------------------------------------------------------->
+    <hr/>
+    <h2>Open Internal Buffer</h2>
+
+    <p>
+      A dataset may not be in a host-dependent format with which a program 
+      can work.  So an internal buffer binary must be defined and opened.
+      This is done creating a temporary internal buffer dictionary and
+      defining the desired fields in a host-dependent format (typically
+      "<b>asp</b>" and then opening the binary stream.  You can write
+      modification definitions to the "<b>override:</b>" internal 
+      dictionary via the "<b>MOD_FIELD</b>" definition.
+      (See <a href="process.html">Process Data</a> to see how to map the 
+      input buffer to this internal buffer.)
+
+    <pre>
+c     "override:" overrides any existing definitions.
+      ier=<a href="../fapi/dict.html">fdds_dict</a>('override:','print')
+
+      ier=<a href="../fapi/printf.html">fdds_printf</a>('MOD_FIELD','*+ int StaCor;\n\0')
+      ier=<a href="../fapi/printf.html">fdds_printf</a>(' ','*+ float SrcX;\n\0')
+      ier=<a href="../fapi/printf.html">fdds_printf</a>(' ',
+     *    '*+ SAMPLE_TYPE Samples[axis_size(1)];\n\0')
+
+      ier=<a href="../fapi/printf.html">fdds_printf</a>('fmt:*:asp.SAMPLE_TYPE',
+     *    'typedef float SAMPLE_TYPE;\n\0')
+    </pre>
+      
+    <p>
+      The application can open binary data using this internal "<b>asp</b>" 
+      format. The open <i>mode</i> is "<b>m</b>" (memory), because external
+      I/O to a stream is not required.  The data will only reside within
+      buffers provided by the application (buf) or by fdds_write.
+
+    <pre>
+      integer buf_bin
+      character*(PATHNAME_MAX) buf_dict
+      ...
+c     Initialize "buf_dict" dictionary
+      ier=<a href="../fapi/out.html">fdds_out</a>(buf_dict,' ',' ',in_dict)
+      ier=<a href="../fapi/printf.html">fdds_printf</a>('buf_format',' asp\n\0')
+            
+c     Open "buf" binary (see "override:")
+      buf_bin=<a href="../fapi/open.html">fdds_open</a>(buf_dict,'buf_format',' ','m')
+
+c     close out the override: dictionary
+      ier=<a href="../fapi/dict.html">fdds_dict</a>('override:','reset')
+
+    </pre>
+
+    <! -------------------------------------------------------------------->
+    <hr/>
+    <h2>Access Internal Buffer Fields</h2>
+
+    <p>
+      There are several ways to access fields within the internal buffer.
+
+    <ul>
+      <li>Retrieve the index to a specific field:
+        <pre>
+tag=<a href="../fapi/member.html">fdds_member</a>(buf_bin,0,'SrcX')
+sxindex=<a href="../fapi/index.html">fdds_index</a>(buf_bin,tag,DDS_REAL)
+tag=<a href="../fapi/member.html">fdds_member</a>(buf_bin,0,'Samples')
+smpindex=<a href="../fapi/index.html">fdds_index</a>(buf_bin,tag,DDS_REAL)
+...
+srcx=buf(1+sxindex)
+call process(buf(1+smpindex),...)
+...
+buf(sxindex)=srcx
+        </pre>
+
+      <li>Rerieve the field value by tag:
+        <pre>
+stacortag=<a href="../fapi/member.html">fdds_member</a>(buf_bin,0,'StaCor')
+...
+ier=<a href="../fapi/get.html">fdds_geti</a>(buf_bin,stacortag,buf,0,stacor,1)
+        </pre>
+    </ul>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

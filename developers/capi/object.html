@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_object)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","object")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_object - fetch field tag within DDS structures
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+    <b>FIELD_TAG cdds_object(</b><i>bin_tag, field_tag, field_name</i><b>);</b>
+    <dl><dt><dd>
+        <b>BIN_TAG</b> <i>bin_tag </i><br>
+        <b>FIELD_TAG</b> <i>field_tag </i><br>
+	<b>const char *</b><i>field_name</i>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cdds_object</b> returns the tag associated with the given 
+    <i>field_name</i> that is an object of the block associated with
+    the tag, <i>field_tag</i>.  If <i>field_tag</i> is zero, 
+    it defaults to the block which includes SEQUENCE (trace type) 
+    associated with <i>bin_tag</i>.
+    If <i>field_name</i> is blank, the returned value will be the tag 
+    associated with the first object of the block.
+    The functions, <b>cdds_next, cdds_prev</b> and <b>cdds_parent</b> allow
+    traversing through the block's objects.
+    
+    <h2>INPUT</h2>
+    <i>bin_tag</i> is the tag associated with an open binary, 
+    previously obtained from <a href="open.html">cdds_open.</a>
+    It specifies a particular binary stream.
+
+    <p/>
+      <i>field_tag</i> is the tag associated with a particular field known
+      by <i>bin_tag</i>.
+
+    <p/>
+      <i>field_name</i> is a string that names a member or object field
+      within <i>field_tag</i>.  If <i>field_name</i> is zero length or
+      blank, the returned tag defaults to the first member or object in
+      the structure, <i>field_tag</i>.
+
+    <h2>OUTPUT</h2>
+    The return value is the field tag associate with the desired object 
+    or -1 if none found. 
+ 
+    <h2>EXAMPLE</h2>
+    <pre>
+BIN_TAG bin;
+FIELD_TAG tag;
+...
+/* find tag of first block in trace */
+tag = cdds_object(bin, 0, "");
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="prec.html">cdds_prec</a> Field precision
+<a href="count.html">cdds_count</a> Field count
+<a href="align.html">cdds_align</a> Field alignment
+<a href="genus.html">cdds_genus</a> Field generic type
+<a href="name.html">cdds_name</a> Field name
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (asp Zip)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","asp","zip")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      DDS has the capability of compressing traces using the zip lossless
+      compression on each trace.  A trace table is built on-the-fly when
+      writing the traces.  This table is flushed out to the end of the binary 
+      data upon closing the binary file. When the binary is opened again, the 
+      trace table is reloaded into the system for use.  Thus, an application
+      can do trace seeks (not byte seeks) when either reading or writing
+      traces; however it cannot seek past the end-of-file. Seeks, as always,
+      are not allowed on piped datasets except when seeking forward, in which 
+      case a simple read/write is done.
+    </p>
+
+    <p>
+      <b>Be aware</b> that normal seismic data does not compress very well
+      with lossless compression.  However, datasets with a lot of constant
+      values (such as velocity models and sparse datasets with lots of zeros)
+      do compress well.
+    </p>
+
+    <p>
+      Data compression is specified by adding a format attribute of
+      "<code>zip</code>" with an optional compression level (1-9) which
+      defaults to 6 (the normal gzip default level). For example: 
+      "<code>out_format= fcube zip</code>".  The "<code>zip</code>" attribute
+      is not carried over by default to a following output format; it must 
+      always be specified for each output file for each program.
+    </p>
+ 
+    <p>
+      <b>NOTE: zip compression will not work with programs that do random access on 
+        those files or with programs that use MPI with each node writing to a zip file.
+      </b>
+    </p>
+
+ 
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

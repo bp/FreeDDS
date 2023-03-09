@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Environment</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("maintainers","environ")</script>
+    <!*********************************************************************>
+
+    <b><u>Setup the following environmental variables:</u></b>
+    <ul>
+      <li><b>DDSROOT</b> - set to the root DDS directory 
+        (eg. /usr/local/DDS.2003-07-01). This is used by all the
+        make files in identifying DDS subdirectories during the 
+        making of libraries and applications.<br><br></li>
+
+      <li><b>DDS_DIST</b> -  set to the distribution directory 
+        (eg. ${FreeUSP}/dist). This is used by the application
+        installation make file (MakeRules), and installation
+        scripts (ddsbincopy, ddsexecopy &amp; ddsmancopy).  It is
+        the base for all production scripts, binaries and man
+        pages.  The distribution directory can be located
+        anywhere but probably should be the same as used by
+        FreeUSP.  You will need to make sure that ${DDS_DIST}/bin
+        is in your path in order to execute the binaries.<br><br></li>
+    </ul>
+
+    <table>
+        <tr valign="top">
+          <td><b>NOTE:</b></td>
+          <td>DDS should already be setup to make for the following 
+            systems.  We've also used Sun, SGI, PGI, HP and Intel 
+            compilers. <u>DO NOT</u> use older gf77 compilers because they do 
+            not support array pointers.  The new gfortran works if you
+            user version &gt;= 4.2.2.
+            If a specific system needs to be added or modified, see
+            <a href="config.html">Configuration Changes</a> section.
+            <ul>
+              <li>SunOS 5.6 sun4u
+              <li>SunOS 5.8 sun4u
+              <li>SunOS 5.10 i86pc
+              <li>IRIX64 6.5 IP27
+              <li>IRIX32 n32 IP27
+              <li>IRIX32 IP27
+              <li>Linux 2.4 i686
+              <li>Linux 2.4 ia64
+              <li>Linux 2.4-sgi ia64
+              <li>Linux 2.4 x86_64
+              <li>Linux 2.6 i686
+              <li>Linux 2.6 ia64
+              <li>Linux 2.6-sgi ia64
+              <li>Linux 2.6 x86_64
+              <li>Linux 2.6 ppc64
+            </ul>
+          </td>
+        </tr>
+    </table>
+    
+    <b><u>Optional Runtime Monitoring:</u></b>
+    <ul>
+      <li><b>DDS_MONITOR</b> - This is set in dds-set-path to point to a 
+        directory where log files can be put for keeping track of application
+        usage. If it points to a valid directory, then a log file will be
+        created for each application which keeps track of successful executions
+        of each application program.  When a program terminates successfully
+        the "Monitor" routine in c_print.c in src/lib/dds directory checks for
+	the environmental variable, "DDS_MONITOR" (which gets set by dds-set-path),
+        and if the "<b>${DDS_MONITOR}/</b><i>prog</i><b>.log</b>" log files exists then
+        a single line will be added indicating the binary path used, date, time,
+        user, time of execution, and basic command line parameters. Any time a 
+        log file exceeds 10000 lines, it is replaced with the last 1000 lines.
+        <br><br></li>
+    </ul>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

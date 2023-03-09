@@ -1,0 +1,385 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (zxy_extract)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","othercodes","zxy_extract.F")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+c***********************************************************************
+c
+c Extract user specified z,x,y range from an input volume.
+c
+c Users specify ranges with origins and widths in input data coordinates
+c Where range is within input volume, just truncate samples
+c Where range is outside input volume, pad by replication
+c Pass trace headers if any
+c
+c***********************************************************************
+
+      program zxy_extract
+
+      implicit none
+
+#include &lt;<a href="../resources/fdds.h.html">fdds.h</a>&gt;
+
+c For DDS functions. Arguments and return values
+      character prog*(13), Title*(80)
+      integer   ier, fd_in, fd_out
+
+      integer*8 ier8,izero8
+      parameter (izero8=0)
+
+c Data attributes
+      integer n1,n2,n3, n1_out,n2_out,n3_out
+      integer ismptag, nhdr
+      real    d1,d2,d3, o1,o2,o3, o1_out,o2_out,o3_out
+
+c User parameters
+      logical lverb
+      real    w1_out,w2_out,w3_out
+
+c Internal dynamic array
+      integer index_1(1),index_2(1),index_3(1)
+      pointer (ptr_index_1,index_1)
+      pointer (ptr_index_2,index_2)
+      pointer (ptr_index_3,index_3)
+
+      real    record(1), volume(1)
+      pointer (ptr_record,record)
+      pointer (ptr_volume,volume)
+
+
+c Internal loop counters and other scalar values
+      integer i1,i2,i3, i1here,i2here,i3here, i3last
+      integer*8 nseek8
+      real    x_here
+
+c-------------------------------------------------------------------
+c
+c Initialize the Title
+c
+      prog='zxy_extract'
+      Title=prog//
+     :      ': extract user-specified z,x,y range from input volume.'
+
+c
+c Open the print file and dump command-line help is requested
+c
+      ier=<a href="../fapishort/fdds_openpr.html">fdds_openpr</a>(prog,' ')
+      if (ier.gt.0) call help(prog,Title)
+
+c
+c Open input file
+c Retrieve data characteristics when successful
+c
+      fd_in=<a href="../fapishort/fddx_in2.html">fddx_in2</a>('in','stdin:',Title)
+      if (fd_in.lt.0) then
+
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Unable to open input data file!\n\0')
+
+      else
+
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(1)','%d\0',n1)
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(2)','%d\0',n2)
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(3)','%d\0',n3)
+
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('delta.axis(1)','%f\0',d1)
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('delta.axis(2)','%f\0',d2)
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('delta.axis(3)','%f\0',d3)
+
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('origin.axis(1)','%f\0',o1)
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('origin.axis(2)','%f\0',o2)
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('origin.axis(3)','%f\0',o3)
+
+         ismptag=<a href="../fapishort/fdds_member.html">fdds_member</a>(fd_in,0,"Samples")
+         nhdr   =<a href="../fapishort/fdds_index.html">fdds_index</a>(fd_in,ismptag,DDS_REAL)
+
+      endif
+
+c
+c Retrieve command line and parfile parameters
+c
+      ier=<a href="../fapishort/fdds_dict.html">fdds_dict</a>('par:','scan')
+
+      lverb=.false.
+      if (<a href="../fapishort/fdds_scank.html">fdds_scank</a>('verbose',DDS_TRUE_KEY).gt.0) lverb=.true.
+
+      o1_out=o1
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('o1_out','%f\0',o1_out)
+      o2_out=o2
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('o2_out','%f\0',o2_out)
+      o3_out=o3
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('o3_out','%f\0',o3_out)
+
+      w1_out=d1*(n1-1)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('w1_out','%f\0',w1_out)
+      w2_out=d2*(n2-1)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('w2_out','%f\0',w2_out)
+      w3_out=d3*(n3-1)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('w3_out','%f\0',w3_out)
+
+c
+c Force the output to be aligned with the input
+c and get output sizes
+c
+      o1_out=o1+d1*nint((o1_out-o1)/d1)
+      o2_out=o2+d2*nint((o2_out-o2)/d2)
+      o3_out=o3+d3*nint((o3_out-o3)/d3)
+
+      n1_out=nint(w1_out/d1 + 1)
+      n2_out=nint(w2_out/d2 + 1)
+      n3_out=nint(w3_out/d3 + 1)
+
+      if (lverb) then
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('\n\0')
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('Output Attributes\n')
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('  o1_out= %f\n\0',o1_out)
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('  o2_out= %f\n\0',o2_out)
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('  o3_out= %f\n\0',o3_out)
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('\n\0')
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('  w1_out= %f\n\0',d1*(n1_out-1))
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('  w2_out= %f\n\0',d2*(n2_out-1))
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('  w3_out= %f\n\0',d3*(n3_out-1))
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('\n\0')
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('  n1_out= %d\n\0',n1_out)
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('  n2_out= %d\n\0',n2_out)
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('  n3_out= %d\n\0',n3_out)
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('\n\0')
+      endif
+
+c
+c Set up the output dictionary ... Open with lseek8
+c
+      fd_out=<a href="../fapishort/fddx_out.html">fddx_out</a>('out','stdout:',Title,fd_in)
+      if (fd_out.lt.0) then
+
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Unable to open output buffer dict!\n\0')
+
+      else
+
+         ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('size.axis(1)','%d\n\0',n1_out)
+         ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('size.axis(2)','%d\n\0',n2_out)
+         ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('size.axis(3)','%d\n\0',n3_out)
+         ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('origin.axis(1)','%f\n\0',o1_out)
+         ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('origin.axis(2)','%f\n\0',o2_out)
+         ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('origin.axis(3)','%f\n\0',o3_out)
+
+         ier8=<a href="../fapishort/fdds_lseek8.html">fdds_lseek8</a>(fd_out,0,izero8,SEEK_SET)
+
+         if (ier8.lt.izero8) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Unable to open output data file!\n\0')
+         endif
+
+      endif
+
+c
+c Check for error conditions
+c
+      if (<a href="../fapishort/fdds_errors.html">fdds_errors</a>().gt.0) then
+         ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+         ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+         ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+         stop
+      endif
+
+c
+c Allocate data arrays
+c
+      ptr_record=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(n1+nhdr)*n2*SIZEOF_REAL)
+      ptr_volume=
+     :      <a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(n1_out+nhdr)*n2_out*n3_out*SIZEOF_REAL)
+      ptr_index_1=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(n1_out)*SIZEOF_INTEGER)
+      ptr_index_2=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(n2_out)*SIZEOF_INTEGER)
+      ptr_index_3=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(n3_out)*SIZEOF_INTEGER)
+
+c
+c Set up vectors of input indices that map to output
+c
+      do i1=1,n1_out
+        x_here= d1*(i1-1) + o1_out
+        i1here= nint((x_here-o1)/d1) + 1
+        index_1(i1)=min(n1,max(1,i1here))
+      enddo
+
+      do i2=1,n2_out
+        x_here= d2*(i2-1) + o2_out
+        i2here= nint((x_here-o2)/d2) + 1
+        index_2(i2)=min(n2,max(1,i2here))
+      enddo
+
+      do i3=1,n3_out
+        x_here= d3*(i3-1) + o3_out
+        i3here= nint((x_here-o3)/d3) + 1
+        index_3(i3)=min(n3,max(1,i3here))
+      enddo
+
+c
+c Seek to first record to read
+c initialize i3last
+c
+      nseek8=dble(n2)*(index_3(1)-1)
+      ier8=<a href="../fapishort/fdds_lseek8.html">fdds_lseek8</a>(fd_in,0,nseek8,SEEK_SET)
+      i3last=index_3(1)-1
+
+c
+c Loop over n3, read a slice, copy i2 range to output volume
+c
+      do i3 = 1,n3_out
+
+         if (lverb .and. mod(i3,10).eq.0) then
+            ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('Record %5d of %5d\n\0',i3,n3_out)
+         endif
+
+         if (index_3(i3).ne.i3last) then
+            if (<a href="../fapishort/fddx_read.html">fddx_read</a>(fd_in,record,n2).ne.n2) then
+               ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Reading record %d\n\0',i3)
+               ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+               ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+               ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+               stop
+            endif
+         endif
+
+         call copy_to_vol ( record, n1,n2,nhdr,
+     :                      volume, n1_out,n2_out,n3_out,
+     :                      index_1,index_2, i3 )
+
+         i3last=index_3(i3)
+
+      enddo
+
+c
+c Write the volume all at once
+c
+      if (<a href="../fapishort/fddx_write.html">fddx_write</a>(fd_out,volume,n2_out*n3_out).ne.n2_out*n3_out) then
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Writing output\n\0')
+      endif
+
+c
+c Clean up
+c
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_record)
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_volume)
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_index_1)
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_index_2)
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_index_3)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+      ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+
+c
+c Stop
+c
+      stop
+      end
+
+
+
+
+c***********************************************************************
+c
+c subroutine to print help when requested on the command line
+c
+c***********************************************************************
+
+      subroutine help(prog,Title)
+
+      implicit none
+
+      character prog*(*), Title*(*)
+      integer lnblnk
+
+      write(0,*)' '
+      write(0,*)Title(1:lnblnk(Title))
+      write(0,*)' where (z,x,y) refer to'//
+     :          ' (axis_1,axis_2,axis_3) respectfully'
+      write(0,*)' '
+      write(0,*)' Parameter....Meaning..........................Default'
+      write(0,*)' '
+      write(0,*)'  in=         input dictionary                  stdin:'
+      write(0,*)'  out=        output dictionary                stdout:'
+      write(0,*)' '
+      write(0,*)'  Origins and widths are expected in input data units'
+      write(0,*)' '
+      write(0,*)'  o1_out=     origin for output volume axis 1    o1_in'
+      write(0,*)'  o2_out=     origin for output volume axis 2    o2_in'
+      write(0,*)'  o3_out=     origin for output volume axis 3    o3_in'
+      write(0,*)' '
+      write(0,*)'  w1_out=     width for output volume axis 1     w1_in'
+      write(0,*)'  w2_out=     width for output volume axis 2     w2_in'
+      write(0,*)'  w3_out=     width for output volume axis 3     w3_in'
+      write(0,*)' '
+      write(0,*)'  verbose=    verbose output                        no'
+      write(0,*)' '
+      write(0,*)'  USAGE: '//prog(1:lnblnk(prog))//' \\'
+      write(0,*)'           in=[in_dict] out=[out_dict] \\'
+      write(0,*)'           [ o1_out=[o1_out] w1_out=[w1_out] \\'
+      write(0,*)'             o2_out=[o2_out] w2_out=[w2_out] \\'
+      write(0,*)'             o3_out=[o3_out] w3_out=[w3_out] \\'
+      write(0,*)'             verbose=[y|n] ]'
+      write(0,*)' '
+
+      stop
+
+      return
+      end
+
+
+
+
+c***********************************************************************
+c
+c Copy an input record into it's place in the output volume
+c
+c***********************************************************************
+
+      subroutine copy_to_vol ( record, n1,n2,nhdr,
+     :                         volume, n1_out,n2_out,n3_out,
+     :                         index_1,index_2, i3 )
+
+      implicit none
+
+c Arguments
+      integer n1,n2, nhdr, n1_out,n2_out,n3_out
+      integer index_1(n1_out),index_2(n2_out)
+      real    record(1-nhdr:n1,n2)
+      real    volume(1-nhdr:n1_out,n2_out,n3_out)
+
+c Locals
+      integer i1,i2,i3
+
+c Loop over output traces. Copy headers first, then samples.
+      do i2=1,n2_out
+         do i1=1-nhdr,0
+            volume(i1,i2,i3)=record(i1,index_2(i2))
+         enddo
+         do i1=1,n1_out
+            volume(i1,i2,i3)=record(index_1(i1),index_2(i2))
+         enddo
+      enddo
+
+c All done
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

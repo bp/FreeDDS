@@ -1,0 +1,48 @@
+
+    <h2>cddx_getdim - find the dimensions of a file.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;pcddx.h&gt;</b>
+    <p>
+      <b>int cddx_getdim(</b><i>bin, rank, origin, delta, size, cumsize</i><b>)
+    </b><dl><dd>
+        <b>int </b><i>bin</i><br>
+        <b>int *</b><i>rank</i><br>
+        <b>float </b><i>origin[RANK_MAX]</i><br>
+        <b>float </b><i>delta[RANK_MAX]</i><br>
+        <b>int </b><i>size[RANK_MAX]</i><br>
+        <b>long </b><i>cumsize[RANK_MAX]</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cddx_getdim</b> scans the dictionary to find the dimensions of a file.<br>
+    If the file is regular (eg, not a pipe) then it also checks that actual number of traces matches the number indicated in the dictionary.<br>
+    If they are different, then cumsize[0] will be -(the actual number of traces), else cumsize[0] will be 1.
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>bin</i>", specifies the binary tag of the file.
+    </p>
+      
+    <h2>OUTPUT</h2>
+    <p>
+      The parameter, "<i>rank</i>", specifies the rank (number of dimensions) of the file.
+    </p><p>
+      The parameter, "<i>origin</i>", specifies the origin of each axis.
+    </p><p>
+      The parameter, "<i>delta</i>", specifies the delta spacing of each axis.
+    </p><p>
+      The parameter, "<i>size</i>", specifies the size of each axis.
+    </p><p>
+      The parameter, "<i>cumsize</i>", specifies the cumulative size in traces of each axis.<br>
+      If the file is regular (eg, not a pipe) then it also checks that actual number of traces matches the number indicated in the dictionary.<br>
+      If they are different, then cumsize[0] will be -(the actual number of traces), else cumsize[0] will be 1.
+    </p>
+
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_getdim</b> always returns 0.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

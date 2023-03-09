@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (asp)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","formats","asp")</script>
+    <!*********************************************************************>
+
+    <p>
+      By creating new "<code>fmt:</code>" structure Definitions, a new 
+      data format can be created.  DDS has a built-in generic format
+      called "<b>asp</b>" (<u><b>A</b></u>moco <u><b>S</b></u>eismic
+      <u><b>P</b></u>rocessing). It has flexible Trace Headers 
+      (see <a href="../fmt.html">Fmt Control</a> for more detauls). 
+      There are no format attributes and it is specified by:
+
+    <pre>format= asp</pre>
+
+    <p>
+      Whenever converting to <b>asp</b> from another format, all the 
+      incoming Trace Headers are kept in their original data types.
+      The only exception to this is when coming from a <b>segy</b> 
+      (or <b>segy1</b>) format, <b>usp</b> Trace Headers are created
+      and mapped similarly to <b>usp</b>; and when going to <b>segy</b> 
+      (or <b>segy1</b>) format, the Trace Headers are mapped to <b>segy</b>
+      (or <b>segy1</b>) header names much like coming from <b>usp</b>.  
+      This makes it easier with most application programs so many of the
+      standard headers (eg. SrPtXC RcPtYC) are in a more standard
+      header name.
+
+    <p>
+      New Trace Header names can be (re)created "on the fly" with the use
+      of the "<code>MOD_FIELD</code>" Definition documented in the 
+      <a href="../fmt.html">Fmt Control</a> section.
+
+    <p>
+      There are serveral other formats defined that are a subset of the
+      <b>asp</b> format (other than <a href="sep.html">sep</a> described
+      earlier).  These are all some form of a "cube" dataset that do not
+      have Trace Headers -- <u>Samples only</u>; and as such they are all 
+      regularized on the hypercube dimensions.
+
+    <pre>
+Format   Trace Header  Data Type<sup>&dagger;</sup>
+------   ------------  ----------------------------------
+cube     CUBE_TRACE    any type as defined by SAMPLE_TYPE
+fcube    FCUBE_TRACE   float4
+fcubex   FCUBEX_TRACE  float4x (Little Endian order)
+dcube    DCUBE_TRACE   float8
+dcubex   DCUBEX_TRACE  float8x
+ccube    CCUBE_TRACE   complex8
+ccubex   CCUBEX_TRACE  complex8x
+icube    ICUBE_TRACE   integer4
+icubex   ICUBEX_TRACE  integer4x
+i2cube   I2CUBE_TRACE  integer2
+i2cubex  I2CUBEX_TRACE integer2x
+i1cube   I1CUBE_TRACE  integer1
+    </pre>      
+    
+    <p>
+      DDS cannot automatically detect these non-standard formats and
+      therefore requires a DDS Dictionary along with the binary data.
+      Each of these generic formats are defined by their Trace Headers
+      in the "<code>${DDSROOT}/asp.fmt.dds</code>" Dictionary.
+      Several default header mapping defintions for <b>asp</b> are provided
+      in "<code>${DDSROOT}/asp.map.dds</code>".
+
+    <p class='footnote'>
+      <code><sup>&dagger;</sup></code> See 
+      <a href="../datatypes/independent.html">Data Types</a> for more
+      details.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran FFT Routines</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fft")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fft","fft")</script>
+
+    <h1>
+      <img src="../images/book_q.gif" alt="">
+      Table of Contents
+    </h1>
+
+    <p>
+      These FFT convenience wrappers are intended to provide a few basic 
+      generic fft routines on our various platforms.  As libraries and/or 
+      system change we should only have to update these wrappers, without 
+      having to modify each source program that needs to do fft's. Each
+      program utilizing these routines should include the appropriate header
+      file.
+    <p>
+    <table>
+      <tr>
+        <td><big><b>#include "fft.h"</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big>Use with fixed-format sources.</big></td>
+      </tr>
+      <tr>
+        <td><big><b>#include "f90fft.h"</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big>Use with free-format sources.</big></td>
+      </tr>
+      <tr>
+        <td valign=top><big><b>use dds</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big> A module with most of DDS defined.
+                 <br>Module interfaces for FFT wrappers limit data buffer types.</big></td>
+      </tr>
+    </table>
+    <p>
+    <table>
+        <tr>
+          <td align=left valign=top>
+            <ul>
+              <li><a href="fft/nrfft5.html">fft_nrfft5</a>&nbsp;-&nbsp;radix&nbsp;2,3,5&nbsp;size<br/>
+              <li><a href="fft/nrfft5odd.html">fft_nrfft5odd</a>&nbsp;-&nbsp;radix&nbsp;3,5&nbsp;even&nbsp;size<br/><br/>
+
+              <li><a href="fft/ccfftm.html">fft_ccfftm</a>&nbsp;-&nbsp;multiple&nbsp;complex-complex&nbsp;FFT's<br/>
+              <li><a href="fft/ccfft2d.html">fft_ccfft2d</a>&nbsp;-&nbsp;complex-complex&nbsp;2D&nbsp;FFT<br/>
+              <li><a href="fft/ccfft3d.html">fft_ccfft3d</a>&nbsp;-&nbsp;complex-complex&nbsp;3D&nbsp;FFT<br/><br/>
+
+              <li><a href="fft/rcfftm.html">fft_rcfftm</a>&nbsp;-&nbsp;multiple&nbsp;real-complex&nbsp;FFT's<br/>
+              <li><a href="fft/rcfft2d.html">fft_rcfft2d</a>&nbsp;-&nbsp;real-complex&nbsp;2D&nbsp;FFT<br/>
+              <li><a href="fft/rcfft3d.html">fft_rcfft3d</a>&nbsp;-&nbsp;real-complex&nbsp;3D&nbsp;FFT<br/><br/>
+
+              <li><a href="fft/crfftm.html">fft_crfftm</a>&nbsp;-&nbsp;multiple&nbsp;complex-real&nbsp;FFT's<br/>
+              <li><a href="fft/crfft2d.html">fft_crfft2d</a>&nbsp;-&nbsp;complex-real&nbsp;2D&nbsp;FFT<br/>
+              <li><a href="fft/crfft3d.html">fft_crfft3d</a>&nbsp;-&nbsp;complex-real&nbsp;3D&nbsp;FFT<br/><br/>
+
+              <li><a href="fft/zzfftm.html">fft_zzfftm</a>&nbsp;-&nbsp;multiple&nbsp;double&nbsp;precision&nbsp;complex-complex&nbsp;FFT's<br/>
+              <li><a href="fft/zzfft2d.html">fft_zzfft2d</a>&nbsp;-&nbsp;double&nbsp;precision&nbsp;complex-complex&nbsp;2D&nbsp;FFT<br/>
+              <li><a href="fft/zzfft3d.html">fft_zzfft3d</a>&nbsp;-&nbsp;double&nbsp;precision&nbsp;complex-complex&nbsp;3D&nbsp;FFT<br/>
+            </ul>
+          </td>
+        </tr>
+    </table>
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

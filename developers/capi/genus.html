@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_genus)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","genus")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_genus - query fields within DDS structures
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+    <b>const char *cdds_genus(</b><i>bin_tag, field_tag</i><b>);</b>
+    <dl><dt><dd>
+        <b>BIN_TAG</b> <i>bin_tag </i><br>
+	<b>FIELD_TAG</b> <i>field_tag</i>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cdds_genus</b> returns the generic data type (genus) associated with 
+    the <i>field_tag</i>. The types include <b>void, bytes, char, unsigned, 
+      integer, float, complex</b> and <b>frame</b>.
+    A NULL pointer is returned on any error.
+
+    <h2>INPUT</h2>
+    <i>bin_tag</i> is a binary tag, previously obtained from 
+    <a href="open.html">cdds_open.</a>
+    It specifies a particular binary stream.
+
+    <p/>
+      <i>field_tag</i> is the tag of the field for which the information
+      is desired.  A value of "0" will default to the trace (SEQUENCE).
+
+    <h2>EXAMPLE</h2>
+    <pre>
+BIN_TAG bin;
+FIELD_TAG tag;
+int RecNum_size, prec, algn, cnt;
+char *name, *genus;
+...
+/* byte size of RecNum field */
+tag = cdds_member(bin, 0, "RecNum");
+RecNum_size = cdds_prec(bin, tag);
+...
+/* scan trace headers */
+tag = cdds_member(bin, 0, "");
+while (tag)
+{
+   name  = cdds_name(bin, tag);
+   genus = cdds_genus(bin, tag);
+   prec  = cdds_prec(bin, tag);
+   algn  = cdds_align(bin, tag);
+   cnt   = cdds_count(bin, tag);
+   ...
+   tag = cdds_next(bin, tag);
+}
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="member.html">cdds_member</a> Field member tag
+<a href="member.html">cdds_next</a> Field member next tag
+<a href="member.html">cdds_prev</a> Field member previous tag
+<a href="member.html">cdds_parent</a> Field member parent tag
+<a href="member.html">cdds_prime</a> Field member prime type tag
+    </pre>
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

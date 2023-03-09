@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_closepr)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","closepr")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_closepr - close the printout file &amp; terminate execution
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+    <b>int cdds_closepr(</b><i>);
+    </i>
+
+    <P>
+      [ <A HREF="#description">Description</A> 
+      | <A HREF="#examples">Examples</A> 
+      ]
+    <Hr>
+    <a name="description"></a><h2>DESCRIPTION</h2>
+    <b>cdds_closepr()</b> writes a 'NORMAL TERMINATION' message to the 
+    console if no errors have been detected (by calling cdds_prterr), 
+    otherwise, an 'ABNORMAL TERMINATION' message will be written.
+    It will also print out a summary of DDS ERRORS, DDS WARNINGS and
+    DDS DEBUG messages as well as any unused parameter definitions.
+    If the print file has been opened, these messages will also be written
+    into it and then the print file will be closed.
+
+    <p/>
+      The program will exit() with a return status of 0 if no errors were
+      detected otherwise with a non-zero value.  The routine will never
+      return. This ensures that the proper return status gets returned.
+
+      <a name="examples"></a><h2>EXAMPLES</h2>
+    <pre>
+ier=cdds_openpr("filt", "$Id: closepr.html 57 2009-02-11 23:09:37Z ehlersjw $");
+...
+cdds_closepr();
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="openpr.html">cdds_openpr</a> open a printout file
+<a href="prtmsg.html">cdds_prtmsg</a> print message
+<a href="prtcon.html">cdds_prtcon</a> print message to console
+<a href="prterr.html">cdds_prterr</a> print error message
+<a href="errors.html">cdds_errors</a> check for print errors
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

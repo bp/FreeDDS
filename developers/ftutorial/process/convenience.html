@@ -1,0 +1,79 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Tutorial (Process - Convenience)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ftutorial","process","convenience")
+    </script>
+    <!*********************************************************************>
+    
+    <h2>Binary Read</h2>
+
+    <p>
+      There are three Fortran Convenience routines for reading data.  These 
+      routines work in conjunction with the binary tags returned from the
+      Convenience open routines and simplify the process by hiding the extra
+      internal binaries for the required double buffering that takes place
+      along with the mapping.
+
+    <p>
+      <a href="../../fxapi/read.html">fddx_read</a> is called to read one
+      or more input traces from a dataset.
+
+    <p>
+      <a href="../../fxapi/readfrom.html">fddx_readfrom</a> does a seek 
+      first to a specified trace position and then reads the traces.
+
+    <p>
+      <a href="../../fxapi/readall.html">fddx_readall</a> does it all.
+      It opens and reads an entire dataseta (e.g. velocity volume).
+      
+    <p>
+      For example:
+    <pre>
+      integer in_bin
+      real buf(*)
+      ...
+c     read 10 traces into buffer
+      ier=<a href="../../fxapi/read.html">fddx_read</a>(in_bin,buf,10)
+    </pre>
+    
+    <h2>Binary Write</h2>
+
+    <p>
+      There are two Fortran Convenience routines for writing data.  These
+      routines work in conjunction with the binary tags returned from the
+      Convenience open routines and simplify the process by hiding the extra
+      internal binaries for the required double buffering that takes place
+      along with the mapping.
+
+    <p>
+      <a href="../../fxapi/write.html">fddx_write</a> writes one or more
+      traces to an output dataset.
+
+    <p>
+      <a href="../../fxapi/writeto.html">fddx_writeto</a> does a seek 
+      first to a specified trace position and then writes the traces.
+      
+    <p>
+      For example:
+    <pre>
+      integer out_bin,n
+      real buf(*)
+      ...
+c     write 3 traces starting at the n'th trace
+      ier=<a href="../../fxapi/writeto.html">fddx_writeto</a>(out_bin,n-1,buf,3)
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

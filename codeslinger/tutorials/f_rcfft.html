@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (change sample type)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","f_rcfft.F")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+c***********************************************************************
+c
+c Use DDS FFT wrappers to convert REAL time-domain data to a
+c ccube of frequency domain data
+c
+c***********************************************************************
+
+      program f_rcfft
+
+      implicit none
+
+#include &lt;<a href="../resources/fdds.h.html">fdds.h</a>&gt;
+#include &lt;<a href="../resources/fft.h.html">fft.h</a>&gt;
+
+c For DDS functions. Arguments and return values
+      character prog*(7), Title*(80)
+      integer   ier, fd_in, fd_out
+      integer*8 ier8,izero8
+      parameter (izero8=0)
+
+c Input data attributes
+      character axes(RANK_MAX)*(AXISNAME_MAX)
+      integer n1,n2,n3, rank
+      real    d1
+
+c Output data attributes
+      integer nf
+      real    df
+
+c User parameters
+      logical lverb
+
+c Internal dynamic arrays
+      real    record(1)
+      pointer (ptr_record,record)
+
+c internal scalar values and loop counters
+      integer i3, irank, nfft
+      integer fft_flag
+      real    fft_scale
+      parameter (fft_flag=FFT_ESTIMATE, fft_scale=1.0)
+
+c-------------------------------------------------------------------
+c
+c Initialize the Title
+c
+      prog='f_rcfft'
+      Title=prog//': Real-to-Complex FFT with ccube output'
+
+c
+c Open the print file and dump command-line help is requested
+c
+      ier=<a href="../fapishort/fdds_openpr.html">fdds_openpr</a>(prog,'')
+      if (ier.gt.0) call help(prog,Title)
+
+c
+c Open input file
+c
+      fd_in=<a href="../fapishort/fddx_in.html">fddx_in</a>('in','stdin:',Title)
+      if (fd_in.lt.0) then
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Cannot open input file\n\0')
+         ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+         stop
+      endif
+
+c
+c Retrieve data characteristics
+c
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(1)','%d\0',n1)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(2)','%d\0',n2)
+      n3=<a href="../fapishort/fdds_axis_prod.html">fdds_axis_prod</a>(3)
+
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('delta.axis(1)','%f\0',d1)
+
+      rank=<a href="../fapishort/fdds_scank.html">fdds_scank</a>('axis','')
+      do irank=1,rank
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('','%s\0',axes(irank))
+      enddo
+
+c
+c Retrieve other parameters from user
+c
+      ier=<a href="../fapishort/fdds_dict.html">fdds_dict</a>('par:','scan')
+
+      lverb=.false.
+      if (<a href="../fapishort/fdds_scank.html">fdds_scank</a>('verbose',DDS_TRUE_KEY).gt.0) lverb=.true.
+
+c
+c Set up the FFT size and output data size and delta
+c ( df has units Hz per
+c   https://www.freeusp.org/DDS/users/defn/axis.html )
+c
+      nfft=fft_nrfft5(n1)
+      nf = nfft/2 + 1
+      df = 1.0/(d1*real(nfft))
+
+      if (lverb) then
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('\n\0')
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  nfft = %d\n\0',nfft)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  nf   = %d\n\0',nf)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  df   = %f\n\0',df)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('\n\0')
+      endif
+
+c
+c Set up the output dictionary
+c
+      fd_out=<a href="../fapishort/fddx_out.html">fddx_out</a>('out','stdout:',Title,fd_in)
+      if (fd_out.lt.0) then
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Opening output dictionary\n\0')
+         ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+         ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+         stop
+      endif
+
+c
+c Print format and modified axis info to output dictionary
+c
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('','\n\0')
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('old_format','ccube\n\0')
+
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('axis','w\0')
+      do irank=2,rank
+         ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('',' %s\0',axes(irank))
+      enddo
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('','\n\0')
+
+c
+c Twiddle with the dictionary to get axis names to register
+c
+      ier=<a href="../fapishort/fddx_dict.html">fddx_dict</a>(fd_out,'scan')
+      ier=<a href="../fapishort/fddx_dict.html">fddx_dict</a>(fd_out,'print')
+
+c
+c Print modified size, delta, and units info to output dictionary
+c
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('','\n\0')
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('size.axis(1)','%d\n\0',nf)
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('delta.axis(1)','%f\n\0',df)
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('units.axis(1)','hz\n\0')
+
+c
+c Define output samples as complex
+c
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>('','\n\0')
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>
+     :      ('fmt:SAMPLE_TYPE','typedef complex SAMPLE_TYPE;\n\0')
+
+c
+c Now actually open the output with a seek
+c
+      ier8=<a href="../fapishort/fdds_lseek8.html">fdds_lseek8</a>(fd_out,0,izero8,SEEK_SET)
+      if (ier8.lt.izero8) then
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Opening output file\n\0')
+         ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+         ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+         ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+         stop
+      endif
+
+c
+c Allocate array
+c
+      ptr_record=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(nf*n2*SIZEOF_COMPLEX))
+
+c
+c Loop over input data, read-transform-write
+c
+      do i3 = 1,n3
+
+         if (lverb .and. mod(i3,10).eq.0) then
+            ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('Record %5d of %5d\n\0',i3,n3)
+         endif
+
+         call read_record(fd_in, record, n1,n2,nf, i3)
+         if (<a href="../fapishort/fdds_errors.html">fdds_errors</a>().gt.0) then
+            ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+            ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+            ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+            stop
+         endif
+
+         ier=fft_rcfftm(fft_scale,nfft,n2,2*nf,record,fft_flag)
+
+         ier=<a href="../fapishort/fddx_write.html">fddx_write</a>(fd_out,record,n2)
+         if (ier.ne.n2) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Writing record,trace %d,%d\n\0',i3,ier)
+            ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+            ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+            ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+            stop
+         endif
+
+      enddo
+
+c
+c Clean up
+c
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_record)
+
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+      ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+
+c
+c Stop
+c
+      stop
+      end
+
+
+
+
+c***********************************************************************
+c
+c subroutine to print help when requested on the command line
+c
+c***********************************************************************
+
+      subroutine help(prog,Title)
+
+      implicit none
+
+      character prog*(*), Title*(*)
+      integer lnblnk
+
+      write(0,*)''
+      write(0,*)Title(1:lnblnk(Title))
+      write(0,*)''
+      write(0,*)' Parameter....Meaning..........................Default'
+      write(0,*)''
+      write(0,*)'  in=         input dictionary                  stdin:'
+      write(0,*)'  out=        output dictionary                stdout:'
+      write(0,*)''
+      write(0,*)'  verbose=    verbose output                        no'
+      write(0,*)''
+      write(0,*)'  USAGE: '//prog(1:lnblnk(prog))
+      write(0,*)'           in=[in_dict] out=[out_dict] verbose=[y|n]'
+      write(0,*)''
+
+      stop
+
+      return
+      end
+
+
+
+
+c***********************************************************************
+c
+c Read a record into an array with axis 1 padded to FFT length
+c
+c***********************************************************************
+
+      subroutine read_record (fd_in, record, n1,n2,nf, i3)
+
+      implicit none
+
+#include &lt;<a href="../resources/fdds.h.html">fdds.h</a>&gt;
+
+c Arguments
+      integer fd_in, n1,n2,nf, i3
+      real    record(2*nf,n2)
+
+c Locals
+      integer i1,i2, ier
+
+c Read and pad n2 traces
+      do i2 = 1,n2
+         if (<a href="../fapishort/fddx_read.html">fddx_read</a>(fd_in,record(1,i2),1).ne.1) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Reading record,trace %d,%d\n\0',i3,i2)
+            return
+         else
+            do i1 = n1+1,2*nf
+               record(i1,i2) = 0.0
+            enddo
+         endif
+      enddo
+
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

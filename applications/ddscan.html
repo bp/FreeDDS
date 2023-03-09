@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications (ddscan)</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','ddscan')</script>
+
+    <p>
+      <b>DDSCAN</b> is an interactive application to view scan a dataset as it
+      appears to DDS. This is one DDS program that does not requiare 
+      "<code>in=</code>" or "<code>in_data=</code>".  You can just run 
+      "<code>ddscan &lt:filename&gt;</code>"; however, you can still
+      add other DDS definitions if needed, such as "<code>in_format=segy1</code>" 
+      and/or "<code>size.x=123</code>".  When you first run the program it 
+      will give you a summary of the dataset.  For example:
+    </p>
+
+    <pre style="margin-left: 50px">
+<b>&gt;: ddscan data_sample</b>
+
+*******************************************************************
+*                                                                 *
+*                 B P     A M E R I C A                           *
+*                                                                 *
+* Program : ddscan                                                *
+* Revision: none                                                  *
+* DDS Rev : 127                                                   *
+* Binary  : /tstapps/global/Linux/2.6/mbs/prod/x86_64/ddscan      *
+* Date    : 2010-01-04 13:42:48                                   *
+* Author  : doejohn                                               *
+*******************************************************************
+* User: tom123                                                    *
+* Host: host1                                                     *
+* Cwd : /data/line2                                               *
+* Date: Wed Jan  6 09:51:33 2010                                  *
+*******************************************************************
+***************************************************************
+*
+* DATE      : Wed Jan 6 12:18:40 2010
+* DICTIONARY: data_sample
+* BIN FILE  : /data/line2/data_sample_@
+* BIN FORMAT: asp
+* DATA TYPE : float4x
+* X2LINES   : no 
+* # TRACES  :         2430
+*
+* axis  :             t             x             y
+* size  :           150            81            30
+* origin:     0.0000000     0.0000000     0.0000000
+* delta :     0.0020000     1.0000000     1.0000000
+* units :           sec usp_xy_units? usp_xy_units?
+* sort  :             ?        TrcNum        RecNum
+* base  :             1             1             1
+* step  :             1             1             1
+* misc  :
+*
+***************************************************************
+
+ Enter "?" for help!
+  
+ Enter command:
+
+    </pre>
+
+    <p>
+      Enter "<code>?</code>" (or any unrecognized command) to display the 
+      online help for available commands.  Each command is case-insensitive
+      and only the first character or two are checked.  For example if you
+      enter "<code>quit</code>" it will only need to recognize the first 
+      character as "<b>q</b>" or "<b>Q</b>" to quit the program.  The online
+      help will look like this:
+    </p>
+
+    <pre style="margin-left: 50px">
+<b>?</b>
+
+Commands:
+(Q)      - Quit
+(?)      - This help
+(<a href="ddscan/G.html">G</a>)      - Global information
+(<a href="ddscan/CP.html">CP</a>) [p] - Change primary sort header to [p] (dflt sort(3))
+(<a href="ddscan/CS.html">CS</a>) [s] - Change secondary header to [s] (dflt sort(2))
+(<a href="ddscan/H.html">H|HB|HC</a>)- Dictionary History info (HB=brief;HC=condensed)
+(<a href="ddscan/L.html">L</a>)      - Line Header
+(<a href="ddscan/T.html">T</a>)  [#] - Trace Header Table [trace #] (byte order)
+(<a href="ddscan/TA.html">TA</a>) [#] - Trace Header Table [trace #] (name order)
+(<a href="ddscan/R.html">R</a>)      - Record Directory Table
+(<a href="ddscan/F.html">F</a>) [fl] - Output to file [fl] (dflt output to screen)
+(<a href="ddscan/DP.html">DP</a>)  p  - Dump Parameter [p] definition
+(<a href="ddscan/DH.html">DH</a>) [#] - Dump Headers from record # (dflt next)
+(<a href="ddscan/DS.html">DS</a>) [#] - Dump Samples from record # (dflt next)
+(<a href="ddscan/AH.html">AH</a>)     - Dump Headers from all selected records 
+(<a href="ddscan/AS.html">AS</a>)     - Dump Samples from all selected records 
+(#)      - Dump record # (dflt next)
+(<a href="ddscan/ION.html">IOFF</a>)   - Select traces by trace sort headers
+(<a href="ddscan/SH.html">SH</a>)     - Select trace headers to display
+(<a href="ddscan/SS.html">SS</a>) [ss] [es] [is] - Select # of samples to display
+(<a href="ddscan/ST.html">ST</a>) [st] [et] [it] - Select traces to display
+(<a href="ddscan/SR.html">SR</a>) [sr] [er] [ir] - Select records to display
+Where:
+    ss,es,is = 1st,last & inc sample   (dflt 1st,last,1)
+    st,et,it = 1st,last & inc trace    (dflt 1st,last,1)
+    sr,er,ir = 1st,last & inc record   (dflt 1st,last,1)
+  
+ Enter command:
+    </pre>
+
+    <p>
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

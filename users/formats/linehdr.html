@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (Line Header)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","linehdr")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      Line headers for standard seismic formats have many fields.
+      They can be described using DDS notation for binary structures.
+      (See the <a href="../fmt.html">Fmt Control</a> section.)
+      Each line header field is assigned a symbolic name, type, position,
+      size, alignment, and descriptive text. These are described in the
+      the <b>Formats</b> subsections: <a href="usp.html">usp</a>,
+      <a href="segy.html">segy</a>, and <a href="asp.html">asp</a>.
+
+    <p>
+      Input Line Header information is converted into definitions.
+      Each definition name is constructed from the format and Line
+      Header field name. For example, the SEGY field ReelNum becomes
+      "<code>segy_ReelNum= <var>nnn</var></code>". Precedence is given
+      to control parameters defined in <code>par:</code>. This allows the 
+      end user to override an incorrect header value. If not specified,
+      line header information is honored. If not available, the input
+      history can provide a default.
+
+    <p>
+      Output Line Headers are constructed from current definitions.
+      If nothing is defined, a default value (zero, or blank) is assumed.
+
+    <p>
+      <u>What's the bottom line?</u> Line Header information for a
+      particular format is accurately preserved and reconstructed via
+      Dictionaries. Extraneous Definitions are minimized, through the use
+      of defaults. Values that were "hidden" in a binary field, can be
+      examined in Dictionaries by mortals. Explicit Definitions can 
+      supplement or correct erroneous input Line Header values.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

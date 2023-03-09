@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Tutorial (Process)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","ctutorial","process")
+    </script>
+    <!*********************************************************************>
+    
+    <h2>Binary Read</h2>
+
+    <p>
+      <a href="../capi/read.html">cdds_read</a> transfer data from an input
+      file to an application buffer.  A byte image is transfered; no data
+      conversions are performed (Users may modify fields on reading by
+      specifying <a href="../../users/mapping/read.html">read:</a> 
+      Definitions).  For example:
+      
+    <pre>
+int in_bin;
+float *buf;
+...
+/* read 10 traces into buffer */
+ier = <a href="../capi/read.html">cdds_read</a>(in_bin, 0, buf, 10);
+    </pre>
+
+
+    <h2>Buffer Mapping</h2>
+
+    <p>
+      <a href="../capi/map.html">cdds_map</a> converts fields from one trace
+      buffer to another. The conversions are specified by Map Definitions.
+      They may be defined by the user, program or default files. These
+      Definitions are retrieved, when
+      <a href="../capi/openm.html">cdds_openm</a> is executed either
+      explicitly or implicity by DDS the first time it's needed as long 
+      as the associated binary dictionary is still open.
+      Map Definitions have the following syntax (see  
+      <a href="../../users/mapping/map.html">User Mapping</a>).
+
+    <p>
+      <b>map:</b><i>in</i><b>:</b><i>out</i><b>.</b><i>out_field</i><b>= </b><i>expression</i>
+
+    <pre>
+map:usp:segy.OrigRecNum= RecNum
+            
+map:in:buf.ToTmAU= 4 * TTIMAU
+map:buf:out.ToTmAU= 4 * TTIMAU
+            
+comment= subscripts are zero based
+map:usp:abc.time= TVPair[0]
+map:usp:abc.velocity= TVPair[1]
+            
+comment= don't map (change) gamma 
+map:*:abc.gamma= void
+            
+comment= "ident" required for names with special characters
+map:*:usp.SrRcMX= ident("MID-X")
+            
+comment= support for defined constants
+map:usp:abc.xyz= defn_value("hist:", "gamma")
+    </pre>
+
+    <p>
+      The value of the Map Definition is an algebraic expression. Map
+      Definitions are ignored, unless they match the format or alias and
+      field name. If a Map Definition is not specified for an output field,
+      an input field by the same name is used by default.  The field type
+      (integer, float, ...) and style (ieee, IBM, ...) are converted as
+      needed.
+
+        <pre>
+int in_bin, inbuf_bin;
+float *in_buf, *inbuf_buf;
+...
+<a href="../capi/map.html">cdds_map</a>(inbuf_bin, 0, inbuf_buf, in_bin, 0, in_buf);
+    </pre>
+
+    <p>
+      The buffer mapping can be done at the same time as the data transfer
+      by the use of <a href="../capi/readm.html">cdds_readm</a> and
+      <a href="../capi/writem.html">cdds_writem</a>. They combine the
+      functionality of <a href="../capi/map.html">cdds_map</a> with
+      read/write. This is more convenient and efficient, for most
+      applications, than executing two functions and managing two buffers
+      (DDS uses an internal buffer for the external data).
+
+    <pre>
+int in_bin, buf_bin, out_bin
+int *buf;
+...
+/* read 10 traces into buffer */
+ier = <a href="../capi/readm.html">cdds_readm</a>(in_bin, 0, buf_bin, 0, buf, 10);
+...
+/* apply processing to buffer */
+...
+/* write 10 traces from buffer */
+ier = <a href="../capi/writem.html">cdds_writem</a>(out_bin, 0, buf_bin, 0, buf, 10);
+    </pre>
+    
+    <h2>Binary Write</h2>
+
+    <a href="../capi/write.html">cdds_write</a> transfer data from an 
+    application buffer to an output file.  A byte image is transfered;
+    no data conversions are performed (Users may modify fields on writing
+    by specifying <a href="../../users/mapping/write.html">write:</a> 
+    Definitions). For example:
+     
+    <pre>
+int out_bin;
+float *buf;
+...
+/* write 10 traces from buffer */
+ier = <a href="../capi/write.html">cdds_write</a>(out_bin, 0, buf, 10);
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Dictionaries (Special)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","dict","special")</script>
+    <!*********************************************************************>
+
+    <p>
+      Special dictionaries are required for run time support to define
+      the binary formats (see  <a href="../formats.html">Formats</a>) and
+      header field mappings (see <a href="../mapping.html">Mapping)</a>).
+      They are builtin to the DDS system as defaults, but any of them can
+      be modified to reflect local conventions for header mapping or
+      special binary formats.
+      (They reside in "<code>${DDSROOT}/src/lib/dds3</code>.)
+      For DDS to be informed of a modification, place the modified file
+      within a directory named by <var>DDS_PATH</var>  
+      (see <a href="../runtime.html">Runtime Control</a>). These custom 
+      dictionaries are used, if found; otherwise the internal defaults
+      installed within DDS are used.  These dictionaries are summarized 
+      by the following table.
+
+    <pre>
+Dictionary         Description
+-------------      -------------------------------------
+<var>fmt</var>.fmt.dds        format definitions
+segy.fmt.dds       segy format (&amp; su)
+segy1.fmt.dds      segy1 format
+usp.fmt.dds        usp format
+asp.fmt.dds        Generic DDS (asp, sep &amp; cube formats)
+
+<var>fmt</var>.map.dds        field mappings
+segy.map.dds       map to segy (&amp; su)
+segy1.map.dds      map to segy1
+usp.map.dds        map to usp
+asp.map.dds        map to Generic DDS (asp, sep &amp; cubes)
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

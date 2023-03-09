@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (multiple inputs)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","apply_nmo")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+!*******************************************************************************
+! Subroutine to perform partial normal moveout
+!*******************************************************************************
+      subroutine apply_nmo ( intrc, outtrc, vnmo, n1, &
+                             offset, offbin, dt, indx, coef, tabl )
+
+      implicit none
+
+! dummy arguments
+      integer :: n1
+      real    :: offset, offbin, dt
+      real    :: vnmo(n1)
+      real    :: intrc(n1), outtrc(n1)
+      integer :: indx(n1)
+      real    :: coef(n1,4), tabl(n1,4)
+
+! local variables
+      integer :: init_flag, ishift, i_invert, ier, i, nlive
+      real    :: delta_off_sqr, dt_sqr
+      real    :: delta_t_sqr, time_in_sqr, time_bin_sqr
+      real    :: tmax, tmax_sqr, delta_t
+
+!----------------------------------------------------------------------------
+! Done with declarations
+!----------------------------------------------------------------------------
+
+! Bail out first thing if trace offset and bin offset are the same
+      if ( offset == offbin ) then
+        outtrc(1:n1) = intrc(1:n1)
+        return
+      endif
+
+! Initialize several scalar values
+      init_flag = 1
+      tmax = dt*real(n1-1)
+      tmax_sqr = tmax*tmax
+      dt_sqr = dt*dt
+      delta_off_sqr = offbin*offbin-offset*offset
+
+
+! Initialize table of output times
+      tabl(1:n1,1) = (/(dt*real(i), i=0,n1-1)/)
+
+
+! Build a table for NMO corrected input times
+      do i=1, n1
+        delta_t_sqr = delta_off_sqr/(vnmo(i)*vnmo(i))
+        time_in_sqr = (i-1)*(i-1)*dt_sqr
+        time_bin_sqr = time_in_sqr + delta_t_sqr
+        if ( time_bin_sqr .lt. 0.0 ) then
+          tabl(i,2) = -1.0
+        elseif ( time_bin_sqr .gt. tmax_sqr ) then
+          tabl(i,2) = tmax_sqr
+        else
+          tabl(i,2) = sqrt( time_bin_sqr )
+        endif
+      enddo
+
+
+! Make adjustments for negative times at beginning of input
+! and for times .gt. tmax at end of input
+      i = 1
+      do
+        if( i.gt.n1 .or. tabl(i,2).gt.0.0) exit
+        i = i+1
+        cycle
+      enddo
+
+      nlive = 2
+      do
+        if ( nlive.gt.n1 .or. i.gt.n1 .or. tabl(i,2).ge.tmax ) exit
+        tabl(nlive,3) = tabl(i,2)
+        tabl(nlive,4) = intrc(i)
+        nlive = nlive+1
+        i = i+1
+        cycle
+      enddo
+
+! Fix the endpoints to 0 and tmax with zero amplitude
+      nlive = min(nlive,n1)
+      tabl(1,3)     = 0.0
+      tabl(nlive,3) = tmax
+      tabl(1,4)     = 0.0
+      tabl(nlive,4) = 0.0
+
+
+! Search and destroy time inversions
+      i_invert = 0
+      do i=2,nlive
+        if ( tabl(i,3).lt.tabl(i-1,3) ) i_invert = i
+      enddo
+      delta_t = tabl(i_invert,3)/(i_invert-1)
+      do i=1, i_invert-1
+        tabl(i,3) = (i-1)*delta_t
+        tabl(i,4) = 0.0
+      enddo
+
+
+! Resample the trace
+      call <a href="cubic_interp.html">cubic_interp</a> &
+             ( tabl(:,3),tabl(:,4),nlive, &
+               tabl(:,1),outtrc,n1,       &
+               indx, coef, init_flag, ier )
+
+
+! All done
+      return
+      end subroutine apply_nmo
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>fddz_sysconf - Get system configuration information</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "fdds.h"</b><br>
+    <b>#include "fddz.h"</b>
+    <p>
+      <b>integer function fddz_sysconf(</b><i>name</i><b>)</b>
+      <dl><dd>
+        <b>character </b><i>name*(*)</i><br>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"fddz_sysconf"</b> gives FORTRAN programs access to Linux
+    utility sysconf(3). The return value is the same as that returned by
+    sysconf for the <i>name</i> requested.
+    <p>
+    For full details see the man page distributed with your system.
+
+    <h2>NAMES ENABLED</h2>
+    <pre>
+ARG_MAX           Max length of arguments (not less than 4096)
+CHILD_MAX         Max number of simultaneous processes
+HOST_NAME_MAX     Max length of hostname
+LOGIN_NAME_MAX    Max length of login name
+CLK_TCK           Number of clock ticks per second
+OPEN_MAX          Max number of files a process can have open at same time
+PAGESIZE          Size of page in bytes
+RE_DUP_MAX        Number of repeated occurrences of BRE permitted
+STREAM_MAX        Max number of streams a process can have open at same time
+TTY_NAME_MAX      Max length of terminal device name
+TZNAME_MAX        Max number of bytes in timezone name
+VERSION           The year and month the POSIX.1 standard was approved
+BC_BASE_MAX       Maximum <u>obase</u> value accepted by utility bc(1)
+BC_DIM_MAX        Max number of elements permitted in a bc(1) array
+BC_SCALE_MAX      Max <u>scale</u> value permitted by bc(1)
+BC_STRING_MAX     Max length of a string accepted by bc(1)
+COLL_WEIGHTS_MAX  Max number of weights for LC_COLLATE keyword
+EXPR_NEST_MAX     Max number of nested expressions for expr(1)
+LINE_MAX          Max Length of a utilities input line
+RE_DUP_MAX        Max number of repeated occurrences of regular expression
+2_VERSION         Version of POSIX.2 standard
+2_C_DEV           Whether POSIX.2 supports C development utils
+2_FORT_DEV        Whether POSIX.2 supports FORTRAN development utils
+2_FORT_RUN        Whether POSIX.2 supports FORTRAN runtime utils
+2_LOCALEDEF       Whether POSIX.2 supports creation of locates via localedef(1)
+2_SW_DEV          Whether POSIX.2 supports for software development utils
+PHYS_PAGES        Number of pages of physical memory
+AVPHYS_PAGES      Number of currently available pages of physical memory
+NPROCESSORS_CONF  Number of processors configured
+NPROCESSORS_ONLN  Number of processors currently available
+    </pre>
+
+    <h2>EXAMPLE</h2>
+    <pre>
+integer pages,page_sz
+double precision alloc_sz
+real    buffer(*)
+pointer (ptr_buffer,buffer)
+ ...
+pages = fddz_sysconf("PHYS_PAGES")
+page_sz = fddz_sysconf("PAGESIZE")
+alloc_sz = -1.0D+00
+if ( pages.gt.0 .and. page_sz.gt.0 ) then
+  alloc_sz = dble(0.8)*pages*page_sz
+endif
+ptr_buffer = fdds_malloc(alloc_sz)
+ ...
+   </pre>
+
+   <h2>SEE ALSO</h2>
+   <pre>
+   sysconf(3) Get configuration information at runtime
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2012)
+
+  </body>
+</html>

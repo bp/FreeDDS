@@ -1,0 +1,82 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Dictionaries (Data)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","dict","data")</script>
+    <!*********************************************************************>
+
+    <p>
+      Along with each input and output datasets is an associated Data
+      Dictionary.  If a standard binary (eg. usp or segy) is opened without
+      a Dictionary, a temporary, internal Dictionary will be created.
+      On output, a standard binary can be created without it's associated
+      Dictionary.
+
+    <p>
+      The chronological sequence of definitions in Data Dictionaries
+      provide a history describing the processing steps along with the
+      parameters and binary data.  Each application program that uses
+      DDS marks its place in history with a title.  This title section
+      provides:
+
+    <ol>
+      <li>A title of the process
+      <li>The path to the binary that was executed
+      <li>Application Revision number
+      <li>The user name that did the processing
+      <li>The date and time the processing began
+      <li>The machine name where the processing was preformed
+      <li>The subdirectory from which the execution began
+      <li>The main pid number of the process
+    </ol>
+
+    <p>
+      Here is an example excerpt of the title section:
+
+    <pre>
+DDS_SENTRY= $Revision: 1 $ $Date: 2009-01-05 18:31:13 -0600 (Mon, 05 Jan 2009) $
+********************************************
+******************* TITLE ******************
+********************************************
+cmd_title= transpose: transpose multi-dimensional datasets
+cmd_name= /appsdist/SunOS/5/mbs/prod/sun4d/transpose
+cmd_rev= 1.7
+cmd_user= billy01
+cmd_date= Thu Apr 10 15:36:39 1997
+cmd_host= machine1
+cmd_cwd= /data1/mig3d/nigeria
+cmd_pid= 3963
+    </pre>
+
+    <p>
+      After the title section are all the user supplied parameters
+      followed by application definitions introduced by the processing 
+      step.  Here is an example excerpt:
+
+    <pre>
+dds_history= par:
+cmd_args=
+in=line2.usp
+out_format=asp
+out=line2_asp
+dds_history_end= par:
+    </pre>
+
+    <p>
+      Following this is the format definitions which define the input,
+      internal and output binary formats.  Also, any USP input binary
+      without an associated Dictionary will cause DDS to retain all
+      USP HLH (Historical Line Header) informat as a series of 
+      "<code>previous_history</code>" definitions which are use to
+      restore the USP HLH whenever recreating another USP output binary.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

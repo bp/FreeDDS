@@ -1,0 +1,313 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (work with headers)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","f_mute.F")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+c***********************************************************************
+c
+c Apply a mute based on user t0_mute,v_mute and header XY values
+c Use source/receiver XY headers as defaults, allow user overrides
+c
+c An example of reasonably defensive and robust coding.
+c
+c***********************************************************************
+
+      program f_mute
+
+      implicit none
+
+#include "fdds.h"
+
+c For DDS functions. Arguments and return values
+      character prog*(9), Title*(80)
+      integer   ier, fd_in
+
+c Data attributes
+      integer n1,n2,n3, nhdr
+      integer iSrcX,iSrcY, iGrpX,iGrpY, iSamp
+
+      real    d1,o1
+
+c Internal dynamic array
+      real    record(1)
+      pointer (ptr_record,record)
+
+c Internal scalar values and loop counters
+      character SrcX*(DEFNNAME_MAX),SrcY*(DEFNNAME_MAX)
+      character GrpX*(DEFNNAME_MAX),GrpY*(DEFNNAME_MAX)
+      real      v_mute, t0_mute
+      integer   i3, ntr
+
+c-------------------------------------------------------------------
+c
+c Initialize the Title
+c
+      prog='f_mute'
+      Title=prog//': Apply constant velocity mute to data'
+
+c
+c Open the print file and dump command-line help as requested
+c
+      ier=fdds_openpr(prog,'')
+      if (ier.gt.0) call help(prog,Title)
+
+c
+c Retrieve user parameters
+c
+      ier=fdds_dict('par:','scan')
+
+      t0_mute=0.0
+      ier=fdds_scanf('t0_mute','%f\0',t0_mute)
+
+      v_mute=1500.0
+      ier=fdds_scanf('v_mute','%f\0',v_mute)
+
+      ! set defaults names for source/receiver XY headers
+      SrcX='SrPtXC'
+      SrcY='SrPtYC'
+      GrpX='RcPtXC'
+      GrpY='RcPtYC'
+
+      ! get user overrides for default header names
+      ier=fdds_scanf('SrcX srcx','%s\0',SrcX)
+      ier=fdds_scanf('SrcY srcy','%s\0',SrcY)
+      ier=fdds_scanf('GrpX grpx','%s\0',GrpX)
+      ier=fdds_scanf('GrpY grpy','%s\0',GrpY)
+
+c
+c Open input. Retrieve data characteristics when open is successful
+c
+      fd_in=fddx_in2('in','stdin:',Title)
+
+      if (fd_in.lt.0) then
+
+         ier=fdds_prterr('Opening input data\n\0')
+
+      else
+
+         ier=fdds_scanf('size.axis(1)','%d\0',n1)
+         ier=fdds_scanf('size.axis(2)','%d\0',n2)
+         n3=fdds_axis_prod(3)
+
+         ier=fdds_scanf('delta.axis(1)','%f\0',d1)
+         ier=fdds_scanf('origin.axis(1)','%f\0',o1)
+
+         iSamp=fdds_member(fd_in,0,'Samples')
+         nhdr=fdds_index(fd_in,iSamp,DDS_REAL)
+
+         ! Go find the headers within the trace structure
+         iSrcX=fdds_member(fd_in,0,SrcX)
+         iSrcY=fdds_member(fd_in,0,SrcY)
+         iGrpX=fdds_member(fd_in,0,GrpX)
+         iGrpY=fdds_member(fd_in,0,GrpY)
+
+         if (iSrcX.lt.0) then
+            ier=fdds_prterr('Header %s is not available\n\0',SrcX)
+         endif
+         if (iSrcY.lt.0) then
+            ier=fdds_prterr('Header %s is not available\n\0',SrcY)
+         endif
+         if (iGrpX.lt.0) then
+            ier=fdds_prterr('Header %s is not available\n\0',GrpX)
+         endif
+         if (iGrpY.lt.0) then
+            ier=fdds_prterr('Header %s is not available\n\0',GrpY)
+         endif
+
+      endif
+
+c
+c Trap bad user parameters
+c
+      if (v_mute.le.0.0) then
+         ier=fdds_prterr('Mute velocity, %f, is invalid\n\0',v_mute)
+         ier=fdds_prterr('it must be .gt. 0\n\0')
+      endif
+      if ( t0 .gt. o1+d1*(n1-1) ) then
+         ier=fdds_prterr('t0_mute (%f) is not in tange of trace '//
+     :                   ' times: %f to %f\n\0',t0_mute,o1,o1+d1*(n1-1))
+      endif
+
+c
+c Check whether any errors were reported.
+c If so, clean up and terminate now.
+c
+      if (fdds_errors().gt.0) then
+         if (fd_in.ge.0) then
+            ier=fdds_close(fd_in)
+         endif
+         ier=fdds_closepr()
+         stop
+      endif
+
+c
+c Allocate data array
+c
+      ptr_record=fdds_malloc8(dble(nhdr+n1)*n2*SIZEOF_REAL)
+
+c
+c Loop over input data, set min/max values
+c Stop on all DDS-detectable errors
+c
+      do i3 = 1,n3
+
+         ntr=fddx_read(fd_in,record,n2)
+         if (ntr.ne.n2) then
+            ier=fdds_prterr('Reading record %d: %d traces\n\0',i3,ntr)
+         else
+            call apply_mute
+     :             ( record, n1,n2,nhdr, fd_in,
+     :               fd_in, iSrcX,iSrcY,iGrpX,iGrpY,
+     :               v_mute,t0_mute, d1,o1 )
+         endif
+
+         if (fdds_errors().gt.0) then
+            ier=fdds_prterr('Record %d\n\0',i3)
+            ier=fdds_free(ptr_record)
+            ier=fdds_close(fd_in)
+            ier=fdds_closepr()
+            stop
+         endif
+
+      enddo
+
+c
+c Clean up
+c
+      ier=fdds_free(ptr_record)
+      ier=fdds_close(fd_in)
+      ier=fdds_closepr()
+
+c
+c Stop
+c
+      stop
+      end
+
+
+
+
+c***********************************************************************
+c
+c subroutine to print help when requested on the command line
+c
+c***********************************************************************
+
+      subroutine help(prog,Title)
+
+      implicit none
+
+      character prog*(*), Title*(*)
+      integer lnblnk
+
+      write(0,*)''
+      write(0,*)Title(1:lnblnk(Title))
+      write(0,*)''
+      write(0,*)' Mute to   t0_mute + offset/v_mute   seconds '
+      write(0,*)''
+      write(0,*)' Parameter......Meaning........................Default'
+      write(0,*)''
+      write(0,*)'  in=[dict]     input dictionary                stdin:'
+      write(0,*)''
+      write(0,*)'  v_mute=[vel]  Velocity for mute line          1500.0'
+      write(0,*)'  t0_mute=[t0]  Time bias for mute line            0.0'
+      write(0,*)''
+      write(0,*)'  Header words for offset calculation:'
+      write(0,*)'    SrcX=[Hdr1] Override for SrcX header        SrPtXC'
+      write(0,*)'    SrcY=[Hdr2]    "      "  SrcY   "           SrPtYC'
+      write(0,*)'    GrpX=[Hdr3]    "      "  GrpX   "           RcPtXC'
+      write(0,*)'    GrpX=[Hdr4]    "      "  GrpY   "           RcPtYC'
+      write(0,*)''
+      write(0,*)'  verbose=[y|n] verbose output                      no'
+      write(0,*)''
+      write(0,*)'  USAGE:'
+      write(0,*)'    '//prog(1:lnblnk(prog))//' in=[in_dict]'
+      write(0,*)'       [ v_mute=[vel]  t0_mute=[t0]'
+      write(0,*)'         SrcX=[Hdr1] SrcY=[Hdr2]'
+      write(0,*)'         GrpX=[Hdr3] GrpY=[Hdr4] verbose=[y|n] ]'
+      write(0,*)''
+
+      stop
+
+      return
+      end
+
+
+
+
+c***********************************************************************
+c
+c Apply a simple, linear mute based on t0 and velocity
+c
+c***********************************************************************
+
+      subroutine apply_mute
+     :             ( record, n1,n2,nhdr,
+     :               fd_in, iSrcX,iSrcY,iGrpX,iGrpY,
+     :               v_mute,t0_mute, d1,o1 )
+
+      implicit none
+
+#include "fdds.h"
+
+c Arguments
+      integer n1,n2,nhdr, fd_in
+      integer iSrcX,iSrcY, iGrpX,iGrpY
+      real    v_mute,t0_mute, d1,o1
+      real    record(1-nhdr:n1,n2)
+
+c Locals
+      integer ier_sx,ier_sy, ier_gx,ier_gy, i1,i2,i1_mute
+      real    offset, time
+      double precision sx_here,sy_here, gx_here,gy_here
+
+c Get the offset, determine time to end of mute, apply mute
+      do i2 = 1, n2
+
+         ier_sx=fdds_getd(fd_in,iSrcX,record(1,i2),0,sx_here,1)
+         ier_sy=fdds_getd(fd_in,iSrcY,record(1,i2),0,sy_here,1)
+         ier_gx=fdds_getd(fd_in,iGrpX,record(1,i2),0,gx_here,1)
+         ier_gy=fdds_getd(fd_in,iGrpY,record(1,i2),0,gy_here,1)
+
+         if (ier_sx.lt.1 .or. ier_sy.lt.1 .or.
+     :       ier_gx.lt.1 .or. ier_gy.lt.1     ) then
+            ier=fdds_prterr('Retrieving XY headers, trace %d\n\0',i2)
+            return
+         endif
+
+         offset=sqrt( (sx_here-gx_here)**2.0 + (sy_here-gy_here)**2.0 )
+         time=offset/v_mute
+         i1_mute=int( (t0_mute+time-o1)/d1 )
+
+         do i1=1,max(n1,i1_mute)
+            record(i1,i2)=0.0
+         enddo
+
+      enddo
+
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+
+    <h2>fddx_RT_RHS - calculate the Right Hand Side (RHS) of the raytracing equations.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fddx_raytracer.h&gt;</b>
+    <p>
+      <b>integer fddx_RT_RHS(</b><i>rt_tag, nn, vec_in, vec_out</i><b>)
+    </b><dl><dd>
+        <b>integer </b><i>rt_tag</i><br>
+        <b>integer </b><i>nn</i><br>
+        <b>real    </b><i>vec_in(nn)</i><br>
+        <b>real    </b><i vec_out(nn)</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>fddx_RT_RHS</b> calculates the right hand side of the raytracing equations.<br>
+    </p>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>rt_tag</i>", specifies for which raytracer to renormalize the point.<br>
+    </p>
+    <p>
+      The parameter, "<i>nn</i>", specifies the lengths of the input and output vectors.<br>
+    </p>
+    <p>
+      The parameter, "<i>vec_in</i>", specifies the input vector.<br>
+    </p>
+    <p>
+      The parameter, "<i>vec_out</i>", specifies the output vector.<br>
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>fddx_RT_RHS</b> returns 0 unless there is an error, in which case it returns -1.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

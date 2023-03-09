@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_openm)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","openm")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_openm - open mapping to output binary data from input
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>int cdds_openm(</b><i>out_bin, out_field, in_bin, in_field</i><b>);
+      </b><dl><dt><dd>
+        <b>BIN_TAG </b><i>out_bin
+        </i><br>
+        <b>FIELD_TAG </b><i>out_field
+        </i><br>
+        <b>BIN_TAG </b><i>in_bin
+        </i><br>
+        <b>FIELD_TAG </b><i>in_field
+        </i></dl>
+    <h2>DESCRIPTION</h2>
+    This function sets up the mapping definition required to map
+    data from one binary (<i>in_bin</i>) to another (<i>out_bin</i>).
+    Specific fields within each binary are defined by <i>in_field</i>
+    and <i>out_field</i>.  If either is zero, then they will default to
+    the SEQUENCE (trace).
+    <p>
+      A normal mapping will be setup for simple trace-trace processing, in
+      which case this call may not be required.
+    <h2>OUTPUT</h2>
+    A 0 value is returned for normal completion.
+    Otherwise, EOF will be returned.
+    <h2>EXAMPLES</h2>
+    <dl><dt><dd>
+        <pre>
+          <b>
+            BIN_TAG in_bin, out_bin;
+            ...
+            cdds_openm(out_bin, 0, in_bin, 0);
+            ...
+          </b></pre>
+        <b></b></dl>
+    <h2>SEE ALSO</h2>
+    <pre>
+      <a href="open.html">cdds_open</a>   Open a binary stream
+      <a href="readm.html">cdds_readm</a>  Read and map binary data
+      <a href="writem.html">cdds_writem</a> Map and write binary data
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

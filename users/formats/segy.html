@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (segy)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","formats","segy")</script>
+    <!*********************************************************************>
+
+    <p>
+      DDS supports the SEG (<u><b>S</b></u>ociety of 
+      <u><b>E</b></u>xploration <u><b>G</b></u>eophysicists) 
+      <a href="http://seg.org/publications/tech-stand/seg_y_rev0.pdf">
+        SEG-Y format</a> as "<b>segy</b>".
+      The effective default attributes for <b>segy</b> output is:
+
+    <pre>format= segy float 4 ibm ebcdic no_green_prefix no_green_suffix</pre>
+
+    <p>
+      Examples of attributes available for <b>segy</b> (see 
+      <a href="attributes.html">Attributes</a>) include the following:
+
+    <pre>
+Attributes            Description
+---------------       ---------------------------------
+no_green_prefix       no green word prefix
+no_green_suffix       no green word suffix
+green_prefix 4|8      green word prefix size
+green_suffix 4|8      green word suffix size
+integer 1|2|4|8       integer samples size
+float 4|8 ibm|ieee[x] float samples type &amp; size
+hdrswap               binary and trace headers "Little Endian"
+ascii                 card header text is ascii format
+ebcdic                card header text is ebcdic format
+charisma              charisma format
+TrcNumSmp             handle variable trace lengths
+</pre>
+
+    <p>
+      Other effective segy defaults include:
+
+    <pre>
+axis= t x y
+sort.x=CdpTrcNum
+sort.y=FieldRecNum
+</pre>
+
+    <p>
+      DDS automatically detects the <b>segy</b> format and attributes of 
+      input binary data. If they conflict with attributes explicitly
+      defined by format, a warning is issued and the override is honored.
+      Output data attributes take predefined defaults, unless explicitly
+      overridden.
+
+    <p>
+      The <b>segy</b> seismic format is described by three major types,
+      <b>SEGY_CARD (PREAMBLE)</b>, <b>SEGY_BINARY (PREAMBLE2)</b>, and 
+      <b>SEGY_TRACE (SEQUENCE)</b>. This format is created using 
+      the "<code>${DDSROOT}/segy.fmt.dds</code>" Dictionary.  
+      "<code>${DDSROOT}/segy.map.dds</code>" provides default mapping 
+      Definitions.  Either of these can be copied into some other 
+      directory and edited to modify the format.  Point DDS to this
+      directory with <a href="../runtime.html">DDS_PATH</a>.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

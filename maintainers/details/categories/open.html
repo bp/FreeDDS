@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (open)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","categories","open")
+    </script>
+    <!*********************************************************************>
+
+    <h2>Open:</h2>
+
+    <p>
+      ddsCubeScanBin...</p>
+    <ol>
+      <li>Default cube description from binary -
+        <table width="450" style="padding:0 0 0 50px">
+           <tr><td>ddsCubeScanAxis...</td><td> "size, origin, delta, ..." </td></tr>
+           <tr><td>ScanFmtFlags...       </td><td> "format= ... flags"   </td>  </tr>
+        </table></li>
+       <li>Final new cube description with overrides - 
+        <table width="450" style="padding:0 0 0 50px">
+           <tr><td>ddsCubeScanAxis...     </td><td>"size, origin, delta, ..." </td></tr>
+           <tr><td>ddsReformName...       </td><td>"sort:...= &lt;hdr_name&gt;"</td>  </tr>  
+           <tr><td>ScanEditFlags...       </td><td>"edit:...= flags"   </td></tr>
+        </table></li>
+    </ol>
+
+    <pre>
+<b><u>Structures:</u></b>
+    DDS_BIN - Binary Structure defined in dds_binary.h
+
+
+<b><u>Globals:</u></b>
+    DDS_BIN **dds_bin;    /* array of binary structures for each I/O buffer */
+    DDS_BIN *dds_compile; /* binary used by the compiler    */
+
+
+<b><u>Files:</u></b>
+    f_xxx.c        - Fortran API Routines
+                        f_open.c f_datadefn.c f_ptr.c
+    c_xxx.c        - "C" API Routines
+                        c_open.c  c_datadefn.c 
+    openbin.c      - Open binary data, validate format and data definition
+    autofmt.c      - Automatic format detection
+    opennametest.c - Test the genus type of data filenames
+    opennamemake.c - Make default output filename from DATA_PATH &amp; DATA_SUFFIX
+    openslice.c    - Create sliced binary 
+    opennew.c      - Open new output files
+    opennewusp.c   - Open new USP binary data
+    opennewsegy.c  - Open new SEGY binary data
+    opennewgen.c   - Open new generix binary data
+    openold.c      - Open existing files
+    openoldusp.c   - Open existing USP binary data
+    openoldsegy.c  - Open existing SEGY binary data
+    openoldgen.c   - Open existing generic binary data
+    cubelinker.c   - Link binary cube description 
+                     (called by above open routines)
+    cubescaninit.c - Initialize default cube description
+    cubescanbin.c  - Scan binary cube description
+    cubescanaxis.c - Scan cube axis descriptions
+    reformname.c   - Retrieve cube axis sort header name (sort.axis(#))
+    cubeprint.c    - Update binary cube description
+    cubeinc.c      - Increment the cube sort indices to next expected value
+    hdrdefchar.c   - Set default character line header value from dictionary
+                     (called by HDR_DEF_CHAR macro used in opennewusp.c 
+                     and opennewsegy.c)
+    hdrdeffloat.c  - Set default float line header value from dictionary 
+                     (called by HDR_DEF_FLOAT macro used in opennewusp.c)
+    hdrdefint.c    - Set default integer line header value from dictionary 
+                     (called by HDR_DEF_INT macro used in opennewusp.c
+                     and opennewsegy.c)
+    hdrgetchar.c   - Get character header value from dictionary and/or binary
+                      buffer (called by HDR_GET_CHAR macro used in openoldusp.c 
+                     and openoldsegy.c)
+    hdrgetfloat.c  - Get float header value from dictionary and/or binary buffer
+                     (called by HDR_GET_FLOAT macro used in openoldusp.c)
+    hdrgetint.c    - Get integer header value from dictionary and/or binary
+                      buffer (called by HDR_GET_INT macro used in openoldusp.c 
+                     and openoldsegy.c)
+    hdrmodchar.c   - Update character header value within dictionary
+                     (called by HDR_MOD_CHAR macro used in openoldusp.c,
+                     opennewusp.c, openoldsegy.c and opennewsegy.c)
+    hdrmodfloat.c  - Update float header value within dictionary
+                     (called by HDR_MOD_FLOAT macro used in openoldusp.c 
+                     and openoldsegy.c)
+    hdrmodint.c    - Update integer header value within dictionary
+                     (called by HDR_MOD_INT macro used in openoldusp.c,
+                     opennewusp.c, openoldsegy.c and opennewsegy.c)
+    hdrputchar.c   - Put character header value into binary buffer
+                     (called by HDR_PUT_CHAR macro used in opennewusp.c 
+                     and opennewsegy.c)
+    hdrputfloat.c  - Put float header value into binary buffer
+                     (called by HDR_PUT_FLOAT macro used in opennewusp.c)
+    hdrputint.c    - Put integer header value into binary buffer
+                     (called by HDR_PUT_INT macro used in opennewusp.c 
+                     and opennewsegy.c)
+    tracetag.c     - Link SEQUENCE to binary trace and add set as tag "0"
+    objecttag.c    - Link an object to a structure and create its API tag
+    linkmember.c   - Link a symbolic member to a sturcture and create its API tag
+    binfreeze.c    - Compile binary structure and freeze it for
+                     read/write/seek processing
+    linkobject.c   - Create maps for read/write/seek processing
+    linkobjectsu.c - Map member to output from itself
+                     (called by ddsLinkObject)
+    linkobjectsu2.c- Compile mapping expression (calls ddsLexStr and ddsYYparse)
+                     (called by ddsLinkObjectSU)
+    compilefmt.c   - Open and compile format for binary data.  This calls 
+                     ddsYYparse (defined as yyparse in parser.tab.c), ddsLexStr
+                     (from scanner.yy.c) and ddsEvaluate.
+    uncompilefmt.c - Uncompile binary data format.  After compiling the binary
+                     format with all it's potential overrides, this uncompiles it
+                     from the symbol tables to reproduce the resulting format
+                     definitions.  Later, only format definitions that have 
+                     changed will get rewritten to the output dictionary.
+    </pre> 
+
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

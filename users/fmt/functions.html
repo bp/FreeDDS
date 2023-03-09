@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Fmt Control (functions)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","fmt","functions")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      The following functions are built-in to the DDS "fmt" specifications:
+
+    <pre>
+Function         Description
+------------     ------------------------------------------
+axis_size(<var>a</var>)     specifies the size of the axis as defined
+                 by "<var>a</var>" which can either be the axis name
+                 ("x", "Vp", ...) or number (1, 2, ...)
+
+ident(<var>field</var>)     specifies a name for a field; this can be
+                 used when a <var>field</var> name may contain non-
+                 alphnumeric characters (eg. ident("SHT-X"))
+
+defn_value(<var>d</var>,<var>n</var>)  Pull a value from a Definition name,<var>n</var>,
+                 from Dictionary, <var>d</var>;
+                 eg. defn_value("hist:","delta.x")
+
+    </pre>
+    
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

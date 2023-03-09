@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users IO Data (Output)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","iocontrol","out")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      An output Dictionary is used to describe the output binary data.
+      It also contains the processing history accumulated for the dataset.
+      Outputting a Dictionary is normally done thru the "<b>out</b>" alias
+      name by any of these ways:
+
+    <pre>
+out= <var>dictionay</var>
+out=tmp<var>xxx</var>:
+out=/dev/null
+out=/dev/null/rst0b
+out=stdout:
+</pre>
+
+    <p>
+      The processing history is updated and written to this Dictionary.
+      It contains any processing history possibly from an input
+      Dictionary along with all the current processing information and 
+      Definitions introduced by this step. 
+
+    <p>
+      The "<code>tmp<var>xxx</var>:</code>" mnemonic creates a temporary
+      disk file that is automatically removed. 
+      Using "<code>/dev/null</code>" simply thows away the Dictionary.
+      Both of these can be used for "<code>out_data</code>" as well.
+  
+    <p>
+      The output data can be written directly to a tape device by
+      specifying its "device name" such as "<code>/dev/rst0b</code>" 
+      (see <a href="../devices.html">Devices</a> for more detail).
+      This can be used for "<code>out_data</code>" as well.
+
+    <p>
+      The output data can also be sent to a pipe by specifying 
+      "<code>stdout:</code>".
+      This can be used for "<code>out_data</code>" as well.
+
+    <p>
+      Most applications will default the output format to the format
+      of the input dataset.  In some cases the default output format 
+      may be hard coded to "<b>fcube</b>" or some other format.
+      The end user may choose to override the default format for the
+      binary output binary. Perhaps the next processing step requires
+      a different format.  Using the "<b>out</b>" alias name the output
+      format can be overridden by:
+
+    <pre>
+out_format= <var>format ...</var></pre>     
+
+    <p>
+      DDS will determine a default for the full output binary pathname
+      (see <a href="../datasets/binary.html">Binary Data</a>).      
+      The end user may choose to override the filename for the binary
+      output data. It may be on another file system that provides speed,
+      capacity, or special backup.  For example:
+
+    <pre>
+out_data= <var>binary_name</var></pre>
+
+    <h3>Attaching Binary to the Dictionary:</h3>
+
+    <p> 
+      By specifying the output binary data to be "<code>dict:</code>" the
+      binary data will be attached to the end of the dictionary. 
+      This keeps the dataset all in a single file.  This can be beneficial
+      for archiving purposes.  It also allows both Dictionary and binary
+      data to be piped together to other DDS applications.
+
+    <pre>out_data=dict:</pre>
+
+    <p>
+      If the output Dictionary is not a regular file (i.e. pipe, tape, ...)
+      then the binary data is automatically attached to the output
+      Dictionary so that the dictionary information and binary data share
+      the same file, pipe stream, or tape media.
+
+    <h3>Output Standard Format Binary:</h3>
+
+    <p>
+      When outputting data in any Standard Format (<b>usp</b>, <b>segy</b>,
+      <b>segy1</b>, <b>su</b>) the Dictionary is optional. So if the output
+      Dictionary is not needed, specify  "<code>out=/dev/null</code>" or,
+      better, simply specify <b>data</b> and <b>format</b> without a 
+      Dictionary output.  This will result in only creating the binary.
+      For example:
+
+    <pre>
+out_format=usp
+out_data=line2.usp
+    </pre>
+
+    <h3>Piping:</h3>
+
+    <p>
+      Shell operators ("<code>&gt;</code>" and "<code>|</code>") may be
+      used to redirect output, when "<code>out= stdout:</code>".
+      Many applications default the output to "<code>stdout:</code>".
+      This default is ignored, if standard output is connected to a
+      terminal. It's also ignored, if "<code>par:</code>" defines 
+      "<code>out_data</code>". This allows "<code>stdout:</code>" to be
+      used for binary only data, when piping into a non-DDS application.
+
+    <p>
+      When piping <b>usp</b> binary data, the values are kept in the
+      host-dependent formats -- Little Endian for Linux.  This is to
+      keep compatability with USP applications.  NOTE: USP cannot be
+      piped across different platform types.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

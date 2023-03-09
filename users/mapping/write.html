@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Mapping (write:)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","mapping","write")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      The mapping Dictionary may also contain "<code>write:</code>"
+      Definitions which define values to be assigned to Trace Header fields
+      as the binary is being written out. These are a little different from
+      the mapping Definitions and are needed to provide some of the
+      built-in functions that are only meaningful in the sequence of
+      writing traces. They take on the form:
+
+    <pre>
+write:<var>out</var>.<var>field</var>= <var>expression</var>
+    </pre>
+
+    where
+    <ul>
+      <li>"<var>out</var>" can be the format name (eg. "usp" or "segy"),
+        alias names (eg. "out" or "vel"), or "<code>*</code>".<br/><br/>
+
+      <li>"<var>field</var>" can be any Trace Header name in the output
+        dataset.<br/><br/>
+
+      <li>"<var>expression</var>" is an algebraic expression.  It may 
+        contain constants, field names from the input format, operators,
+        <a href="functions.html">built-in functions</a>, and parentheses.
+    </ul>
+
+    <p>
+      For example, segy header word ReelTrcNum can be assigned new values
+      on output.
+
+    <pre>
+write:segy.ReelTrcNum= 1 + reeltrc()
+    </pre>
+
+    <p>
+      This example will assign sequence numbers to "<code>ReelTrcNum</code>"
+      using the built-in mapping function, "<code>reeltrc()</code>".
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

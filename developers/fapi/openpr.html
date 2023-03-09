@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_openpr)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","openpr")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_openpr - open print file</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fdds_openpr(</b><i>pname, id</i><b>)
+      </b><dl><dd>
+        <b>character*(*) </b><i>pname
+        </i><br>
+        <b>character*(*) </b><i>id
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_openpr</b> opens a printfile. It first checks the command line
+    for a user request of online help via the <b>"help="</b> switch using 
+    <a href="switch.html">fdds_switch</a>. If help is requested, a standard
+    header is written to the console and the return value is 1 (or 2 if
+    non-DDS command arguments are present). Otherwise, a unique print file
+    is opened up, a standard header is written to it, and the return value
+    is 0.  The print file is created using the program name, <i>pname</i>.
+    (The actual printfile can be controlled at runtime.  See
+    <a href="../../users/iocontrol/printout.html">Printout File</a>.)
+    If the file cannot be opened, the return value is -1.  
+    If a file is already opened, the return value is -2.
+    The standard header is written by <b>fdds_prthdr</b> using the 
+    program name, <i>pname</i>, and RCS Id, <i>id</i> (see NOTE on RCS).  
+    The other print routines can write to this print file.
+
+    <p>
+      <b>NOTE:</b> The RCS Id is a Revision Control Sysem keyword
+      (CVS, RCS or Subversion).  However, this parameters is really no
+      longer used if the DDS Application makefiles are used.  Instead,
+      a svn_version.c file is created in the object directory and built
+      into the code with the current subversion revision number. 
+      That way the revision number in the code will always reflect
+      the latest revision number.
+
+    <h2>EXAMPLES</h2>
+    <pre>
+      character*4    prog
+      character*(DICTNAME_MAX) in_dict
+      parameter      (prog='FILT')
+      integer        ier,ofst,pct
+      real           si,angle
+      ...
+      ier=fdds_openpr(prog, '$Id: openpr.html 57 2009-02-11 23:09:37Z ehlersjw $')
+      if (ier .gt. 0) then
+          call help()
+          stop
+      endif
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="savepr.html">fdds_savepr</a> Redirect to printfile
+<a href="prthdr.html">fdds_prthdr</a> Print header
+<a href="sprintf.html">fdds_sprintf</a> Print to string
+<a href="prtmsg.html">fdds_prtmsg</a> Print a message
+<a href="prtcon.html">fdds_prtcon</a> Print to console
+<a href="prterr.html">fdds_prterr</a> Print error message
+<a href="errors.html">fdds_errors</a> Query errors
+<a href="info.html">fdds_info</a> Control printing 
+<a href="closepr.html">fdds_closepr</a> Close printfile
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

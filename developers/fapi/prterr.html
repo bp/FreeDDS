@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Api (fdds_prterr)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fapi","prterr")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fapi")</script>
+
+    <h2>fdds_prterr - print an error message</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+    <b>integer function fdds_prterr(</b><i>fmt, ...</i><b>)
+    </b><dl><dd>
+        <b>character*(*) </b><i>fmt
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>fdds_prterr</b> writes an error message to the console.
+    If the print file has been opened, the program name will be indicated 
+    on each line and the message will also be written to the print file.
+    The message is based on the format string, <i>fmt</i>, 
+    and optional arguments (see <a href="printf.html">fdds_printf</a>).
+    An error message will cause fdds_closepr to print an abnormal 
+    termination message. The return value is always 0.
+ 
+    <h2>EXAMPLES</h2>
+    <pre>
+      integer :: ier
+      real    :: si
+      ...
+      ier = fdds_prterr('Illegal sample interval = %f\n\0', si)
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="openpr.html">fdds_openpr</a> Open a printfile
+<a href="savepr.html">fdds_savepr</a> Redirect to printfile
+<a href="prthdr.html">fdds_prthdr</a> Print header
+<a href="sprintf.html">fdds_sprintf</a> Print to string
+<a href="prtmsg.html">fdds_prtmsg</a> Print a message
+<a href="prtcon.html">fdds_prtcon</a> Print to console
+<a href="errors.html">fdds_errors</a> Query errors
+<a href="info.html">fdds_info</a> Control printing 
+<a href="closepr.html">fdds_closepr</a> Close printfile
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Definitions (Cmd)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("users","defn","cmd")</script>
+    <!*********************************************************************>
+
+    <p>
+      Application are controlled by command line arguments. These arguments
+      are copied into a temporary file and interpreted as a Dictionary. 
+      These eventually get copied into all output Data Dictionaries 
+      (along with the input Dictionary). This provides a comprehensive
+      history that can be used to evaluate processing or repeat it again.
+
+    <p>
+      Care must be taken, when definitions are placed on the command line.
+      Special characters must be protected from shell interpretation.
+      These include:
+      <code>#, &quot;, ', *, ?, $, (, ), &lt;, &gt;, |, &amp;</code>. 
+      Shell documentation should be consulted, if these characters are 
+      used on the command line.  It can be easier in these cases to put
+      them into a "par" file, where the shell interpretation does not get
+      involved.
+      
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

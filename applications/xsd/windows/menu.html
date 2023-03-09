@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN'>
+<html>
+  <head>
+    <title>Data Dictionary System: Applications</title>
+    <meta http-equiv='Content-Type' content='text/html; charset=iso-8859-1'>
+    <link href='../../../styles.css' type='text/css' rel='stylesheet'>
+    <script src='../../../javascript.js' language='JavaScript'
+      type='text/javascript'>
+    </script>
+  </head>
+  <body>
+    <script type='text/javascript'>header('applications','xsd','windows','menu')</script>
+
+    <img src="xsd_WindowMenu.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+    <p>Various Display Window functions are available through the "Window" menu panel.</p>
+
+    <ul>
+      <li><u>Hide Window:</u><br />
+        Selecting this menu button will hide the current Display Window.  The window can
+        be un-hidden through either selecting "Window&rarr;Expose&nbsp;Window" or
+        "Window&rarr;Global&nbsp;Windows".<br clear="all" /></li>
+     
+      <li><u>Expose Window:</u><br />
+        <img src="xsd_ExposeWindow.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+        Select this button to pop-up the "Expose Window". Select one of the existing
+        Display Windows and the press the "<code>OK</code>" button (or double click on
+        a listed Display Window).  The selected Display Window will be exposed.</li>
+
+      <li><u>Global Windows:</u><br />
+        Select this button to pop-up the "Global Window" which provides various functions
+        for multiple Display Windows.
+        (see <a href="global.html">"Global Window"</a>).
+        <br clear='all' /></li>
+
+      <li><u>Comment Window:</u><br />
+        <img src="xsd_CommentWindow.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+        Select this button to pop-up the "Comment Window".  Input (or modify) the comment
+        for the current Display Window and press the "Enter" key or press the 
+        "<code>OK</code>" button.  The comment will be kept with the Display Window and
+        will show up in the window title and when listed in the "Expose Window" and the
+        "Global Window" lists.<br clear='all' /></li>
+
+      <li><u>Set Grid Lines:</u><br />
+        <img src="xsd_GridWindow.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+        Select this button to pop-up the "Grid Attributes Window".  Select the 
+        "<code>Grid on/off</code>" toggle to turn on displaying grid lines.  Select the
+        "<code>Solid Grid line</code>" to use solid lines for the grid; otherwise the
+        lines will be dashed.  Select the "x" &amp; "y" grid spacing in number of pixels.
+        (Values &lt:= 0 will be set to 20.)  Select the color for the grid lines from
+        the color palette (Edit the <a href="../colors.html">Color Palette</a> to change
+        the available colors.) Click on the "<code>OK</code>" button to apply the grid
+        options to the current Display Window or click on the "<code>Set All</code>" 
+        button to apply the grid options to all the Display Windows.<br clear='all' /></li>
+
+      <li><u>Lowpass Filter:</u><br />
+        <img src="xsd_LowpassWindow.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+        Select this button to pop-up the  "Lowpass Filter Window". Select the number of
+        iterations to apply. Each iteration replaces each image pixel with a weighted sum
+        of all adjacent pixels.  The default number of iterations is taken from the amount
+        of zoom had been applied to the image.<br clear='all' /></li>
+
+      <li><u>Zoom Copy:</u><br />
+        <img src="xsd_ZoomWindow.jpg" alt="" align="right" style="padding: 0 20px 20px 20px">
+        Select this button to pop-up the "Scaling Values Window".  Select the amount to
+        zooming to perform for the Horizontal and Vertical directions (Specify two
+        values; they default to 1). A new Display Window will open up with the
+        entire image zoomed in on.</li>
+
+      <li><u>Drag Zoom:</u><br />
+        Select this button to zoom in on a selected section of the image. The 
+        "<code>Edit Mode</code>" will indicate "Drag &amp; Zoom".  Move the cursor to
+        a starting corner; press the "<b>left mouse button</b>"; drag the cursor to 
+        define the zoom box and release the mouse button (Pressing a different mouse button
+        will terminate the "Drag Zoom" mode). The "Scaling Values Window" will pop-up
+        to allow specifying the horizontal and vertical zoom values (Specify two values;
+        they default to 1).</li>
+
+      <li><u>Wiggles:</u><br />
+        This options will create a wiggle display from the image in the current 
+        Display Window. (see <a href="wiggle.html">"Wiggles Displays"</a>).
+        <br clear='all' /></li>
+
+      <li><u>Plot/Save Image:</u><br />
+        Select this button to send the image to a printer and/or create a gif or tiff 
+        file of the image. (see <a href="plot.html">"Plot/Save Images"</a>).</li>
+
+      <li><u>Axes:</u><br />
+        This toggle allows you to turn off displaying the axes annotation in the 
+        Display Window.</li>
+
+      <li><u>Hide Controls:</u><br />
+        This options hides the menu-bar and all the controls for the current Display
+        Window leaving a single button on top to restore all the menus and controls.</li>
+
+      <li><u>Delete Window:</u><br />
+        This option will <u>immediately</u> delete the current Display Window.</li>
+    </ul>
+
+    <br clear='all' />
+
+    <script type='text/javascript'>footer()</script>
+  </body>
+</html>

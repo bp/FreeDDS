@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers "C" Api (cdds_binfd)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","capi","binfd")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capi")</script>
+
+    <h2>
+      cdds_binfd - return the file descriptor (fd) associated with a binary file
+    <hr></h2>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"
+    </b><p>
+      <b>int cdds_binfd(</b><i>bin_tag</i><b>);
+      </b><dl><dt><dd>
+        <b>BIN_TAG </b><i>bin_tag
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cdds_binfd</b> returns the file descriptor (fd) of the binary file.
+    A value of -1 is returned on any error.
+
+    <h2>INPUT</h2>
+    <i>bin_tag</i> is a binary tag, previously obtained from 
+    <a href="open.html">cdds_open.</a>
+    It specifies a particular binary stream.
+
+    <h2>EXAMPLE</h2>
+    <pre>
+BIN_TAG bin;
+int fd;
+...
+fd = cdds_binfd(bin);
+...
+    </pre>
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="member.html">cdds_member</a> Field member tag
+<a href="next.html">cdds_next</a> Field member next tag
+<a href="prev.html">cdds_prev</a> Field member previous tag
+<a href="parent.html">cdds_parent</a> Field member parent tag
+<a href="prime.html">cdds_prime</a> Field member prime type tag
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

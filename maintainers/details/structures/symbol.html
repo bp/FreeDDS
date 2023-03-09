@@ -1,0 +1,88 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (symbol)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","structures","symbol")
+    </script>
+    <!*********************************************************************>
+
+   <p>
+      These are the data structures used in the symbol tables that get generated
+      by the compiler.</p>
+
+   <p>
+      Expression pointers reference values and arguments.  All expressions are
+      initially chained onto the "needle" and "thread" lists.  The list is
+      evaluated at compile time to obtain constants and then at run time as
+      values are needed.  When compiling map expressions they are moved to
+      DDS_MAP (defined in dds_binary.h).  Go to the 
+      <a href="../discussions/compiler.html">Compiler</a> and
+      <a href="../discussions/symbols.html">Symbol Tables</a> sections for a brief
+      discussion on those topics.</p>
+
+    <h2>Structures:</h2>
+    <pre>
+DDS_SYM       - Generic symbol Table item 
+DDS_TYPE      - Type descriptor (DDS_SYM_TYPE)
+DDS_OBJECT    - Object storage descriptor
+DDS_MEMBER    - Struct or Unions field descriptor
+DDS_EXPR      - Generic expression descriptor (DDS_SYM_EXPR)
+DDS_EARG      - Expression argument descriptor
+DDS_EXPR1     - Expression descriptor for single argument (DDS_SYM_EXPR)
+DDS_EXPR2     - Expression descriptor for two arguments (DDS_SYM_EXPR)
+DDS_EXPR3     - Expression descriptor for three arguments (DDS_SYM_EXPR)
+DDS_EXPR4     - Expression descriptor for four arguments (DDS_SYM_EXPR)
+DDS_EXPRA     - Assignment expression descriptor (DDS_SYM_EXPR)
+DDS_EXPRC     - Copy op expression descriptor (DDS_SYM_EXPR)
+DDS_VALUE     - Expression descriptor (DDS_SYM_EXPR)
+DDS_CONDITION - Conditional op expression descriptor
+DDS_BLOCK     - Block descriptor, begins unique name space (DDS_SYM_BLOCK)
+DDS_DECLARE   - Parser temporaries for nested declarations
+DDS_LABEL     - Label descriptor (DDS_SYM_LABEL)
+DDS_RELOC     - Relocation descriptor for pointers within symbol tables
+DDS_OPNOTE    - Opcode annotation descriptor
+DDS_DUMP_ITEM - Field descriptor in tabular dump list descriptor
+DDS_LEX_START - Les start state cjamges
+DDS_SCANNER   - Scanner input stack (analogous to nested "#includes")
+    </pre>
+
+
+    <h2>Globals:</h2>
+    <pre>
+DDS_SYM      *dds_push_sym;     /* Temporary for PUSH_SYM and PUSH_VALUE macro */
+DDS_DECLARE  *dds_declare;      /* Current declaration scope */
+DDS_OPNOTE   *dds_opnote;       /* Opcode descriptor table */
+DDS_TABLE     dds_keyword;      /* Parser keyword hash table */
+DDS_TABLE    *dds_symbol;       /* Pointer to active symbol table. */
+DDS_BLOCK    *dds_block;        /* Pointer to current block in active symbol table. */
+DDS_EXPR     *dds_needle;       /* Pointer to first expression to evaluate. */
+DDS_EXPR     *dds_thread;       /* Pointer to lst expression to evaluate. */
+DDS_BLOCK    *dds_prime_block;  /* Prime block for in symbol table */
+DDS_BLOCK    *dds_error_block;  /* Error recovery entries in prime symbol table */
+DDS_TYPE     *dds_error_type;   /* Error recovery entries in prime symbol table */
+DDS_MEMBER   *dds_error_member; /* Error recovery entries in prime symbol table */
+DDS_VALUE    *dds_error_value;  /* Error recovery entries in prime symbol table */
+DDS_OBJECT   *dds_error_object; /* Error recovery entries in prime symbol table */
+DDS_EXPR     *dds_error_expr;   /* Error recovery entries in prime symbol table */
+DDS_EXPR     *dds_error_thread; /* Error recovery entries in prime symbol table */
+DDS_SCANNER  *dds_lexer;        /* Handle into scanner state */
+DDS_SCANNER   dds_lexer_root;   /* Handle into scanner state */
+DDS_LEX_START dds_lex_ss;       /* Lex start state */
+DDS_OBJECT   *dds_nop_object;
+DDS_EXPRA     DDS_CON_EXPRA;    /* Used to evaluate one conversion */
+void        **DDS_PTR_CEMETERY; /* Graveyard for unused pointers computed by expressions. */ 
+char         *dds_hist;         /* History dictionary for compiler "hist:" references */
+char         *dds_shape_name[]; /* List of deferred shape names for compile error msgs */
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,56 @@
+
+    <h2>cddx_initmpix - initialize MPI, and OpenMP, and start a print file or print on-line help.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;pcddx.h&gt;</b>
+    <p>
+      <b>int cddx_initmpix(</b><i>nproc, np, node, prog, help</i><b>)</b>
+
+    <dl><dd>
+        <b>int </b><i>nroc</i><br>
+        <b>int </b><i>np</i><br>
+        <b>int </b><i>node</i><br>
+        <b>const char *</b><i>prog</i><br>
+        <b>extern void </b><i>help()</i><br>
+      </dd></dl>
+  </p>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+      The function, "<b>fddx_initmpix</b>", takes care of the generic initialisation
+      needed by all DDS programs using MPI and/or OpenMP.<br>
+      It checks how many OpenMP and MPI threads were requested by the user.<br>
+      It checks if the user asked for the online help, and if so calls the function
+      <i>help</i> and stops the program gracefully.<br>
+      Otherwise it opens the printout file.<br>
+    </p>
+    
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>prog</i>", specifies the program name. This information
+      will be recorded in the printout file.
+    </p>
+    <p>
+      The parameter, "<i>help</i>", specifies the name of subroutine which 
+      writes the online help to the standard output.
+    </p>
+
+    <h2>OUTPUT</h2>
+    <p>
+      The parameter, "<i>nproc</i>", specifies the number of OpenMP threads 
+      used by the program.
+    </p>
+    <p>
+      The parameter, "<i>np</i>", specifies the number of MPI threads used by the program.
+    </p>
+    <p>
+      The parameter, "<i>node</i>", specifies the number of the current MPI thread.
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>fddx_initmpix</b> always returns 0, unless an error was detected, in which
+    case the program aborts, and the function does not return.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

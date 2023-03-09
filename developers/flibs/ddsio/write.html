@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>write - Writes data to file from a given buffer</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>procedure write(</b><i>buffer</i><b>)</b>
+      <dl><dd>
+	  <b>dimension(*), intent(in) :: </b><i>buffer</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"write"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure writes data to the file where the number of traces output depends
+      on the size of the buffer and the offset in the file is specified by the
+      <b>seekTo</b> procedure. This procedure can only be called on a data object that
+      has been opened in mode 'w' or 'pw'. 
+      <br><br>
+      <b>"write"</b> is a generic function written for a buffer of dimension: 1-7, and type:
+      1-byte integer, 2-byte integer, 4-byte integer, 8-byte integer, 4-byte real,
+      8-byte real, 8-byte complex, or 16-byte complex.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	use Precision_mod, only : DPI
+	
+	type(DdsObject)      :: inData, outData
+	integer(kind=DPI), allocatable :: inSizes(:)
+	real, allocatable    :: buffer(:,:,:)
+	
+	! open input data in read mode
+	call inData%open('r','in')
+	allocate(inSizes(3))
+	inSizes = inData%getSizes()
+	allocate(buffer(inSizes(1), inSizes(2), inSizes(3)))
+
+	! open output data in write mode
+	call outData%open('w','out')
+	
+	! read and then write entire 3D volume
+	call inData%read(buffer)
+	call outData%write(buffer)
+	
+	! close data
+	call inData%close()
+	call outData%close()
+	deallocate(inSizes, buffer)
+      </pre>
+      
+  </body>
+</html>

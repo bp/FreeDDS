@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Bugs</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript" type="text/javascript"></script>
+    <style type="text/css">
+      thead {font-weight:bold;} 
+      td {text-align:left;}
+      img {border:0px none;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">header("home","bugs")</script>
+
+    <!*********************************************************************>
+    
+    <h2><u>ordinal():</u></h2>
+    <ol>
+      <li>
+        The ordinal() function has several bugs associated with it.
+	In order to force it to have correct ordinal values (unless it is
+	already set when padding dead traces) use:
+        <pre>edit:out= force.x force.y</pre>
+      </li>
+
+      <li>
+        Another unknown problem exists and can be demonstrated with
+        the following example:<br/><br/>
+        <ul type="disc">
+          <li>
+            The second term of the following example will be ignored 
+            for some reason:
+
+            <pre>write:out.CDPBCX= 10000 + 3*ordinal(2) +4*ordinal(3)</pre>
+
+	    </li><li>But the following works:
+
+            <pre>write:out.CDPBCX= 10000 + 3*(ordinal(2) +4*ordinal(3)&frasl;3)</pre>
+          </li>
+
+        </ul>
+      </li>
+    </ol><br/>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

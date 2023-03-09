@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Mapping (Functions)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","mapping","functions")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      The following functions are built-in to DDS and can be used for the
+      mapping, read or write Definitions:
+
+    <pre>
+Function           Usage        Description
+------------------ ------------ ----------------------------------
+<var>x</var>+<var>y</var>                             Addition
+<var>x</var>-<var>y</var>                             Subtration
+<var>x</var>*<var>y</var>                             Mulitplication
+<var>x</var>/<var>y</var>                             Division
+<var>x</var>%<var>y</var>                             Modulo (Remainder of x/y)
+
+<var>x</var>&amp;&amp;<var>y</var>                            Logical AND
+<var>x</var>||<var>y</var>                            Logical OR
+!<var>x</var>                              Logical Negation
+
+<var>x</var>&lt;&lt;<var>y</var>                            Bit-wise Left shift
+<var>x</var>&gt;&gt;<var>y</var>                            Bit-wise Right Shift
+<var>x</var>&amp;<var>y</var>                             Bit-wise AND
+<var>x</var>|<var>y</var>                             Bit-wise OR
+~<var>x</var>                              Bit-wise Compliment
+
+<var>x</var> ? <var>y</var> : <var>z</var>                       Conditional returns <var>y</var> if &lt;x&gt; != 0,
+                                else returns <var>z</var>.
+
+<var>x</var>[<var>y</var>]                            Subscript x with y
+
+sqrt(<var>x</var>)                         Returns double value of sqrt of 
+                                "x" cast to a double value.
+
+abs(<var>x</var>)                          Returns double value of absolute
+                                of "x" cast to a double value.
+
+sign(<var>x</var>)                         Returns 1 if x>0; -1 if x<0; else 0
+                                ("x" cast to a double value)
+
+ceil(<var>x</var>)                         Returns double value of smallest
+                                integer not less than "x".
+
+floor(<var>x</var>)                        Returns double value of largest 
+                                integer not greater than "x".
+
+sin(<var>x</var>)                          Returns double value of sine of "x" 
+                                in radians cast to a double value.
+
+cos(<var>x</var>)                          Returns double value of cosine of "x"
+                                in radians cast to a double value.
+
+tan(<var>x</var>)                          Returns double value of tangent of "x" 
+                                in radians cast to a double value.
+
+asin(<var>x</var>)                         Returns double value in radians of
+                                arcsine of "x" cast to a double value.
+
+acos(<var>x</var>)                         Returns double value in radians of 
+                                arccosine of "x" cast to a double value in.
+
+atan(<var>x</var>)                         Returns double value in radians of
+                                arctangent of "x" cast to a double value.
+
+atan2(<var>x</var>,<var>y</var>)                       Returns double value in radians of
+                                arctangent of "x/y" cast to a double value.
+
+log(<var>x</var>)                          Returns double value of natural log 
+                                of "x" cast to a double value.
+
+log10(<var>x</var>)                        Returns double value of base-10 log
+                                of "x" cast to a double value.
+
+exp(<var>x</var>)                          Returns double value of e**x (e<sup>x</sup>) 
+                                cast to a double value.
+
+pow(<var>x</var>,<var>y</var>)                        Returns double value of x**y (x<sup>y</sup>)
+                                cast to a double value.
+
+field(<var>a</var>,<var>b</var>)         map:         Specify expression "a" if exists
+                                otherwise the value from "b" which
+                                could be "nop" which does nothing.
+
+ident(<var>a</var>)           map:         Used to specify a field name which
+                                may contain special characters 
+                                that could be interpreted by DDS
+                                (eg. "-" in "SHT-X")
+
+linetrc()          read:/write: Provide sequential I/O numbers 
+                                for each trace starting with 1.
+                   
+
+reeltrc()          read:/write: Provide sequential I/O numbers 
+                                for each trace starting with 1. 
+                                This is reset after remounting
+                                a new tape real or disk file.
+
+datestruct(<var>SGRDat</var>) map:         Takes a Julian date stored as an
+                                integer (as done with usp header
+                                SGRDat) &amp; converts it to the Date
+                                structure used in segy Date.
+
+dateint(<var>Date</var>)      map:         Takes the segy Date structure &amp;
+                                converts it to the usp Julian 
+                                date integer.
+
+defn_value(<var>dict</var>,<var>name</var>)           Pull a value out of Dictionary
+                                eg. defn_value("hist:","delta.x")
+
+ordinal(<var>n</var>)         read:/write: Provide sequential ordinal values starting
+                                with 0 for axis number "n". (use 
+                                edit:out=force.a to force the ordinal 
+                                values; this must be done for all lower 
+                                axes as well)
+    </pre>
+
+    <p>
+      An example of the use of the "<b>field()</b>" function would be in
+      the case:
+
+    <pre>map:segy:asp.UphlTm= UPHOLE</pre>
+
+    <p>
+      This mapping would require the member, "UPHOLE", to exist, otherwise
+      an error would result.  If there is any doubt, the function, 
+      "<b>field()</b>", can be used to guarantee that if a member doesn't
+      exist, then an alternate value would be used. The following example
+      will assign the value in "UPHOLE" to "UphlTm" if "UPHOLE" exists,
+      otherwise nothing is assigned to "UphlTm".
+
+    <pre>map:segy:asp.UphlTm= field(UPHOLE, nop)</pre>
+ 
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

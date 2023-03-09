@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Templates (Template 5)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script type="text/javascript">
+      if (location.search.search("remove=") >= 0) {
+         var tmp = "position:absolute;left:-9999px;";
+      } else {
+         var tmp = "";
+      }
+      document.write("<style type='text/css'>.comment "
+         +"{color:#c00000;"+tmp+"}<\/style>");
+
+      function setRemoveOption() {
+         var tmp;
+         if (location.search.search("remove=") >= 0) {
+            tmp = "'Add Tutorial Comments'";
+         } else {
+            tmp = "'Remove Tutorial Comments'";
+         }
+         document.write("<center><form><input type='button' value="
+            +tmp+" onclick='toggleComments();'><\/form><\/center>");
+      }
+
+      function toggleComments() {
+         if (location.search.search("remove=") >= 0) {
+            document.location.search = "";
+         } else {
+            location = "?remove=";
+         }
+      }
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+    <script type="text/javascript">
+     header("developers","ftemplates","f_template5")
+    </script>
+    <!*********************************************************************>
+
+    <script type="text/javascript">setRemoveOption();</script>
+
+    <pre>
+c***********************************************************************
+c                  B P   A M E R I C A
+c          PROPRIETARY - TO BE MAINTAINED IN CONFIDENCE 
+c                        COPYRIGHTED 2008
+c***********************************************************************
+c
+c     This MPI and OpenMP template is based on trace by trace processing.
+c     It should be simple to modify for record by record processing.
+c     It assumes that there is no communication needed between MPI nodes.
+c
+c     The standard DDS Makefile to compile this code looks like this:
+c
+c     Name     := mpi_template
+c     F77Srcs  := mpi_template.F
+c     Libs     := masterslave
+c     MP       := TRUE
+c     MPIX     := TRUE
+c
+c     include ${DDSROOT}/etc/MakeVariables
+c     include ${DDSROOT}/etc/MakeRules
+c
+c
+c     Inside bp you may checkout a copy of the template from the subversion repository
+c     using the command: "devcode export mpi_template new_prog_name"
+c
+c     Author: Richard.Clarke@bp.com
+c
+      program mpi_template
+      implicit none
+<span class="comment">c
+c     INCLUDE THE DDS API (Application Program Interface)
+</span>c
+#include &lt;fdds.h&gt;
+<span class="comment">c
+c     INCLUDE THE HEADER FILE FOR THE MPI CONVENIENCE ROUTINES
+c</span>
+#include &lt;pfddx.h&gt;
+<span class="comment">c
+c     define the number of compulsory headers
+c</span>
+#define NUMCOTAGS 1
+<span class="comment">c
+c     define the number of optional headers
+c</span>
+#define NUMOPTAGS 5
+#define NUMTAGS (NUMCOTAGS + NUMOPTAGS)
+<span class="comment">c
+c     Here are variables used by the template.
+c     Often you may not need to change these.
+</span>c
+      integer in_bin,out_bin,buflen,ninbuf,ntrace
+      integer node,np,nproc
+      integer istart,iend,ier
+      integer rank,size(RANK_MAX)
+      integer ss(RANK_MAX),ee(RANK_MAX),ii(RANK_MAX)
+      integer numcotags,numoptags,numtags
+      integer itags(NUMTAGS),otags(NUMTAGS)
+      integer cumsize(RANK_MAX)
+      real    origin(RANK_MAX),delta(RANK_MAX)
+      character*(DEFNNAME_MAX) hw(NUMTAGS)
+c
+      real    buf(1),hvals(1),samples(1)
+      pointer(ptr_buf,buf)
+      pointer(ptr_hvals,hvals)
+      pointer(ptr_samples,samples)
+<span class="comment">c
+c     Here are variables specific to the algorithm
+</span>c
+      real     fmax,f1,f2,f3,f4
+      logical  ormsby,verbose
+      external online_help
+<span class="comment">c
+c     check if the user requested MPI or OpenMP, open the printfile.
+c     or, just print the on-line help.
+</span>c
+      ier=<a href="../flibs.php?lib=mpi&api=fddx_initmpix">fddx_initmpix</a>(nproc,np,node,'ddsfilt',online_help)
+<span class="comment">c
+c     initialize the arrays of compulsory and optional headers
+</span>c
+      numcotags = 1
+      ier = fdds_sprintf(hw(1),'Samples\0')
+c
+      numoptags = 5
+      ier = <a href="../fapi/sprintf.html">fdds_sprintf</a>(hw(numcotags+1),'StaCor\0')
+      ier = <a href="../fapi/sprintf.html">fdds_sprintf</a>(hw(numcotags+2),'Horz01\0')
+      ier = <a href="../fapi/sprintf.html">fdds_sprintf</a>(hw(numcotags+3),'Horz02\0')
+      ier = <a href="../fapi/sprintf.html">fdds_sprintf</a>(hw(numcotags+4),'Horz03\0')
+      ier = <a href="../fapi/sprintf.html">fdds_sprintf</a>(hw(numcotags+5),'Horz04\0')
+      numtags = numcotags + numoptags
+<span class="comment">c
+c     open the input file and get tags to compulsory and optional headers
+</span>c
+      in_bin = <a href="../flibs.php?lib=mpi&api=fddx_inp">fddx_inp</a>('in','stdin:', 'ddsfilt',node, buflen,
+     $     numcotags, numoptags, hw, itags)
+c
+      ier = <a href="../flibs.php?lib=mpi&api=fddx_checkforerrors">fddx_checkforerrors</a>(np,node)
+<span class="comment">c
+c     find the dimensions of the input volume
+</span>c
+      ier = <a href="../flibs.php?lib=mpi&api=fddx_getdim">fddx_getdim</a>(in_bin,rank,origin,delta,size,cumsize)
+<span class="comment">c
+c     if we have a regular file, check the number of traces
+c     we will need to pay attention to piped input later.
+</span>c
+      if ( cumsize(1) > 0 ) then
+         ntrace = cumsize(rank)
+      else
+         ntrace = -1 * cumsize(1)
+      endif
+      ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('The input contains %d traces.\n\0',ntrace)
+<span class="comment">c
+c     check if the user asked for specific trace,record ranges
+</span>c
+      ier = <a href="../flibs.php?lib=mpi&api=fddx_userrange">fddx_userrange</a>( node, rank, size, ss, ee, ii )
+<span class="comment">c
+c     allocate memory
+</span>c
+      ninbuf = 10
+      ier = <a href="../fapi/scanf.html">fdds_scanf</a>('ninbuf', '%d\0', ninbuf)
+      ptr_buf     = <a href="../fapi/malloc8.html">fdds_malloc8</a>( dble(buflen) *ninbuf*sizeof_real)
+      ptr_hvals   = <a href="../fapi/malloc8.html">fdds_malloc8</a>( dble(numtags)*ninbuf*sizeof_real)
+      ptr_samples = <a href="../fapi/malloc8.html">fdds_malloc8</a>( dble(size(1))*ninbuf*sizeof_real)
+c
+      fmax = 0.0
+      call ReadParams(node,ormsby,fmax,f1,f2,f3,f4,verbose)
+c
+      ier = <a href="../flibs.php?lib=mpi&api=fddx_checkforerrors">fddx_checkforerrors</a>(np,node)
+<span class="comment">c
+c     Copy the input dictionary and make any changes
+c     This is not really necessary in this example, but serves as a reference. 
+</span>c
+      ier = <a href="../fxapi/dict.html">fddx_dict</a>( in_bin, 'scan' )
+      ier = <a href="../fapi/dict.html">fdds_dict</a>( 'tmp_mpi:', 'print' )
+      ier = <a href="../fapi/history.html">fdds_history</a>()
+<span class="comment">c
+c     If you change the axis labels, then you need to rescan the dictionary.
+</span>c
+      ier = <a href="../fapi/printf.html">fdds_printf</a>('axis','t px py nbc\n\0')
+      ier = <a href="../fapi/dict.html">fdds_dict</a>( 'tmp_mpi:', 'scan' )
+      ier = <a href="../fapi/dict.html">fdds_dict</a>( 'tmp_mpi:', 'print' )
+c
+      ier = <a href="../fapi/dict.html">fdds_printf</a>('size.axis(1)','%d\n\0',size(1))
+<span class="comment">c
+c     Open the output file for writing in parallel.
+c     All of the MPI nodes will write to the same file.
+c     We allow for a different set of headers than were used
+c     on the input, but typically you can use the same.
+</span>c
+      out_bin=<a href="../flibs.php?lib=mpi&api=fddx_outp">fddx_outp</a>('out','stdout:','ddsfilt',in_bin,node,np,
+     $     'tmp_mpi:',numcotags,numoptags,hw,otags)
+c
+      ier = <a href="../flibs.php?lib=mpi&api=fddx_checkforerrors">fddx_checkforerrors</a>(np,node)
+<span class="comment">c
+c     decide which traces are to be processed by which MPI nodes
+</span>c
+      ier = <a href="../flibs.php?lib=mpi&api=fddx_jobrange">fddx_jobrange</a>(ntrace,np,node,istart,iend)
+<span class="comment">c
+c     Here is the routine that processes a chunk of data
+</span>c
+      call ProcessChunk(
+     $     in_bin,out_bin,istart,iend,
+     $     buflen,ninbuf,size(1),buf,
+     $     rank,cumsize,ss,ee,ii,
+     $     itags(1),otags(1),samples,
+     $     numtags-1,itags(2),otags(2),hvals)
+c
+      ier = <a href="../flibs.php?lib=mpi&api=fddx_stop">fddx_stop</a>(np,node)
+      end
+c
+c***********************************************************************
+c
+c     Routine  to process a chunk of data
+c
+c***********************************************************************
+c
+      subroutine ProcessChunk(
+     $     in_bin,out_bin,istart,iend,
+     $     buflen,ninbuf,nsamp,buf,
+     $     rank,cumsize,ss,ee,ii,
+     $     it_tag,ot_tag,samples,
+     $     numtags,itags,otags,hvals)
+c
+      implicit none
+c
+#include <fdds.h>
+#include <pfddx.h>
+c
+      integer in_bin,out_bin,ier
+      integer istart,iend
+      integer buflen,ninbuf,nsamp,ntrace,nread
+      integer rank,cumsize(RANK_MAX)
+      integer ss(RANK_MAX),ee(RANK_MAX),ii(RANK_MAX)
+      integer it_tag,ot_tag
+      integer numtags,itags(numtags),otags(numtags)
+      integer jj,kk,ll,itrace
+      real    buf(buflen,ninbuf)
+      real    samples(nsamp,ninbuf)
+      real    hvals(numtags,ninbuf)
+<span class="comment">c
+c     seek to the start of the input and output files
+c     for the traces to be processed by this chunk.
+</span>c
+      if ( <a href="../fapi/isreg.html">fdds_isreg</a>(in_bin) .gt. 0 ) then
+         ier = <a href="../fapi/lseek.html">fdds_lseek</a>(in_bin, 0,istart,SEEK_SET)
+      endif
+      if ( <a href="../fapi/isreg.html">fdds_isreg</a>(out_bin) .gt. 0 ) then
+         ier = <a href="../fapi/lseek.html">fdds_lseek</a>(out_bin,0,istart,SEEK_SET)
+      endif
+      
+      itrace = istart
+      ntrace = ninbuf
+      do while ( itrace .le. iend )
+<span class="comment">
+c     watch out for the end of the chunk
+</span>
+         if( 1 + iend - itrace .lt. ninbuf ) then
+            ntrace = 1 + iend - itrace
+         endif
+<span class="comment">      
+c     read traces into the input buffer.
+c     we need to handle things gracefully if we run out of traces,
+c     so we check the number traces actually read and only
+c     process that number.
+</span>
+         nread=<a href="../flibs.php?lib=mpi&api=fddx_readtrace">fddx_readtrace</a>(in_bin,buflen,nsamp,ntrace,buf,
+     $        it_tag,samples,numtags,itags,hvals)
+
+
+<span class="comment">
+c     =============================================         
+c     do some stuff !
+c
+c     This is the part of the code that is usually modified,
+c     as well as adding additional parameters to the subroutine.
+c
+c     OpenMP:
+c     Note that almost all dds functions are NOT thread safe.
+c     This means that you cannot use them inside an OpenMP loop.
+c     Even simple functions such as prtmsg can lead to errors.
+c     It is usually best to not have any dds calls inside the
+c     openMP loops, but for debugging purposes, for example,
+c     you can "protect"  code using the CRITICAL directive. 
+c     This prevents different threads from executing the protected
+c     code at the same time.     
+</span>
+
+<span class="comment">
+c     Here is an example of a loop parallelized with openMP.
+</span>
+<b>
+C$OMP PARALLEL DO DEFAULT(SHARED), PRIVATE(ll,kk)
+</b>
+         do ll = 1,nread
+<span class="comment">
+c     Here is an example of the OpenMP CRITICAL command.
+</span>
+<b>
+C$OMP CRITICAL
+c            ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('ll=%d nread=%d\n\0',ll,nread)
+C$OMP END CRITICAL
+</b>
+
+<span class="comment">
+c     fddx_trace_in_range is thread safe and so we CAN use it.
+c     It checks if the current trace is within the user specified
+c     range of traces to process.
+</span>
+            if(1.eq.<a href="../flibs.php?lib=mpi&api=fddx_trace_in_range">fddx_trace_in_range</a>
+     $           (itrace+ll-1,rank,cumsize,ss,ee,ii))then
+               do kk = 1,nsamp
+                  samples(kk,ll) = itrace
+               end do
+            endif
+         end do
+<span class="comment">
+c     =============================================
+
+c     update samples and headers. and write the traces to file.
+</span>
+         ier=<a href="../flibs.php?lib=mpi&api=fddx_writetrace">fddx_writetrace</a>(out_bin,buflen,nsamp,nread,buf,
+     $        ot_tag,samples,numtags,otags,hvals)
+
+         itrace = itrace + ninbuf
+         
+      end do
+      
+
+      return
+      end
+
+     
+<span class="comment">
+c-----------------------------------------------------------------------
+c     read the user parameters
+c-----------------------------------------------------------------------
+</span>
+      subroutine ReadParams(node,ormsby,fmax,f1,f2,f3,f4,verbose)
+      implicit none
+#include <fdds.h>
+
+      integer node,ier
+      real    fmax,f1,f2,f3,f4
+      logical ormsby,verbose
+
+      ier=<a href="../fapi/dict.html">fdds_dict</a>('par:','scan')
+
+
+      ormsby = (<a href="../fapi/switch.html">fdds_switch</a>('ormsby',1).eq.1)      
+
+      f1 = 0.0
+      f2 = 0.0
+      f3 = fmax
+      f4 = fmax
+      ier = <a href="../fapi/scanf.html">fdds_scanf</a>('f1', '%f\0', f1)
+      ier = <a href="../fapi/scanf.html">fdds_scanf</a>('f2', '%f\0', f2)
+      ier = <a href="../fapi/scanf.html">fdds_scanf</a>('f3', '%f\0', f3)
+      ier = <a href="../fapi/scanf.html">fdds_scanf</a>('f4', '%f\0', f4)
+      
+      if ( ormsby .eq. .true. ) then
+         if ( f1 .gt. f2 .or. f2.gt.f3 .or. f3.gt.f4 ) then
+            ier=<a href="../fapi/prterr.html">fdds_prterr</a>('Problem with f1=%g f2=%g f3=%g f4=%g\n\0',
+     $           f1,f2,f3,f4)
+         endif
+      endif
+
+
+      verbose = (<a href="../fapi/switch.html">fdds_switch</a>('verbose',0).eq.1)
+
+
+
+<span class="comment">
+c-----------------------------------------------------------------------
+c     print parameters
+c-----------------------------------------------------------------------
+</span>
+      if ( node .eq. 0 ) then
+
+         ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\n*** PARAMETERS ***\n\n\0')
+         if (ormsby) then
+            ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('Using ormsby filter.\n\0')
+            ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('f1=%g f2=%g f3=%g f4=%g\n\0',f1,f2,f3,f4)
+         else
+            ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('Not using ormsby filter.\n\0')
+         endif
+
+         ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('\n\0')
+         if (verbose) then
+            ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('Writing more verbose printout.\n\0')
+         else
+            ier=<a href="../fapi/prtmsg.html">fdds_prtmsg</a>('Writing less verbose printout.\n\0')
+         endif
+
+      endif
+
+      return
+      end
+
+
+<span class="comment">
+c     Print out the on-line help and stop.
+</span>
+      subroutine online_help()
+      implicit none
+
+      write(0,*) 'Read the man page!'
+      stop 0
+
+
+      return
+      end
+ 
+</pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

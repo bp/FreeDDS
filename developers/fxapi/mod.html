@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Convenience (fddx_mod)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","fxapi","mod")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("fxapi")</script>
+
+    <h2>fddx_mod - reopen a DDS dataset</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fdds.h&gt;</b> (fixed-format sources) <br>
+    <b>#include &lt;f90dds.h&gt;</b> (free-format sources)
+    <p>
+      <b>integer function fddx_mod(</b><i>alias, value, title, old_tag</i><b>)
+      </b><dl><dd>
+        <b>character(*) </b><i>alias
+        </i><br>
+        <b>character(*) </b><i>value
+        </i><br>
+        <b>character(*) </b><i>title
+        </i><br>
+        <b>integer </b><i>old_tag
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    Routine, <b>"fdds_mod"</b>, opens an input file for modification with
+    "Samples" only.  If the file does not exist, then a new one will be
+    created either from an existing file using "<i>old_tag</i>" or from
+    scratch using "<i>title</i>".
+
+    <p>
+      After opening a file for input with <b>"fddx_mod"</b> the input
+      buffer Dictionary will be left open for scanning. The open process
+      will look for "<i>alias</i>" for the Dictionary (or usp, segy or su
+      binary on input), "<i>alias</i><b>_data</b>" for overriding the
+      binary, and "<i>alias</i><b>_format</b>" for overriding the format.
+      The input parameter, "<i>value</i>", is the default value used for a
+      fallback in cases where "<i>alias</i>" is not specified by the user.
+      The input parameter, "<i>title</i>", should be a brief one line
+      description of the application program to append information onto
+      an existing dataset; otherwise it just uses "<i>old_tag</i>" from
+      which to create a new one.   It will return a binary tag associated
+      with the internal binary upon successful opening, a value of -2 if 
+      the dataset is not specified and no default value is given, otherwise 
+      a value of -1 to signify an open failure.
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

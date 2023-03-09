@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Examples (change sample type)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","bc_F")
+    </script>
+    <!*********************************************************************>
+
+    <hr>
+    <b><font size=+2>Purpose:</font></b>&nbsp;&nbsp;
+      Use FFT wrappers to change REAL samples to COMPLEX. Adjust output
+      dictionary to reflect new sample type.
+
+    <h2>Code Outline:</h2>
+      <ul>
+        <li>Open the print file, detect request for help message
+        <li>Open a file for access to samples
+        <li>Retrieve data characteristics needed for the task
+           (n1, n2, ..., d1, d2, ...)
+        <li>Retrieve user parameters
+        <li>Set internal data sizes and deltas
+        <li>Open the output dictionary
+        <li>Print new definitions to output dictionary
+        <li>Open the output file
+        <li>Allocate data array
+        <li>Read the data, transform, periodically report progress
+        <li>Write the output
+        <li>Clean up and exit
+      </ul>
+
+    <h2>New DDS resources:</h2>
+      <ul>
+        <li><a href="../../developers/fft/nrfft5.html">fft_nrfft5</a> /
+            <a href="../../developers/cfft/nrfft5.html">cfft_nrfft5</a>
+             - return mixed-radix 2,3,5, size
+        <li><a href="../../developers/fft/rcfftm.html">fft_rcfftm</a> /
+            <a href="../../developers/cfft/rcfftm.html">cfft_rcfftm</a>
+             - real-to-complex FFT of many traces
+      </ul>
+
+    <h2>Examples</h2>
+    <table width=75%>
+      <tbody align=center valign=middle>
+        <tr>
+          <td><b><a href="c_rcfft.html">c_rcfft.c</a></b></td>
+          <td><b><a href="f_rcfft.html">f_rcfft.F</a></b></td>
+          <td><b><a href="f90_rcfft.html">f90_rcfft.F90</a></b></td>
+        </tr>
+      </tbody>
+    </table>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>close - Closes data object</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>procedure close()</b>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"close"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure closes the data object for further use.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	
+	type(DdsObject) :: inData
+	
+	! open data in read mode
+	call inData%open('r','in')
+	! close data
+	call inData%close()
+      </pre>
+      
+  </body>
+</html>

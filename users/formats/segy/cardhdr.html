@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (segy Card Header)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","segy","cardhdr")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      <b>segy</b> card header, <b>SEGY_CARD</b>, contains simple text and
+      is available as a Dictionary Definition, <code>segy_card3200=</code>.
+      There are up to 40 lines with up to 80 characters each.  Each line is
+      represented by a Definition Token in <code>segy_card3200=</code>, so 
+      it is important to be careful that the command line shell does not
+      strip off the quotes ('<code>&quot;</code>') in the definition. 
+      Better to put it into a parfile.
+
+    <p>
+      This may be examined in the Dictionary by end users or retrieved by 
+      application programs. End users may easily override this text with
+      something like:
+
+    <pre>
+comment= override card header value
+segy_card3200=
+    "C 1 CLIENT AMOCO                  COMPANY..."
+    "C 2 LINE            AREA WEST DELTA #75/90..."
+    "C 3 REEL NO 000014    DAY-START OF REEL..."
+    ...
+    "C40 END EBCDIC..."
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

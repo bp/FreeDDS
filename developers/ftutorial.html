@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Fortran Tutorial</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../styles.css" type="text/css" rel="stylesheet">
+    <script src="../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">header("developers","ftutorial")</script>
+    <!*********************************************************************>
+
+    <h4>
+      Overview and tutorial on the Fortran Application Program Interface 
+      (API) to the Data Dictionary System.
+    </h4>
+
+    <h2>INCLUDE FILES</h2>
+    Fortran application programs need to have declaraions for the many DDS
+    API functions and named constants. This is done by include file "fdds.h"
+    or "f90dds.h", or by using the dds module. The DDS application makefiles
+    set up the appropriate include path. When using the ".F" or ".F90" extension,
+    the Fortran preprocessor will determine the path to the include files and
+    modules, allowing a common source file for multiple platforms.
+    
+    <p>
+    <table>
+      <tr>
+        <td><big><b>#include "fdds.h"</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big>Use with fixed-format sources.</big></td>
+      </tr>
+      <tr>
+        <td><big><b>#include "f90dds.h"</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big>Use with free-format sources.</big></td>
+      </tr>
+      <tr>
+        <td valign=top><big><b>use dds</b></big></td><td>&nbsp;&nbsp;</td>
+        <td><big> A module with most of DDS defined.
+                 <br>Module read/write functions support 1D buffers only.</big></td>
+      </tr>
+    </table>
+    
+    <p>
+      Strong type checking of API function calls is only available with
+      <b>use dds</b>, but the module does not define interfaces for all the
+      sample types and only understands
+      <a href="#UseDdsHack">1 dimensional I/O buffers</a>.
+    
+  <p>
+    These header files provide the declarations for all DDS API functions
+    except for fdds_initopenmp and fdds_initmpi. These two should be declared
+    manually when they are needed. Many named constants are also defined by
+    the header files and module. The meaning of these is shown in the following
+    examples:
+
+    <pre>
+#include &lt;fdds.h&gt;
+      integer ier,i,bin,tag,ndx,rank,size(<b>RANK_MAX</b>)
+      character*(<b>PATHNAME_MAX</b>) out_dict, name
+      integer out_bin
+      real data(*)
+      pointer (ptr_data,data)
+      ...
+      rank=fdds_scank('axis',' ')
+      ier=fdds_scanf('size','\0')
+      do i=1,rank
+         ier=fdds_scanf(' ','%d\0',size(i))
+      enddo
+      ...
+!     enforce array limits when reading
+      ier=fdds_scanf(data,'%'//<b>PATHNAME_MAXQ</b>//'s\0',name)
+      ...
+!     get index to trace header
+      tag=fdds_member(bin,0,'SrPtXC')
+      ndx=fdds_index(bin,tag,<b>DDS_REAL</b>)
+      ptr_data=fdds_malloc(size(1)*<b>SIZEOF_REAL</b>)
+      ...
+!     open binary output stream
+      bin=fdds_open(out_dict,'out_format','out_data','w+')
+    </pre>
+
+    <ul>
+      <li>Data Type Sizes (used for memory allocations)
+        <pre>
+SIZEOF_INTEGER
+SIZEOF_INTEGER2
+SIZEOF_REAL
+SIZEOF_DOUBLE
+SIZEOF_COMPLEX
+SIZEOF_DBL_CPX
+        </pre>
+
+      <li>Max Character String Sizes (Integer type suitable for character lengths and Character type suitable for scanf and printf usage.)
+
+        <pre>
+<b><u>Integer        Character       Max Characters </u></b>
+PATHNAME_MAX   PATHNAME_MAXQ   full filenames 
+DEFNNAME_MAX   DEFNNAME_MAXQ   definition names
+AXISNAME_MAX   AXISNAME_MAXQ   axis names
+UNITNAME_MAX   UNITNAME_MAXQ   units 
+BASENAME_MAX   BASENAME_MAXQ   base names (not used)
+        </pre>
+
+
+      <li>Symbolic names are defined for DDS prime types that correspond 
+        to Fortran types on the host computer. For example, DDS_REAL is 
+        "float4" when compiled on the Sun, and "float8x" when compiled on a
+        Linux ssytem. This allows programs to remain portable and efficient,
+        when defining and accessing fields within type buffers. These can
+        be used for <b>fdds_get</b><i>xx</i>, <b>fdds_put</b><i>xx</i> 
+        and <b>fdds_index</b> routines.
+
+        <pre>
+DDS_CHARACTER  Character type
+DDS_LOGICAL    Logical
+DDS_LOGICAL1   Logical*1
+DDS_INTEGER    Integer
+DDS_INTEGER2   Integer*2
+DDS_REAL       Real
+DDS_DOUBLE     Real*8
+DDS_COMPLEX    {real, imag}
+DDS_DBL_CPX    {real*8, imag*8}
+        </pre>
+
+      <li><b>fdds_lseek</b> whence values
+        <pre>
+SEEK_SET       Seek absolute position
+SEEK_CUR       Seek relative to current position
+SEEK_END       Seek relative to End-of-File
+        </pre>
+
+      <li><b>fdds_read</b> and <b>fdds_write</b> field <i>tag</i> as alternative to "0" (Trace SEQUENCE) when desiring to deal with byte stream directly without making use to the DDS mapping capabilties.
+        <pre>
+DDS_STREAM     1-byte type size
+DDS_STREAM2    2-byte type size (Big Endian)
+DDS_STREAM4    4-byte type size (Big Endian)
+        </pre>
+
+      <li>DDS_DEBUG options. DDS application debug control (on, off,
+        one-time).  Application users may set debug flags by defining
+        dds_debug, DDS_DEBUG, dds_dump, or DDS_DUMP.  Flags set by
+        calling <a href="fapi/check.html">fdds_check</a> are OR'd
+        with defn flags.
+
+        <pre>
+DDS_DBG_HEAP      (check heap once, right now)
+DDS_DBG_ALLOC     (check heap on each allocation)
+DDS_DBG_FREE      (check heap on each free)
+DDS_DBG_CALL      (check heap on each DDS API call)
+DDS_DBG_TRACE     (trace all API calls)
+DDS_DBG_SCANNER   (trace compiler scanner)
+DDS_DBG_SYMBOL    (dump binary symbol tables)
+DDS_DBG_UNCOMPILE (dump ddsUncompileFmt stacks)
+DDS_DBG_BINARY    (dump binary ? tables)
+DDS_DBG_PANIC     (dump binary tables on panic)
+        </pre>
+
+      <li>Other utility predefined parameters
+        <pre>
+RANK_MAX       maximum axis rank (9)      
+DDS_TRUE_KEY   true TRUE True t T yes YES Yes y Y
+DDS_FALSE_KEY  false FALSE False f F no NO No n N
+DDS_HELP_KEY   help HELP Help -help -HELP -Help -h -H -?
+DDS_HELP_ALIAS help HELP Help -help -HELP -Help
+        </pre>
+    </ul>
+
+    <h4><a NAME="UseDdsHack"></a>use dds - I/O buffer limitation</h4>
+    <p>
+      Despite the DDS module restriction that I/O buffers must be 1D,
+      some compilers are known to create functional executables when a single
+      trace is passed to the DDS I/O function with a trace count greater than
+      1. This practice is discouraged because Fortran compilers are allowed to
+      pass copies of array sections when they choose.</b>
+      
+    <pre>
+      use dds
+      integer :: nsmp, ntrc, fd_out
+      real, allocatable :: data(:,:)
+      ...
+      allocate(data(nsmp, ntrc))
+      ...
+      ! When using #include "*.h" files
+      ! ier = fddx_write(fd_out, data, ntrc)
+
+      ! When using the dds module as intended:
+      do itrc=1,ntrc
+        ier = fddx_write(fd_out, data(:,itrc), 1)
+      enddo
+
+      ! A risky multi-trace write when using the dds module
+      ier = fddx_write(fd_out, data(:,1), ntrc)
+    </pre>
+
+    <h4>FFT wrappers</h4>
+    <p>
+      <b>fft.h</b> (or <b>f90fft.h</b>) provides definitions needed for the fft wrapper routines.
+
+    <h2>LIBRARY FILES</h2>
+    The DDS application makefiles will setup the appropriate library paths
+    and libraries.  <b>libdds3.a</b> contains all the DDS API routines;
+    <b>libgio.a</b> contains the routines for the GIO I/O routines;
+    <b>libfhost.a</b> contains the fortran host-dependent routines.
+    
+    <h2>FILES</h2>
+    <pre>
+$DDSROOT/include/fdds.h          Fixed-format Fortran declarations
+$DDSROOT/include/f90dds.h        Free-format Fortran declarations
+$DDSROOT/include/fft.h           Fixed-format Fortran FFT interface
+$DDSROOT/include/f90fft.h        Free-format Fortran FFT interface
+$DDSROOT/src/lib/dds3/dds.F90    Fortran 90 DDS/FFT module
+
+$DDSROOT/lib/$TARCH/libdds3.a    DDS library
+$DDSROOT/lib/$TARCH/libgio.a     GIO library
+$DDSROOT/lib/$TARCH/libfhost.a   Fortran Host-dependent lib
+    </pre>
+   
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

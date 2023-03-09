@@ -1,0 +1,51 @@
+
+    <h2>fddx_RT_setBounds - set the bounds within which to trace rays.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fddx_raytracer.h&gt;</b>
+    <p>
+      <b>integer fddx_RT_setBounds(</b><i>rt_tag, xmin, xmax, ymin, ymax, zmin, zmax</i><b>)
+    </b><dl><dd>
+        <b>integer  </b><i> rt_tag</i><br>
+        <b>real</b><i> xmin</i><br>
+        <b>real</b><i> xmax</i><br>
+        <b>real</b><i> ymin</i><br>
+        <b>real</b><i> ymax</i><br>
+        <b>real</b><i> zmin</i><br>
+        <b>real</b><i> zmax</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>fddx_RT_setBounds</b> checks if a point is within the raytracer bounds.<br>
+    </p>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>rt_tag</i>", specifies against which raytracer to check the bounds.<br>
+    </p>
+    <p>
+      The parameter, "<i>xmin</i>", specifies the min x location to trace rays.<br>
+    </p>
+    <p>
+      The parameter, "<i>xmax</i>", specifies the max x location to trace rays.<br>
+    </p>
+    <p>
+      The parameter, "<i>ymin</i>", specifies the min y location to trace rays.<br>
+    </p>
+    <p>
+      The parameter, "<i>ymax</i>", specifies the max y location to trace rays.<br>
+    </p>
+    <p>
+      The parameter, "<i>zmin</i>", specifies the min z location to trace rays.<br>
+    </p>
+    <p>
+      The parameter, "<i>zmax</i>", specifies the max z location to trace rays.<br>
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>fddx_RT_setBounds</b> always returns 0.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

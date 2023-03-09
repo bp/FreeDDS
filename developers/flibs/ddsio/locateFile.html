@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>locateFile - Returns the file number corresponding to a position in the merged axis</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>integer function locateFile(</b><i>k</i><b>)</b>
+      <dl><dd>
+	  <b>integer, intent(in) :: </b><i>k</i><br>
+      </dl>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"locateFile"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure, using the current index set of this data object, returns the file number
+      of the file that contains index <i>k</i> in the merged axis.
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	use dds, only : fdds_prtcon
+	
+	type(DdsObject)   :: inData
+	integer           :: indexOfInterest, iFile, ier
+	
+	indexOfInterest = 100
+	
+	call inData%open('r', 'in')
+	iFile = inData%locateFile(indexOfInterest)
+	ier = fdds_prtcon('merged axis index %d is located in file %d\n\0', indexOfInterest, iFile)
+      </pre>
+      
+  </body>
+</html>

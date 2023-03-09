@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Dataset (Binary)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords"
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","datasets","binary")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      Several Data Dictionary Definitions are used to describe binary data.
+      Their values are retrieved, when binary data is opened by an
+      application program. The "<code>data=</code>" Definition defines
+      where the binary filename is located. The "<code>format=</code>" 
+      Definition defines the binary format name.  And the 
+      "<code>fmt:<var>format</var>=</code>" Definitions are used to
+      define the actual binary format structure -- whether it's on disk or
+      in an internal format where a specific host-dependent application
+      code can manipulate the data fields.  
+
+    <h3>Filenames:</h3>
+
+    <p>
+      By default, output binary data filenames are the same name as
+      it's Dictionary suffixed by "<code>_@</code>" (eg. line7_@)
+      or by the environment, <var>DATA_SUFFIX</var> (See 
+      <a href="environ.html">environment</a>). The binary file is also
+      created by default in the current working or by the
+      environment, <var>DATA_PATH</var>. This allows the binary data
+      to be diverted to a special file system that may provide special
+      capacity, speed, or backup support.  This provides for simpler
+      management of the smaller dictionaries in working project directories.
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Data Dictionaries (text)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","dictionaries","text")
+    </script>
+    <!*********************************************************************>
+
+   These are text files that describe binary data.<br>
+   In their simplest form, they contain only the minumum information needed
+   by DDS to access binary samples.
+
+<pre>
+data=vel_z6.25m_x12.5m_exact.segy
+format=segy
+axis= z x y
+size.z= 1911   size.x=5395   size.y=1
+delta.z= 6.25  delta.x=12.5  delta.y=12.5
+origin.z=0.0   origin.x=0.0  origin.y=0.0
+units.z=m      units.x=m     units.y=m
+</pre>
+
+   Definitions in this dictionary are given by <i><b>name=</b> value</i>.<br><br>
+   <i><b>format=</b>segy</i> is a complete definition. White space
+   is <b>not</b> allowed before the <b>"="</b> sign, but is allowed after it.
+   More than one definition can be given on a single line and definitions can
+   span more than one line.
+
+   <p>
+   A more complete description is available under the
+   <a href="../../users/defn.html">Users -&gt; Definitions</a> tab.
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

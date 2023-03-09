@@ -1,0 +1,370 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (work with headers)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","f90_hdr_apply.F90")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+!***********************************************************************
+!
+! Apply a header value to data with *, +, or /
+! Use user-defined header word(s)
+!
+!***********************************************************************
+
+      program f90_hdr_apply
+
+      implicit none
+
+#include &lt;<a href="../resources/f90dds.h.html">f90dds.h</a>&gt;
+
+! Define F90 precision for integer*8 variables
+      integer,parameter :: LI=selected_int_kind(18)
+
+! For DDS functions. Arguments and return values
+      character(LEN=13),parameter :: prog="f90_hdr_apply"
+      character(LEN=80)           :: Title
+      integer   ier, fd_in, fd_out
+
+      integer(KIND=LI),parameter  :: izero8=0
+
+! Data attributes
+      integer n1,n2,n3, nhdr_data, iSamp
+      integer,allocatable :: ihdr_tag(:)
+
+! User parameters
+      character(LEN=DEFNNAME_MAX),allocatable :: Hdrs(:)
+      character(LEN=1),allocatable            :: Ops(:)
+
+      real    eps
+      logical lverb
+
+      real,allocatable  :: Scalars(:)
+
+! Internal dynamic array for a data record
+! ( An example of doing it with Cray-style pointer )
+      real    record(1)
+      pointer (ptr_record,record)
+
+! Internal scalar values and loop counters
+      integer nhdr_usr,ihdr, i3, ntr_in,ntr_out
+
+!-----------------------------------------------------------------------
+!
+! Initialize the Title
+!
+      Title=prog//': Apply data*hdr, data+hdr, or data/hdr'
+
+!
+! Open the print file and dump command-line help as requested
+!
+      ier=<a href="../fapishort/fdds_openpr.html">fdds_openpr</a>(prog,' ')
+      if (ier.gt.0) call help(prog,Title)
+
+!
+! Retrieve user parameters
+!
+      ier=<a href="../fapishort/fdds_dict.html">fdds_dict</a>('par:','scan')
+
+      nhdr_usr=<a href="../fapishort/fdds_scank.html">fdds_scank</a>('hdr',' ')
+      if (nhdr_usr.le.0) then
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Headers to use must be indicated '// &amp;
+                         'with parameter hdr=H1 H2 ...\n\0')
+      endif
+
+      allocate( Hdrs(nhdr_usr) )
+      allocate( Ops(nhdr_usr) )
+      allocate( Scalars(nhdr_usr) )
+      allocate( ihdr_tag(nhdr_usr) )
+
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('hdr','\0')
+      do ihdr=1,nhdr_usr
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>(' ','%s\0',Hdrs(ihdr))
+      enddo
+
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('op','\0')
+      do ihdr=1,nhdr_usr
+         Ops(ihdr)='*'
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>(' ','%s\0',Ops(ihdr))
+      enddo
+
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('scale','\0')
+      do ihdr=1,nhdr_usr
+         Scalars(ihdr)=1.0
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>(' ','%f\0',Scalars(ihdr))
+      enddo
+
+      eps=1.0e-06
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('eps','%f\0',eps)
+
+      lverb=.false.
+      if (<a href="../fapishort/fdds_scank.html">fdds_scank</a>('verbose',DDS_TRUE_KEY).gt.0) lverb=.true.
+
+!
+! Open input. Retrieve data characteristics when open is successful
+!
+      fd_in=<a href="../fapishort/fddx_in2.html">fddx_in2</a>('in','stdin:',Title)
+
+      if (fd_in.lt.0) then
+
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Opening input data\n\0')
+
+      else
+
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(1)','%d\0',n1)
+         ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(2)','%d\0',n2)
+         n3=<a href="../fapishort/fdds_axis_prod.html">fdds_axis_prod</a>(3)
+
+         iSamp=<a href="../fapishort/fdds_member.html">fdds_member</a>(fd_in,0,'Samples')
+         nhdr_data=<a href="../fapishort/fdds_index.html">fdds_index</a>(fd_in,iSamp,DDS_REAL)
+
+         ! Go find the headers within the trace structure
+         do ihdr=1,nhdr_usr
+            ihdr_tag(ihdr)=<a href="../fapishort/fdds_member.html">fdds_member</a>(fd_in,0,Hdrs(ihdr))
+            if (ihdr_tag(ihdr).lt.0) then
+               ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a> &amp;
+                     ('Header %s is not available. FATAL.\n\0', &amp;
+                      Hdrs(ihdr))
+            endif
+         enddo
+
+      endif
+
+!
+! Set up the output dictionary ... Open with lseek8
+!
+      fd_out=<a href="../fapishort/fddx_out.html">fddx_out</a>('out','stdout:',Title,fd_in)
+
+      if (fd_out.lt.0) then
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Unable to open output buffer dict!\n\0')
+      else
+         if (<a href="../fapishort/fdds_lseek8.html">fdds_lseek8</a>(fd_out,0,izero8,SEEK_SET) .lt. izero8) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Unable to open output data file!\n\0')
+         endif
+      endif
+
+!
+! Allocate data array
+!
+      ptr_record=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(nhdr_data+n1)*n2*SIZEOF_REAL)
+
+!
+! Check whether any errors were reported.
+! If so, clean up and terminate now.
+!
+      if (<a href="../fapishort/fdds_errors.html">fdds_errors</a>().gt.0) then
+         if (fd_in.ge.0)  ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+         if (fd_out.ge.0) ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+         deallocate(Hdrs, Ops, Scalars, ihdr_tag)
+         ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_record)
+         ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+         stop
+      endif
+
+      if (lverb) then
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('\n\0')
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('Header           op      scale\n\0')
+         do ihdr=1,nhdr_usr
+            ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('%-16s  %s      %f\n\0', &amp;
+                            Hdrs(ihdr),Ops(ihdr),Scalars(ihdr))
+         enddo
+         ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('\n\0')
+      endif
+
+!
+! Loop over input data, apply [op](header*scale)
+! Stop on all DDS-detectable errors
+!
+      do i3 = 1,n3
+
+         if (lverb .and. mod(i3,10).eq.0) then
+            ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('Record %5d of %5d\n\0',i3,n3)
+         endif
+
+         ntr_in=<a href="../fapishort/fddx_read.html">fddx_read</a>(fd_in,record,n2)
+         if (ntr_in.ne.n2) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a> &amp;
+                 ('Reading Record %d: %d traces read\n\0',i3,ntr_in)
+         endif
+
+         call apply_headers &amp;
+                   ( fd_in, record, n1,ntr_in,nhdr_data, i3, &amp;
+                     Hdrs,Ops,Scalars,ihdr_tag, nhdr_usr, eps )
+
+         ntr_out=<a href="../fapishort/fddx_write.html">fddx_write</a>(fd_out,record,ntr_in)
+         if (ntr_out.ne.ntr_in) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a> &amp;
+                 ('Writing Record %d: %d traces written\n\0',i3,ntr_out)
+         endif
+
+         if (<a href="../fapishort/fdds_errors.html">fdds_errors</a>().gt.0) exit
+
+      enddo
+
+!
+! Clean up
+!
+      deallocate( Hdrs, Ops, Scalars, ihdr_tag )
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_record)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+      ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+
+!
+! Stop
+!
+      stop
+      end
+
+
+
+
+!***********************************************************************
+!
+! subroutine to print help when requested on the command line
+!
+!***********************************************************************
+
+      subroutine help(prog,Title)
+
+      implicit none
+
+      character(LEN=*) :: prog, Title
+
+      write(0,*)''
+      write(0,*)trim(Title)
+      write(0,*)''
+      write(0,*)' Perform    data_out = data_in [fxn] (scale*hdr)'
+      write(0,*)''
+      write(0,*)' Parameter.....Meaning.........................Default'
+      write(0,*)''
+      write(0,*)'  in=[dict]    input dictionary                 stdin:'
+      write(0,*)'  out=[dict]   output dictionary               stdout:'
+      write(0,*)''
+      write(0,*)'  hdr= [H1 H2 H3 ...]                             none'
+      write(0,*)'               headers to apply'
+      write(0,*)'  op= [op1 op2 op3 ...]                              *'
+      write(0,*)'               operators to apply ( * + / )'
+      write(0,*)'  scale= [scale1 scale1 scale3 ...]                1.0'
+      write(0,*)'               scalars applied to headers'
+      write(0,*)'  eps= [eps]   (hdr*scale)+eps is used         1.0e-06'
+      write(0,*)'                  when op is "/"'
+      write(0,*)''
+      write(0,*)'  verbose=[y|n] verbose output                      no'
+      write(0,*)''
+      write(0,*)'  USAGE:'
+      write(0,*)'    '//trim(prog)//' in=[in_dict] out=[out_dict]'
+      write(0,*)'         hdr=[H1 H2 ...] [ op=[op1 op2 ...]'
+      write(0,*)'         scale=[scale1 scale2 ...] eps=[eps]'
+      write(0,*)'         verbose=[y|n] ]'
+      write(0,*)''
+
+      stop
+
+      return
+      end
+
+
+
+
+!***********************************************************************
+!
+! Apply the operation    data_out = data_in [op] (hdr*scalar)
+!
+!***********************************************************************
+
+      subroutine apply_headers &amp;
+                   ( fd_in, record, n1,n2,nhdr_data, i3, &amp;
+                     Hdrs,Ops,Scalars,ihdr_tag, nhdr_usr,eps )
+
+      implicit none
+
+#include &lt;<a href="../resources/f90dds.h.html">f90dds.h</a>&gt;
+
+! Arguments
+      integer fd_in, n1,n2,nhdr_data, nhdr_usr, i3
+      integer ihdr_tag(nhdr_usr)
+
+      real    eps
+      real    record(1-nhdr_data:n1,n2)
+      real    Scalars(nhdr_usr)
+
+      character(LEN=*) :: Hdrs(nhdr_usr)*(*), Ops(nhdr_usr)*(*)
+
+! Locals
+      character(LEN=1) :: op_here
+      integer          :: ih1, i1,i2,ihdr, ier
+      double precision :: dhdr
+
+! Set the index for the first trace header
+      ih1=1-nhdr_data
+
+! Loop over axis 2
+      do i2 = 1, n2
+
+         ! Loop over headers to process
+         do ihdr=1,nhdr_usr
+
+            ! set local value for operator to Ops(ihdr)
+            op_here=Ops(ihdr)
+
+            ! retieve the header word
+            dhdr=1.0
+            ier=<a href="../fapishort/fdds_get.html">fdds_get</a>d(fd_in,ihdr_tag(ihdr),record(ih1,i2),0,dhdr,1)
+
+            if (ier.lt.1) then
+               ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a> &amp;
+                   ('Retrieving header %s at record %d, trace %d\n\0', &amp;
+                    Hdrs(ihdr),i3,i2)
+               ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Function locally reset to no-op\n\0')
+               ! reset op_here to do nothing
+               op_here='x'
+            endif
+
+            ! apply scalar
+            dhdr=dhdr*Scalars(ihdr)
+
+            ! perform operation
+            if (op_here.eq.'*') then
+               do i1=1,n1
+                  record(i1,i2)=record(i1,i2)*dhdr
+               enddo
+            elseif (op_here.eq.'+') then
+               do i1=1,n1
+                  record(i1,i2)=record(i1,i2)+dhdr
+               enddo
+            elseif (op_here.eq.'/') then
+               dhdr=dhdr+eps
+               do i1=1,n1
+                  record(i1,i2)=record(i1,i2)/dhdr
+               enddo
+            endif
+
+         enddo
+
+      enddo
+
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<h2>C Example</h2>
+<pre>
+     #include &lt;dmtransp.h&gt;
+       ...
+     DMT_Handle *Handle;             /* pointer to internal transpose resources          */
+     float      *in_data,*out_data;  /* pointers to i/o arrays                           */
+     _Bool      lbeg,lend,linv;      /* flags for the transpose                          */
+     int        iL1_lcl,iLn_lcl;     /* 1st,last local indices of array before transpose */
+     int        nL_lcl;              /* local allocation size for distributed axis       */
+     int        n2_transp;           /* local axis 2 size after transpose                */
+     int        ndim=3,sizes[3];     /* global dimensions of distributed array           */
+     MPI_Comm   COMM;                /* an MPI communicator                              */
+       ...
+     sizes[0]=400;    sizes[1]=500;    sizes[2]=600;    /* set vector of sizes            */
+     Handle   = DMT_init(COMM, ndim, sizes, DMT_FLOAT); /* initialize the handle          */
+     nL_lcl   = DMT_getval( Handle, DMT_NL_LCL );       /* get local info of global array */
+     n2_transp= DMT_getval( Handle, DMT_N2_OUT_LCL );   /* get post transpose axis 2 size */
+     ier      = DMT_commit( Handle );                   /* commit == internal allocations */
+     lbeg     = 1;                                      /* flag to start the transpose    */
+     lend     = 1;                                      /* flag to end the transpose      */
+      ...
+     in_data =(float*)malloc(400*500*nL_lcl*sizeof(float));
+     out_data=(float*)malloc(600*n2_transp*sizeof(float));
+      ...
+     /* Do the forward transpose */
+     linv = 0;
+     ier = DMTranspose( Handle, (void*)in_data,(void*)out_data, lbeg,lend,linv );
+
+     /* Process transposed array */
+     #pragma omp parallel for default(shared),private(i2)
+     for ( i2=0; i2&lt;n2_transp; i2++ ) {
+       out_data(i2*600)=operation(out_data(i2*600));
+     }
+
+     /* Do the inverse transpose */
+     linv=1;
+     ier = DMTranspose( Handle, (void*)ptr_in,(void*)ptr_out, lbeg,lend,linv );
+
+     /* Free all internal transpose resources */
+     ier = DMT_free( Handle );
+</pre>

@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers Directories (gio - gwrite)
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","dir","gio","gwrite")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("gio")</script><h2>
+
+    <h2>gwritea, gwriteb, gwritec, gwritem - stream output</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "gio.h"</b><br/>
+
+    <b>int gwritec(GFILE *</b><i>stream</i><b>, const void *</b><i>buf
+    </i><b>, size_t </b><i>size</i><b>);</b><br/>
+
+    <b>int gwritem(GFILE *</b><i>stream</i><b>, void **</b><i>buf
+    </i><b>, size_t </b><i>size</i><b>);</b><br/>
+
+    <b>int gwritea(GFILE *</b><i>stream</i><b>, void **</b><i>buf
+    </i><b>, size_t </b><i>size</i><b>,
+      GIO_ALIGN </b><i>align</i><b>);</b><br/>
+
+    <b>int gwriteb(GFILE *</b><i>stream</i><b>, void **</b><i>buf
+    </i><b>, size_t </b><i>size</i><b>, GIO_ALIGN </b><i>align
+    </i><b>, size_t </b><i>bias</i><b>);</b>
+
+    <h2>DESCRIPTION</h2>
+    <b>gwritec</b> is called to write data into the i/o stream referenced by
+    <i>stream</i>. Up to <i>size</i> bytes are written from
+    a buffer provided by the caller, beginning at <i>buf</i>.
+
+    <b>gwritem</b> is called to write data into the i/o stream referenced
+    by <i>stream</i>. The function reserves buffer space for at least
+    <i>size</i> bytes of data.
+    The buffer alignment is suitable for any host data type,
+    like pointers returned by <b>malloc</b>.
+    A pointer to the buffer is assigned to <b>*</b><i>buf</i>.
+    The buffer may be accessed read-write, until the next operation on
+    <i>stream</i>. The initial contents of the buffer are undefined.
+    Behavior is undefined, if the caller does not initialize the entire
+    buffer. A subsequent read or write on <i>stream</i> implicitly 
+    transfers the data.
+
+    <p/>
+    <b>gwritea</b> is similar to <b>gwritem</b>, except for buffer 
+      alignment. The minimum alignment is specified by <i>align</i>
+      (GIO_CHAR, GIO_SHORT, GIO_INT, etc.).
+    The values required for various types are defined in "gio.h"
+    and describe in <b>gio</b>. If <i>align</i> equals <b>GIO_MALLOC</b>,
+    then the call is functionally equivalent to <b>gwritem</b>.
+
+    <p/>
+    <b>gwriteb</b> is similar to <b>gwritea</b>, except for a pointer
+    <i>bias</i>. The alignment is associated with
+    <b>((char*)</b><i>*buf</i><b>+</b><i>bias</i><b>)</b> instead of
+      the beginning of the buffer.
+    This variation can accommidate weird composite transfers,
+    i.e. "short" prefix on an array of "double" values.
+
+    <h2>RETURN VALUES</h2>
+    If positive, the function return value is the number of bytes
+    actually written. The current file position is incremented by
+    this amount. If the return value is less than the number of bytes
+    requested, then an error has occurred. If the return value is zero,
+    <b>*</b><i>buf</i> is undefined, and no data was transferred.
+    <b>gerror</b> and <b>geof</b> may be called to determine the 
+    current status.
+
+    <h2>ERRORS</h2>
+    Potential errors are defined by <b> write</b>(2),<b> mmap</b>(2).
+
+    <h2>BUGS</h2>
+    Read and write can be intermixed, with or without intervening file
+    position requests. Applications may break, if converted to 
+    <b>stdio</b>, where such sequences are undefined.
+
+    <h2>EXAMPLE</h2>
+    <pre>
+{  /* write 80 bytes, from a char buffer */
+    GFILE *fp; char *buf; int n;
+    n = gwritea(fp, &amp;buf, 80, GIO_CHAR);
+    /* now initialize entire buffer with data */
+}
+
+{  /* write 200 gpos_t structures */
+    GFILE *fp; gpos_t *buf; int n;
+    n = gwritea(fp, &amp;buf, 200 * sizeof(gpos_t), GIO_MALLOC);
+    /* now initialize entire buffer with data */
+}
+
+{  /* read and write, with minimal data copying */
+    GFILE *fp_in, *fp_out; const char *buf; int n;
+    while(0 &lt; (n = greada(fp_in, &amp;buf, 32 * 1024, 1)))
+    gwritec(fp_out, buf, n);
+}
+    </pre>
+
+    <h2>FILES</h2>
+    /home/dds/include/gio.h<br/>
+    /home/dds/lib/$TARCH/libgio.a
+
+    <h2>AUTHOR</h2>
+    R. L. Selzler, <b>EPTG</b> (Oct 1995)
+
+    <h2>REFERENCES</h2>
+    1. Orran Krieger and Michael Stumm,
+    "The Alloc Stream Facility, A Redesign of Application-Level Stream I/O"
+    IEEE Computer, Vol. 27, No. 3, Mar. 1994, pp. 75-82.
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger "C" API (cddx_out)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    <script src="../index.js" language="JavaScript" type="text/javascript">
+    </script>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","API Short List","cddx_out")
+    </script>
+    <!*********************************************************************>
+    <script type="text/javascript">index_header("capishort")</script>
+
+    <h2>cddx_out - open a DDS dictionary for output</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b>
+    <p><b>BIN_TAG function cddx_out(</b><i>alias, value, title, old_tag</i><b>);
+      </b><dl><dd>
+        <b>const char </b><i>*alias
+        </i><br>
+        <b>const char </b><i>*value
+        </i><br>
+        <b>const char </b><i>*title
+        </i><br>
+        <b>BIN_TAG </b><i>old_tag
+        </i></dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>"cddx_out"</b> prepares the DDS dictionary for an output data
+    stream. After the dictionary is opened, it is left in "print" mode,
+    which enables printing of application specific definitions with
+    <a href="cdds_printf.html">cdds_printf</a>.
+    After the application specific definitions are set,
+    <a href="cdds_lseek8.html">cdds_lseek8</a> is used to freeze the
+    output dictionary and open the output data stream.
+
+    <h2>ARGUMENTS</h2>
+    "<i>alias</i>" is used to interrogate the <b>par:</b> dictionary
+    for optional definitions
+    <br><br>
+    &nbsp;&nbsp;&nbsp;<i>alias</i>= dictionary name
+    <br>
+    &nbsp;&nbsp;&nbsp;<i>alias</i><b>_data</b>=  binary file name
+    <br>
+    &nbsp;&nbsp;&nbsp;<i>alias</i><b>_format</b>= [segy,fcube,...]
+    <br><br>
+    "<i>value</i>" is used as a fallback when <i>alias</i>= is absent.
+    "<i>value</i>" is commonly set to "<b>stdout:</b>" to allow piped
+    output, but can have other application specific names as well.
+    E.g. "<b>tmp_data</b>".
+    <br><br>
+    "<i>title</i>" should be a brief , one line description of the
+     application program.
+    <br><br>
+    "<i>old_tag</i>" is a BIN_TAG containing historical information
+    about data being written. The history is passed to the output
+    dictionary.  If "<i>old_tag</i>" is negative then an fcube dataset
+    will be created from scratch using "<i>title</i>". The format and
+    trace structure can be changed by printing definitions for "format",
+    "fmt:ASP_TRACE" and/or "fmt:SAMPLE_TYPE", before opening the binary
+    stream with <b>cdds_lseek8</b>.
+
+    <h2>OUTPUT</h2>
+    <b>cddx_out</b> returns a BIN_TAG for the output buffer binary, a
+    value of -2 if the dataset is not specified and no default value is
+    given, or a value of -1 to signify other open failures.
+
+    <h2>SEE ALSO</h2>
+    <pre>
+<a href="cdds_lseek8.html">cdds_lseek8</a> Seek on binary stream
+<a href="cdds_printf.html">cdds_printf</a> Print definitions
+    </pre>
+
+    <h2>AUTHOR</h2>
+    Jerry Ehlers, <b>BP America</b> (May 2003)
+
+    <script type="text/javascript">index_footer()</script>
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

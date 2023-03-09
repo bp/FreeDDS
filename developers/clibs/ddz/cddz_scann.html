@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>cddz_scann - Get the name of a definition found by fdds_scan*()</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include "cdds.h"</b><br>
+    <b>#include "cddz.h"</b>
+    <p>
+      <b>int cddz_scann(</b><i>alias,defnname</i><b>)</b>
+      <dl><dd>
+        <b>const char </b><i>*alias</i><br>
+        <b>const char </b><i>**defnname</i><br>
+      </dl>
+
+    <h2>DESCRIPTION</h2>
+    Function <b>"cddz_scann"</b> finds the <b>"name"</b> of the definition
+    that is found by any of the cdds_scan*() functions. This is used to give
+    applications a way around the "single alias name" restriction of convenience
+    routines <b>cddx_in*</b>, <b>cddx_mod*</b>, or <b>cddx_out*</b>.
+
+   <h2>OUTPUT</h2>
+   When a definition is found, <i>defnname</i> is set to the <b>"name"</b>
+   part of the definition and the length of the the name is returned.
+   <br><br>
+   When no definition is found, or if no dictionaries are in scan mode,
+   <i>defnname</i> is set to NULL and EOF is returned.
+
+   <h2> EXAMPLE</h2>
+   <pre>
+int        ier;
+const char *defnname, *Title;
+BIN_TAG    fd_in;
+ ...
+/*
+ * Use convenience routines to open input with more than one alias
+ */
+ier = cddz_scann("Vp Vz vel",defnname)
+fd_in = cddx_in(defnname,"stdin:",Title);
+   </pre>
+
+   <h2>AUTHOR</h2>
+   Mike O'Brien, <b>Allied Geophysics</b> (September, 2014)
+
+  </body>
+</html>

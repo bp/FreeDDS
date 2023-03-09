@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (stack)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","structures","stack")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      These are the data structures used to define the stack utility
+      declarations.</p>
+
+    <p>
+      DDS_STACK structures describe resizeable memory blocks.  The byte
+      "size" and "alignment" of pushed items may be specified. 
+      This allows any type to be pushed onto the stack and accessed.</p>
+
+    <p>
+      The stack's base address may change when data is pushed onto it  
+      because the memory may be re-allocated and the buffer moved.  </p>   
+    
+   <pre>
+          ***************************************************          
+          ***  WARNING    WARNING     WARNING    WARNING  ***          
+          ***************************************************          
+          ***  All pointers into the stack are invalid    ***          
+          ***  after any data is pushed on the the stack. ***          
+          ***  INVALID POINTER BUGS ARE DATA DEPENDENT.   ***          
+          ***************************************************          
+   </pre>
+                                                                       
+    <p>
+    The DDS_IDX (char index) to existing items within the stack is     
+    always preserved, however the absolute address may change.         
+    Links between items should use a DDS_IDX index (char index).  </p>       
+                                                                    
+    <h2>Sturctures:</h2>
+   <pre>
+DDS_STACK - stack descriptor (relocatable memory block)
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

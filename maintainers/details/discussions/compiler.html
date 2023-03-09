@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (compiler)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","discussions","compiler")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      <u>Flex</u> is a fast lexical analyzer used to generate the scanner, or 
+      tokenizer, which recognizes lexical patterns in text.  It does this by 
+      reading the input description file (scanner.l) which is in the form of pairs 
+      of regular expressions and C code, called rules. Flex generates the C source
+      file (scanner.yy.c) which defines the function ddsYYlex() which does all the
+      work and ddsLexStr() which is the main entry routine used by other DDS funtions.
+    </p>
+
+    <p>
+      <u>Bison</u> is a general-purpose parser generator used to generate the parser 
+      C source files (parser.tab.h and parser.tab.c) which defines the function
+      ddsYYparse used for parsing the DDS grammar syntax.
+    </p>
+
+    <p>
+      Standard lex and yacc do not support recursive compilation. Gnu Flex and Bison
+      are used because the compiler is recursive, i.e. the parser calls the scanner
+      which may return to the parser OR the scanner may *call* the parser (recursively).
+    </p>
+    
+    <pre>
+    ddsCompileFmt   -->--+                                              
+    (DDS_LEX_TRANSLATE)  |                                              
+                         |                                              
+    ddsMapStruct    -->--+                                              
+    (DDS_LEX_MAP)        |                                              
+                         |                                              
+             +-------->--+--->  parser.y  <--->  scanner.l -----+             
+             |                  ddsYYparse       ddsYYlex       |       
+             |                                                  |       
+             +-----  defn_value("dict","defn")  <---------------+       
+             |         (DDS_LEX_DEFN)                           |       
+             |                                                  |       
+             +-----  ident("funky-name")  <---------------------+       
+             |         (DDS_LEX_IDENT)                          |       
+             |                                                  |       
+             +-----  undefined ? ddsYYdepend  <-----------------+       
+                       (DDS_LEX_TRANSLATE)   
+
+    </pre>
+
+    <p>
+      The compiler is uses for two purposes.  The "<b>ddsCompileFmt</b>" routine uses it to
+      compile the format (fmt:*=... and fmt:*:*=...) definitions. The "<b>ddsMapCompileSU2</b>"
+      and "<b>ddsLinkiObjectSU</b>" routines use it to compile the mapping (map:*:*.xxx=...)
+      definitions.         
+    </p>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Data Types (Host Independent)
+    </title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" 
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","datatypes","independent")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      Host-Independent prime types are defined by their name, type, genus,
+      byte precision, and byte order.
+
+    <pre>
+Name           Genus   Prec  Swap  Description
+-----------    ------  ----  ----  ---------------
+ascii1         char      1    no
+ebcdic1        char      1    no
+integer1       integer   1    no
+integer2       integer   2    no
+integer2x      integer   2   yes
+integer4       integer   4    no
+integer4x      integer   4   yes
+integer8       integer   8    no
+integer8x      integer   8   yes
+unsigned1      unsigned  1    no
+unsigned2      unsigned  2    no
+unsigned2x     unsigned  2   yes
+unsigned4      unsigned  4    no
+unsigned4x     unsigned  4   yes
+unsigned8      unsigned  8    no 
+unsigned8x     unsigned  8   yes  
+float4         float     4    no  ieee
+float4x        float     4   yes  ieee  
+float4ibm      float     4    no   ibm
+float8         float     8    no  ieee
+float8x        float     8   yes  ieee
+float8ibm      float     8    no   ibm
+float16        float    16    no  ieee
+complex8       complex   8    no  ieee (real,imag)
+complex8x      complex   8   yes  ieee (real,imag)
+complex8ibm    complex   8    no   ibm (real,imag)
+complex16      complex  16    no  ieee (real,imag)
+complex16x     complex  16   yes  ieee (real,imag)
+complex16ibm   complex  16    no   ibm (real,imag)
+complex32      complex  32    no  ieee (real,imag)
+struct         struct    0     -
+union          union     0     -
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

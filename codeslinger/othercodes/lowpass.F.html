@@ -1,0 +1,674 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Other Example Codes</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","basiccodes","lowpass")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+c***********************************************************************
+c Copyright 2010, Allied Geophysics, Inc.
+c All Rights Reserved
+c***********************************************************************
+c
+c Apply a low-pass 3D filter to 3D data
+c User selects full-pass and cut-off points on 3 axes with
+c   hc[1-3]=## hp[1-3]=## where ## is fraction of nyquist.
+c
+c***********************************************************************
+
+      program lowpass
+
+      implicit none
+
+#include &lt;<a href="../resources/fdds.h.html">fdds.h</a>&gt;
+#include &lt;<a href="../resources/fft.h.html">fft.h</a>&gt;
+
+c For DDS functions. Arguments and return values
+      character prog*(7), Title*(80)
+      integer   ier, fd_in, fd_out
+      integer*8 ier8,izero8
+      parameter (izero8=0)
+
+c Input/output data attributes
+      character axes(RANK_MAX)*(AXISNAME_MAX)
+      integer n1,n2,n3,n4, ismptag,nhdr_r,nhdr_c
+      real    d1,d2,d3
+
+c User parameters
+      logical lverb
+      real    hp1,hp2,hp3, hc1,hc2,hc3
+
+c Internal dynamic arrays
+      ! input output data
+      real    record(*)
+      pointer (ptr_record,record)
+
+      ! sample of last leading zero in data traces
+      integer mutemap(*)
+      pointer (ptr_mutemap,mutemap)
+
+      ! wavenumber/frequency domain filters
+      real    filt1(*),filt2(*),filt3(*)
+      pointer (ptr_filt1,filt1)
+      pointer (ptr_filt2,filt2)
+      pointer (ptr_filt3,filt3)
+
+c internal scalar values and loop counters
+      integer i1,i2,i3,i4, ik,ik1,ik2,ik3,iik, ip
+      integer*8 irec
+      integer n1fft,n2fft,n3fft
+      integer nk1,nk2,nk3
+      real    dk1,dk2,dk3
+      real    k1,k2,k3, knyq, pi
+      double precision wt0,wt_ref
+      double precision ct0,ct_ref
+      logical add_header
+
+c For OpenMP
+      integer nproc, <a href="../fapishort/fdds_initopenmp.html">fdds_initopenmp</a>
+
+c-------------------------------------------------------------------
+c
+c Initialize the Title
+c
+      prog='lowpass'
+      Title=prog//': 3D low-pass filter applied to 3D data'
+
+c
+c Open the print file and dump command-line help as requested
+c
+      ier=<a href="../fapishort/fdds_openpr.html">fdds_openpr</a>(prog,' ')
+      if (ier.gt.0) call <a href="#help">help</a>(prog,Title)
+
+c
+c Initialize OpenMP
+c
+      nproc=<a href="../fapishort/fdds_initopenmp.html">fdds_initopenmp</a>()
+
+c
+c Make sure that when the input is openned Samples will start at
+c boundaries of complex words. Argument to align() is in bytes.
+c
+      ier=<a href="../fapishort/fdds_dict.html">fdds_dict</a>('override:','print')
+      ier=<a href="../fapishort/fdds_printf.html">fdds_printf</a>
+     :      ('MOD_FIELD',
+     :       '-+align(16) SAMPLE_TYPE Samples[axis_size(1)];\n\0')
+
+c
+c Open input file
+c
+      fd_in=<a href="../fapishort/fddx_in2.html">fddx_in2</a>('in','stdin:',Title)
+      if (fd_in.lt.0) then
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Cannot open input file\n\0')
+         ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+         stop
+      endif
+
+c
+c Retrieve data characteristics
+c
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(1)','%d\0',n1)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(2)','%d\0',n2)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('size.axis(3)','%d\0',n3)
+      n4=<a href="../fapishort/fdds_axis_prod.html">fdds_axis_prod</a>(4)
+
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('delta.axis(1)','%f\0',d1)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('delta.axis(2)','%f\0',d2)
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('delta.axis(3)','%f\0',d3)
+
+      ismptag=<a href="../fapishort/fdds_member.html">fdds_member</a>(fd_in,0,"Samples")
+      nhdr_r =<a href="../fapishort/fdds_index.html">fdds_index</a>(fd_in,ismptag,DDS_REAL)
+      nhdr_c =nhdr_r/2
+
+c
+c Retrieve other parameters from user
+c
+      ier=<a href="../fapishort/fdds_dict.html">fdds_dict</a>('par:','scan')
+
+      lverb=(<a href="../fapishort/fdds_scank.html">fdds_scank</a>('verbose',DDS_TRUE_KEY).gt.0)
+
+      hp1=0.9
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('hp1','%f\0',hp1)
+      hp2=0.9
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('hp2','%f\0',hp2)
+      hp3=0.9
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('hp3','%f\0',hp3)
+
+      hc1=1.0
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('hc1','%f\0',hc1)
+      hc2=1.0
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('hc2','%f\0',hc2)
+      hc3=1.0
+      ier=<a href="../fapishort/fdds_scanf.html">fdds_scanf</a>('hc3','%f\0',hc3)
+
+c
+c Set up the FFT sizes and wavenumber deltas
+c
+      n1fft=<a href="../../developers/fft/nrfft5.html">fft_nrfft5</a>(n1)
+      n2fft=<a href="../../developers/fft/nrfft5.html">fft_nrfft5</a>(n2)
+      n3fft=<a href="../../developers/fft/nrfft5.html">fft_nrfft5</a>(n3)
+
+      nk1 = n1fft/2 + 1
+      nk2 = n2fft
+      nk3 = n3fft
+
+      pi = acos(-1.0)
+
+      dk1 = 2.0*pi/(d1*n1fft)
+      dk2 = 2.0*pi/(d2*n2fft)
+      dk3 = 2.0*pi/(d3*n3fft)
+
+      if (lverb) then
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('\n\0')
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  n1fft = %d\n\0',n1fft)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  n2fft = %d\n\0',n2fft)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  n3fft = %d\n\0',n3fft)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('\n\0')
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  nk1   = %d\n\0',nk1)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  nk2   = %d\n\0',nk2)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  nk3   = %d\n\0',nk3)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('\n\0')
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  dk1   = %f\n\0',dk1)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  dk2   = %f\n\0',dk2)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('  dk3   = %f\n\0',dk3)
+         ier=<a href="../fapishort/fdds_prtmsg.html">fdds_prtmsg</a>('\n\0')
+      endif
+
+c
+c map high-pass and high-cut frequencies to data values
+c
+      knyq= dk1*(nk1-1)
+      hp1=hp1*knyq
+      hc1=hc1*knyq
+      if (hc1.le.hp1) hc1=hp1+dk1/2.0
+
+      knyq= dk2*nk2/2
+      hp2=hp2*knyq
+      hc2=hc2*knyq
+      if (hc2.le.hp2) hc2=hp2+dk2/2.0
+
+      knyq= dk3*nk3/2
+      hp3=hp3*knyq
+      hc3=hc3*knyq
+      if (hc3.le.hp3) hc3=hp3+dk3/2.0
+
+c
+c Set up the output dictionary and open the output with a seek
+c
+      fd_out=<a href="../fapishort/fddx_out.html">fddx_out</a>('out','stdout:',Title,fd_in)
+      if (fd_out.lt.0) then
+         ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Opening output dictionary\n\0')
+      else 
+         if (<a href="../fapishort/fdds_lseek8.html">fdds_lseek8</a>(fd_out,0,izero8,SEEK_SET).lt.izero8) then
+            ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Opening output file\n\0')
+         endif
+      endif
+      if (<a href="../fapishort/fdds_errors.html">fdds_errors</a>().gt.0) then
+         ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+         ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+         ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+         stop
+      endif
+
+c
+c Allocate arrays
+c
+      ptr_record=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(nhdr_r+2*nk1)*nk2*nk3*SIZEOF_REAL)
+      ptr_filt1=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(nk1)*nproc*SIZEOF_REAL)
+      ptr_filt2=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(nk2)*nproc*SIZEOF_REAL)
+      ptr_filt3=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(nk3)*nproc*SIZEOF_REAL)
+      ptr_mutemap=<a href="../fapishort/fdds_malloc8.html">fdds_malloc8</a>(dble(nk2)*nk3*SIZEOF_INTEGER)
+
+      ier8=fdds_memuse()
+      ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('Allocated %ld bytes for big arrays\n\0',ier8)
+
+c
+c Initialize computaionally intense arrays for OpenMP on NUMA machines
+c
+      call <a href="#initial_omp">initial_omp</a>
+     :         ( record, nk1,nk2,nk3,nhdr_r, filt1,filt2,filt3, nproc )
+
+c
+c Set up the filters
+c Notice that this main program knows only of 1D filters
+c Filters for threads 2 through nproc are set up at the end
+c
+      do ik=1,nk1
+         k1=(ik-1)*dk1
+         if ( k1.le.hp1 ) then
+            filt1(ik)=1.0
+         elseif ( k1.gt.hc1 ) then
+            filt1(ik)=0.0
+         else
+            filt1(ik)= cos(pi*(k1-hp1)/(2*(hc1-hp1)))
+         endif
+      enddo
+
+      do ik=1,nk2/2+1
+         k2=(ik-1)*dk2
+         if ( k2.le.hp2 ) then
+            filt2(ik)=1.0
+         elseif ( k2.gt.hc2 ) then
+            filt2(ik)=0.0
+         else
+            filt2(ik)= cos(pi*(k2-hp2)/(2*(hc2-hp2)))
+         endif
+      enddo
+      do ik=nk2/2+2,nk2
+         iik=nk2+2-ik
+         filt2(ik)=filt2(iik)
+      enddo
+
+      do ik=1,nk3/2+1
+         k3=(ik-1)*dk3
+         if ( k3.le.hp3 ) then
+            filt3(ik)=1.0
+         elseif ( k3.gt.hc3 ) then
+            filt3(ik)=0.0
+         else
+            filt3(ik)= cos(pi*(k3-hp3)/(2*(hc3-hp3)))
+         endif
+      enddo
+      do ik=nk3/2+2,nk3
+         iik=nk3+2-ik
+         filt3(ik)=filt3(iik)
+      enddo
+
+      ! set up filters 2 through nproc
+      do ip=2,nproc
+         ik1=(ip-1)*nk1
+         do ik=1,nk1
+            ik1=ik1+1
+            filt1(ik1)=filt1(ik)
+         enddo
+         ik2=(ip-1)*nk2
+         do ik=1,nk2
+            ik2=ik2+1
+            filt2(ik2)=filt2(ik)
+         enddo
+         ik3=(ip-1)*nk3
+         do ik=1,nk3
+            ik3=ik3+1
+            filt3(ik3)=filt3(ik)
+         enddo
+      enddo
+
+c
+c initialize timer
+c
+      call <a href="timers.F90.html">timers</a>(wt_ref,ct_ref,wt0,ct0,1)
+
+c
+c Loop over input data, read, get gradient, write
+c
+      do i4 = 1,n4
+
+         do i3=1,n3
+            irec=dble(i3-1)*nk2*(nhdr_r+2*nk1) + 1 - (nhdr_r+2*nk1)
+            do i2=1,n2
+               irec=irec+(nhdr_r+2*nk1)
+               ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>('irec= %ld\n\0',irec)
+               if (<a href="../fapishort/fddx_read.html">fddx_read</a>(fd_in,record(irec),1).ne.1) then
+                  ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Readng vol %d, rec %d, trc %d\n\0',
+     :                            i4,i3,i2)
+                  ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+                  ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+                  ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+                  stop
+               endif
+            enddo
+         enddo
+
+         call <a href="#zero_pad">zero_pad</a>( record, n1,n2,n3,nhdr_r, nk1,nk2,nk3 )
+
+         call <a href="#pick_mute">pick_mute</a>( record, 2*nk1,nk2,nk3,nhdr_r, mutemap )
+
+         call <a href="#k_filt_3d">k_filt_3d</a>
+     :          ( record, filt1,filt2,filt3, nk1,nk2,nk3,nhdr_c, nproc )
+
+         call <a href="#restore_mute">restore_mute</a>( record, 2*nk1,nk2,nk3,nhdr_r, mutemap )
+
+         do i3=1,n3
+            irec=dble(i3-1)*nk2*(nhdr_r+2*nk1) + 1 - (nhdr_r+2*nk1)
+            do i2=1,n2
+               irec=irec+(nhdr_r+2*nk1)
+               if (<a href="../fapishort/fddx_write.html">fddx_write</a>(fd_out,record(irec),1).ne.1) then
+                  ier=<a href="../fapishort/fdds_prterr.html">fdds_prterr</a>('Writing vol %d, rec %d, trc %d\n\0',
+     :                            i4,i3,i2)
+                  ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+                  ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+                  ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+                  stop
+               endif
+            enddo
+         enddo
+
+         if (lverb) then
+            call <a href="timers.F90.html">timers</a>(wt_ref,ct_ref,wt0,ct0,1)
+            ier=<a href="../fapishort/fdds_prtcon.html">fdds_prtcon</a>
+     :            ('Volume %5d of %5d - CPU/Wall times: %lf / %lf\n\0',
+     :             i4,n4,ct0,wt0)
+         endif
+
+      enddo
+
+c
+c Clean up
+c
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_record)
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_filt1)
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_filt2)
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_filt3)
+      ier=<a href="../fapishort/fdds_free.html">fdds_free</a>(ptr_mutemap)
+
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_in)
+      ier=<a href="../fapishort/fdds_close.html">fdds_close</a>(fd_out)
+      ier=<a href="../fapishort/fdds_closepr.html">fdds_closepr</a>()
+
+c
+c Stop
+c
+      stop
+      end
+
+
+
+
+<a name="help"></a>
+c***********************************************************************
+c
+c subroutine to print help when requested on the command line
+c
+c***********************************************************************
+
+      subroutine help(prog,Title)
+
+      implicit none
+
+      character prog*(*), Title*(*)
+      integer lnblnk
+
+      write(0,*)' '
+      write(0,*)Title(1:lnblnk(Title))
+      write(0,*)' '
+      write(0,*)' Param.....Meaning.............................Default'
+      write(0,*)' '
+      write(0,*)'  in=      input dictionary                     stdin:'
+      write(0,*)'  out=     output dictionary                   stdout:'
+      write(0,*)' '
+      write(0,*)'       Frequency values expressed as a fraction'
+      write(0,*)'                 of Nyquist frequency'
+      write(0,*)' '
+      write(0,*)'  hp1=        High-pass freq for axis 1            0.9'
+      write(0,*)'  hp2=        High-pass freq for axis 2            0.9'
+      write(0,*)'  hp3=        High-pass freq for axis 3            0.9'
+      write(0,*)' '
+      write(0,*)'  hc1=        High-cut  freq for axis 1            1.0'
+      write(0,*)'  hc2=        High-cut  freq for axis 2            1.0'
+      write(0,*)'  hc3=        High-cut  freq for axis 3            1.0'
+      write(0,*)' '
+      write(0,*)'  verbose=    verbose output                        no'
+      write(0,*)' '
+      write(0,*)'  USAGE: '//prog(1:lnblnk(prog))
+      write(0,*)'           in=[in_dict] out=[out_dict]'
+      write(0,*)'           [ hp1=[hp1] hp2=[hp2] hp3=[hp3]'
+      write(0,*)'             hc1=[hc1] hc2=[hc2] hc3=[hc3]'
+      write(0,*)'             verbose=[y|n] ]'
+      write(0,*)' '
+
+      stop
+
+      return
+      end
+
+
+
+
+<a name="zero_pad"></a>
+c***********************************************************************
+c
+c Zero the padded values of a REAL array with ranges padded to FFT sizes
+c
+c***********************************************************************
+      subroutine zero_pad( record, n1,n2,n3,nhdr, nk1,nk2,nk3 )
+
+      implicit none
+
+c Arguments
+      integer n1,n2,n3, nhdr, nk1,nk2,nk3
+      real    record(1-nhdr:2*nk1,nk2,nk3)
+
+c Locals
+      integer i1,i2,i3
+
+c Do it and pad with zeros
+      do i3 = 1,n3
+         do i2 = 1,n2
+            do i1 = n1+1,2*nk1
+               record(i1,i2,i3) = 0.0
+            enddo
+         enddo
+         do i2 = n2+1,nk2
+            do i1 = 1,2*nk1
+               record(i1,i2,i3) = 0.0
+            enddo
+         enddo
+      enddo
+      do i3 = n3+1,nk3
+         do i2 = 1,nk2
+            do i1 = 1,2*nk1
+               record(i1,i2,i3) = 0.0
+            enddo
+         enddo
+      enddo
+
+      return
+      end
+
+
+
+
+<a name="k_filt_3d"></a>
+c***********************************************************************
+c
+c Apply 3D filter in wavenumber domain using in-place r-&gt;c / c-&gt;r FFTs
+c
+c Input record is assumed a REAL, header-attached, padded 3D volume
+c in arg 1. This undergoes an in-place r-&gt;c FFT which leaves headers
+c intact. That is filtered and then transformed back to REAL space/time
+c domain.
+c
+c***********************************************************************
+      subroutine k_filt_3d
+     :          ( record, filt1,filt2,filt3, nk1,nk2,nk3,nhdr, nproc )
+
+      implicit none
+
+#include "fft.h"
+
+c Arguments
+      integer nk1,nk2,nk3, nhdr, nproc
+      complex record(1-nhdr:nk1,nk2,nk3)
+      real    filt1(nk1,nproc),filt2(nk2,nproc),filt3(nk3,nproc)
+
+c Locals
+      integer ier, ik1,ik2,ik3, ip
+      integer n1fft,ld1, fft_flag
+      parameter (fft_flag=FFT_ESTIMATE)
+      real    fft_sc
+
+      integer omp_get_thread_num
+
+c Establish a few local variables
+      n1fft=2*(nk1-1)
+      ld1  =2*(nhdr+nk1)
+      fft_sc=1.0d+00/(dble(n1fft)*nk2*nk3)
+
+c Convert the input to wavenumber domain
+      ier=<a href="../../developers/fft/rcfft3d.html">fft_rcfft3d</a>
+     :      (1.0, n1fft,nk2,nk3, ld1,nk2, record(1,1,1),fft_flag)
+
+c Filter the volume
+C$OMP PARALLEL DO DEFAULT(shared), PRIVATE(ik1,ik2,ik3,ip)
+      do ik3=1,nk3
+         ip=omp_get_thread_num()+1
+         do ik2=1,nk2
+            do ik1=1,nk1
+               record(ik1,ik2,ik3)=
+     :                        record(ik1,ik2,ik3)*fft_sc
+     :                       *filt1(ik1,ip)*filt2(ik2,ip)*filt3(ik3,ip)
+            enddo
+         enddo
+      enddo
+C$OMP END PARALLEL DO
+
+c Convert back to space/time domain
+      ier=<a href="../../developers/fft/crfft3d.html">fft_crfft3d</a>
+     :      (1.0, n1fft,nk2,nk3, ld1,nk2, record(1,1,1),fft_flag)
+
+c That was easy
+      return
+      end
+
+
+
+
+<a name="initial_omp"></a>
+c***********************************************************************
+c
+c Initialize compute intensive arrays for OpenMP on Numa machines
+c
+c***********************************************************************
+      subroutine initial_omp
+     :         ( record, nk1,nk2,nk3,nhdr, filt1,filt2,filt3, nproc )
+
+      implicit none
+
+      integer nk1,nk2,nk3, nhdr, nproc
+      real    record(1-nhdr:2*nk1,nk2,nk3)
+      real    filt1(nk1,nproc), filt2(nk2,nproc), filt3(nk3,nproc)
+
+      integer ik1,ik2,ik3, ip,iproc
+      integer omp_get_thread_num
+
+c$OMP PARALLEL DEFAULT(shared), PRIVATE(ik1,ik2,ik3,ip,iproc)
+c$OMP DO
+      do ik3=1,nk3
+         do ik2=1,nk2
+            do ik1=1-nhdr,2*nk1
+               record(ik1,ik2,ik3)=0.0
+            enddo
+         enddo
+      enddo
+c$OMP END DO
+c$OMP DO
+      do iproc=1,nproc
+         ip=omp_get_thread_num()+1
+         do ik3=1,nk3
+            filt3(ik3,ip)=0.0
+         enddo
+         do ik2=1,nk2
+            filt2(ik2,ip)=0.0
+         enddo
+         do ik1=1,nk1
+            filt1(ik1,ip)=0.0
+         enddo
+      enddo
+c$OMP END DO
+c$OMP END PARALLEL
+
+      return
+      end
+
+
+
+
+<a name="pick_mute"></a>
+c***********************************************************************
+c
+c Fill an array with sample numbers to last leading data zero
+c
+c***********************************************************************
+      subroutine pick_mute( record, n1,n2,n3,nhdr, mutemap )
+
+      implicit none
+
+      integer n1,n2,n3,nhdr
+      real    record(1-nhdr:n1,n2,n3)
+      integer mutemap(n2,n3)
+
+      integer i1,i2,i3
+
+C$OMP PARALLEL DO DEFAULT(shared), PRIVATE(i3,i2,i1)
+      do i3=1,n3
+         do i2=1,n2
+            mutemap(i2,i3)=0
+            i1=1
+            do while (i1.lt.n1 .and. record(i1,i2,i3).eq.0.0)
+               i1=i1+1
+            enddo
+            if (i1.eq.n1 .and. record(i1,i2,i3).eq.0.0) then
+               mutemap(i2,i3)=n1
+            else
+               mutemap(i2,i3)=i1-1
+            endif
+         enddo
+      enddo
+C$OMP END PARALLEL DO
+
+      return
+      end
+
+
+
+
+<a name="restore_mute"></a>
+c***********************************************************************
+c
+c Restore a mute function stored in a map
+c
+c***********************************************************************
+      subroutine restore_mute( record, n1,n2,n3,nhdr, mutemap )
+
+      implicit none
+
+      integer n1,n2,n3,nhdr
+      real    record(1-nhdr:n1,n2,n3)
+      integer mutemap(n2,n3)
+
+      integer i1,i2,i3
+
+C$OMP PARALLEL DO DEFAULT(shared), PRIVATE(i3,i2,i1)
+      do i3=1,n3
+         do i2=1,n2
+            do i1=1,mutemap(i2,i3)
+               record(i1,i2,i3)=0.0
+            enddo
+         enddo
+      enddo
+C$OMP END PARALLEL DO
+
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

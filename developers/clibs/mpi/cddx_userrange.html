@@ -1,0 +1,47 @@
+
+    <h2>cddx_userrange - scan the parameter file and command line for editd style dimension parameters.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;pcddx.h&gt;</b>
+    <p>
+      <b>int cddx_userrange(</b><i>node, rank, size, ss, ee, ii</i><b>)
+    </b><dl><dd>
+        <b>int </b><i>node</i><br>
+        <b>int </b><i>rank</i><br>
+        <b>int </b><i>size[RANK_MAX]</i><br>
+        <b>int </b><i>ss[RANK_MAX]</i><br>
+        <b>int </b><i>ee[RANK_MAX]</i><br>
+        <b>int </b><i>ii[RANK_MAX]</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+      <b>cddx_userrange</b> scans the parameter file and command line for editd style dimension parameters: <i>2s= 2e= 2i=</i>, etc.<br>
+      MPI node zero will also write a summary to the printout file.
+    </p>
+
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>node</i>", specifies the MPI node number.
+    </p><p>
+      The parameter, "<i>rank</i>", specifies the rank (number of dimensions) of the file.
+    </p><p>
+      The parameter, "<i>size</i>", specifies the size of each dimension.
+    </p>
+      
+    <h2>OUTPUT</h2>
+    <p>
+      The parameter, "<i>ss</i>", specifies the user specified starting value to process for each axis.
+    </p><p>
+      The parameter, "<i>ee</i>", specifies the user specified end value to process for each axis.
+    </p><p>
+      The parameter, "<i>ii</i>", specifies the user specified increment to process for each axis.
+    </p>
+
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_userrange</b> always returns 0.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

@@ -1,0 +1,45 @@
+
+    <h2>cddx_RK_new - create a new Runge-Kutta extrapolator.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;cddx_rungekutta.h&gt;</b>
+    <p>
+      <b>int cddx_RK_new(</b><i>alias, nn, RHS</i><b>)
+    </b><dl><dd>
+        <b>const char *</b><i>alias</i><br>
+        <b>int </b><i>nn</i><br>
+        <b>int </b><i>(*RHS)(int *tag, int *nn, float *vec_in, float *vec_out )</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cddx_RK_new</b> creates a new Runge-Kutta extrapolator.<br>
+    It scans for user input to decide which type of Runge-Kutta method to use.<br>
+    Currently implemented methods are 2nd (rk2) and 4th order (rk4).<br>
+    The user can specify which method to use by specifying <b>rk=rk2</b> or <b>rk=rk4</b>.
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>alias</i>", specifies a prefix to add to the <b>rk=</b> keyword to allow the use of multiple different Runge-Kutta
+      methods with the same application.
+    </p>
+    <p>
+      The parameter, "<i>nn</i>", specifies the maximum size of the vector to propagate.
+    </p>
+    <p>
+      The parameter, "<i>RHS</i>", specifies a function to compute the Right Hand Size of the equations.<BR>
+      The parameters for RHS are:
+    <ul>
+      <li><b>tag</B>: pointer for internal data needed by RHS.</li>
+      <li><b>nn</B>: the size of the vector to propagate. <font color=red>Note</font> that nn is a pointer for compatibility with Fortran.</li>
+      <li><b>vec_in</B>: input data vector.</li>
+      <li><b>vec_out</B>: output data vector.</li>
+      </ul>
+    </p>
+
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_RK_new</b> returns a tag to the newly created Runge-Kutta Extrapolator. In the event of an error, it will return -1.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

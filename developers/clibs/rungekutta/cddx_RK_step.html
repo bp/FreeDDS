@@ -1,0 +1,50 @@
+
+    <h2>cddx_RK_step - take a step using a Runge-Kutta extrapolator.</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;cddx_rungekutta.h&gt;</b>
+    <p>
+      <b>int cddx_RK_step(</b><i>rk_tag, dt, yin, dydt, yout, dyout</i><b>)
+    </b><dl><dd>
+        <b>int    </b><i>rk_tag</i><br>
+        <b>float  </b><i>dt</i><br>
+        <b>float *</b><i>yin</i><br>
+        <b>float *</b><i>dydt</i><br>
+        <b>float *</b><i>yout</i><br>
+        <b>float *</b><i>dyout</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <b>cddx_RK_step</b> takes a step using Runge-Kutta extrapolator.<br>
+    <font color=red>NOTE</font> that this function is not re-entrant, which means that you cannot use it inside an OpenMP parallelized loop.<br>
+    Each thread must use a separate extrapolator, created using <b>cddx_RK_new</b>.
+
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>rk_tag</i>", specifies which Runge-Kutta extrapolator to show.
+      Use function <b>cddx_RK_new</b> to create the extrapolator.
+    </p>
+
+    <p>
+      The parameter, "<i>dt</i>", specifies the step length.
+    </p>
+    <p>
+      The parameter, "<i>yin</i>", specifies the input position vector.
+    </p>
+    <p>
+      The parameter, "<i>dydt</i>", specifies the input direction vector.
+    </p>
+    <p>
+      The parameter, "<i>yout</i>", specifies the input position vector.
+    </p>
+    <p>
+      The parameter, "<i>dyout</i>", specifies the input direction vector.
+    </p>
+
+
+    <h2>RETURN VALUE</h2>
+    <b>cddx_RK_step</b> returns 0 for normal termination, or -1 if there was an error.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

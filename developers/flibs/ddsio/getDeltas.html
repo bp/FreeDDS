@@ -1,0 +1,29 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <body>
+
+    <h2>getDeltas - Returns this data object's deltas</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>use DdsIO_mod</b>
+    <p>
+      <b>real(kind=DPR), dimension(:) function getDeltas()</b>
+      
+      <h2>DESCRIPTION</h2>
+      <b>"getDeltas"</b> is a type-bound procedure on a data object of <b>type(DdsObject)</b>.
+      This procedure returns the deltas for each dimension of this data object. 
+      
+      <h2>EXAMPLE</h2>
+      <pre>
+	use DdsIO_mod, only : DdsObject
+	use Precision_mod, only : DPR
+	
+	type(DdsObject) :: inData
+	real(kind=DPR)  :: inDeltas(3)
+	
+	call inData%open('r', 'in')
+	inDeltas = inData%getDeltas()
+      </pre>
+      
+  </body>
+</html>

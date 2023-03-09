@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Developers Application Testing</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link rel="icon" href="../images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="../images/favicon.ico" type="image/x-icon">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("developers","make","tests")
+    </script>
+    <!*********************************************************************>
+  
+    <h2><u>Application Testing</u></h2>
+
+    <p>
+      The DDS make structure has implemented some functions to aid in running
+      tests on an application for purposes for improving the integrity of the
+      codes that get built.  This testing scheme assumes there is one or more
+      test scripts under a "<b>tests</b>" subdirectory. Each test script must
+      be named "<b>test</b><i>#</i>" where <i>#</i> is any integer number
+      (See below for more detail on these test scripts).
+      Any or all of these tests can be performed on one or more versions of the
+      code.  This uses the <b>bp</b> "<b>devcode</b>" script for checking out
+      code from a subversion repository (if available) or when using the 
+      current version it simply copies it under the working directory.  </p>  
+      
+    <h3><u>Creating a Test Script</u></h3>
+
+    <p>
+      A test template script can be created automatically by running 
+      "<code>make newtest</code>".  It will create the "<b>tests</b>" subdirectory
+      if necessary and then create the next available "<b>test</b><i>#</i>".
+      This newly created test script will be a "sh" script by default.  Other types of test
+      scripts can be created by running "<code>make newtest tstshell=</code><i>shell</i>"
+      where "<i>shell</i>" can be "<b>csh, tcsh, sh, bash, ksh</b> or <b>zsh</b>".
+      The "<code>tstshell</code>" parameter can be specified as either all lower
+      case or all upper case.  After creating a new test script, edit the script
+      for the specific tests neede to run.
+ 
+    <h3><u>Test Scripts</u></h3>
+
+    <p>
+      Each test script will be run with <b>exe=..., inputdir=...</b> and 
+      <b>testdir=...</b> definitions on the command line.  Each one can be 
+      retrieved by using the DDS program, "<b>ddsarg</b>". "<b>exe</b>" is 
+      the startup script to execute by the script; "<b>inputdir</b>" is 
+      the test repository where large test datasets are stored, and 
+      "<b>testdir</b>" is the directory where output dataset can be written.</p>
+
+    <pre>
+set EXE      = `ddsarg arg=exe      default=none $*`
+set INPUTDIR = `ddsarg arg=inputdir default=none $*`
+set TESTDIR  = `ddsarg arg=testdir  default=none $*`
+    </pre>
+
+    <p>
+      Each test script should echo a key summary information to the 
+      summary TestLog file by beginning a line with "<b>TEST</b><i>#</i>" 
+      (where "<i>#</i>" is the test number).  This summary should include 
+      "<b>FATAL</b>" if there is any error; or "<b>FINISHED OK</b>" if
+      it ran alright.  Each of these messages will be captured from the 
+      detailed TestLog_Rev log file and put into the summary Testlog file.  
+      These test results can be captured into the webpage.  A local webpage
+      can be created locally under a <b>testresults</b> subdirectory by
+      running "<code>make testresults"</code>.</p>      
+      
+    <h3><u>Running the Test Scripts</u></h3>
+    
+    <p>
+      Running "<code>make tests</code>" will invoke each of the test scripts on the
+      current machine.  It first creates a working test directory (by default
+      "/local/$USER" but can be changed by defining "<b>DDS_TEST_DIR</b>"). 
+      Under that test directory will be subdirectories for each
+      program version being tested with the name, "<i>prog</i>_REV<i>#</i>" 
+      (where <i>prog</i> is the program name and <i>#</i> is the version number.
+      Under any of those directories will be a directory with the name of
+      the program being test ( "<i>prog</i>") which containes the copy of the
+      code being tested.  There will also be directories with the name,
+      "TEST<i>#</i>" for each test being run.</p>
+
+    <p>
+      The testing will also produce some log files containing what is being
+      performed and any output from the test scripts.</p>
+
+    <p>
+      <u>For example</u> if user, JohnDoe,
+      runs a test on program, "ddscan", with test scripts "test1" and "test2"
+      under the "tests" subdirectory on a machine named, "rodney", then the 
+      following test directory structure and log files will be created 
+      (assuming ddscan is at version 1730).
+    </p>
+
+    <pre>
+These subdirectories will be generated under /local/JohnDoe/ddscan_Rev1730:
+    ddscan                 - copy of source code being tested
+    TEST1.rodney           - directory where test1 will be run
+    TEST2.rodney           - directory where test2 will be run
+
+These log files will be generated in the current directory:
+    TestLog.rodney         - A summary of all the tests
+    TestLog_Rev1730.rodney - The output of all tests for a given code version
+                             being tested on a given machine.
+    </pre>
+  
+    <h3><u>Running on multiple hosts at once</u></h3>
+
+    <p>
+      To run tests on multiple hosts at once, run "<code>make alltests</code>".  By
+      default it will use the same machines used by "<code>make all</code>".  To
+      override the machines to use, specify <b>REMOTE_HOSTS</b> for all the
+      machines (see below).</p>
+  
+    <h3><u>Testing Control Parameters</u></h3>
+
+    <p>The following testing control parameters can be specified as either 
+      environmental variables or as make command-line parameters. </p>
+
+    <dl style="padding: 0 0 0 50px">
+      <dt><b>DDS_TEST_DIR</b></dt>
+      <dd>This parameter will override the working test directory which 
+        defaults to /local/$USER/testdir (or /data1/$USER/testdir if the 
+        local one is not found).</dd>
+
+      <dt><b>DDS_TEST_DATA</b></dt>
+      <dd>This parameter will override the test data repository where various
+        test data are stored and recalled for testing purposes.  Run "make variables"
+	to see where it is currently located.</dd>
+
+      <dt><b>DDS_TEST_VER</b></dt>
+      <dd>This parameter overrides the code version(s) to test. However, if
+        it does not exist in the repository, it simply uses the current local
+        copy. The default it taken from running "svnversion" to get the current
+        version of the code.  If it has been modified from the repository, then
+        it will run tests on both the repository version as well as the local
+        copy of the code.</dt>
+
+      <dt><b>DDS_TESTS</b></dt>
+      <dd>This parameter override the tests to be performed.  The default is
+        to run tests for every test script in the "tests" directory that has the
+        name, "test<i>#</i>".  <b>DDS_TESTS</b> should specify the test numbers
+        to run.</dd>
+
+      <dt><b>REMOTE_HOSTS</b></dt>
+      <dd>This parameter will override the specification for the list of host
+        machines to use for running tests on multiple machine with "make 
+        alltests".</dd>
+    </dl>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

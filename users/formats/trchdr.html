@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Users Formats (Trace Header)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript" 
+      type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("users","formats","trchdr")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      The structure of traces can be described, similar to Line Headers
+      in the previous subsection. This allows standard and generic trace
+      formats to be specified with the same DDS notation. Seamless Seismic
+      Data Access is facilitated by this common framework.
+
+    <p>
+      All fields in a trace are created equal; DDS does not discriminate
+      between headers and Samples. Traces may contains many fields, or only 
+      one. The seismic Samples field, if it exists, normally has the size
+      defined by the first axis. Operations that can be applied to headers,
+      can also be applied to Samples, and visa versa.
+
+    <p>
+      Fields may have any binary data type supported by DDS. Types are not
+      limited to those supported by the host computer. The list includes
+      <b>character</b>, <b>unsigned</b>, <b>integer</b>, <b>float</b>,
+      and <b>complex</b>. Binary representations include <b>ieee</b>,
+      <b>ibm</b>, <b>ascii</b>, and <b>ebcdic</b>.  All the
+      supported data types are described in the
+      <a href="../datatypes.html">Data Types</a> section.
+
+    <p>
+      Each field has a constant element count. If the count is greater than
+      one, the field is a vector. If equal to one, its a scalar. If zero,
+      no storage is reserved for a value. 
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Maintainers dds Details (table)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../../javascript.js" language="JavaScript" type="text/javascript"></script>
+  </head>
+  <body>
+    <script type="text/javascript">
+      header("maintainers","details","structures","table")
+    </script>
+    <!*********************************************************************>
+
+    <p>
+      These are the data structures used in dealing with hash table 
+      declarations.  "ALPHA" and "BETA" factors control how the hash tables
+      grow.  Most optimistic population growth before rehash ==
+      (ALPHA / BETA).  Large ratios minimize rehashing when tables grow rapidly. 
+      Small ratios minimize table size for a given search efficiency. 
+    </p>
+
+    <h2>Sturctures:</h2>
+   <pre>
+DDS_ITEM  - generic item descriptor for hash table entries
+DDS_PAGE  - page descriptor for hash table items
+DDS_TABLE - hash table descriptor (see DDS_STACK and DDS_ITEM)
+    </pre>
+
+
+    <h2>Globals:</h2>
+
+    Initial size of hash tables (rounded up to nearest prime)
+    <pre>
+          int KEYS_HASH_SIZE  = 293;
+          int SYM_HASH_SIZE   = 31;
+          int DICT_HASH_SIZE  = 31;
+          int DEFN_HASH_SIZE  = 31;
+          int STOP_HASH_SIZE  = 1;
+    </pre>
+
+    <u>ALPHA</u>, rehash threshold (average number of items per hash bucket). 
+    Rehash table if ALPHA &lt; (count / hash_load) .
+
+    <dl>
+      <dd>ALPHA &lt;&lt; 1.00 simple ratio, good with duplicate names. </dd>
+      <dd>ALPHA == 1.00 perfect hash, perpetual rehashing. </dd>
+      <dd>ALPHA == 2.00 fast search, "frequent" rehashing. </dd>
+      <dd>ALPHA == 20.0 slow search, "periodic" rehashing. </dd>
+      <dd>ALPHA &gt;&gt; 200. (== 1.e+9) disable automatic rehashing. </dd>
+    </dl>
+    <pre>
+          double KEYS_HASH_ALPHA  = 1.15;
+          double SYM_HASH_ALPHA   = 0.80;
+          double DICT_HASH_ALPHA  = 1.50;
+          double DEFN_HASH_ALPHA  = 0.80;
+          double STOP_HASH_ALPHA  = 1.e+9;
+    </pre>
+
+    <u>BETA</u>, items per bucket (most optimistic ALPHA after rehashing). 
+    New table size == prime greater than old size &gt;= (count / BETA). 
+    <dl>
+      <dd>BETA  == 0.00 infinite hash table size (div and malloc fault). </dd>
+      <dd>BETA  == 0.02 items per bucket,  51X "explosive" table growth. </dd>
+      <dd>BETA  == 0.20 items per bucket,   6X "moderate"  table growth. </dd>
+      <dd>BETA  == 2.00 item  per bucket, 1.5X "minimal"   table growth. </dd>
+      <dd>BETA  &gt;&gt; 20.0 (== 1.e+9) increase old size to next prime number.</dd> 
+    </dl>
+    <pre>
+          double KEYS_HASH_BETA   = 2.00;
+          double SYM_HASH_BETA    = 0.20;
+          double DICT_HASH_BETA   = 0.20;
+          double DEFN_HASH_BETA   = 0.20;
+          double STOP_HASH_BETA   = 1.e+9;
+    </pre>
+
+    Zero length string for un-named symbols 
+    <pre>
+          char *dds_anonymous;
+    </pre>
+
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>

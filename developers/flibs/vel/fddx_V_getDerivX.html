@@ -1,0 +1,34 @@
+
+    <h2>fddx_V_getDerivX - return the X-derivative of a parameter at point (xx,yy,zz).</h2>
+    <hr>
+    <h2>SYNOPSIS</h2>
+    <b>#include &lt;fddx_vel.h&gt;</b>
+    <p>
+      <b>real fddx_V_getDerivX(</b><i>par_tag, xx, yy, zz</i><b>)
+    </b><dl><dd>
+        <b>integer  </b><i> par_tag</i><br>
+        <b>real     </b><i> xx</i><br>
+        <b>real     </b><i> yy</i><br>
+        <b>real     </b><i> zz</i><br>
+    </dl>
+
+    <h2>DESCRIPTION</h2>
+    <p>
+    <b>fddx_V_getDerivX</b> returns the X-derivative of a parameter at point (xx,yy,zz).<br>
+    </p>
+     
+    <h2>INPUT</h2>
+    <p>
+      The parameter, "<i>par_tag</i>", specifies a tag to the parameter.<br>
+    </p>
+    <p>
+      The parameters, "<i>xx, yy, zz</i>", specifies a location at which to evaluate the parameter.<br>
+    </p>
+
+    <h2>RETURN VALUE</h2>
+    <b>fddx_V_getDerivX</b> returns the X-derivative of the parameter <i>par_tag</i> at point (<i>xx,yy,zz</i>).<br>
+    <b><font color=red>NOTE:</font></b> no error checking is done to ensure that <i>par_tag</i> is valid.
+
+    <h2>AUTHOR</h2>
+    Richard Clarke, <b>EPTG, bp.</b>
+

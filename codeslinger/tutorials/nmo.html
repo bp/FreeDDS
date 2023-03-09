@@ -1,0 +1,319 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <title>Data Dictionary System: Code Slinger Tutorials (multiple inputs)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+    <meta name="keywords" 
+      content="Data Dictionary System Free Seismic Processing System">
+    <link href="../../styles.css" type="text/css" rel="stylesheet">
+    <script src="../../javascript.js" language="JavaScript"
+      type="text/javascript"></script>
+    </script>
+    <style type="text/css">
+      pre {color:#000000;}
+    </style>
+  </head>
+  <body>
+
+    <script type="text/javascript">
+      header("codeslinger","tutorials","nmo")
+    </script>
+    <!*********************************************************************>
+
+<pre>
+c***********************************************************************
+c
+c Apply NMO to CMP data
+c
+c    Deals with 3 input files. Data formats are irrelevant, but trace
+c      headers, if present, are discarded.
+c
+c    Inputs:
+c       3+D CMP data - axis= t h x ...
+c       3+D geometry data - conformable with CMP data
+c       3D NMO velocity file
+c
+c    Output:
+c       3+D NMO corrected CMP data
+c
+c***********************************************************************
+
+      program nmo
+
+      implicit none
+
+#include "fdds.h"
+
+c For DDS functions. Arguments and return values
+      character prog*(3), Title*(80)
+      integer   ier, fd_cmp,fd_geom,fd_vel, fd_out
+      integer*8 ier8,izero8
+      parameter (izero8=0)
+
+c Input attributes
+      integer n1_d,n2_d,n3_d,n4_d
+      real    d1_d, o1_d
+
+      integer n1_g,n2_g,n3_g,n4_g
+
+      integer n1_v,n2_v,n3_v
+      real    d1_v,d2_v,d3_v, o1_v,o2_v,o3_v
+
+c User parameters
+      logical lverb
+
+c Internal dynamic arrays
+      real    cmp_in(1), cmp_out(1), geom(1), vel(1)
+      pointer (ptr_cmp_in,cmp_in)
+      pointer (ptr_cmp_out,cmp_out)
+      pointer (ptr_geom,geom)
+      pointer (ptr_vel,vel)
+
+c work space for the NMO subsystem
+      real     work(1)
+      pointer (ptr_work,work)
+
+c internal scalar values and loop counters
+      integer ier_d,ier_g,n2_out, i3,i4
+
+c predefine indices of interesting geometry values
+      integer isrcx,isrcy, igrpx,igrpy, idead
+      parameter (isrcx=1, isrcy=2, igrpx=4, igrpy=5, idead=7)
+
+c-------------------------------------------------------------------
+c
+c Initialize the Title
+c
+      prog='nmo'
+      Title=prog//': Normal moveout correction to CMP data'
+
+c
+c Open the print file and dump command-line help is requested
+c
+      ier=fdds_openpr(prog,'')
+      if (ier.gt.0) call help(prog,Title)
+
+c
+c Open cmp file, retrieve cmp data characteristics
+c
+      if (fdds_scanf('in','\0').eq.0) then
+         fd_cmp=fddx_in('in','stdin:',Title)
+      else
+         fd_cmp=fddx_in('cmp','stdin:',Title)
+      endif
+
+      if (fd_cmp.lt.0) then
+         ier=fdds_prterr('opening cmp file\n\0')
+         ier=fdds_closepr()
+      endif
+
+      ier=fdds_scanf('size.axis(1)','%d\0',n1_d)
+      ier=fdds_scanf('size.axis(2)','%d\0',n2_d)
+      ier=fdds_scanf('size.axis(3)','%d\0',n3_d)
+      n4_d=fdds_axis_prod(4)
+
+      ier=fdds_scanf('delta.axis(1)','%f\0',d1_d)
+      ier=fdds_scanf('origin.axis(1)','%f\0',o1_d)
+
+c
+c Open geometry file, make sure it is conformable with cmp data
+c
+      fd_geom=fddx_in('geom',' ',Title)
+
+      if (fd_geom.lt.0) then
+         ier=fdds_prterr('opening cmp file\n\0')
+         ier=fdds_close(fd_cmp)
+         ier=fdds_closepr()
+      endif
+
+      ier=fdds_scanf('size.axis(1)','%d\0',n1_g)
+      ier=fdds_scanf('size.axis(2)','%d\0',n2_g)
+      ier=fdds_scanf('size.axis(3)','%d\0',n3_g)
+      n4_g=fdds_axis_prod(4)
+
+      if (n2_g.ne.n2_d .or. n3_g.ne.n3_d .or. n4_g.ne.n4_d) then
+         ier=fdds_prterr('cmp and geom files are not conformable\n\0')
+         ier=fdds_prterr('  cmp  n2,n3,n4= %d %d %d\n\0',n2_d,n3_d,n4_d)
+         ier=fdds_prterr('  geom n2,n3,n4= %d %d %d\n\0',n2_g,n3_g,n4_g)
+         ier=fdds_close(fd_cmp)
+         ier=fdds_close(fd_geom)
+         ier=fdds_closepr()
+      endif
+
+c
+c Open velocity file, make sure it is conformable with cmp data
+c
+      fd_vel=fddx_in('vel',' ',Title)
+
+      if (fd_vel.lt.0) then
+         ier=fdds_prterr('opening vel file\n\0')
+         ier=fdds_close(fd_cmp)
+         ier=fdds_close(fd_geom)
+         ier=fdds_closepr()
+      endif
+
+      ier=fdds_scanf('size.axis(1)','%d\0',n1_v)
+      ier=fdds_scanf('size.axis(2)','%d\0',n2_v)
+      ier=fdds_scanf('size.axis(3)','%d\0',n3_v)
+
+      ier=fdds_scanf('delta.axis(1)','%f\0',d1_v)
+      ier=fdds_scanf('delta.axis(2)','%f\0',d2_v)
+      ier=fdds_scanf('delta.axis(3)','%f\0',d3_v)
+
+      ier=fdds_scanf('origin.axis(1)','%f\0',o1_v)
+      ier=fdds_scanf('origin.axis(2)','%f\0',o2_v)
+      ier=fdds_scanf('origin.axis(3)','%f\0',o3_v)
+
+      if (n1_v.ne.n1_d .or. d1_v.ne.d1_d .or. o1_v.ne.o1_d) then
+         ier=fdds_prterr
+     :         ('cmp and vel files must have conformable time axes\n\0')
+         ier=fdds_prterr('  cmp n1,d1,o1= %d %f %f\n\0',n1_d,d1_d,o1_d)
+         ier=fdds_prterr('  vel n1,d1,o1= %d %f %f\n\0',n1_v,d1_v,o1_v)
+         ier=fdds_close(fd_cmp)
+         ier=fdds_close(fd_geom)
+         ier=fdds_close(fd_vel)
+         ier=fdds_closepr()
+      endif
+
+c
+c Retrieve other parameters needed from user
+c
+      ier=fdds_dict('par:','scan')
+
+      lverb=.false.
+      if (fdds_scank('verbose',DDS_TRUE_KEY).gt.0) lverb=.true.
+
+c
+c Open the output
+c
+      fd_out=fddx_out('out','stdout:',Title,fd_cmp)
+      ier8=fdds_lseek8(fd_out,0,izero8,SEEK_SET)
+
+c
+c Allocate arrays
+c
+      ptr_vel=fdds_malloc8(dble(n1_v*n2_v*n3_v*SIZEOF_REAL))
+      ptr_cmp_in=fdds_malloc8(dble(n1_d*n2_d*SIZEOF_REAL))
+      ptr_cmp_out=fdds_malloc8(dble(n1_d*n2_d*SIZEOF_REAL))
+      ptr_geom=fdds_malloc8(dble(n1_g*n2_g*SIZEOF_REAL))
+      ptr_work=fdds_malloc8(dble(9*n1_d*SIZEOF_REAL))
+
+c
+c Go read the velocity file
+c
+      if (fddx_read(fd_vel,vel,n2_v*n3_v) .ne. n2_v*n3_v) then
+         ier=fdds_prterr('Reading velocity file\n\0')
+         ier=fdds_close(fd_cmp)
+         ier=fdds_close(fd_geom)
+         ier=fdds_close(fd_vel)
+         ier=fdds_closepr()
+      endif
+
+c
+c Loop over input CMPs, applying NMO
+c
+      do i4 = 1,n4_d
+
+         if ( lverb .and. mod(i4,10).eq.0 ) then
+            ier=fdds_prtcon('CMP line %5d of %5d\n\0',i4,n3_d)
+         endif
+
+         do i3 = 1,n3_d
+ 
+           ier_d=fddx_read(fd_cmp,cmp_in,n2_d)
+           ier_g=fddx_read(fd_geom,geom,n2_g)
+
+           if (ier_d.ne.n2_d .or. ier_g.ne.n2_g) then
+              ier=fdds_prterr('Reading Line,CMP %d %d\n\0',i4,i3)
+              ier=fdds_close(fd_cmp)
+              ier=fdds_close(fd_geom)
+              ier=fdds_close(fd_vel)
+              ier=fdds_close(fd_out)
+              ier=fdds_closepr()
+           endif
+
+           call <a href="nmo_setup.html">nmo_setup</a>
+     :            ( cmp_in, cmp_out, geom, vel, work, n2_d, n1_g,
+     :              n1_v,n2_v,n3_v, d1_v,d2_v,d3_v, o1_v,o2_v,o3_v,
+     :              isrcx, isrcy, igrpx, igrpy, idead )
+ 
+           n2_out=fddx_write(fd_out,cmp_out,n2_d)
+
+           if (n2_out.ne.n2_d) then
+              ier=fdds_prterr('Writing Line,CMP %d %d.\n\0',i4,i3)
+              ier=fdds_close(fd_cmp)
+              ier=fdds_close(fd_geom)
+              ier=fdds_close(fd_vel)
+              ier=fdds_close(fd_out)
+              ier=fdds_closepr()
+           endif
+
+         enddo
+
+      enddo
+
+c
+c Clean up
+c
+      ier=fdds_free(ptr_cmp_in)
+      ier=fdds_free(ptr_cmp_out)
+      ier=fdds_free(ptr_vel)
+      ier=fdds_free(ptr_geom)
+      ier=fdds_free(ptr_work)
+
+      ier=fdds_close(fd_cmp)
+      ier=fdds_close(fd_geom)
+      ier=fdds_close(fd_vel)
+      ier=fdds_close(fd_out)
+      ier=fdds_closepr()
+
+c
+c Stop
+c
+      stop
+      end
+
+
+
+
+c***********************************************************************
+c
+c subroutine to print help when requested on the command line
+c
+c***********************************************************************
+
+      subroutine help(prog,Title)
+
+      implicit none
+
+      character prog*(*), Title*(*)
+      integer lnblnk
+
+      write(0,*)''
+      write(0,*)Title(1:lnblnk(Title))
+      write(0,*)''
+      write(0,*)' Parameter....Meaning..........................Default'
+      write(0,*)''
+      write(0,*)'  cmp=        input dictionary for CMP data     stdin:'
+      write(0,*)'  geom=       input dictionary for geometry       none'
+      write(0,*)'  vel=        input dictionary for NMO vel        none'
+      write(0,*)'  out=        output dictionary                stdout:'
+      write(0,*)''
+      write(0,*)'  verbose=    verbose output                        no'
+      write(0,*)''
+      write(0,*)'  USAGE: '
+      write(0,*)'      '//prog(1:lnblnk(prog))
+      write(0,*)'         cmp=[in_dict] geom=[geom_dict] vel=[vel_dict]'
+      write(0,*)'         out=[out_dict] verbose=[y|n] ]'
+      write(0,*)''
+
+      stop
+
+      return
+      end
+</pre>
+  
+    <!*********************************************************************>
+    <script type="text/javascript">footer()</script>
+  </body>
+</html>
