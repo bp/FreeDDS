@@ -1,0 +1,242 @@
+#!/bin/csh -f
+# Script to assit making a super DDS dictionary
+#
+# Maintained by Jerry Ehlers under DDS
+#
+
+if ( ${#argv} < 3 ) goto help
+
+#
+# Get arguments
+#
+set dict = $1
+set par  = $2
+set arg3 = $3
+
+if ( $3 == list || $3 == single ) then
+   if ( ${#argv} < 4 ) goto help
+   set files=`cat $4`
+   if ( $3 == single ) goto single
+else
+   shift
+   shift
+   set files = ( $* )
+endif
+
+set nfiles = ${#files}
+set file0 = .
+foreach file ( $files )
+   if ( -f $file && $file0 == .) then 
+      set file0 = $file
+      break
+   endif
+end
+
+if ( "$file0" == "." ) then
+   echo none of the input files exist!
+   exit
+endif
+
+#################################################
+#
+# Create new dictionary
+#
+#################################################
+echo ' '
+echo "Creating sliced dictionary: $dict using parfile=$par"
+
+setenv PRINT_PATH /tmp/MAKEDICT$$
+rm -f $dict
+set type=`file -b $file0|awk '{print $1}'`
+if ("$type" == "ASCII") then
+   cp $file0 $dict
+else
+   dds_bridge in=$file0 par=$par out=$dict out_data=/dev/null >& /dev/null
+   if ($status != 0) then
+      cat /tmp/MAKEDICT$$
+      rm -f /tmp/MAKEDICT$$
+      echo "Unable to create dictionary from first input file: $file0"
+      exit 9
+   endif
+   rm -f /tmp/MAKEDICT$$
+endif
+
+#
+# Get the old and new sliced axes
+#
+set newaxis = `dds_defn newaxis < $par`
+if ( "$newaxis" == "" ) then
+   if ( $nfiles == 1 ) exit 0
+   echo 'unable to find "newaxis=" definition in par file: '$par
+   exit 9
+endif
+
+cat $par >> $dict
+set axis = `dds_defn axis < $dict`
+if ( "$axis" == "" ) then
+   echo 'unable to find "axis=" definition'
+   exit 9
+endif
+#
+# check axis consitency amoung all files
+#
+echo "checking 'axis=$axis' for all files"
+set errors=0
+set n=`echo $axis|wc -w`
+foreach file ( $files )
+   if ( ! -f $file ) then
+      echo "No such file: $file"
+      @ errors++
+      continue
+   endif
+   set tstaxis = `dds_defn axis par=$par < $file`
+   @ i=0
+   while ( $i < $n )
+       @ i++
+      if ( "${axis[$i]}" != "${tstaxis[$i]}" ) then
+         echo "inconsistent 'axis=${tstaxis}' for file: $file"
+         @ errors++
+      endif
+      set size = `dds_defn size.${axis[$i]} < $dict`
+      set tstsize = `dds_defn size.${axis[$i]} < $file`
+      if ( "$size" != "$tstsize" ) then
+         echo "inconsistent 'size.${axis[$i]}=$tstsize' != '$size'"
+         @ errors++
+      endif
+   end
+end
+
+#
+# Check the newaxis
+#
+echo 'checking axis="'$axis'" ==> "'$newaxis'"'
+set a = .
+foreach b ( $axis )
+   set found = .
+   foreach a ( $newaxis )
+      if ( "$a" == "$b" ) then
+         if ( $found != . ) then
+            echo "found multiple axis names in newaxis=$newaxis"
+            @ errors++
+         endif
+         set found = $a
+      endif
+   end
+   if ( $found == . ) then
+      echo "unable to find axis name $b in newaxis=$newaxis"
+      @ errors++
+   endif
+end
+
+#
+# Search for sliced axis
+#
+set sliceaxis = .
+foreach b ( $newaxis )
+   foreach a ( $axis )
+      if ( "$a" == "$b" ) then
+         break
+      endif
+   end
+   if ( "$a" != "$b" ) then
+      if ( "$sliceaxis" != "." ) then
+         echo "Too many new axes in 'newaxis=${newaxis}'"
+         @ errors++
+      endif
+      set sliceaxis = $b
+   endif
+end
+
+if ( $sliceaxis == . ) then
+   echo "unable to find slice axis in 'newaxis=${newaxis}'"
+   @ errors++
+endif
+
+if ( $errors != 0 ) then
+   echo "ABNORMAL TERMINATION"
+   exit 9
+endif
+
+#
+# Patch up dictionary for slice
+#
+echo 'patching up dictionary with axis="'$axis'" ==> "'$newaxis'"'
+
+set format  = `dds_defn format  < $dict`
+
+echo "format=$format slice.$sliceaxis" >> $dict
+echo "axis=$newaxis" >> $dict
+echo "size.${sliceaxis}=$nfiles" >> $dict
+echo "data=" >> $dict
+foreach file ( $files )
+    echo $file >> $dict
+end
+
+echo "NORMAL TERMINATION"
+exit
+
+#################################################
+#
+# Single
+#
+#################################################
+single:
+
+echo ' '
+setenv PRINT_PATH
+
+@ n = 0
+foreach file ($files)
+   @ n = $n + 1
+   set dictn = ${dict}.${n}
+   rm -f $dictn
+   echo "Creating dictionary: ${dictn} from file: ${file}"
+   set type=`file -b $file|awk '{print $1}'`
+   if ("$type" == "ASCII") then
+      cp $file $dictn
+   else
+      echo "dds_bridge in=$file par=$par out=$dictn out_data=/dev/null"
+      dds_bridge in=$file par=$par out=$dictn out_data=/dev/null >& /dev/null
+      if ($status != 0) then
+         cat /tmp/MAKEDICT$$
+         rm -f /tmp/MAKEDICT$$
+         echo "Unable to create dictionary from file: $file"
+         echo "ABNORMAL TERMINATION"
+         exit 9
+      endif
+   endif
+   echo "data= ${file}" >> $dictn
+end
+
+echo "NORMAL TERMINATION"
+exit
+
+#################################################
+#
+# Help
+#
+#################################################
+help:
+
+echo ' '
+echo 'Script to create a sliced dictionary from 1 or more data files '
+echo 'or create single dictionaries 1 for each file. '
+echo ' '
+echo 'usage: makedict <dict> <par> <file1> [<file2> ... <fileN>]'
+echo '       makedict <dict> <par> list|single <listfile>'
+echo ' '
+echo 'where: dict    = output dictionary'
+echo '       par     = input parfile for extra definitions'
+echo '       filen   = input data file name(s) for a sliced dictionary'
+echo '       "list"  = to create sliced dictionary for all files in <listfile>'
+echo '       "single"= to create a dictionary for each file in <listfile>'
+echo '       listfile= name of a file containing a list of files (1 file per line)'
+echo ' '
+echo 'NOTE: par should contain such things as:'
+echo '       axis=z x y      eg. if usp file in depth'
+echo '       newaxis=z h x y eg. if creating multiple files as slice axis "h"'
+echo '       delta.h=...     eg. if needing slice axis delta (size.h created by script)' 
+echo '       origin.h=...    eg. if needing slice axis origin'
+echo ' '
+   
+exit 

@@ -1,0 +1,377 @@
+#!/bin/sh
+#!/bin/ksh
+#
+#   Distribute updates for a single DDS or USP application.
+#
+#   Oct 2007 - J. Ehlers
+#   Jan 2010 - J. Wade
+#   Nov 2012 - J. Wade
+#
+# if [ "${DDS_DEBUG}" = "TRUE" ]; then
+# set -x
+# fi
+
+# default DIST_PRODUCT to mbs if not set coming in (allows standalone processing)
+
+: ${DIST_PRODUCT:=mbs}
+
+if [ -d /hpc/tstapps ]; then 
+DDS_DIST=${DDS_DIST:-/hpc/tstapps}
+elif [ -d /tstapps/global ]; then
+DDS_DIST=${DDS_DIST:-/tstapps/global}
+fi
+
+if [ "${DDS_DIST:=not set}" = "not set" ]; then
+  echo DDS_DIST not set
+elif [ ! -d ${DDS_DIST} ]; then
+  echo DDS_DIST directory ${DDS_DIST} not found
+fi
+
+APPS=${DDS_DIST}
+
+if [ -d ${DDS_DIST}/asi ]; then
+ASI=asi
+fi
+
+if [ "${ASI}" != "" ]; then
+TARGET=/hpc/apps
+else
+APPS=${DDS_DIST}
+TARGET=/apps/global
+fi
+
+SERVER=localhost
+OS=`uname -s`
+
+HELP='no'
+if [ "$#" -lt 1 ]; then
+   HELP='yes'
+elif [ "$1" = "-h" ]; then
+   HELP='yes'
+elif [ "$2" = "-h" ]; then
+   HELP='yes'
+fi
+
+if [ $HELP = "yes" ]; then
+   echo " "
+   echo "distribute: push files that need updating for a single application"
+   echo "            from \"${APPS}\" testing area to the repository area"
+   echo "            for global distribution under \"${TARGET}\". You will"
+   echo "            be prompted for a descriptive reason for this distribution."
+   echo "            Only start bin script, man page and executables will be"
+   echo "            included."
+   echo " "
+   echo "Usage: distribute [-h|<app>]"
+   echo " "
+   exit 1
+fi
+
+FILE=$1
+
+: ${DDSRSH:=ssh}
+TST=`echo $DDSRSH|awk '{print $1}'`
+if [ -x "/usr/bin/${TST}" ]; then
+   DDSRSH="/usr/bin/${DDSRSH}"
+fi
+
+########################################################################
+#
+#   Initialize parameters
+#
+########################################################################
+
+DIST_DIR=${DDSROOT}/Distributions
+if [ ! -d ${DIST_DIR} ]; then
+   mkdir ${DIST_DIR}
+fi
+
+DIST_LIST=${DIST_DIR}/distribution_list
+RECIPIENTS=`grep '^[^#].*[@]' $DIST_LIST | awk '{printf("%s ",$2)}' `
+RECIPIENTS="${RECIPIENTS} ${USER}@localhost"
+if [ "${DIST_PRODUCT}" = "usp" ]; then
+CATEGORY="USP"
+# USERS="usplist@localhost"
+# USERSALIAS="USP Mailing List"
+USERS="gddsusers@localhost"
+# USERSALIAS="DDS Users"
+else
+CATEGORY="DDS"
+USERS="gddsusers@localhost"
+USERSALIAS="DDS Users"
+fi
+
+if [ "${DDS_DEBUG}" = "TRUE" ]; then
+  USERS="${USER}@localhost"
+  RECIPIENTS="${USER}@localhost"
+fi
+
+DATESTAMP=`date +%h_%d_%Y_%H:%M:%S`
+LISTFILE=${DIST_DIR}/updates_${USER}_${FILE}_${DATESTAMP}.list
+RSYNCFILE=${DIST_DIR}/updates_${USER}_${FILE}_${DATESTAMP}.rsync
+DIST_MAIL=${DIST_DIR}/DIST_MAIL_${USER}_${FILE}_${DATESTAMP}
+USER_MAIL=${DIST_MAIL}_users
+SEDARG1='s{^\([^/]*\)/\([^/]*\)/.*{\1{'
+SEDARG2='s{^\([^/]*\)/\([^/]*\)/.*{\2{'
+in=0
+
+########################################################################
+#
+#   Build Control File
+#
+########################################################################
+
+srcdir=${PWD}
+cd $APPS
+
+force_exit=0
+modknt=0
+#
+#   Check script
+#
+echo ' '; echo Checking script files...;  echo ' '
+file1=${ASI:+$ASI/}bin/$FILE
+file2=${TARGET}${ASI:+/$ASI}/bin/$FILE
+cmp $file1 $file2  1> /dev/null 2>&1
+if [ $? -ne 0 -a -f $file1 ]; then
+   in=`expr $in + 1`
+   modknt=`expr $modknt + 1`
+   echo '  ' bin/$FILE
+   echo bin/$FILE >> $LISTFILE
+fi
+
+#
+#   Go to asi subdirectory if present
+#
+if [ "${ASI}" != "" ]; then
+cd $ASI
+fi
+
+#
+#   Check each special xsd files:
+#      etc/mbs/help/xsd files
+#      etc/mbs/color/xsd files
+#
+if [ "$FILE" = "xsd" ]; then
+   echo ' ' ;  echo Checking xsd help and colormap files... ;  echo ' '
+   files=`ls -1 etc/mbs/help/xsd`
+   for file in $files ; do
+      file1=etc/mbs/help/xsd/$file
+      file2=${TARGET}${ASI:+/$ASI}/$file1
+      owner=`ls -ld $file1 | awk '{print $3}'`
+      if [ "${owner}" != "${USER}" ]; then continue; fi
+      cmp $file1 $file2 1> /dev/null 2>&1
+      if [ $? -ne 0 ]; then
+         in=`expr $in + 1`
+         modknt=`expr $modknt + 1`
+         echo '  ' $file1
+         echo $file1 >> $LISTFILE
+      fi
+   done
+   files=`ls -1 etc/mbs/color/xsd`
+   for file in $files ; do
+      file1=etc/mbs/color/xsd/$file
+      file2=${TARGET}${ASI:+/$ASI}/$file1
+      owner=`ls -ld $file1 | awk '{print $3}'`
+      if [ "${owner}" != "${USER}" ]; then continue; fi
+      cmp $file1 $file2 1> /dev/null 2>&1
+      if [ $? -ne 0 ]; then
+         in=`expr $in + 1`
+         modknt=`expr $modknt + 1`
+         echo '  ' $file1
+         echo $file1 >> $LISTFILE
+      fi
+   done
+fi
+
+#
+#   Check each product man page
+#
+echo ' ' ; echo Checking ${DIST_PRODUCT} man pages... ;  echo ' '
+NODE='/tmp/PushUpdatesNode$$'
+if [ "${DIST_PRODUCT}" = "usp" ]; then
+file1=man/usp/man/man1/${FILE}.1
+file2=man/usp/man/cat1/${FILE}.1
+file3=${TARGET}${ASI:+/$ASI}/$file1
+MANDIR=man/usp/man
+else
+file1=man/mbs/man1/${FILE}.1
+file2=man/mbs/cat1/${FILE}.1
+file3=${TARGET}${ASI:+/$ASI}/$file1
+MANDIR=man/mbs
+fi
+test -f $NODE && rm -f $NODE
+#mknod $NODE p
+(fgrep -v '.TH ' $file1 > $NODE) 1> /dev/null 2>&1
+(fgrep -v '.TH ' $file3 | cmp - $NODE) 1> /dev/null 2>&1
+if [ $? -ne 0 ]; then 
+   if [ "${OS}" != "SunOS" ]; then
+      cd $APPS${ASI:+/$ASI}
+      ${DDSROOT}/bin/makewhatis ${APPS}${ASI:+/$ASI}/${MANDIR} -o ${MANDIR}/whatis 1> /dev/null 2>&1
+   else
+      cd $APPS${ASI:+/$ASI}
+      catman -w -M ${MANDIR} 1> /dev/null 2>&1
+      makewhatis -o ${MANDIR}/whatis 1> /dev/null 2>&1
+   fi
+   chmod 664 ${MANDIR}/windex ${MANDIR}/whatis 1> /dev/null 2>&1
+   in=`expr $in + 2`
+   modknt=`expr $modknt + 3`
+   echo $file1
+   echo $file1 >> $LISTFILE
+   echo "${MANDIR}/windex" >> $LISTFILE
+   echo "${MANDIR}/whatis" >> $LISTFILE
+   if [ -f "$file2" ]; then
+      in=`expr $in + 1`
+      modknt=`expr $modknt + 1`
+      echo $file2 >> $LISTFILE
+   fi
+fi
+rm -f $NODE
+
+#
+#   Check each executable
+#
+echo ' ' ;  echo Checking binaries and symlinks... ; echo ' '
+#
+# For USP - only update binaries that have an equivalent in the current structure
+#
+if [ "${DIST_PRODUCT}" = "usp" ]; then
+files=""
+if [ -n "${LNDMRK}" ]; then
+  DIST_PRODUCT=${DIST_PRODUCT}/SeisWorks
+fi
+for thisbin in ${srcdir}/bin/[A-Z][a-z]*/[0-9][.][0-9]*/*/$FILE
+do
+  if [ -L ${thisbin} ]; then
+    inode=`ls --inode --dereference -1 ${thisbin} | awk '{print $1}' `
+    if [ "${inode}" == "" ]; then
+      echo ' '; echo '** ERROR **' symlink ${thisbin} is an invalid link:
+      ls -ld ${thisbin}
+      force_exit=1
+    fi
+    bindir=`dirname ${thisbin}`
+    thatbin=`find ${bindir} -name '*.rev[0-9][0-9]*' -inum ${inode} -print`
+  else
+    if [ -e ${thisbin} ]; then
+      thatbin=${thisbin}
+    else
+      thatbin=""
+    fi
+  fi
+  if [ "${thatbin}" != "" ]; then
+    BIN=`basename ${thatbin}`
+    for appsbin in [A-Z][a-z]*/[0-9][.][0-9]*/${DIST_PRODUCT}/*/*/$BIN
+    do
+      cmp ${thatbin} ${appsbin} > /dev/null 2>&1
+      if [ $? -eq 0 ]; then
+        bindir=`dirname ${appsbin}`
+        if [ -L ${bindir}/${FILE} ]; then
+          files="${files} ${bindir}/${FILE} ${appsbin}"
+        else
+          files="${files} ${appsbin}"
+        fi
+      fi
+    done  
+  fi
+done
+else
+#
+# This block takes care of DDS binaries
+#
+  for thisbin in `ls -d */*/${DIST_PRODUCT}/prod/*/${FILE} \
+    */*/${DIST_PRODUCT}/R5K/*/${FILE} | grep -v 'Linux/3.0' | grep -v ppc64le`
+  do
+    if [ -L ${thisbin} ]; then
+      inode=`ls --inode --dereference -1 ${thisbin} | awk '{print $1}' `
+      if [ "${inode}" == "" ]; then
+        echo ' '; echo '** ERROR **' symlink ${thisbin} is an invalid link:
+        ls -ld ${thisbin} | awk '{ARG1=NF-2; printf("         %s -> %s\n\n", $ARG1,  $NF)}'
+        force_exit=1
+        thatbin=""
+      else
+        bindir=`dirname ${thisbin}`
+        thatbin=`find ${bindir} -name '*.rev[0-9][0-9]*' -inum ${inode} -print`
+      fi
+    else
+      if [ -e ${thisbin} ]; then
+        thatbin=${thisbin}
+      else
+        thatbin=""
+      fi
+    fi
+    if [ "${thatbin}" != "" ]; then
+      if [ "${thisbin}" != "${thatbin}" ]; then
+        files="${files} ${thisbin} ${thatbin}"
+      else
+        files="${files} ${thatbin}"
+      fi
+    fi
+  done
+fi
+
+for file in $files; do
+   if [ -L $file ]; then
+      modknt=`expr $modknt + 1`
+      echo '  ' $file
+      echo $file >> ${LISTFILE}
+      continue
+   elif [ ! -f $file ]; then continue; fi
+   cmp -s $file ${TARGET}${ASI:+/$ASI}/$file
+   if [ $? -ne 0 ]; then
+      major=`echo $file | sed "$SEDARG1"`
+      minor=`echo $file | sed "$SEDARG2"`
+      case $major in
+      IRIX*)
+         if [ $minor != 6 ]; then
+            in=`expr $in + 1`
+            modknt=`expr $modknt + 1`
+            echo '  ' $file
+            echo $file >> $LISTFILE
+         fi;;
+      SunOS)
+         machine=`echo $file | awk -F/ '{print $5}'`
+         if [ $minor != 5 ]; then
+            in=`expr $in + 1`
+            modknt=`expr $modknt + 1`
+            echo '  ' $file
+            echo $file >> $LISTFILE
+         fi;;
+      Linux)
+         in=`expr $in + 1`
+         modknt=`expr $modknt + 1`
+         echo '  ' $file
+         echo $file >> $LISTFILE;;
+      *)
+         echo "*** Unknown Major=$major ***";;
+      esac
+      if [ "${rev}" = "" ]; then
+        rev=`echo ${file} | sed 's/^.*\(rev[0-9][0-9]*\)$/\1/'`
+      else
+        trev=`echo ${file} | sed 's/^.*\(rev[0-9][0-9]*\)$/\1/'`
+        if [ "${trev}" != "${rev}" ]; then
+          echo ' '
+          echo '** ERROR **' uneven binary revisions found: $trev vs $rev
+          force_exit=1
+        fi
+      fi
+   fi
+done
+
+if [ $modknt -eq 0 ]; then
+  echo 'Update contains no files; aborting'
+  force_exit=1
+fi
+ 
+if [ $force_exit -ne 0 ]; then
+  echo ' '
+  echo Errors detected in processing. Exiting..
+  echo ' '
+  for f in ${DIST_MAIL} ${USER_MAIL} ${RSYNCFILE}
+  do
+    test -f $f && ( echo removing $f ; rm -f $f )
+  done
+  exit 1
+fi
+
+${DDSROOT}/bin/Push_DDS_Distro list=$LISTFILE dist_product=${DIST_PRODUCT} prgm=$FILE
+
+exit

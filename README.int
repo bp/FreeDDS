@@ -1,0 +1,35 @@
+#######################################################################
+#                 copyright 2005, BP America Inc.                     #
+#                        All Rights Reserved                          #
+#######################################################################
+
+File: $DDSROOT/README.int
+
+  The "README.int" files in this directory tree contain notes
+  regarding DDS internals.
+
+14 Feb 2005 Randy Selzler
+
+$DDSROOT is the root of the DDS installation directory.
+
+Source code is found in:
+  /src/lib  archive libraries
+    dds3    DDS, compiled with optimization
+    dds3g   DDS, compiled with -g (debug symbol tables)
+    host    Host specific functions.
+              Also contains source for Makefile components.
+    gio     Low level I/O routines, similar to C std I/O.
+    fft     generic wrapper for FFT (uses fftw by default)
+    fftw    Fastest Fourier Transform in the West (fftw, rfftw)
+    ...
+  /src/cmd  executable commands
+    ...     One subdirectory 
+
+DDS files that are distributed for developers are installed into:
+  /lib      archive libraries
+  /include  C include files
+              Fortran includes are kept in archtecture specific subdirs.
+              The files can contain pure Fortran, because preprocessor
+              specific code for architectures is already factored out.
+  /etc      Makefile components
+  /bin      utility commands

@@ -1,0 +1,17 @@
+#!/bin/sh
+# RCS-t=DDS script, print history of who processed the data
+#
+# Maintained by Jerry Ehlers under DDS
+#
+
+if [ "$1" = -h -o "$1" = h -o "$1" = -help -o "$1" = help ]; then
+   echo 'dds_who:' history of who processed the data
+   echo 'Example:' dds_who '<' dictionary
+   exit 1
+fi
+
+egrep '(cmd_title=|cmd_user=)' $1
+status=$?
+if [ "$status" != 0 ]; then
+   echo "No user found!"
+fi

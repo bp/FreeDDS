@@ -1,0 +1,300 @@
+########################################################################
+#                      copyright 2009, BP America                      #
+#                          All Rights Reserved                         #
+########################################################################
+# $Id: MakeSrcRules 219 2011-02-16 01:11:40Z user $
+
+### The "yelp" target is used to test "make" functionality.
+### It should echo "YELP", "YELP_SRC" and "YELP_ARCH" as "make"
+### executes in the source and architecture specific directories.
+yelp:  yelp_src  yelp_arch
+	# YELP:
+	#    host=$(host)
+	#    target=$(target)
+	#    HARCH=$(HARCH) 
+	#    VARCH=$(VARCH)
+	#    TARCH=$(TARCH)
+	#    UARCH=$(UARCH)
+	# HARCH: abreviated arch name
+	# VARCH: abreviated arch name with CompExt for source
+	# TARCH: abreviated arch name with CompExt for arch
+	# UARCH: subdirectory path with compiler version for arch
+
+yelp_src:
+	# YELP_SRC:
+	#    host=$(host)
+	#    target=$(target)
+	#    HARCH=$(HARCH) 
+	#    VARCH=$(VARCH)
+	#    TARCH=$(TARCH)
+	#    UARCH=$(UARCH)
+
+### Clear suffix list to force "make xxx.o" into .DEFAULT processing
+.SUFFIXES:
+
+### If making the default target, simply make the default host.
+#DEFAULT_TARGET: rmt.$(host)
+DEFAULT_TARGET: local
+	@ $(VERBOSE) Rule, $@: $?
+
+### Dummy targets for remote hosts and architectures.
+### Example: "gmake sun", "gmake all target=foo.o".
+
+rmt.world world rmt.all all: sun linux wait
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.sun sun: sun4u5_8 i86pc5_10
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.sun4u5_8 sun4u5_8: sun4u5_8-SC6
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.sun4u5_8-SC6 sun4u5_8-SC6: $(strip $(SERVER-sun4u5_8)).sun4u5_8-SC6
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.i86pc5_10 i86pc5_10: i86pc5_10-SC8
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.i86pc5_10-SC8 i86pc5_10-SC8: $(strip $(SERVER-i86pc5_10)).i86pc5_10-SC8
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.sgi sgi: IRIX32-IP27 IRIX32-IP27-n32 IRIX64-IP27
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.IRIX32-IP27 IRIX32-IP27: $(strip $(SERVER-IRIX-IP27)).IRIX32-IP27
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.IRIX32-IP27-n32 IRIX32-IP27-n32: $(strip $(SERVER-IRIX-IP27)).IRIX32-IP27-n32
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.IRIX64-IP27 IRIX64-IP27: $(strip $(SERVER-IRIX-IP27)).IRIX64-IP27
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.linux linux: LX26i686 LX26sgiia64 LX26x86_64 LX26ppc64_pwr6
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX24i686 LX24i686: LX24i686-9
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX24i686-9 LX24i686-9: $(strip $(SERVER-LX24i686-9)).LX24i686-9
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26i686 LX26i686: LX26i686-11_1MPI4_0_0_028MKL10_2_5_035
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26i686-11 LX26i686-11: $(strip $(SERVER-LX26i686-11)).LX26i686-11
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26i686-11_1MPI4_0_0_028MKL10_2_5_035 LX26i686-11_1MPI4_0_0_028MKL10_2_5_035: $(strip $(SERVER-LX26i686-11)).LX26i686-11_1MPI4_0_0_028MKL10_2_5_035
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26sgiia64 LX26sgiia64: LX26sgiia64-11_1
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26sgiia64-9 LX26sgiia64-9: $(strip $(SERVER-LX26sgiia64)).LX26sgiia64-9
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26sgiia64-10 LX26sgiia64-10: $(strip $(SERVER-LX26sgiia64)).LX26sgiia64-10
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26sgiia64-11_1 LX26sgiia64-11_1: $(strip $(SERVER-LX26sgiia64)).LX26sgiia64-11_1
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26x86_64 LX26x86_64: LX26x86_64-11_1MPI3_2_1_009 LX26x86_64-11_1MPI4_0_0_028MKL10_2_5_035 \
+                           LX26x86_64-4_1_2 LX26x86_64-4_3_2
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26x86_64-9 LX26x86_64-9: $(strip $(SERVER-LX26x86_64)).LX26x86_64-9
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26x86_64-10 LX26x86_64-10: $(strip $(SERVER-LX26x86_64)).LX26x86_64-10
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26x86_64-11 LX26x86_64-11: $(strip $(SERVER-LX26x86_64)).LX26x86_64-11
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26x86_64-11_1MPI3_2_1_009 LX26x86_64-11_1MPI3_2_1_009: $(strip $(SERVER-LX26x86_64)).LX26x86_64-11_1MPI3_2_1_009
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26x86_64-11_1MPI4_0_0_028MKL10_2_5_035 LX26x86_64-11_1MPI4_0_0_028MKL10_2_5_035: $(strip $(SERVER-LX26x86_64)).LX26x86_64-11_1MPI4_0_0_028MKL10_2_5_035
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26x86_64-4_1_2 LX26x86_64-4_1_2: $(strip $(SERVER-LX26x86_64-4_1_2)).LX26x86_64-4_1_2
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26x86_64-4_3_2 LX26x86_64-4_3_2: $(strip $(SERVER-LX26x86_64-4_3_2)).LX26x86_64-4_3_2
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26ppc64_pwr6 LX26ppc64_pwr6: LX26ppc64_pwr6-12
+	@ $(VERBOSE) Remote make, $@: $?
+
+rmt.LX26ppc64_pwr6-12 LX26ppc64_pwr6-12: $(strip $(SERVER-LX26ppc64_pwr6)).LX26ppc64_pwr6-12
+	@ $(VERBOSE) Remote make, $@: $?
+
+### Install deliverables from the source and $(TARCH) directories.
+### Serial processing avoids race condition when installing
+### architecture independent deliverables.
+
+install: serial.install_more
+	@ $(VERBOSE) Rule, $@: $?
+
+.PHONY: allinstall
+allinstall: 
+	@ $(MAKE) install host=all 
+
+wait:
+	@- echo; L=`ls */LOCK 2>/dev/null|sed 's/\/LOCK//g'`; LS="";for LL in $$L; do LS="$$LS $$LL";done; \
+           while [ -n "$$LS" ]; do echo -ne \
+              "\r*** Waiting on: $$LS ***                                         "; \
+              sleep 3; L=`ls */LOCK 2>/dev/null|sed 's/\/LOCK//g'`; LS=""; for LL in $$L; \
+              do LS="$$LS $$LL";done; done; 
+	@- echo; find . -name 'lib*.a' -exec ls -l {} \;
+	@- L=`find * -name 'lib*.a'|sed 's/\// /g'|awk '{print $$2}'|sort -u`; \
+           for LL in $$L; do ls -l $(DDSROOT)/lib/*/$$LL; done
+
+NUKE_LOCK:
+	@- $(RM-f) */LOCK
+
+allclean:
+	@- echo; L=`find * -name Makefile|sed 's/Makefile//'`;for LL in $$L; do \
+              echo "Removing $$LL"; rm -rf $$LL; done
+	@- rm mklog/*
+
+show_lib: wait
+
+show_libs:
+	@- echo;echo "*** Installed under $(DDSROOT) ***";\
+           cd  $(DDSROOT);ls -l lib/*/lib*a
+
+show_install_src:
+	@- ls  $(API_ETC) $(API_BIN)
+
+kill_install_src:
+	@- rm -f  $(API_ETC)/* $(API_BIN)/*
+
+help:
+	#
+	# Available gmake options:
+	#    all
+	#    install [host=...]
+	#    installed
+	#    show_lib
+	#    show_libs
+	#    show_install_src
+	#    show_arch_libs
+	#    wait
+	#    kill_install_src
+	#    kill_arch_libs
+	#    NUKE_LOCK
+	#    yelp
+	#    allclean
+	#
+
+### Most source directory make targets use this .DEFAULT rule.
+### It starts make on remote hosts, or in TARCH if host is local.
+### To watch it working, define "DEBUG='echo DEBUG'".
+### No longer use "ping" to determine a host because it hangs on
+### some systems; now use "rmt." at the begginging of a host.
+.DEFAULT:
+	@ $(UMASK) $(UMASK_VALUE); PATH="$(CMD_PATH):$$PATH"; \
+$(VERBOSE) .DEFAULT rule 0, CMD: '"$@"', host=$(host), target=$(target), TARCH=$(TARCH); \
+GHOST='$(host)'; GTARCH='$(TARCH)'; GTARGET='$(target)'; \
+if [ "`$(EXPR) '$@' : '\(serial\)\..*'`" = serial ]; then \
+   $(VERBOSE) .DEFAULT rule 1, recursion for explicit serial goal; \
+   NON_SERIAL="`$(EXPR) '$@' : 'serial\.*\([^.].*\)'`"; echo \
+   "$(RMT_MAKE) $${GHOST:+host=\"$$GHOST\"} $${GTARCH:+TARCH=\"$$GTARCH\"}" \
+      "$${GTARGET:+target=\"$$GTARGET\"} parallel=';' \"$$NON_SERIAL\"" \
+      verbose='$(verbose)' debug='$(debug)'; \
+    $(RMT_MAKE) $${GHOST:+host="$$GHOST"}   $${GTARCH:+TARCH="$$GTARCH"} \
+       $${GTARGET:+target="$$GTARGET"}   parallel=';'  "$$NON_SERIAL" \
+       verbose='$(verbose)' debug='$(debug)'; \
+   exit; \
+elif [ "`$(EXPR) '$@' : '\(local\)\..*'`" = local ]; then \
+   GHOST=local; \
+   GTARGET="`$(EXPR) '$@' : 'local\.*\([^.].*\)'`"; \
+elif [ '$@' != local ]; then \
+   $(VERBOSE) .DEFAULT rule 2, Test '"$@"' for remote host name; \
+   RMT_HOST="`$(EXPR) '$@' : 'rmt[.]\.*\([^.][^.]*\)\.*[^.]*'`"; \
+   RMT_ARCH="`$(EXPR) '$@' : 'rmt[.]\.*[^.].*\.\([^.][^.]*\)'`"; \
+   if [ -n "$$RMT_HOST" -a "$$RMT_HOST" != "default" -a  "$$RMT_HOST" != "all" ]; then \
+      if [ -n "$$RMT_ARCH" ]; then \
+         $(VERBOSE) .DEFAULT rule 3, recursion for RMT_ARCH $$RMT_ARCH; echo \
+         "$(RMT_MAKE) host=local TARCH=\"$$RMT_ARCH\"" \
+            "$${GTARGET:+target=\"$$GTARGET\"} parallel=\"$(parallel)\"" \
+            "\"rmt.$$RMT_HOST\"" verbose='$(verbose)' debug='$(debug)'; \
+          $(RMT_MAKE) host=local TARCH="$$RMT_ARCH" \
+             $${GTARGET:+target="$$GTARGET"}   parallel="$(parallel)" \
+              "rmt.$$RMT_HOST"   verbose='$(verbose)' debug='$(debug)'; \
+         exit; \
+      fi; \
+      $(VERBOSE) .DEFAULT rule 4, Query ssh on remote host, $$RMT_HOST; \
+      CHK_RSH="`$(RSH) $$RMT_HOST date`"; \
+      if [ $$? -ne 0 ]; then echo "ERROR EXECUTING SECURE SHELL FROM: $$HOST TO: $$RMT_HOST"; \
+         exit 1; \
+      fi; \
+      RMT_DIR=`$(PWD)`; \
+      $(VERBOSE) .DEFAULT rule 5, launch remote make, $$RMT_HOST; \
+      if [ ! -d mklog ]; then $(MKDIR) mklog; fi; \
+      RMT_LOG="mklog/$$RMT_HOST$${GTARCH:+.$$GTARCH}${DBGEXT}"; \
+      $(RM-f) "$$RMT_LOG.old"; if [ -f "$$RMT_LOG.new" ]; \
+      then $(MV) "$$RMT_LOG.new" "$$RMT_LOG.old"; fi; echo \
+      "$(RSH) $$RMT_HOST \"cd '$$RMT_DIR'; $(RMT_MAKE) host=local REMOTE=x" \
+         "$${GTARCH:+TARCH='$$GTARCH'} $$GTARGET\"" \
+         "> \"$$RMT_LOG.new\" verbose='$(verbose)' debug='$(debug)'  2>&1 $(parallel)"; \
+       $(RSH) $$RMT_HOST  "cd '$$RMT_DIR'; $(RMT_MAKE) host=local REMOTE=x \
+          $${GTARCH:+TARCH='$$GTARCH'} $$GTARGET" \
+          >  "$$RMT_LOG.new"  verbose='$(verbose)' debug='$(debug)'  2>&1 $(parallel) \
+      exit; \
+   fi; \
+   $(VERBOSE) .DEFAULT rule 6, '"$@"' is a GTARGET, not a remote host; \
+   GTARGET='$@'; \
+fi; \
+if [ "`$(EXPR) '$(host)' : '\(serial\)\..*'`" = serial ]; then \
+   $(VERBOSE) .DEFAULT rule 7, recursion for host serial prefix; \
+   NON_SERIAL="`$(EXPR) '$(host)' : 'serial\.*\([^.].*\)'`"; echo \
+   "$(RMT_MAKE) host=local $${GTARCH:+TARCH=\"$$GTARCH\"}" \
+      "$${GTARGET:+target=\"$$GTARGET\"} verbose='$(verbose)' debug='$(debug)' parallel=';' \"$$NON_SERIAL\""; \
+    $(RMT_MAKE) host=local $${GTARCH:+TARCH="$$GTARCH"} \
+       $${GTARGET:+target="$$GTARGET"}   verbose='$(verbose)' debug='$(debug)' parallel=';'  "$$NON_SERIAL"; \
+   exit; \
+elif [ "$$GHOST" != local ]; then \
+   $(VERBOSE) .DEFAULT rule 8, recursion for non-local host; echo \
+   "$(RMT_MAKE) host=local $${GTARCH:+TARCH=\"$$GTARCH\"}" \
+      "$${GTARGET:+target=\"$$GTARGET\"} verbose='$(verbose)' debug='$(debug)' \
+       parallel=\"$(parallel)\" \"rmt.$(host)\""; \
+    $(RMT_MAKE) host=local $${GTARCH:+TARCH="$$GTARCH"} \
+       $${GTARGET:+target="$$GTARGET"}   verbose='$(verbose)' debug='$(debug)' \
+       parallel="$(parallel)"    "rmt.$(host)"; \
+   exit; \
+fi; \
+$(VERBOSE) .DEFAULT rule 9, recursion for local GTARCH/Makefile; \
+if [ -z "$$GTARCH" ]; then \
+   GTARCH='$(VARCH)'; \
+   if [ -z "$$GTARCH" ]; then echo make: error, TARCH not set; exit 1; fi; \
+   if [ "$$GTARCH" = "IRIX64" ]; then GTARCH='IRIX64-'`$(UNAME) -m`; fi; \
+fi; \
+if [ '$(subdir)' != . ]; then \
+   $(VERBOSE) .DEFAULT rule 10, loop over command subdirectories; \
+   for DIR in $(subdir); do : ; \
+      if [ -d "$$DIR" ]; then echo "$(CD) $$DIR; $(RMT_MAKE) host=local \
+         $${GTARCH:+TARCH=\"$$GTARCH\"} $${GTARGET:+target=\"$$GTARGET\"} verbose='$(verbose)' debug='$(debug)'"; \
+         ($(CD) $$DIR; $(RMT_MAKE) host=local $${GTARCH:+TARCH="$$GTARCH"} \
+            $${GTARGET:+target="$$GTARGET"} verbose='$(verbose)' debug='$(debug)'); \
+      else echo make: error, non-subdirectory "$$DIR"; \
+      fi ; \
+   done; exit 0; \
+fi; \
+if [ -n "$(TARCH)" ]; then MTARCH='$(TARCH)$(DBGEXT)'; \
+else MTARCH='$(VARCH)$(DBGEXT)'; fi; \
+$(VERBOSE) .DEFAULT rule 9b, checking for $$MTARCH; \
+if [ ! -d $$MTARCH ]; then $(MKDIR) $$MTARCH; fi; \
+if [ -r $$MTARCH/LOCK ]; then echo make: error, $$MTARCH/LOCK; exit 1; fi; \
+set -e; $(RM-f) $$MTARCH/Makefile; \
+echo TARCH=$$GTARCH    > $$MTARCH/Makefile; \
+$(CAT) $(MAKE_ARCH)   >> $$MTARCH/Makefile; \
+export LD_LIBRARY_PATH; $(LIMIT_CPU); \
+echo "$(CD) $$MTARCH; $(RMT_MAKE) $$GTARGET" verbose='$(verbose)' debug='$(debug)'; \
+$(CD) $$MTARCH; echo `$(HOSTNAME)` $$$$ > LOCK; set +e; \
+trap "$(RM-f) LOCK" $(TRAP_INT); \
+$(RMT_MAKE) $$GTARGET verbose='$(verbose)' debug='$(debug)'; $(RM-f) LOCK; \
+echo MAKE_TIMES; times

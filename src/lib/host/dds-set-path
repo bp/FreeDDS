@@ -1,0 +1,549 @@
+#!/bin/sh
+###############################################################
+#                 copyright 2009, BP America Inc.             #
+#                       All Rights Reserved                   #
+###############################################################
+#
+# dds-set-path: search path to executable
+# sets up APP, MPIRUN, LD_LIBRARY_PATH... 
+#
+# unset module functions which cause problems in DDS env: parsing
+#
+unset -f ml
+unset -f module
+#
+# fetch needed command line arguments
+#
+old=
+nproc=1
+vers="prod"
+
+prev=
+newargs=
+for arg do
+   case $arg in
+      old=*)
+	eval $arg;
+	arg=;
+	newargs=${newargs:+"${newargs} "}"${droparg-${prev}}";
+	unset droparg;;
+      vers=*)
+	eval $arg;
+	arg=;
+	newargs=${newargs:+"${newargs} "}"${droparg-${prev}}";
+	unset droparg;;
+      nproc=*)
+	eval $arg;
+	newargs=${newargs:+"${newargs} "}"${droparg-${prev}}";
+	unset droparg;;
+      svnvers=*) 
+ 	eval $arg;
+	newargs=${newargs:+"${newargs} "}"${droparg-${prev}}";
+        droparg=;;
+      *=*) 
+	newargs=${newargs:+"${newargs} "}"${droparg-${prev}}";
+	unset droparg;;
+      *) case $prev in
+            old=)
+		old=$arg;
+		arg= ;;
+            vers=)
+		vers=$arg;
+		arg= ;;
+            nproc=)
+		nproc=$arg;
+		newargs=${newargs:+"${newargs} "}"${droparg-${prev}}";
+		unset droparg;;
+            svnvers=)
+		svnvers=$arg;
+                droparg=;;
+            *)
+                newargs=${newargs:+"${newargs} "}"${droparg-${prev}}";
+		unset droparg;;
+         esac
+   esac
+   prev=$arg
+done
+ 
+svnvers=${svnvers-"default"}
+svnvers=${svnvers:="query"}
+
+newargs="${newargs} ${prev}"
+set -- ${newargs}
+
+#
+# setup defaults
+#
+CURPTH=`dirname $0` ; test "${CURPTH}" = "." && CURPTH=`pwd`
+APPDIR=${DDS_APPDIR:-"`echo ${CURPTH} | /bin/sed 's/[/][^/]*$//'`"}
+
+if [ -d /hpc/tstapps ]; then 
+DDS_DIST=${DDS_DIST:-/hpc/tstapps}
+fi
+#
+# Running out of the new architecture - binaries are in asi subdirectory
+#
+if [ -d ${APPDIR}/asi ]; then 
+APPASI=asi/
+fi
+
+if [ -d ${DDS_DIST}/asi ]; then 
+DDSDISTASI=asi/
+fi
+
+: ${DIST_PRODUCT:=mbs}
+: ${DIST_VERSION:=${vers}}
+
+if [ "$svnvers" != "default" -a "$svnvers" != "query" ]; then
+  APP=${DDS_APP:-"`echo $0 | awk -F/ '{print $NF}'`"}${svnvers:+".rev${svnvers}"}
+else
+  APP=${DDS_APP:-"`echo $0 | awk -F/ '{print $NF}'`"}
+fi
+
+if [ "$svnvers" != "query" ]; then
+#
+# turn on application monitoring
+#
+if [ -d /hpc/tstapps/asi/src/dds/DDSLog -a -w /hpc/tstapps/asi/src/dds/DDSLog ]; then
+DDS_MONITOR='/hpc/tstapps/asi/src/dds/DDSLog'
+elif [ -d /tstapps/global/src/DDSLog -a -w /tstapps/global/src/DDSLog ]; then
+DDS_MONITOR='/tstapps/global/src/DDSLog'
+elif [ -d /apps/asi/common/mbs/DDSLog -a -w /apps/asi/common/mbs/DDSLog ]; then
+DDS_MONITOR='/apps/asi/common/mbs/DDSLog'
+else
+DDS_MONITOR='/NoDDSLog'
+fi
+fi
+
+DDS_TIMESTAMP=${DDS_TIMESTAMP:-0}
+
+#
+# setup for this system
+# (This must be the same as with HostDir & HostComp)
+#
+system=`uname -s | awk '{print $1}'`
+machine=`uname -m | sed 's/[/]/-/' | awk '{print $1}'`
+release=`uname -r | sed 's/^[0]*//' | sed 's/[^0-9.]/ /g' | sed 's/^[0]*//'`
+major=`echo ${release} | awk -F. '{print $1}'`
+minor=`echo ${release} | awk -F. '{print $2}'`
+release="${major}.${minor:=0}"
+SGI=""
+if [ "${system}" = "Linux" -a -f "/etc/sgi-release" -a "${machine}" = "ia64" ]; then
+   SGI="-sgi"
+elif [ "${machine}" = "ppc64" ]; then
+   cpu=`grep cpu /proc/cpuinfo|head -1|awk '{print $3}'|sed 's/POWER/pwr/'|sed 's/+//'`
+   machine="${machine}_${cpu}"
+fi
+
+
+#
+# setup variables to search for an alternate path to binary
+#
+case "${system}" in
+  Sun*)    COMP_ARCHS="SunOS-CM SunOS";
+	        OS_REVS="6.0 5.9 5.8 5.7 5.6 5.5 4.1";
+           ARCHDIRS="sun4u sun4d sun4c sun4m sun4 sun4m sun4c sun4d sun4u";;
+  IRIX*)   COMP_ARCHS="IRIX64 IRIX";
+	        OS_REVS="6.5 6.4 6.2 5";
+           ARCHDIRS="IP35 IP30 IP28 IP27 IP25 IP26 IP21 IP22 IP21 IP26 IP25 IP27 IP28 IP30 IP35";;
+  Linux*)  COMP_ARCHS="Linux";
+           if [ -f "/etc/sgi-release" ]; then
+              OS_REVS="2.6-sgi 2.6 2.4-sgi 2.4 2.2 2.4 2.4-sgi 2.6 2.6-sgi";
+           else
+              OS_REVS="3.10 3.2 3.1 3.0 2.6 2.4 2.2 2.4 2.4-sgi 2.6 2.6-sgi";
+           fi
+	        case "${machine}" in
+	          ia64)   ARCHDIRS="ia64 i686 i586 i386";;
+	          x86_64) ARCHDIRS="x86_64 i686 i586 i386";;
+	          i*86)   ARCHDIRS="i386 i586 i686 i586 i386";;
+	          ppc64*) ARCHDIRS="ppc64_pwr7 ppc64_pwr6 ppc64_pwr5";;
+  	          *)      ARCHDIRS="";;
+	        esac;;
+  HP*)     COMP_ARCHS="HP-UX";
+	        OS_REVS="11.20 10 9";
+ 	        ARCHDIRS="9000-889 9000-755 9000-735 9000-755 9000-889 ia64";;
+  FreeBSD*)COMP_ARCHS="FreeBSD Linux";
+	        OS_REVS="4.6 4.5 2.4 2.2 2.1";
+	        ARCHDIRS="i386 i586 i686 i586 i386";;
+  Convex*) COMP_ARCHS="";
+	        OS_REVS="";
+           ARCHDIRS="convex_C220";;
+  OSF*)    COMP_ARCHS="OSF1";
+	        OS_REVS="5.0";
+	        ARCHDIRS="alpha";;
+  Darwin*) COMP_ARCHS="Darwin";
+	        OS_REVS="6.8 6.6";
+	        ARCHDIRS="PowerMacintosh";;
+  *)       COMP_ARCHS="";
+	        OS_REVS="";
+           ARCHDIRS="";;
+esac
+
+#
+# Try a direct approach first then if not found look through combinations 
+# of OS level, machine & hardware starting with the most compatible
+# Comparing: system to COMP_ARCHS, release to OS_REVS & machine to ARCHDIRS
+#
+osarch=${system}
+osrev=${release}${SGI}
+target=${machine}
+                     
+PTH=${APPDIR}/${APPASI}${osarch}/${osrev}/${DIST_PRODUCT}/${DIST_VERSION}/${target}
+SEARCHED_PATH="${PTH}/${APP}"
+if [ -x ${PTH}/${APP} ]; then
+    EXEC_APP=${PTH}/${APP}
+
+else
+    EXEC_APP="ERROR"
+# Level 1: search for system in COMP_ARCHS
+   BUILDINGPATH="false"
+   for osarch in ${COMP_ARCHS}; do
+      if [ "${system}" = "${osarch}" ]; then
+         BUILDINGPATH="true"
+      fi
+      if [ "${BUILDINGPATH}" = "true" ]; then
+# Level 2: seach for release in OS_REVS
+         BUILDINGPATH="false"
+         for osrev in ${OS_REVS}; do
+            if [ "${release}" = "${osrev}" \
+             -o  "${release}${SGI}" = "${osrev}" ]; then
+               BUILDINGPATH="true"
+            fi
+            if [ "${BUILDINGPATH}" = "true" ]; then
+# Level 3: search for machine in ARCHDIRS
+               BUILDINGPATH="false"
+               for target in ${ARCHDIRS}; do
+                  if [ "${machine}" = "${target}" ]; then
+                     BUILDINGPATH="true"
+                  fi
+                  if [ "${BUILDINGPATH}" = "true" ]; then
+                     PTH=${APPDIR}/${APPASI}${osarch}/${osrev}/${DIST_PRODUCT}/${DIST_VERSION}/${target}
+                     SEARCHED_PATH="${SEARCHED_PATH} ${PTH}/${APP}"
+                     if  [ -x ${PTH}/${APP} ]; then
+                        EXEC_APP=${PTH}/${APP}
+                        break
+                     fi
+                  fi
+               done
+               if [ "${EXEC_APP}" != "ERROR" ]; then
+                  break
+               fi
+            fi
+         done
+         if [ "${EXEC_APP}" != "ERROR" ]; then
+            break
+         fi
+      fi
+   done
+
+#
+# check if running out of development directory
+#
+   if [ "${EXEC_APP}" = "ERROR" ]; then
+       osarch=${system}
+       osrev=${release}${SGI}
+       target=${machine}
+
+       PTH=${CURPTH}/bin/${osarch}/${osrev}/${target}
+       SEARCHED_PATH="${SEARCHED_PATH} ${PTH}/${APP}"
+       if  [ -x ${PTH}/${APP} ]; then
+           EXEC_APP=${PTH}/${APP}
+       elif  [ "${machine}" = "x86_64" ]; then
+           target=i686
+           PTH=${CURPTH}/bin/${osarch}/${osrev}/${target}
+           SEARCHED_PATH="${SEARCHED_PATH} ${PTH}/${APP}"
+           if  [ -x ${PTH}/${APP} ]; then
+               EXEC_APP=${PTH}/${APP}
+           fi
+       fi
+   fi
+
+#
+# printout error info
+#
+   if [ "${EXEC_APP}" = "ERROR" ]; then
+      ERRFILE=/tmp/${USER}.`date +%y%j`.$$
+      touch ${ERRFILE} > /dev/null 2>&1 < /dev/null
+      if [ -f ${ERRFILE} ]; then
+         for filename in ${SEARCHED_PATH}; do
+            (grep ${filename} ${ERRFILE} > /dev/null < /dev/null) || \
+            echo ${filename} >> ${ERRFILE} < /dev/null
+         done
+         echo "No binary found for ${APP} in:"
+         awk '{for (i=1; i<=NF; i++) { \
+            dup="false" ;\
+            for (j=1; j<i; j++) if ( $j == $i ) dup="true" ;\
+               if ( dup != "true" ) printf("     %s\n",$i); \
+            } \
+         }' < ${ERRFILE}
+         rm ${ERRFILE}
+      else
+         devchk=`tty`
+         if test "${devchk}" != "not a tty"; then
+            ( echo "No binary found for ${APP} in ${APPDIR} structure" ) > /dev/tty < /dev/null
+         fi
+      fi
+      exit 1
+   fi
+fi
+
+if [ $svnvers = "query" ]; then
+  if [ -L ${PTH}/${APP} ]; then
+    revtarget=`ls -l ${PTH}/${APP} | awk '{print $NF}'`   
+    echo ' '; echo Default version:
+    revnum=`echo $revtarget | sed 's/^.*[.]rev//'`   
+    prdrevnum=$revnum
+    revdate=`date --reference=${PTH}/$revtarget`
+    echo '   Revision ' $revnum ' : ' $revdate
+    revknt=`find ${PTH} -perm -100 -name ${APP}'.rev*' -print | wc -l`
+    if [ $revknt -eq 1 ]; then
+      echo ' '; echo No older versions available
+    else
+      echo ' '; echo Other available versions:
+      for bin in `ls -1 -dt ${PTH}/${APP}.rev*`
+      do
+        if [ -x $bin ]; then
+          revnum=`echo $bin | sed 's/^.*[.]rev//'`   
+          if [ "$revnum" != "$prdrevnum" ]; then
+            revdate=`date --reference=${bin}`
+            echo '   Revision ' $revnum ' : ' $revdate
+          fi
+        fi
+      done
+    fi
+    echo ' '
+  fi
+  exit 0
+fi
+
+if [ -L ${EXEC_APP} ]; then
+    SVN_VERSION=`readlink ${EXEC_APP} | grep '[.]rev' | awk -F. '{print $NF}'`
+    EXEC_APP=${EXEC_APP}${SVN_VERSION:+".$SVN_VERSION"}
+fi
+
+LOG=${DDS_MONITOR}/${APP}.log
+TMP=${DDS_MONITOR}/${APP}.log.tmp$$
+if [ -d ${DDS_MONITOR} ]; then
+   if [ -w ${LOG} ]; then
+      nlines=`wc -l < ${LOG} 2> /dev/null`
+      if [ $nlines -gt 10000 ]; then
+         test -f ${TMP} && rm -f ${TMP} > /dev/null 2>&1
+# capture minimum time limit from existing file
+         mintm=`head -1 ${LOG} |  grep '^[0-9][0-9]*$'`
+         if [ "${mintm}" != "" ]; then
+           echo "${mintm}" > ${TMP} 2> /dev/null
+         else
+           echo "0" > ${TMP} 2> /dev/null
+         fi
+         (tail -1000  ${LOG} >> ${TMP}) >  /dev/null 2>&1
+         mv -f ${TMP} ${LOG} > /dev/null 2>&1
+         chmod 666 ${LOG} > /dev/null 2>&1
+      fi
+   else
+      echo "0" >> ${LOG} 2> /dev/null
+      chmod 666 ${LOG} > /dev/null 2>&1
+   fi
+fi
+
+# There was a snafu in the logs when we went to executing the app.revNNNN 
+# binary directly. This is now handled in c_print.c, but until all codes 
+# have been rebuilt, this block of code insures that auditing is done. The 
+# audits wil be in a file with binary revision number included.
+
+LOG=${DDS_MONITOR}/${APP}${SVN_VERSION:+".$SVN_VERSION"}.log
+TMP=${DDS_MONITOR}/${APP}${SVN_VERSION:+".$SVN_VERSION"}.log.tmp$$
+if [ -d ${DDS_MONITOR} ]; then
+   if [ -w ${LOG} ]; then
+      nlines=`wc -l < ${LOG} 2> /dev/null`
+      if [ $nlines -gt 10000 ]; then
+         test -f ${TMP} && rm -f ${TMP} > /dev/null 2>&1
+# capture minimum time limit from existing file
+         mintm=`head -1 ${LOG} |  grep '^[0-9][0-9]*$'`
+         if [ "${mintm}" != "" ]; then
+           echo "${mintm}" > ${TMP} 2> /dev/null
+         else
+           echo "0" > ${TMP} 2> /dev/null
+         fi
+         (tail -1000  ${LOG} >> ${TMP}) >  /dev/null 2>&1
+         mv -f ${TMP} ${LOG} > /dev/null 2>&1
+         chmod 666 ${LOG} > /dev/null 2>&1
+      fi
+   else
+      echo "0" >> ${LOG} 2> /dev/null
+      chmod 666 ${LOG} > /dev/null 2>&1
+   fi
+fi
+#
+# set LD_LIBRARY_PATH for any distributed runtime libraries
+#
+# The idea is to ignore any preset LD_LIBRARY_PATH in favor of values
+# known to work at your site. If there's a special repository of compiler
+# shared libraries at your site, change SITE_LD_LIB_PATHS to point
+# at that repository.
+#
+LDPTH=${osarch}/${osrev}/${DIST_PRODUCT}/${DIST_VERSION}/${target}
+# SITE_LD_LIB_PATHS="/tstapps/global/${LDPTH} /apps/global/${LDPTH}"
+
+LD_LIBRARY_PATH=${PTH}${LD_LIBRARY_PATH:+":$LD_LIBRARY_PATH"}
+for LD_LIB_PATH in ${SITE_LD_LIB_PATHS}; do
+   if [ -d ${LD_LIB_PATH} ]; then
+      LD_LIBRARY_PATH="${PTH}:${LD_LIB_PATH}"
+      break
+   fi
+done
+#
+# check if we're calling for an older binary verion
+# (set application binary in APP)
+#
+if [ -n "$old" ]; then
+   cmd="s[${APP}\$[unlinked\/${APP}.${old}["
+   APP=`echo ${EXEC_APP} | sed $cmd`
+else
+   APP=${EXEC_APP}
+fi
+
+if [ -n "$APP" -a -n "$DDS_START_CMD" ]; then
+   APP=${DDS_START_CMD} ${APP}
+fi
+#
+# Check that all shareable libraries are resolved
+#
+#  . dds-ldd-check ${EXEC_APP}
+#
+# set OMP_NUM_THREADS, OMP_SET_NUMTHREADS & MLIB_NUMBER_OF_THREADS
+#
+OMP_NUM_THREADS=$nproc
+OMP_SET_NUMTHREADS=$nproc
+MLIB_NUMBER_OF_THREADS=$nproc
+export OMP_NUM_THREADS OMP_SET_NUMTHREADS MLIB_NUMBER_OF_THREADS
+if [ "$SGI" = "-sgi" ]; then
+   KMP_AFFINITY="disabled"
+   MPI_DSM_PLACEMENT="threadroundrobin"
+   MPI_OPENMP_INTEROP="1"
+   export KMP_AFFINITY MPI_DSM_PLACEMENT MPI_OPENMP_INTEROP
+fi
+
+# set threads affinity for x86_64 using Intel compiler
+
+if [ "${machine}" = "x86_64" ]; then
+   if [ "${system}" = "Linux" -a -f "/etc/sgi-release" ]; then
+     KMP_AFFINITY=${KMP_AFFINITY:="disabled"}
+     I_MPI_DEVICE="shm" 
+     export I_MPI_DEVICE KMP_AFFINITY
+   else
+     ( grep -i "model name" /proc/cpuinfo | grep Phi ) > /dev/null 2>&1
+     if [ $? -eq 0 ]; then
+        KMP_AFFINITY=${KMP_AFFINITY:="granularity=fine,compact,1,0"}
+        MKL_DYNAMIC="false"
+        I_MPI_PIN_DOMAIN="auto"
+        export KMP_AFFINITY
+        export MKL_DYNAMIC
+        export I_MPI_PIN_DOMAIN
+     else
+        KMP_AFFINITY=${KMP_AFFINITY:="compact"}
+        export KMP_AFFINITY
+        I_MPI_DEVICE="sock"
+        export I_MPI_DEVICE
+     fi
+   fi
+fi
+
+#
+# check for mpirun (This MUST agree with HostMP)
+# (For Intel check for impi version in RPATH of binary)
+#
+if [ "${system}" = "Linux" ]; then
+   nm $APP 2> /dev/null | grep -i mpi | grep -i intel > /dev/null 2>&1
+   if [ $? -eq 0 ]; then
+      IntelMPI=${IntelMPI:="4.0"}
+      if [ -d "${APPDIR}/${APPASI}common/mbs/IntelMPI/${IntelMPI}" ]; then
+         PATH="${PATH}:${APPDIR}/${APPASI}common/mbs/IntelMPI/${IntelMPI}"
+      elif [ -d "${DDS_DIST}/${DDSDISTASI}common/mbs/IntelMPI/${IntelMPI}" ]; then
+         PATH="${PATH}:${DDS_DIST}/${DDSDISTASI}common/mbs/IntelMPI/${IntelMPI}"
+      fi
+      MPIRUN=`which mpirun 2> /dev/null`
+      IVERS=2018
+      if [ -f ${MPIRUN} ]; then
+         IVERS=`${MPIRUN} -version | egrep "^Intel" | sed -e 's/.*Version\s\([0-9]*\)\sUpdate.*/\1/g'`
+      fi
+      if [ -z ${I_MPI_ROOT} ] && [ -f ${MPIRUN} ]; then
+          MPIRUNBDIR=`dirname ${MPIRUN}`
+          MPIDIR=`dirname ${MPIRUNBDIR}`
+          export I_MPI_ROOT=`dirname ${MPIDIR}`
+      fi
+      I_MPI_HYDRA_BOOTSTRAP=${I_MPI_HYDRA_BOOTSTRAP:="ssh"}
+      I_MPI_PIN=${I_MPI_PIN:="on"}
+      I_MPI_PIN_DOMAIN=${I_MPI_PIN_DOMAIN:="omp"}
+      export IntelMPI I_MPI_PIN I_MPI_PIN_DOMAIN I_MPI_HYDRA_BOOTSTRAP
+      if (( $IVERS < 2019 )); then
+         I_MPI_PIN_MODE=${I_MPI_PIN_MODE:="pm"}
+         export I_MPI_PIN_MODE
+      else
+         if [ ! -z ${TMPDIR} ] && [ -f "${TMPDIR}/machines" ]; then
+             export I_MPI_HYDRA_RMK="sge"
+         fi
+         unset I_MPI_DEVICE
+         if [ -z ${FI_PROVIDER_PATH} ]; then
+            export FI_PROVIDER_PATH="${I_MPI_ROOT}/intel64/libfabric/lib/prov"
+         fi
+         export I_MPI_FABRICS=shm:ofi
+         if [ -z ${FI_PROVIDER} ]; then
+            export FI_PROVIDER="sockets"
+         fi
+         I_MPI_PIN_ORDER=${I_MPI_PIN_ORDER:="scatter"}
+         I_MPI_PIN_CELL=${I_MPI_PIN_CELL:="unit"}
+         export I_MPI_PIN_ORDER I_MPI_PIN_CELL 
+      fi
+# set PIN MODE to hydra
+      export IntelMPI I_MPI_PIN I_MPI_PIN_MODE I_MPI_PIN_DOMAIN I_MPI_HYDRA_BOOTSTRAP
+   elif [ -f "/etc/sgi-release" ]; then
+      MPIRUN=`which mpirun 2> /dev/null < /dev/null`
+   else
+      MPIRUN=/hpc/soft/mpich/${machine}/default/bin/mpirun
+      if [ ! -x "${MPIRUN}" ]; then
+         MPIRUN=`which mpirun 2> /dev/null < /dev/null`
+      fi
+      if [ ! -x "${MPIRUN}" ]; then
+         MPIRUN=`which mpiexec 2> /dev/null < /dev/null`
+      fi
+   fi
+else
+   MPIRUN=`which mpirun 2> /dev/null`
+   if [ ! -x "${MPIRUN}" ]; then
+      MPIRUN=`which mpiexec 2> /dev/null < /dev/null`
+   fi
+fi 
+
+#
+# If can't find mpirun or this is NOT an mpi binary then disable MPIRUN
+#
+AnyMPI=`nm  $APP 2> /dev/null |grep -i mpi_init 2> /dev/null`
+if [ -z "$AnyMPI" ]; then
+   MPILIB=`ldd $APP 2> /dev/null |grep libmpi|awk '{print $3}' 2> /dev/null`
+   AnyMPI=`nm  $MPILIB 2> /dev/null |grep -i mpi_init 2> /dev/null`
+fi
+
+if [ ! -x "$MPIRUN" -o -z "$AnyMPI" ]; then
+   MPIRUN=
+fi
+
+if [ -n "$MPIRUN" ]; then
+   if [ -n "$DDS_START_MPI" ]; then
+      MPIRUN=${DDS_START_MPI} ${MPIRUN}
+   fi
+fi
+
+
+#
+# export the following to be used by the program and startup script
+#
+export APP MPIRUN LD_LIBRARY_PATH DDS_MONITOR DDS_TIMESTAMP PATH
+
+
+#
+# clear variables so won't conflict with any future nested calls
+#
+DDS_APP=
+DDS_APPDIR=
+DIST_PRODUCT=
+DIST_VERSION=

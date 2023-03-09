@@ -1,0 +1,148 @@
+cd IRIX64-IP27; gmake  test_ctypes
+gmake[1]: Entering directory `/tstapps/global/src/dds/src/lib/host/IRIX64-IP27'
+./ctypes
+FSTAT: fd=3 fstat=0 st_size=34552 0 86f8 (sizeof=8)
+FSTAT: stdout fstat=0 ISREG=1 ISFIFO=0
+swap.short= 258 = 0x102 (0102)
+swap.int= 16909060 = 0x1020304 (01020304)
+swap.long= 16909060 = 0x1020304
+swap.long_long= 72623859790382856 = 0x102030405060708
+swap.float= 8520452.000000 = 0x4b020304
+swap.double= 5069865379825416.000000 = 0x4332030405060708
+HOST_LLONG_T scanf/printf OK
+HOST_INT6_T scanf/printf OK
+CHAR_MIN= 0 (unsigned)
+       &i[0]= ffffffad18,        &i[1]= ffffffad1c,        &i[2]= ffffffad20
+(void*)&i[0]= ffffffad18, (void*)&i[1]= ffffffad1c, (void*)&i[2]= ffffffad20
+       &c[0]= ffffffad28,        &c[1]= ffffffad29,        &c[2]= ffffffad2a
+(void*)&c[0]= ffffffad28, (void*)&c[1]= ffffffad29, (void*)&c[2]= ffffffad2a
+ (int*)&c[0]= ffffffad28,  (int*)&c[1]= ffffffad29,  (int*)&c[2]= ffffffad2a
+       &c[7]= ffffffad2f,        &c[8]= ffffffad30,        &c[9]= ffffffad31
+(void*)&c[7]= ffffffad2f, (void*)&c[8]= ffffffad30, (void*)&c[9]= ffffffad31
+ (int*)&c[7]= ffffffad2f,  (int*)&c[8]= ffffffad30,  (int*)&c[9]= ffffffad31
+sizeof("FOUR")= 5
+RDONLY=0, WRONLY=1, RDWR=2
+APPEND=8, CREAT=256, TRUNC=512, EXCL=1024
+_IOFBF=0x0, _IOLBF=0x40, _IONBF=0x4
+argv= ffffffad98, *argv= ffffffb000
+fileno(stdin)=   0
+fileno(stdout)=  1
+fileno(stderr)=  2
+sizeof(void*)=       8, align= 8
+sizeof(char)=        1, align= 1
+sizeof(short)=       2, align= 2
+sizeof(int)=         4, align= 4
+sizeof(long)=        8, align= 8
+sizeof(long long)=   8, align= 8
+sizeof(size_t)=      8, align= 8
+sizeof(ptrdiff_t)=   8, align= 8
+sizeof(off_t)=       8, align= 8
+sizeof(fpos_t)=      8, align= 8
+sizeof(float)=       4, align= 4
+sizeof(double)=      8, align= 8
+sizeof(long double)= 16, align= 16
+EOF= -1
+MALLOC_A= 16
+sizeof((char)m * (char)n)= 4
+sizeof((char)m * (unsigned char)n)= 4
+sizeof((char)m * (signed char)n)= 4
+sizeof((char)m * (short)n)= 4
+sizeof((char)m * (unsigned short)n)= 4
+sizeof((char)m * (int)n)= 4
+sizeof((char)m * (unsigned)n)= 4
+sizeof((char)m * (long)n)= 8
+sizeof((char)m * (unsigned long)n)= 8
+sizeof((char)m * (long long)n)= 8
+sizeof((char)m * (unsigned long long)n)= 8
+sizeof((unsigned char)m * (char)n)= 4
+sizeof((unsigned char)m * (unsigned char)n)= 4
+sizeof((unsigned char)m * (signed char)n)= 4
+sizeof((unsigned char)m * (short)n)= 4
+sizeof((unsigned char)m * (unsigned short)n)= 4
+sizeof((unsigned char)m * (int)n)= 4
+sizeof((unsigned char)m * (unsigned)n)= 4
+sizeof((unsigned char)m * (long)n)= 8
+sizeof((unsigned char)m * (unsigned long)n)= 8
+sizeof((unsigned char)m * (long long)n)= 8
+sizeof((unsigned char)m * (unsigned long long)n)= 8
+sizeof((signed char)m * (char)n)= 4
+sizeof((signed char)m * (unsigned char)n)= 4
+sizeof((signed char)m * (signed char)n)= 4
+sizeof((signed char)m * (short)n)= 4
+sizeof((signed char)m * (unsigned short)n)= 4
+sizeof((signed char)m * (int)n)= 4
+sizeof((signed char)m * (unsigned)n)= 4
+sizeof((signed char)m * (long)n)= 8
+sizeof((signed char)m * (unsigned long)n)= 8
+sizeof((signed char)m * (long long)n)= 8
+sizeof((signed char)m * (unsigned long long)n)= 8
+sizeof((short)m * (char)n)= 4
+sizeof((short)m * (unsigned char)n)= 4
+sizeof((short)m * (signed char)n)= 4
+sizeof((short)m * (short)n)= 4
+sizeof((short)m * (unsigned short)n)= 4
+sizeof((short)m * (int)n)= 4
+sizeof((short)m * (unsigned)n)= 4
+sizeof((short)m * (long)n)= 8
+sizeof((short)m * (unsigned long)n)= 8
+sizeof((short)m * (long long)n)= 8
+sizeof((short)m * (unsigned long long)n)= 8
+sizeof((unsigned short)m * (char)n)= 4
+sizeof((unsigned short)m * (unsigned char)n)= 4
+sizeof((unsigned short)m * (signed char)n)= 4
+sizeof((unsigned short)m * (short)n)= 4
+sizeof((unsigned short)m * (unsigned short)n)= 4
+sizeof((unsigned short)m * (int)n)= 4
+sizeof((unsigned short)m * (unsigned)n)= 4
+sizeof((unsigned short)m * (long)n)= 8
+sizeof((unsigned short)m * (unsigned long)n)= 8
+sizeof((unsigned short)m * (long long)n)= 8
+sizeof((unsigned short)m * (unsigned long long)n)= 8
+sizeof((int)m * (char)n)= 4
+sizeof((int)m * (unsigned char)n)= 4
+sizeof((int)m * (signed char)n)= 4
+sizeof((int)m * (short)n)= 4
+sizeof((int)m * (unsigned short)n)= 4
+sizeof((int)m * (int)n)= 4
+sizeof((int)m * (unsigned)n)= 4
+sizeof((int)m * (long)n)= 8
+sizeof((int)m * (unsigned long)n)= 8
+sizeof((int)m * (long long)n)= 8
+sizeof((int)m * (unsigned long long)n)= 8
+sizeof((unsigned)m * (char)n)= 4
+sizeof((unsigned)m * (unsigned char)n)= 4
+sizeof((unsigned)m * (signed char)n)= 4
+sizeof((unsigned)m * (short)n)= 4
+sizeof((unsigned)m * (unsigned short)n)= 4
+sizeof((unsigned)m * (int)n)= 4
+sizeof((unsigned)m * (unsigned)n)= 4
+sizeof((unsigned)m * (long)n)= 8
+sizeof((unsigned)m * (unsigned long)n)= 8
+sizeof((unsigned)m * (long long)n)= 8
+sizeof((unsigned)m * (unsigned long long)n)= 8
+sizeof((long)m * (char)n)= 8
+sizeof((long)m * (unsigned char)n)= 8
+sizeof((long)m * (signed char)n)= 8
+sizeof((long)m * (short)n)= 8
+sizeof((long)m * (unsigned short)n)= 8
+sizeof((long)m * (int)n)= 8
+sizeof((long)m * (unsigned)n)= 8
+sizeof((long)m * (long)n)= 8
+sizeof((long)m * (unsigned long)n)= 8
+sizeof((long)m * (long long)n)= 8
+sizeof((long)m * (unsigned long long)n)= 8
+sizeof((unsigned long)m * (char)n)= 8
+sizeof((unsigned long)m * (unsigned char)n)= 8
+sizeof((unsigned long)m * (signed char)n)= 8
+sizeof((unsigned long)m * (short)n)= 8
+sizeof((unsigned long)m * (unsigned short)n)= 8
+sizeof((unsigned long)m * (int)n)= 8
+sizeof((unsigned long)m * (unsigned)n)= 8
+sizeof((unsigned long)m * (long)n)= 8
+sizeof((unsigned long)m * (unsigned long)n)= 8
+sizeof((unsigned long)m * (long long)n)= 8
+sizeof((unsigned long)m * (unsigned long long)n)= 8
+gmake[1]: Leaving directory `/tstapps/global/src/dds/src/lib/host/IRIX64-IP27'
+MAKE_TIMES
+0m0.01s 0m0.04s
+0m0.61s 0m2.19s

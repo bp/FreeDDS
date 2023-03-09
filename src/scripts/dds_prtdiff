@@ -1,0 +1,40 @@
+#!/bin/sh
+
+if [ $# -lt 2 ]; then
+echo Usage: $0 [diff=diff_prgm] file1 file2
+exit 0
+fi
+
+diff="diff"
+for arg do
+   case $arg in
+      diff=*) eval $arg; shift 1;;
+      *=*);;
+      *) case $prev in
+            diff=)  eval ${prev}${arg}; shift 1;;
+         esac
+   esac
+   prev=$arg
+done
+
+file1=`basename $1`
+file2=`basename $2`
+dir1=/tmp/prtdiff_$$.1
+dir2=/tmp/prtdiff_$$.2
+test -d  ${dir1} || mkdir -p ${dir1}
+test -d  ${dir2} || mkdir -p ${dir2}
+sed 's/\[[A-Z][a-z]*[ ][ ]*[0-9][0-9]*[ ][ ]*[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\]//g' < $1 > ${dir1}/${file1}
+sed 's/\[[A-Z][a-z]*[ ][ ]*[0-9][0-9]*[ ][ ]*[0-9][0-9]:[0-9][0-9]:[0-9][0-9]\]//g' < $2 > ${dir2}/${file2}
+
+echo $diff | grep gvim > /dev/tty 2>&1
+if [ $? -eq 0 ]; then
+  ${diff} -f ${dir1}/${file1} ${dir2}/${file2}
+else
+  ${diff} ${dir1}/${file1} ${dir2}/${file2}
+fi
+
+wait
+test -d ${dir1} && rm -r ${dir1}
+test -d ${dir2} && rm -r ${dir2}
+
+exit 0

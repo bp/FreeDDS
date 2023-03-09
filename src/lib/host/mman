@@ -1,0 +1,59 @@
+#! /bin/sh
+##################################################################
+#
+# This script is part of the MBS  - Migration Before Stack system.
+# Please do not modify without authorization.
+# Contact Rusty Sandschaper for change requests.
+#
+
+DIST_PRODUCT="mbs"
+export DIST_PRODUCT
+
+CURPTH=`dirname $0` ; test "${CURPTH}" = "." && CURPTH=`pwd`
+APPDIR=${DDS_APPDIR:-"`echo ${CURPTH} | /bin/sed 's/[/][^/]*$//'`"}
+
+if [ ${DEVELOPERROOT:-NULL} = NULL ]; then
+   MANPATH=${APPDIR}/man/mbs
+else
+   MANPATH=${DEVELOPERROOT}/man/mbs:${APPDIR}/man/mbs
+fi
+export MANPATH
+
+in_key=FALSE
+keys=
+for arg do
+   case $in_key in
+      TRUE)
+         case $arg in
+            -*) in_key=FALSE;;
+            *)  keys="${keys}${keys:+ }${arg}";;
+         esac;;
+      FALSE)
+         case $arg in
+            -k) in_key=TRUE;;
+         esac;;
+   esac
+   prev=$arg
+done
+
+#
+# Do our own keyword search. The -k man page option is returning unwanted
+# non-DDS pages from cache because the /apropos program always looks there
+# on RedHat systems.
+#
+
+if [ "${keys}" = "" ]; then
+  exec man -M ${MANPATH} $*
+else
+  found=0
+  for k in $keys
+  do
+    grep -i $k ${APPDIR}/man/mbs/whatis
+    if [ $? == 0 ]; then
+      found=1
+    fi
+  done
+  if [ $found == 0 ]; then
+    echo 'Nothing found in keyword(s) search on "'$keys'"'
+  fi
+fi

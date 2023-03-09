@@ -1,0 +1,260 @@
+#!/bin/sh
+########################################################################
+#                       B P   A M E R I C A                            #
+#                       All Rights Reserved                            #
+#                        COPYRIGHTED 2006                              #
+########################################################################
+# $Id: HostMP 308 2018-12-14 16:55:55Z user $
+#
+# This script returns the Host OpenMP/MPI information.  This is used by 
+# the dds gmake rules.
+# 
+# - Jerry Ehlers Feb 2006
+#
+
+if [ $# -lt 1 ]; then
+   echo 
+   echo 'This script returns information on OpenMP & MPI'
+   echo 
+   echo 'Usage: HostMP [-a|-omp|-ompf|-ompcf|-ompL|-ompl|-mpi|-mpif|-mpicf|-mpiL|-mpil|-mpir] \\'
+   echo '              [COMPILER=[ifort|efc|pgf77|pgfortran|xlf|gfortran|...]]'
+   echo 'Where  -a:      return all values separated by "^"'
+   echo '       -omp:    OpenMP C definition (eg. "-DOpenMP")'
+   echo '       -ompf:   OpenMP Fortran definition (eg. "-DOpenMP")'
+   echo '       -ompcf:  OMP CFlags'
+   echo '       -ompL:   OMP LibDirs'
+   echo '       -ompl:   OMP Libes'
+   echo '       -mpi:    MPI C definition (eg. "-DMPI")'
+   echo '       -mpif:   MPI Fortran definition (eg. "-DMPI" or "-WF,-DMPI" on ppc64)'
+   echo '       -mpicf:  MPI CFlags'
+   echo '       -mpiL:   MPI LibDirs'
+   echo '       -mpil:   MPI Libes'
+   echo '       -mpir:   MPI Run'
+   echo
+   exit
+fi
+
+if [ -z ${DDSROOT} -o ! -d ${DDSROOT} ]; then
+   echo "ERROR(HostMP): DDSROOT='${DDSROOT}' not defined right!"
+   exit 1
+fi
+
+arg=$1
+while [ $# -gt 1 ]; do
+   shift
+   case $1 in
+      COMPILER=*) eval $1;;
+   esac
+done
+
+
+#
+# Get system info
+#
+system=`uname -s | awk '{print $1}'`
+machine=`uname -m | sed 's/[/]/-/' | awk '{print $1}'`
+
+# Special case - cross compilation via mingw on Linux for native Windows x86_64
+if [ -f "$COMPILER" ] && [ `basename $COMPILER` == "x86_64-w64-mingw32-gfortran" ]; then
+    system="w64-mingw32"
+    machine="x86_64"
+    release=`$COMPILER -dumpversion`
+fi
+
+#
+# Get OpenMP info
+#   
+DOMP=""
+DOMPF=""
+OMPCFlags=""
+OMPLibDirs=""
+OMPLibes=""
+if [ "${system}" = "SunOS" ]; then
+   DOMP=""
+# This is just a guess for sun when it does have OpenMP 
+#  DOMP="-DOpenMP"
+#  DOMPF="-DOpenMP"
+#  OMPCFlags="-xopenmp -mp=sun -explicitpar"
+elif [ "${system}" = "IRIX64" ]; then
+   DOMP="-DOpenMP"
+   DOMPF="-DOpenMP"
+   OMPCFlags="-mp"
+   OMPLibes="-lmp"
+elif [ "${system}" = "w64-mingw32" ]; then
+   DOMP="-DOpenMP"
+   DOMPF="-DOpenMP"
+   OMPCFlags="-fopenmp"
+   OMPLibes="-lgomp"
+elif [ "${system}" = "Darwin" ]; then
+   DOMP="-DOpenMP"
+   DOMPF="-DOpenMP"
+   OMPCFlags="-fopenmp"
+   OMPLibes="-lgomp"
+elif [ "${system}" = "Linux" ]; then
+   DOMP="-DOpenMP"
+   DOMPF="-DOpenMP"
+   if [ -z "${COMPILER}" ]; then
+      COMPILER=`(which ifort 2>&1) | awk '{print $1}' | awk -F/ '{print $NF}'|sed s/which://`
+   fi
+   if [ -z "${COMPILER}" ]; then
+      COMPILER=`(which efc 2>&1) | awk '{print $1}' | awk -F/ '{print $NF}'|sed s/which://`
+   fi
+   if [ -z "${COMPILER}" ]; then
+      COMPILER=`(which xlf 2>&1) | awk '{print $1}' | awk -F/ '{print $NF}'|sed s/which://`
+   fi
+   if [ -z "${COMPILER}" ]; then
+      COMPILER=`(which pgfortran 2>&1) | awk '{print $1}' | awk -F/ '{print $NF}'|sed s/which://`
+   fi
+   if [ -z "${COMPILER}" ]; then
+      COMPILER=`(which pgf77 2>&1) | awk '{print $1}' | awk -F/ '{print $NF}'|sed s/which://`
+   fi
+   if [ -z "${COMPILER}" ]; then
+      COMPILER=`(which gfortran 2>&1) | awk '{print $1}' | awk -F/ '{print $NF}'|sed s/which://`
+   fi
+   if [ -z "${COMPILER}" ]; then
+      echo "ERROR(HostMP) No Linux COMPILER found!"
+      exit 2
+   fi
+
+   if [ "${COMPILER}" = "ifort" ]; then
+      OMPCFlags="-qopenmp"
+   elif [ "${COMPILER}" = "efc" ]; then
+      OMPCFlags="-qopenmp"
+   elif [ "${COMPILER}" = "xlf" ]; then
+      DOMP="-DOpenMP"
+#     DOMPF="-WF,-DOpenMP"
+      DOMPF=""
+      OMPCFlags="-qsmp=omp"
+   elif [ "${COMPILER}" = "pgf77" -o  "${COMPILER}" = "pgfortran" ]; then
+      OMPCFlags="-mp"
+      # -lpgthread is no longer needed as system libpthread.so now handles larger sizes
+      # OMPLibes="-lpgmp -lpgthread"
+      OMPLibes="-lpgmp"
+   elif [ "${COMPILER}" = "gfortran" ]; then
+      OMPCFlags="-fopenmp"
+      OMPLibes="-lgomp"
+   else
+      echo "ERROR(HostMP) Linux COMPILER=${COMPILER} not found!"
+      exit 3
+   fi
+elif [ "${system}" = "HP-UX" ]; then
+   DOMP="-DOpenMP"
+   DOMPF="-DOpenMP"
+   OMPCFlags="+Oopenmp"
+fi
+
+#
+# Check on mpirun (This MUST agree with dds-set-path)
+#
+
+#
+# Get MPI info
+#
+DMPI=""
+DMPIF=""
+MPIRun=""
+MPICFlags=""
+MPILibDirs=""
+MPILibes=""
+
+MPIDefault=`which mpirun 2> /dev/null |sed 's/bin[^/]*[/]mpirun//'`
+if [ -z "$MPIDefault" ]; then
+   MPIDefault=`which mpiexec 2> /dev/null |sed -e 's/bin[^/]*[/]mpiexec//'`
+fi
+MPIPath=${MPIPath:-${I_MPI_ROOT:-${MPIDefault}}}
+
+if [ "$system" = "IRIX64" ]; then
+   MPIRun=`which mpirun 2> /dev/null`
+   DMPI="-DMPI"
+   DMPIF="-DMPI"
+   MPILibes="-lmpi"
+elif [ "$system" = "Linux" ]; then
+   if [ "$machine" = "i686" ]; then
+      if [ -x ${MPIPath} ]; then
+         MPIRun=${MPIPath}/bin/mpirun
+         DMPI="-DMPI"
+         DMPIF="-DMPI"
+      fi
+   elif [ "$machine" = "ia64" ]; then
+      if [ -f "/etc/sgi-release" ]; then
+         MPIRun=`which mpirun 2> /dev/null`
+         if [ -x "${MPIRun}" ]; then
+            DMPI="-DMPI"
+            DMPIF="-DMPI"
+            MPILibes="-Bdynamic -lmpi"
+         fi
+      elif [ -x $MPIPath ]; then
+         DMPI="-DMPI"
+         DMPIF="-DMPI"
+         MPIRun=${MPIPath}/bin/mpirun
+      fi
+   elif [ "${machine}" = "x86_64" ]; then
+      if [ -x ${MPIPath} ]; then
+         DMPI="-DMPI"
+         DMPIF="-DMPI"
+         MPIRun=${MPIPath}/bin64/mpirun
+         if [ ! -x "${MPIRun}" ]; then
+            MPIRun=${MPIPath}/intel64/bin/mpirun
+         fi
+         if [ ! -x "${MPIRun}" ]; then
+            MPIRun=${MPIPath}/bin/mpirun
+         fi
+         if [ ! -x "${MPIRun}" ]; then
+            MPIRun=${MPIPath}/bin/mpiexec
+         fi
+	 MPILibes=" "
+      fi
+   elif [ "${machine}" = "ppc64" ]; then
+      cpu=`grep cpu /proc/cpuinfo|head -1|awk '{print $3}'|sed 's/POWER/pwr/'|sed 's/+//'`
+      machine="${machine}_${cpu}"
+      DMPI="-DMPI"
+      DMPIF="-WF,-DMPI"
+#     MPIPath=/hpc/soft/mpich/${machine}/default
+      MPIPath=${MPI_ROOT}
+      MPIRun=${MPIPath}/bin/mpirun
+   fi
+elif [ "${system}" = "HP-UX" ]; then
+   MPIRun="/opt/mpich/bin/mpirun"
+   DMPI="-DMPI"
+   DMPIF="-DMPI"
+   MPICFlags="-I/opt/mpich/include"
+   MPILibDirs="-L/opt/mpich/lib/hpux64"
+   MPILibes="-lmpi"
+fi
+
+if [ ! -x "${MPIRun}" ]; then
+   DMPI=""
+   DMPIF=""
+   MPIRun=""
+   MPICFlags=""
+   MPILibDirs=""
+   MPILibes=""
+fi
+
+if [ "$arg" = "-a" ]; then
+   echo "${DOMP}^${DOMPF}^${OMPCFlags}^${OMPLibDirs}^${OMPLibes}^${DMPI}^${DMPIF}^${MPICFlags}^${MPILibDirs}^${MPILibes}^${MPIRun}"
+elif [ "$arg" = '-omp' ]; then
+   echo $DOMP
+elif [ "$arg" = '-ompf' ]; then
+   echo $DOMPF
+elif [ "$arg" = '-ompcf' ]; then
+   echo $OMPCFlags
+elif [ "$arg" = '-ompL' ]; then
+   echo $OMPLibDirs
+elif [ "$arg" = '-ompl' ]; then
+   echo $OMPLibes
+elif [ "$arg" = "-mpi" ]; then
+   echo $DMPI
+elif [ "$arg" = "-mpif" ]; then
+   echo $DMPIF
+elif [ "$arg" = "-mpicf" ]; then
+   echo $MPICFlags
+elif [ "$arg" = "-mpiL" ]; then
+   echo $MPILibDirs
+elif [ "$arg" = "-mpil" ]; then
+   echo $MPILibes
+elif [ "$arg" = "-mpir" ]; then
+   echo $MPIRun
+else
+   echo "ERROR(HostMP): Unknown argument '$1'"
+fi

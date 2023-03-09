@@ -1,0 +1,18 @@
+'\" t
+.TH dds_rs 1 "$Date: 2006/02/13 23:30:05 $" "DDS Utility"
+.ad b
+.SH NAME
+dds_rs \ - Utility to restore a dds dataset from IDS (DDS).
+.SH SYNOPSIS
+\fBdds_rs <dict> <storage_set> <ids_machine> <data_path>|stdout: [<version>]
+.SH DESCRIPTION
+\fBdds_rs\fR restores a DDS dataset from the IDS system by specifying
+the name of the dictionary (<dict>) to write the dictionary, the
+IDS storage set (<storage_set>) and IDS machine (<ids_machine>) along 
+with either the data pathname (<data_path>) where to put the DDS
+binary file or specify "stdout:" to pipe the binary out.  Optionally
+specify the IDS file version (<version>) to recall a specified older 
+version of the dataset stored in IDS.
+.SH AUTHOR
+ Randy Selzler, \fBData-Warp\fR
+ Jerry Ehlers, \fBEPTG\fR

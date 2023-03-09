@@ -1,0 +1,137 @@
+#######################################################################
+#                 copyright 2005, BP America Inc.                     #
+#                        All Rights Reserved                          #
+#######################################################################
+
+File: $DDSROOT/README.makeexamples
+ 
+ Here are some examples of using the DDS libaray make scheme:
+
+    gmake
+       MAKE default host (local) and default target
+
+    gmake all
+       MAKE on all hosts for default target
+
+    gmake install
+       Install deliverables for local machine 
+
+    gmake host=all install
+       Install deliverables on all hosts
+
+    gmake debug=x
+       MAKE debug libary version (eg. libdds3g.a)
+
+    gmake verbose=x
+       MAKE with verbose make messages on
+
+    gmake host=local  target=default
+       SAME AS ABOVE, using explicit arguments
+
+    gmake  target='foo.o  bar.o  zit.o'
+       Make foo.o, bar.o and zit.o on local host
+
+    gmake host=machine target='foo.o  bar.o  zit.o'
+       Make a list of targets on specific HOST
+
+    gmake host=sun4u  target='foo.o  bar.o  zit.o'
+       Make a list of targets on specific ARCHITECTURE
+
+    gmake target=foo.o  sun4  sun4cg92  sun4u
+       Make specific target on a list of architectures
+ 
+    gmake installed
+       List installed files on local host
+ 
+ LOG FILES:
+    When make spawns a sub-make on another host,
+    compile errors are captured in "mklog/<host.tarch>.new".
+    If this file already exists, its renamed to ".old".
+
+ LOCK FILES:
+    Concurrent make collisions are prevented via $(TARCH)/LOCK.
+    It contains the host name and process id of the locking shell.
+    Makes are finished when their lock files disappear.
+
+ REMOTE HOSTS:
+    The "all" target is dependent upon the "all" definition
+    in MakeSrcRules.
+
+ REMOTE FILES:
+    No longer supported.  We assume all remote copies are uptodate.
+
+ ENVIRONMENT:
+    The following environment variable is required by make.
+    It must be set by the user's login processing.
+
+    DDSROOT={$FreeUSP/dds | /devprod/trcgp/dds | /m/t1/trcgp/dds}
+       Corresponding to ATTC, HTCS, NCSI sites.
+
+ COMMAND MACROS:
+    The following macros are typically defined on the command line.
+    "WHERE" is specified by "host" and "WHAT" by "target".
+
+    host=<host_name_or_architecture>
+       Examples:
+          "local",             current login host (default).
+          "all",               nominal list of hosts and architectures.
+          "machine,            specific host (must be ping-able).
+          "machine.sun4u-SC4", explicit host and architecture.
+
+    target=<explicit_goal>
+       Examples:
+          "foo.o",             compile source to create object file.
+          "cmd_x",             compile and link specific command.
+          "clean",             remove object and library files.
+          "install",           install libraries, includes, commands.
+          "installed",         long list of installed files
+          "RCS_CO",            checkout RCS files that have changed.
+          "yelp",              echo "YELP" from source and arch levels.
+
+    This macro is used to override a host's default architecture.
+    TARCH=<target_architecture>
+       Examples:
+          "sun4cm5-SC1"
+          "sun4-SC3", "sun4-SC4"
+          "sun4cg92-SC3", "sun4cg92-SC4"
+          "sun4u-SC3", "sun4u-SC4"
+          "sun4fs64-SC4", "sun4ufs64-SC4", "sun4m5_6-SC4"
+          "IRIX32-IP21", "IRIX32-IP25", "IRIX64-IP21", "IRIX64-IP25"
+          "HP-UX"
+          "cray2", "crayc90"
+          "Linux-586", "FreeBSD-586" (guessing at parameterization)
+
+ MAKE PHASES
+    "Make" processing occurs in two distinct phases.
+       1) source phase
+          a) Executes in the source directory.
+          b) Updates remote files from master LAN.
+          c) Spawns "make" on LAN hosts or remote sites.
+          d) Creates $(TARCH)/Makefile from source Makefile2.
+          e) Spawns second phase in $(TARCH) directory.
+       2) $(TARCH) phase
+          a) Spawned by first phase or directly by programmer.
+          b) Executes in the $(TARCH) directory.
+          c) Compiles, links, installs and distributes.
+
+ LIBRARIES
+    dds        Data Dictionary System (dds_r3)
+    chost      Host dependent - C main (chost)
+    fhost      Host dependent - Fortran main (fhost)
+    gio        Geoscience I/O (gio)
+    fft        FFT wrappers
+    fftw       fftw library if needed for FFT wrappers
+
+    LIBRARY MACROS
+       $(xxx.a)  library reference for dependency line
+       $(I.xxx)  include file search path
+       $(L.xxx)  library search path
+       $(l.xxx)  library reference
+       $(.xxx)   combination "$(L.xxx) $(l.xxx)"
+
+       EXAMPLE USAGE
+          CPPFLAGS= $(I.dds)
+          CFLAGS= $(OPTIMIZE.c)
+          bridge_r3: %:%.o $(dds.a)
+             $(LINK.c) -o $(@F) $(@F).o $(.dds) $(.chost) $(SYSLIBS)
+

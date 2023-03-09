@@ -1,0 +1,74 @@
+segy.map:= $Id: segy1.map.dds 228 2011-05-05 23:13:45Z user $
+RCS-t=DDS, segy1.map.dds
+
+map:in_fmt:out_fmt.out_field= expression
+
+map:*:segy1.TrcIdCode=   1
+map:*:segy1.ElevScaler=  1
+map:*:segy1.XYScaler=    1
+
+map:segy1:segy1.TrcIdCode=  TrcIdCode
+map:segy1:segy1.ElevScaler= ElevScaler
+map:segy1:segy1.XYScaler=   XYScaler
+
+comment= USP to SEGY1 trace header map.
+   Derived  11/18/04 by Jerry Ehlers
+   Modified 11/01/06 by Jerry Ehlers
+
+map:usp:segy1.Date=        datestruct(SGRDat)
+map:usp:segy1.MuteEnd=     SGRNum
+map:usp:segy1.DateType=    SGRAmp
+map:usp:segy1.SrcStatic=   InStAp
+map:usp:segy1.GrpStatic=   RcStAp
+map:usp:segy1.SrcX=        SrPtXC
+map:usp:segy1.SrcY=        SrPtYC
+map:usp:segy1.GrpX=        RcPtXC
+map:usp:segy1.GrpY=        RcPtYC
+map:usp:segy1.SrcDepth=    ShtDep
+map:usp:segy1.UpholeTmSrc= UphlTm
+map:usp:segy1.HorzStack=   FoldNm
+map:usp:segy1.CdpTrcNum=   TrcNum
+map:usp:segy1.FieldRecNum= PrRcNm
+map:usp:segy1.FieldTrcNum= PrTrNm
+map:usp:segy1.SrcElev=     SrPtEl
+map:usp:segy1.GrpElev=     GrpElv
+#map:usp:segy1.CdpNum=      DphInd
+map:usp:segy1.GrpDatum=    RfSrEl
+map:usp:segy1.TotalStatic= StaCor
+map:usp:segy1.TrcIdCode=   (StaCor - 30000) ? 1 : 2
+
+map:asp:segy1.Date=        datestruct(field(SGRDat, 0))
+map:asp:segy1.MuteEnd=     field(SGRNum, nop)
+map:asp:segy1.DateType=    field(SGRAmp, nop)
+map:asp:segy1.SrcStatic=   field(InStAp, nop)
+map:asp:segy1.GrpStatic=   field(RcStAp, nop)
+map:asp:segy1.SrcX=        field(SrPtXC, nop)
+map:asp:segy1.SrcY=        field(SrPtYC, nop)
+map:asp:segy1.GrpX=        field(RcPtXC, nop)
+map:asp:segy1.GrpY=        field(RcPtYC, nop)
+map:asp:segy1.SrcDepth=    field(ShtDep, nop)
+map:asp:segy1.UpholeTmSrc= field(UphlTm, nop)
+map:asp:segy1.HorzStack=   field(FoldNm, nop)
+map:asp:segy1.CdpTrcNum=   field(TrcNum, nop)
+map:asp:segy1.FieldRecNum= field(PrRcNm, nop)
+map:asp:segy1.FieldTrcNum= field(PrTrNm, nop)
+map:asp:segy1.SrcElev=     field(SrPtEl, nop)
+map:asp:segy1.GrpElev=     field(GrpElv, nop)
+#map:asp:segy1.CdpNum=      field(DphInd, nop)
+map:asp:segy1.GrpDatum=    field(RfSrEl, nop)
+map:asp:segy1.TotalStatic= field(StaCor, nop)
+map:asp:segy1.TrcIdCode=   (field(StaCor, 0) - 30000) ? field(TrcIdCode, 1) : 2
+map:asp:segy1.ElevScaler=  field(ElevScaler, 1)
+map:asp:segy1.XYScaler=    field(XYScaler, 1)
+
+map:segy:segy1.CDPBCX=     Spare.Hdr.CDPBCX
+map:segy:segy1.CDPBCY=     Spare.Hdr.CDPBCY
+map:segy:segy1.LinInd=     Spare.Hdr.LinInd
+map:segy:segy1.SrcLoc=     Spare.Hdr.SrcLoc
+map:segy:segy1.DphInd=     CdpNum
+
+map:su:segy1.CDPBCX=     Spare.Hdr.CDPBCX
+map:su:segy1.CDPBCY=     Spare.Hdr.CDPBCY
+map:su:segy1.LinInd=     Spare.Hdr.LinInd
+map:su:segy1.SrcLoc=     Spare.Hdr.SrcLoc
+map:su:segy1.DphInd=     CdpNum

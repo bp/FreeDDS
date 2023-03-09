@@ -1,0 +1,22 @@
+#!/bin/sh
+# RCS-t=DDS script to automate RCS check-in.
+#
+# This script does an RCS check-in on all it's arguments,
+# but only if the corresponding file exists.  ci options...
+#    -u             automatically check-out and unlocked copy.
+#    -m'message'    log message for existing revisions.
+#    -t-"..."       file description for initial revision.
+#                   One line description is extracted from
+#                   file (everything following "RCS-t=").
+#                   All DDS source files should contain
+#                   "RCS-t=..." for mass migration.
+message='map development'
+for item in $*
+do
+if [ -f ${item} ]
+then
+description=`sed -e '/RCS-t=/{s/.*RCS-t=//;q;}' -e '/^RCS-t=/!d' < ${item}`
+ci -u -m"${message}"  -t-"${description}" ${item}
+###echo cid: ${description}
+fi
+done

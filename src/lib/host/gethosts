@@ -1,0 +1,66 @@
+#!/bin/bash
+#
+# gethosts: script to return a list of available hosts to build on
+# (used to setup REMOTE_HOSTS in real-time)
+#
+########################################################################
+#
+#  Current systems availabale for building DDS applications
+#
+########################################################################
+
+#hosts[1]="localhost                     none_Linux/3.10/x86_64"
+
+if [ $# -gt 0 -a "$1" == "-h" ]; then
+   echo
+   echo "--- List of machines to build on ---"
+   i=0
+   while [ $i -lt ${#hosts[*]} ]; do
+      let i=i+1
+      msg=""
+      for host in ${hosts[$i]}; do
+         if [ "${host:0:4}" == "none" ]; then
+            echo -e "${host/none_/}: \t$msg"
+            break
+         fi
+         msg="$msg $host"
+      done
+   done
+   exit
+fi
+
+if [ "${REMOTE_HOSTS}" ]; then
+   echo ${REMOTE_HOSTS}
+   exit
+fi
+
+REMOTE_HOSTS=""
+i=0
+while [ $i -lt ${#hosts[*]} ]; do
+   let i=i+1
+   msg="    Host(s) unavailable:"
+   for host in ${hosts[$i]}; do
+      if [ "${host:0:4}" == "none" ]; then
+         echo -e "\r*** No host available for ${host/none_/} ***" >&2
+         echo "$msg" >&2
+         break
+      fi
+
+      echo -en "\rChecking $host                       " >&2
+      chk=`$DDSROOT/bin/chkhost $host|grep OK`
+      if [ "$chk" == "OK" ]; then
+	 echo OK >&2
+         REMOTE_HOSTS="${REMOTE_HOSTS} ${host}"
+         break
+      fi
+      msg="$msg $host" >&2
+   done
+done
+echo -e "\r                                  " >&2
+
+if [ "$REMOTE_HOSTS" ]; then
+   echo $REMOTE_HOSTS
+else
+   echo "Check that your .rhosts file is setup properly to \"ssh\" to the remote hosts" >&2
+   echo "or if you're using \"ssh\" make sure it is setup properly" >&2
+fi

@@ -1,0 +1,28 @@
+These are some standard fft wrappers to various FFT routines
+calling various system-dependent fft routines.  It's easier
+to change it here for new routines and/or new systems than
+in each program.
+
+These include multiple 1D, 2D & 3D fft's.  Initialization takes
+place in each routine along with any needed working arrays each
+time it's call.  The reasoning is that the overhead should be
+small in comparison to the fft's themselves.  That way these
+routines are also thread-safe.
+
+For now I am only providing fortran interfaces for these
+few routines.
+
+- Jerry Ehlers 
+--------------------------------------------------------------
+The fft_xxx_i8.F version are created as another level for the
+mkl routines so interface to the I8 interface to allow for
+more than 2 Giga words:
+
+   - IA32 uses LP64 model (i.e. 4-byte integer)
+   - IA64 and X86_64 uses ILP64 model (i.e. 8 byte integer).
+
+Build include mkl_dfti with:
+
+   ifort -c [-i8] /hpc/intel/mkl/9.1/include/mkl_dfti.f90
+
+- Phuong Vu 

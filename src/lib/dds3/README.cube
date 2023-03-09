@@ -1,0 +1,412 @@
+########################################################################
+#                 copyright 2003, Amoco Production Company             #
+#                             All Rights Reserved                      #
+#                     an affiliate of BP America Inc.                  #
+########################################################################
+
+ File: cube
+
+Binary data in DDS is characterized by a hyper cube.
+Each binary data set has its own control dictionary that
+describes the hyper cube, along with its processing history.
+
+Some cube definition are required, such as axis, size.<axis_name>,
+io_rank, format, and data.  Most of these have defaults which
+are automatically appended to the history.
+The default values are dependent upon many factors, such as
+binary format, dimensionality, and whether or not the data
+already exists or must be created
+
+EXAMPLE OF REQUIRED DEFINITIONS:
+   axis= t x shot
+   size.t= 500
+   size.x= 56
+   size.shot= 37
+   io_rank= 2
+   format= usp
+   data= foo.usp
+
+Other cube definitions are optional, such as /dev/rmt, sort.<axis_name>,
+base.<axis_name>, step.<axis_name>, origin.<axis_name>, 
+delta.<axis_name>, grid.<axis_name>, units.<axis_name>,
+world.{x|y|z|t}, and world.{x|y|z|t}.<axis_name>.
+
+Some of these definitions have defaults and others don't.
+They are optional in the sense that they are not
+required by DDS itself to access binary data.
+They're typically used by applications which must cooperate and
+are required only to the degree imposed by a family of programs.
+These conventions should be used where applicable in order to
+make life easier for programmers and end users.
+
+EXAMPLE OF OPTIONAL DEFINITIONS:
+   /dev/rmt/2u= label "tape1 tape2"
+   sort.x= TrcNum
+   sort.y= RecNum
+   base.x= 1
+   base.y= 1
+   step.x= 1
+   step.y= 1
+?  origin.x= 0.0
+?  origin.y= 0.0
+   delta.x= 20.
+   delta.y= 30.
+   units.t= msec
+   units.x= feet
+   units.y= feet
+   world.axis= x  y
+   world.origin.x= 13000.
+   world.origin.y= 7000.
+   world.delta.x.x= +0.8
+   world.delta.x.y= -0.6
+   world.delta.y.x= +0.6
+   world.delta.y.y= -0.8
+   world.units.x= meters
+   world.units.y= meters
+   landmark.base.line= 
+   landmark.base.trace= 
+   landmark.step.line=
+   landmark.step.trace=
+   landmark.step.line.x= 
+   landmark.step.line.y= 
+   landmark.step.trace.x= 
+   landmark.step.trace.y= 
+
+============================================================
+The definitions that describe the binary data cube are
+described below.
+============================================================
+
+axis= <name1>  <name2> ... <nameN>
+
+   This defines the number of dimensions (rank) and the name of each axis.
+   From one to N names may be defined and each must be unique.
+   White space characters are not allowed within an axis name.
+   Each name is limited to AXISNAME_MAX characters, which is currently
+   set to 31 by a #define in the include files (cdds.h, fdds.h).
+   Any name can be used for an axis, however the following conventions
+   should be used whenever applicable.
+
+      t               time
+      x, y, z         space
+      w               frequency
+      kx, ky, kz      wave number transforms
+      T, px, py, pz   tau-p transforms
+      shot            shot domain (shot station number)
+      station         station domain (receiver station number)
+      channel         channel domain (recording channel number)
+      h, offset       offset domain (relative bin number)
+      cdp             common depth point number
+      phone           multi component (polarization code)
+      property        general (Vp, Vs, Density, ... code)
+      ?1              unknown axis
+
+   An axis definition is required to access binary data.
+   The precise rules are dependent upon the format of the binary.
+
+      If the format is usp, segy, or disco, then at least two axes
+      are required.   The first describes the contents of the trace.
+      The second describes a sequence of traces.
+      If its an input data set (already exists) and axis is not
+      defined, then it defaults to "axis= t x y" (three dimensional).
+
+      If its a generic format (i.e. none of the above), then at least
+      one axis is required.   Its name does not have a default.
+
+   Example:
+      axis= t x y shot
+
+size.<axis_name>= N
+
+   This defines the number of points within a particular axis.
+   The size must be greater than or equal to one.
+
+   Example:
+      size.t= 500
+      size.x= 56
+      size.y= 37
+
+io_rank= N
+
+   This defines the lowest rank (granularity) for input and output.
+   The default value is two, because the first dimension
+   usually describes the number of samples within a trace.
+   The value must be two, if the format is usp, segy, disco or sep.
+   The value can be one for generic formats and special requirements.
+   For example, the "trace" may contain a 2D plane of data.
+
+   Example:
+      io_rank= 2
+   
+format= <fmt_name> <attributes>
+
+   The basic format is specified by <fmt_name>.
+   The following "standard" formats are recognized.
+
+      usp           Unix Seismic Processing, Amoco proprietary
+      segy          Society of Exploration Geophysic
+
+   This vendor format supports extensible headers with samples.
+
+      disco         Cogniseis
+
+   This extensible format is preferred for internal processing.
+   It provides the flexibility required for special processing
+   and minimizes information loss when changing formats.
+
+      asp           Amoco Seismic Processing
+
+   The "cube" formats eliminate all headers and retain only samples.
+
+      fcube         float, nominal precision
+      i1cube        1 byte signed integer
+      i2cube        2 byte signed integer
+      icube         signed integer, nominal precision
+
+   This format is similar to fcube or i1cube.
+
+      sep           Stanford Exploration Project
+
+   Example:
+      format= segy
+
+   The basic binary format may be modified by <attributes>.
+   The following attributes are supported by all formats.
+   They are suffixed by <axis> to identify the associated axis.
+
+      sync.<axis>           The trace header sort index is synchronized
+                            with the sort index of the next higher axis.
+                            This affects how dead traces are inserted.
+                            If set and the sort index for the next
+                            higher axis changes, then dead traces are
+                            inserted to complete the synchronized axis.
+
+      dense.<axis>          Axis is fully populated with traces and
+                            storage is reserved for all traces.
+                            If set, dead traces are inserted by read and
+                            write if the sort index indicates any traces
+                            are missing from the axis sequence.
+                            If set, random access is well defined.
+
+                            If an axis is not dense, trace population may
+                            be sparse, i.e. dead traces may not have been
+                            stored and random access may not be defined.
+                            Dead traces are padded by read iff "edit"
+                            specified "pad" when an axis is sparse.
+
+                            Dense may be explicitly set to ensure that
+                            dead traces are automatically inserted when
+                            reading and writing data.
+
+      slice.<axis>          Axis is synthesized from multiple files.
+                            Slicing is ignored, if the binary data is
+                            attached to dictionary, i.e. "data= dict:".
+                            Sliced axes are implicitly dense.
+
+   Example:
+      format= usp dense.x
+
+      format= usp dense.2
+
+   Some formats recognize additional attributes.
+
+      format     attribute        description
+      usp
+      segy
+                 float 4 ibm      Trace sample type
+                 float 4 ieee       "      "     "
+                 integer 1          "      "     "
+                 integer 2          "      "     "
+                 integer 4          "      "     "
+                 ascii            card header type
+                 ebcdic             "     "     "
+                 charisma         green words, embedded line headers
+      disco
+      sep
+
+data= <file_name>
+
+   This defines the binary data filename(s).
+   Multiple names may be defined if any axis is sliced.
+   The name may be a regular file, named pipe, device name,
+   or special mneumonic (stdin:, stdout:, fdN:, tmpXXX:).
+   Mneumonics provide support for standard input, output,
+   numbered file descriptors, and temporary files.
+
+   Example:
+      data= foo
+
+   Example:
+      size.s= 3
+      data= slice1  slice2  slice3
+
+   If <file_name> is "dict:", the binary data is attached to the
+   history dictionary, i.e. they share a single file or stream.
+   If data is attached, multiple files for slicing is disabled.
+
+   Example:
+      data= dict:
+
+/dev/XXX= <attributes>
+
+   This defines special attributes for physical devices.
+   For example, binary data may reside on multiple input tapes.
+   The device name must exactly match the name of the binary data
+   or dictionary to which it applies.
+
+   Example:
+      data= /dev/rmt/2u
+      /dev/rmt/2u= label "tape1  tape2"
+
+sort.<axis_name>= N
+
+   This defines the name of a trace header for axis sorting.
+
+   Example:
+      sort.x= TrcNum
+
+base.<axis_name>= N
+step.<axis_name>= N
+
+   This defines the start and increment for a sorted axis.
+   The default value is one.
+
+   Example:
+      base.x= 1
+      step.x= 1
+
+origin.<axis_name>= N
+delta.<axis_name>= N
+
+   This defines the start and increment for physical coordinates.
+
+   Example:
+      origin.x= 0.
+      delta.x= 30.
+
+grid.<axis_name>= <g1> <g2> ... <gN>
+
+   This defines physical coordinates for a constant grid with
+   irregular spacing between points.
+
+   Example:
+      grid.x=  1000  3000  1000
+
+units.<axis_name>= <unit_of_measure>
+
+   This defines the units for physical coordinates.
+
+   Example:
+      units.y= feet
+
+world.axis=  <name1>  <name2>
+
+   This defines the world dimensions, similar to axis.
+
+   Example:
+      world.axis=  t  x  y
+
+world.x= N
+world.y= N
+world.z= N
+world.t= N
+
+   This defines the origin for a world coordinate system.
+   The x, y, z, t names may be independent of those defined by axis.
+
+   Example:
+      world.x= 13000.
+      world.y= 7000.
+
+world.x.<axis_name>= N
+
+   This defines the increment in a world coordinate, for a change
+   in the physical coordinates.
+   
+   Example:
+      world.x.x= +0.8
+      world.x.y= -0.6
+      world.y.x= +0.6
+      world.y.y= -0.8
+
+world.units.x= <unit_of_measure>
+
+   Example:
+      world.units.x= meters
+
+============================
+
+
+The cube may have from 1 to N dimesions.
+The number of dimensions (rank) and axis names are defined by "axis
+The rank (number of dimensions) and axis names are defined by a
+the "axis: 
+
+   axis= a1  a2
+The 
+Notes on cube description
+
+Basic cube definitions:
+   axis=  t  x  y
+      Defines the name of each axis.
+         Names may not contain any white space;  Example
+            axis=  t  x  "bad name"
+      The number of names implies the cube's rank.
+      
+      Names may contain multiple char
+      Names may contain any
+   io_rank= 2
+   axis.<name>=  <attributes>
+      
+   sparse, async, slice
+      axis attributes
+      propagated when data is created
+      defined by "axis.<name>= <attribute>"
+         +sparse      traces may be missing
+         -sparse      no traces are missing
+         +async       independent index
+         -async       index synchronized
+         +slice       distributed across files
+         -slice       sequence within file
+
+   The interaction between the nominal cube description and the line
+   headers of standard formats (usp, segy, disco, sep) is complex.
+   Its depdependent upon the cube rank, axis name, axis number,
+   binary format, processing history and whether or not the data
+   already exists or must be created.
+   The excruciating details can only be found in the source code.
+   The following attempts to summarize the essence of these rules.
+      
+                         usp  segy disco other
+      nominal 
+      line header name  NumSmp
+      definition name   usp_NumSmp
+      If the format is usp, segy, or disco then the size of the first
+      axis corresponds to NumSmp specified by the line header.
+      If the data already exists, the size is forced to the header value.
+      If the data is created, the header is forced to the size.
+      
+
+      The size of the second and third axis corresponds to NumTrc
+      and NumRec, or their equivalent when they exist in a standard
+      format (usp, segy, disco, etc.).  If the data already exists,
+      the size is defaulted to the header value, i.e. if the size
+      of the second axis 
+      If the format is usp or segy, then the size of the second axis
+      corresponds to NumTrc specified by the line header.
+      If the data already exists, the size is defaulted to the header value.
+      If size.<2nd_axis_name> is already defined, its not changed.
+
+   The meaning of size is dependent upon the sparse flag,
+   which is an attribute of the format definition.
+   If the axis is "sparse", dead traces might not be preserved
+   in the file and the size should represent an upper limit.
+   If the axis is dense (not "sparse"), dead traces should be
+   retained in the file and size is the actual count.
+
+   Note the use of weasle words (might and should).
+   
+   on the 
+   If the axis is dense (not "sparse"), dead traces are retained.
+   If the axis is "sparse", dead traces may be missing.
+

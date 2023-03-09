@@ -1,0 +1,77 @@
+##############################################
+###   Copyright (C) 2009                   ###
+###   BP America, Inc. Houston, TX         ###
+###   Jerry Ehlers, Jan 2009               ###
+##############################################
+#RCS-t=HOST, Makefile2
+
+# $Id: Makefile2 297 2015-07-21 02:11:12Z user $
+
+CPPFLAGS= -I.. $(I.dds)
+
+MKLIBS= libfft$(DBGEXT).a
+MKLFFTINCLUDE=$(MKLROOT)/include
+
+#########################
+###  library members  ###
+#########################
+
+# Attempt to minimize text page faults by grouping related functions.
+# For example, f_in calls c_in, which calls c_dict, etc.
+# This assumes that the sequential order of names are preserved
+# in the library and executeable (and hence memory pages).
+
+libfft.F=  fft_nrfft5.F fft_nrfft5odd.F \
+           fft_ccfftm.F fft_ccfft2d.F fft_ccfft3d.F \
+           fft_rcfftm.F fft_rcfft2d.F fft_crfft2d.F \
+           fft_crfftm.F fft_rcfft3d.F fft_crfft3d.F \
+           fft_zzfftm.F fft_zzfft2d.F fft_zzfft3d.F 
+
+libcfft.c= cfft_nrfft5.c cfft_nrfft5odd.c \
+           cfft_ccfftm.c cfft_ccfft2d.c cfft_ccfft3d.c \
+           cfft_rcfftm.c cfft_rcfft2d.c cfft_crfft2d.c \
+           cfft_crfftm.c cfft_rcfft3d.c cfft_crfft3d.c \
+           cfft_zzfftm.c cfft_zzfft2d.c cfft_zzfft3d.c 
+
+# Need to set COMPILE.F to eliminate duplication of ${TARCHFLAGS.F} 
+# arguments that are in # $FFTFlags and $FFFTFlags. Duplication of 
+# '-J' arg causes errors for gcc 
+#                                          - J.Wade - 7/20/2015
+
+# COMPILE.F:= ${COMPILE.F} ${FCFlags} ${OMPCFlags} ${FFTFlags} ${FFFTFlags}
+COMPILE.F:= ${FC} -c ${OMPCFlags} ${FFTFlags} ${FFFTFlags}
+COMPILE.C:= ${COMPILE.C} ${CCFlags} ${OMPCFlags} 
+
+LIBFFT.o=$(libfft.F:.F=.o) $(libcfft.c:.c=.o) 
+
+
+#######################
+###  install files  ###
+#######################
+
+INSTALL_ARCH_LIB.a= $(MKLIBS)
+
+INSTALL_ARCH_INC.h=
+
+INSTALL_SRC_INC.h= fft.h cfft.h f90fft.h
+
+######################################################
+###  END OF MACRO DEFINITIONS, BEGINNING OF RULES  ###
+######################################################
+
+default: $(MKLIBS) ${INSTALL_SRC_INC.h}
+
+$(MKLIBS): $(LIBFFT.o)
+	$(AR) $(ARFLAGS) $(@F) $?; $(RANLIB) $(@F)
+
+#######################
+###  install rules  ###
+#######################
+
+show_arch_libs:
+	@- echo API_LIB.a= $(API_LIB.a)
+	@- ls $(API_LIB.a)/$(MKLIBS)
+
+kill_arch_libs:
+	@- rm -f $(API_LIB.a)/$(MKLIBS)
+

@@ -1,0 +1,122 @@
+########################################################################
+#                 copyright 2003, Amoco Production Company             #
+#                             All Rights Reserved                      #
+#                     an affiliate of BP America Inc.                  #
+########################################################################
+
+ File: README.todo
+
+DDS, list of things yet to be done... (although many of these are now done)
+
+************************************************
+*********  DDS REV 3.1 (beta testing)  *********
+************************************************
+
+***  SELZLER's LIST  ***
+
+Rev2 to Rev3 transition aids
+   list of API changes (function names and args)
+   explain what is a member tag
+   note precedence change between input history and line header
+   more templates
+
+lex yacc map expression syntax error when "." is followed by "*"
+
+   10.*SrcLoc   syntax error
+   10.0*SrcLok  OK
+
+intrinsic function names
+   math functions vector/scalar double/float/integer
+      sin(x), cos(x), tan(x), asin(x), acos(x), atan(x), atan2(x)
+      sinh(x), cosh(x), tanh(x)
+      exp(x), log(x), log10(x), pow(x,y), sqrt(x), ceil(x), floor(x)
+      abs(x) ... was fabs
+      real(x), imag(x) NO ! use x.real and x.imag
+      cmplx(x,y)
+
+read and write usp trace and line header
+   must access gio in single trace and line units
+      for tape io support (segy model)
+   verify multiple trace and line looping
+
+cleanup memory leaks
+
+***  ANYONE's LIST  ***
+
+"asp" format lexicon needed
+   starting from classic USP header field mnemonics,
+   1) pick and choose the ones to keep/discard
+   2) keepers need thorough documentation.
+      what does it mean, how is it used, relationship
+      to other mnemonics, long and terse version
+   3) nominal type and precision
+   4) mapping between other formats
+   5) convenience clusters of related headers
+
+conversion table utilities
+   test for infinite loops
+   print conversion table population
+
+test tape support
+   configure dlt tape attributes
+   sgi needs "v" for variable block size, i.e. /dev/mt/tps0d4v
+
+implement more standard formats
+   segy, disco, landmark, geoquest, ...
+   open, read, write, setpost
+
+implement ddsRevealName (sep findnm)
+
+implement utility calls
+   improve API ?
+   error, warn, debug, verbose
+   print on/off, abort on/off, msg query
+
+verify ddsEvaluate complex arithmetic
+
+measure performance
+   raw gio
+   dds primitives (profiling)
+   dds applications
+
+documentation
+   deprecate old functions
+   general, end-user, formats, programmer
+   man pages, HTML, help
+   DDS messages (error, warning, ...)
+
+**********************************************
+*********  DDS REV 3.2 (production)  *********
+**********************************************
+
+regression testing, distribution, support
+
+training
+
+application development
+
+transition from DDS REV 2
+
+***************************************************
+*********  DDS REV 3.3 (more features ?)  *********
+***************************************************
+
+huge files ?  storage hierarchy ? Terafile ? Sun 64 bit files ?
+remote data server ?
+more map functions ? convenience functions ?
+vector mapping, notation (lex, yacc, ddsAppendExpr*, ddsEvaluate) ?
+header/data split/join ?
+more optimization ?
+utility commands ? dds versions of ls, cp, mv, rm, ftp ?
+convenience functions ?
+sep emulation ?
+random access and sort support ?
+
+**********************************************
+*********  DDS REV 3.4 (production)  *********
+**********************************************
+
+regression testing, distribution, support
+
+transition from DDS REV 2
+

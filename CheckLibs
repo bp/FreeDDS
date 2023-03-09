@@ -1,0 +1,45 @@
+#!/bin/sh 
+#
+# Check the installation for missing libraries 
+#
+
+DDS_DIST=${DDS_DIST:-/tstapps/global}
+
+libdir=$DDSROOT/lib/`$DDSROOT/src/lib/host/HostDir  -b`/`$DDSROOT/src/lib/host/HostComp -d`
+
+libs='libchost libfhost libgio libdds_r3  libfftw3 libfftw3f libfft'
+
+n=0
+
+cd $libdir
+
+if [ ! -f  libchost.a -o ! -f libfhost.a ]; then
+   n=$(($n+1))
+   echo "host Libraries not installed: $libdir/libchost.a $libdir/libfhost.a"
+   echo "(Go to $DDSROOT/src/lib/host and run 'make' & 'make install'"
+fi
+if [ ! -f  libgio.a ]; then
+   n=$(($n+1))
+   echo "gio Library not installed: $libdir/libgio.a"
+   echo "(Go to $DDSROOT/src/lib/gio and run 'make' & 'make install'"
+fi
+if [ ! -f  libdds_r3.a ]; then
+   n=$(($n+1))
+   echo "dds Library not installed: $libdir/libgio.a"
+   echo "(Go to $DDSROOT/src/lib/dds3 and run 'make' & 'make install'"
+fi
+if [ ! -f  libfftw3.a -o ! -f libfftw3f.a ]; then
+   n=$(($n+1))
+   echo "fftw Libraries not installed: $libdir/libfftw3.a $libdir/libfftw3f"
+   echo "(Go to $DDSROOT/src/lib/gio and run 'make' & 'make install'"
+fi
+if [ ! -f  libfft.a ]; then
+   n=$(($n+1))
+   echo "fft wrapper Library not installed: $libdir/libfft.a"
+   echo "(Go to $DDSROOT/src/lib/fft and run 'make' & 'make install'"
+fi
+
+if [ $n -eq 0 ]; then
+   echo "All DDS libraries installed"
+fi
+

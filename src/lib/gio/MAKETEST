@@ -1,0 +1,48 @@
+#!/bin/sh
+#set -x
+
+# Set defaults
+
+CC=cc
+
+# Adapt to OS
+
+if [ "$TARCH" = "freebsd" ]; then
+    CC=/usr/local/bin/cc
+    EXTRALIBS="-lcompat -lxf2c"
+fi
+
+if [ "$TARCH" = "linux" ]; then
+    EXTRALIBS="-lxf2c"
+fi
+
+if [ "$TARCH" = "sun4gcc" ]; then
+    CC=gcc
+fi
+
+if [ "$TARCH" = "sun4" ]; then
+    CC=/home/patches/lang/301/SC3.0.1patch/bin/acc
+fi
+
+# Get to work
+
+if [ ! -d $TARCH ]; then
+    mkdir $TARCH
+fi
+
+cd $TARCH
+
+if [ "$1" = "clean" ]; then
+    rm -f cfdtest cfdtest.o
+elif [ "$1" = "install" ]; then
+    if [ ! -d ../../../../bin/$TARCH ]; then
+	mkdir ../../../../bin/$TARCH
+    fi
+    cp cfdtest ../../../../bin/$TARCH
+elif [ "$1" = "uninstall" ]; then
+    rm -f ../../../../bin/$TARCH/cfdtest
+elif [ "$1" = "" ]; then
+    $CC -o cfdtest -I. -I.. -I../../../../include ../cfdtest.c $EXTRALIBDIRS -L../../../../lib/$TARCH -lgio_r1 -lchost_r1 $EXTRALIBS
+else
+    echo "Huh?"
+fi

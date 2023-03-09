@@ -1,0 +1,57 @@
+#!/bin/bash
+#
+# chkhost: checks if a host machine is up and available
+#          (returns "OK" if alright)
+#
+
+if [ `uname` = 'SunOS' ]; then
+   ping1=''
+   ping2='1'
+else
+   ping1='-c 1'
+   ping2=''
+fi
+
+: ${DDSRSH:=ssh}
+TST=`echo $DDSRSH|awk '{print $1}'`
+if [ -x "/usr/bin/${TST}" ]; then
+   DDSRSH="/usr/bin/${DDSRSH}"
+fi
+
+#
+# make sure we can at least ping
+#
+status=`ping $ping1 $1 $ping2 &> /dev/null;echo $?`
+if [ $status -eq 0 ]; then
+#
+#  check that we can rsh or ssh to it
+#
+   $DDSRSH -n $1 echo "OK" 2> /dev/null &
+#
+#  wait up to 10 seconds for a response
+#
+   t0=`date +%S`
+   t=$t0
+   t1=`expr $t0 + 20`
+   ellipses="."
+   while [ $t -lt $t1 ]; do
+      echo -en "\rChecking $1 $ellipses" >&2
+      kill -SIGCONT $! 2>/dev/null
+      if [ $? -ne 0 ]; then
+         exit 0
+      fi
+      sleep 1
+      t=`date +%S`
+      if [ $t -lt $t0 ]; then
+         t=`expr $t + 10`
+      fi
+      ellipses="${ellipses}."
+   done
+
+#
+#  Timed Out: no response
+#     
+   kill -9 $! > /dev/null 2>&1
+   echo "Timed Out!" >&2
+fi
+exit 0

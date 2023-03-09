@@ -1,0 +1,113 @@
+########################################################################
+#                      copyright 2005, BP America                      #
+#                          All Rights Reserved                         #
+########################################################################
+# $Id: MakeMacro 294 2015-07-07 22:12:20Z user $
+
+### See $(DDSROOT)/README.makeexamples for more information,
+# Macro definitions in "MakeMacro" are used by "make"
+# when executing in the source and $(TARCH) directory.
+
+###
+# HARCH: abreviated arch name (eg.LX26x86_64)
+# VARCH: abreviated pathname $(HARCH)$(CompExt) (eg. LX26x86_64-10)
+# TARCH: abreviated pathname (eg. LX26x86_64-10)
+# UARCH: full path (eg. Linux/2.6/x86_64/Intel-10)
+
+### Default rule for "make".
+### Must appear before any other rule.
+DEFAULT_RULE: DEFAULT_TARGET
+	@ $(VERBOSE) Rule, $@: $?
+
+### Nominal target (goal for make processing) is "default".
+target= default
+
+### Make sure DDSROOT is defined
+DDSROOT:=$(if ${DDSROOT},${DDSROOT},$(error DDSROOT not defined))
+
+### If the user has overridden the compiler, we need to use that
+
+COMPILER :=$(if $(COMPILER),$(COMPILER),$(compiler))
+
+Args:=$(if ${COMPILER},COMPILER=${COMPILER})
+
+# This is necessary because sub-shell make loses original user path
+
+USERPATH ?= ${PATH}
+export USERPATH
+PATH:=${USERPATH}
+export PATH
+
+### Default Compiler Level 
+All:= $(shell PATH=${USERPATH} ; ${DDSROOT}/src/lib/host/HostComp -a ${Args})
+All:= $(subst ^,^ ,$(shell echo "${All}"|sed -e 's/ /SPACE/g'))
+
+CompLevel:=$(subst ^,,$(subst SPACE, ,$(word  2,${All})))
+CompExt  :=$(subst ^,,$(subst SPACE, ,$(word  3,${All})))
+CompDir  :=$(subst ^,,$(subst SPACE, ,$(word  4,${All})))
+CompC    :=$(subst ^,,$(subst SPACE, ,$(word  5,${All})))
+CompF    :=$(subst ^,,$(subst SPACE, ,$(word  7,${All})))
+CompTF   :=$(subst ^,,$(subst SPACE, ,$(word  9,${All})))
+CompCF   :=$(subst ^,,$(subst SPACE, ,$(word 10,${All}))) ${CompTF}
+CompFF   :=$(subst ^,,$(subst SPACE, ,$(word 11,${All}))) ${CompTF}
+CompCLF  :=$(subst ^,,$(subst SPACE, ,$(word 12,${All}))) ${CompTF}
+CompCLB  :=$(subst ^,,$(subst SPACE, ,$(word 14,${All})))
+CompFLB  :=$(subst ^,,$(subst SPACE, ,$(word 15,${All})))
+
+# Remove fftw libraries
+CompCLB  :=$(subst -lfftw3,,$(subst -lfftw3f,,$(CompCLB)))
+CompFLB  :=$(subst -lfftw3,,$(subst -lfftw3f,,$(CompFLB)))
+
+Args:=$(if $(patsubst R5K,,${LNDMRK}),LNDMRK)
+
+### Default Platform Directories
+All:= $(shell ${DDSROOT}/src/lib/host/HostDir -a ${Args} )
+All:= $(subst ^,^ ,$(shell echo "${All}"|sed -e 's/ /SPACE/g'))
+ArchName:=$(subst ^,,$(subst SPACE, ,$(word  1,${All})))
+ArchBin :=$(subst ^,,$(subst SPACE, ,$(word  2,${All})))
+ArchExe :=$(subst ^,,$(subst SPACE, ,$(word  3,${All})))
+Machine :=$(subst ^,,$(subst SPACE, ,$(word  6,${All})))
+
+### Default MPI Info
+All:= $(shell ${DDSROOT}/src/lib/host/HostMP -a $(LNDMRK))
+All:= $(subst ^,^ ,$(shell echo "${All}"|sed -e 's/ /SPACE/g'))
+DOMP      :=$(subst ^,,$(subst SPACE, ,$(word  1,${All})))
+DOMPF     :=$(subst ^,,$(subst SPACE, ,$(word  2,${All})))
+OMPCFlags :=$(subst ^,,$(subst SPACE, ,$(word  3,${All})))
+DMPI      :=$(subst ^,,$(subst SPACE, ,$(word  6,${All})))
+DMPIF     :=$(subst ^,,$(subst SPACE, ,$(word  7,${All})))
+MPIcflags :=$(subst ^,,$(subst SPACE, ,$(word  8,${All})))
+
+### Host architecture {sun4u | IRIX32 | IRIX64 | LX2i686 | ...}
+HARCH:= $(ArchName)
+
+### User's name.
+USER:= $(if ${USER},${USER},$(shell logname))
+
+### Search path for commands.
+CMD_PATH= /sbin:/bin:/etc:/usr/sbin:/usr/bin:/usr/etc
+
+### Defaults for generic utility commands.
+### Portable rules can be created using generic commands,
+### where actual commands may be site and host dependent.
+
+MV= mv
+RM-f= rm -f
+CP= cp -p
+CAT= cat
+EXPR= expr
+CD= cd
+PWD= pwd
+MKDIR= mkdir -p
+HOSTNAME= hostname
+RSH=$(if ${DDSRSH},${DDSRSH},ssh)
+UNAME= uname
+UMASK= umask
+AR= ar
+ARFLAGS= r
+
+
+### File permission mask, when creating new files.
+### "002" allows group write access, "022" denies it.
+UMASK_VALUE= 002
+

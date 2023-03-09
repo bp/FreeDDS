@@ -1,0 +1,286 @@
+segy.fmt:= $Id: segy1.fmt.dds 235 2011-08-06 22:05:10Z user $ 
+RCS-t=DDS, segy1.fmt.dds
+
+fmt:*:segy1= /* "segy1" format description */
+   typedef SEGY_CARD   PREAMBLE;
+   typedef SEGY_BINARY PREAMBLE2;
+   typedef SEGY1_TRACE  SEQUENCE;
+   /* EPILOGUE not applicable */
+
+alias:fmt:segy1= fmt:*:segy1
+
+fmt:*:segy1.SEGY_FmtCode=
+   typedef enum2 {
+      SEGY_FmtCode_float4ibm  \= 1,
+      SEGY_FmtCode_integer4   \= 2,
+      SEGY_FmtCode_integer2   \= 3,
+      SEGY_FmtCode_integer2a  \= 4,
+      SEGY_FmtCode_float4     \= 5,
+      SEGY_FmtCode_integer1   \= 8,
+   } SEGY_FmtCode;
+
+fmt:*:segy1.SEGY_UnitsFlag=
+   typedef enum2 {
+      SEGY_UnitsFlag_meters   \= 1,
+      SEGY_UnitsFlag_feet     \= 2,
+   } SEGY_UnitsFlag;
+
+fmt:*:segy1.SEGY_TrcIdCode=
+   typedef enum2 {
+      SEGY_TrcIdCode_Seismic  \= 1,
+      SEGY_TrcIdCode_Dead     \= 2,
+      SEGY_TrcIdCode_Dummy    \= 3,
+      SEGY_TrcIdCode_TimeBrk  \= 4,
+      SEGY_TrcIdCode_Uphole   \= 5,
+      SEGY_TrcIdCode_Sweep    \= 6,
+      SEGY_TrcIdCode_Timing   \= 7,
+      SEGY_TrcIdCode_WaterBrk \= 8,
+   } SEGY_TrcIdCode;
+
+fmt:*:segy1.SEGY_CARD=
+   typedef struct {
+      GREEN_PREFIX card_green_prefix;
+      SEGY_CHAR card3200[40][80]; /* forty, 80 column cards */
+      unsigned1 segy_card_pad[SEGY_CARD_PAD];
+      GREEN_SUFFIX card_green_suffix;
+   } SEGY_CARD;
+
+fmt:*:segy1.SEGY_BINARY=
+   typedef struct {
+      GREEN_PREFIX binary_green_prefix;
+      SEGY_INT
+         JobNum,       /* 1:4, Job identification number */
+         LineNum,      /* 5:8, Line number (only one line per reel) */
+         ReelNum;      /* 9:12, Reel number */
+      SEGY_SHORT
+         NumTrc,       /* 13:14, Number of data traces per record */
+         NumAux,       /* 15:16, Number of auxiliary traces per record */
+         SmpInt,       /* 17:18, Sample interval in u-sec (this reel) */
+         OrigSmpInt,   /* 19:20, Sample interval in u-sec (original) */
+         NumSmp,       /* 21:22, Number of samples per trace (this reel) */
+         OrigNumSmp;   /* 23:24, Number of samples per trace (original) */
+      SEGY_FmtCode
+         FmtCode;      /* 25:26, Data sample format (1 f4ibm,2/4 i4,3 i2,5 f4, 8 i1) */
+      SEGY_SHORT
+         CdpFold,      /* 27:28, CDP fold (expected traces per CDP ensemble) */
+         SortCode,     /* 29:30, Trace sort code (1 none, 2 CDP, 3 fold, 4 stack) */
+         VertSumFlag,  /* 31:32, Vertical sum code (1 none, n sum) */
+         SwpFreqStart, /* 33:34, Sweep frequency at start */
+         SwpFreqEnd,   /* 35:36, Sweep frequency at end */
+         SwpLength,    /* 37:38, Sweep length (m-sec) */
+         SwpCode,      /* 39:40, Sweep type code (1 linear, 2 par, 3 exp) */
+         SwpChan,      /* 41:42, Trace number of sweep channel */
+         SwpTprStart,  /* 43:44, Sweep trace taper length in m-sec, start */
+         SwpTprEnd,    /* 45:46, Sweep trace taper length in m-sec, end */
+         SwpTprType,   /* 47:48, Taper type (1 linear, 2 cos^2) */
+         CorrFlag,     /* 49:50, CorrFlag data traces (1 no, 2 yes) */
+         GainFlag,     /* 51:52, Binary gain recovered (1 yes, 2 no) */
+         AmpFlag;      /* 53:54, Amplitude recovery method (1 no, 2 sph, 3 agc) */
+      SEGY_UnitsFlag
+         UnitsFlag;    /* 55:56, Measurement system (1 meters, 2 feet) */
+      SEGY_SHORT
+         PolarityFlag, /* 57:58, Impulse signal polarity (1 neg, 2 pos) */
+         VibLagFlag;   /* 59:60, Vibratory polarity code: 1-8 */
+      union {  /* 61:300, Unassigned--for optional information */
+         unsigned1 I1[240];
+         integer2 I2[120];
+         integer4 I4[60];
+         float4 F4[60];
+         float4ibm F4ibm[60];
+      } SpareBin;
+      SEGY_SHORT
+         SegyFmt,      /* 301:302, Segy Format (0100x for Rev 1.0) */
+         FixedLength,  /* 303:304, Fixed trace Length flag (1)*/
+         NumHdr,       /* 305:306, Number of Extended Textual Headers */
+         Unassigned;   /* 307:308, Unassigned */
+      union {  /* 309:400, Unassigned--for optional information */
+         unsigned1 I1[92];
+         integer2 I2[46];
+         integer4 I4[23];
+         float4 F4[23];
+         float4ibm F4ibm[23];
+      } Spare2Bin;
+      unsigned1 segy_binary_pad[SEGY_BINARY_PAD];
+      GREEN_SUFFIX binary_green_suffix;
+   } SEGY_BINARY;
+
+
+fmt:*:segy1.SEGY1_TRACE=
+   typedef align(1) struct {
+      GREEN_PREFIX green_prefix;
+      SEGY_INT
+         LineTrcNum,     /* 1:4, Trace sequence number within line */
+         ReelTrcNum,     /* 5:8, Trace sequence number within reel */
+         FieldRecNum,    /* 9:12, Original field record number */
+         FieldTrcNum,    /* 13:16, Trace number within the original field rec */
+         SrcPtNum,       /* 17:20, Energy source point number */
+         CdpNum,         /* 21:24, CDP ensemble number */
+         CdpTrcNum;      /* 25:28, Trace number within the CDP ensemble */
+    /*  SEGY_TrcIdCode */
+      SEGY_SHORT
+         TrcIdCode;      /* 29:30, Trace identification code: 1-8 */
+      SEGY_SHORT
+         VertStack,      /* 31:32, Number of vertically summed traces */
+         HorzStack,      /* 33:34, Number of horizontally stacked traces */
+         DataUse;        /* 35:36, Data use (1 production, 2 test) */
+      SEGY_INT
+         DstSgn,         /* 37:40, Distance from source to group, signed */
+         GrpElev,        /* 41:44, Receiver group elevation */
+         SrcElev,        /* 45:48, Surface elevation at source */
+         SrcDepth,       /* 49:52, Source depth below surface (positive) */
+         GrpDatum,       /* 53:56, Datum elevation at receiver group */
+         SrcDatum,       /* 57:60, Datum elevation at source */
+         WatDepthSrc,    /* 61:64, Water depth at source */
+         WatDepthGrp;    /* 65:68, Water depth at group */
+      SEGY_SHORT
+         ElevScaler,     /* 69:70, Scalar to be applied to all elevations */
+         XYScaler;       /* 71:72, Scalar to be applied to all coordinates */
+      SEGY_INT
+         SrcX,           /* 73:76, Source coordinate X */
+         SrcY,           /* 77:80, Source coordinate Y */
+         GrpX,           /* 81:84, Group coordinate X */
+         GrpY;           /* 85:88, Group coordinate Y */
+      SEGY_SHORT
+         XYUnits,        /* 89:90, Coordinate units (1 length, 2 arc sec) */
+         WeathVel,       /* 91:92, Weathering velocity */
+         SubWeathVel,    /* 93:94, Subweathering velocity */
+         UpholeTmSrc,    /* 95:96, Uphole time at source */
+         UpholeTmGrp,    /* 97:98, Uphole time at group */
+         SrcStatic,      /* 99:100, Source static correction */
+         GrpStatic,      /* 101:102, Group static correction */
+         TotalStatic,    /* 103:104, Total static applied */
+         LagTmBreak,     /* 105:106, Lag time A. Time in ms */
+         LagTmSrc,       /* 107:108, Lag time B. Time in ms */
+         LagTmSmpOne,    /* 109:110, Delay recording time. Time in ms */
+         MuteStart,      /* 111:112, Mute time--start */
+         MuteEnd,        /* 113:114, Mute time--end */
+         TrcNumSmp,      /* 115:116, Number of samples in this trace */
+         TrcSmpInt,      /* 117:118, Sample interval in us for this trace */
+         GainType,       /* 119:120, Gain type of field instruments: 1-4 */
+         GainConst,      /* 121:122, Instrument gain constant */
+         GainInit,       /* 123:124, Instrument early or initial gain (db) */
+         CorrFlag,       /* 125:126, CorrFlag data traces (1 no, 2 yes) */
+         SwpFreqStart,   /* 127:128, Sweep frequency at start */
+         SwpFreqEnd,     /* 129:130, Sweep frequency at end */
+         SwpLength,      /* 131:132, Sweep length in ms */
+         SwpType,        /* 133:134, Sweep type (1 linear, 2 par, 3 exp, 4 ?) */
+         SwpTprStart,    /* 135:136, Sweep trace taper length at start in ms */
+         SwpTprEnd,      /* 137:138, Sweep trace taper length at end in ms */
+         SwpTprType,     /* 139:140, Taper type (1 linear, 2 cos^2, 3 other) */
+         AntiAliasFreq,  /* 141:142, Alias filter frequency, if used */
+         AntiAliasSlope, /* 143:144, Alias filter slope */
+         NotchFreq,      /* 145:146, Notch filter frequency, if used */
+         NotchSlope,     /* 147:148, Notch filter slope */
+         LowCutFreq,     /* 149:150, Low cut frequency, if used */
+         HighCutFreq,    /* 151:152, High cut frequency, if used */
+         LowCutSlope,    /* 153:154, Low cut slope */
+         HighCutSlope;   /* 155:156, High cut slope */
+      struct {  /* Date information */
+         SEGY_SHORT
+            DateYear,    /* 157:158, Year data recorded */
+            DateDay,     /* 159:160, Day of year */
+            DateHour,    /* 161:162, Hour of day (24 hour clock) */
+            DateMin,     /* 163:164, Minute of hour */
+            DateSec;     /* 165:166, Second of minute */
+      } Date;
+      SEGY_SHORT
+         DateType,       /* 167:168, Time basis code (1 local, 2 gmt, 3 other) */
+         TrcWeight,      /* 169:170, Trace weighting factor */
+         RollSwtch1,     /* 171:172, Geophone group number of roll switch pos 1 */
+         RollTrace1,     /* 173:174, Geophone group number of trace number one */
+         RollTraceN,     /* 175:176, Geophone group number of last trace */
+         RollGapSize,    /* 177:178, Gap size (total number of groups dropped) */
+         OverTravel;     /* 179:180, Overtravel associated with taper */
+      SEGY_INT
+         CDPBCX,         /* 181:184, CDP Bin Center X coordinate */
+         CDPBCY,         /* 185:188, CDP Bin Center Y coordinate */
+         LinInd,         /* 189:192, Line Index */
+         DphInd,         /* 193:196, Depth Index (crossline index) */
+         SrcLoc;         /* 197:200, Source Index times 10 */
+      SEGY_SHORT
+         SrcLocScaler,   /* 201:202, Source Index scaler (-10) */
+         TrcUnit;        /* 203:204, Trace value measurement unit */
+      SEGY_INT
+         TranConstMan;   /* 205:208, Transduction Constant (mantissa) */
+      SEGY_SHORT
+         TranConstExp,   /* 209:210, Transduction Constant (exponent) */
+         TranUnits,      /* 211:212, Transduction Units */
+         DevId,          /* 213:214, Device/Trace Identifier */
+         MsecScaler;     /* 215:216, Scalar to be applied to times */
+      union {  /* Unassigned--for optional information */
+         unsigned1 I1[24];
+         integer2 I2[12];
+         integer4 I4[6];
+         float4 F4[6];
+         float4ibm F4ibm[6];
+         struct {
+            SEGY_INT
+               SrRcMX,    /* 217:220, Source to Receiver Mid Point X co-ordinate */
+               SrRcMY;    /* 221:224, Source to Receiver Mid Point Y co-ordinate */
+            SEGY_SHORT
+               SrcPnt,    /* 225:226, src point above this depth pt */
+               SoPtNm,    /* 227:228, source point number */
+               RecInd,    /* 229:230, rec location index GI */
+               RecNum,    /* 231:232, USP RecNum */
+               FlReFN,    /* 233:234, USP FlReFN */
+               CdpStatic, /* 235:236, Dons famous Cdp Static USP ToStAp */
+               DePtEl,    /* 237:238, Depth Point Elevation */
+               FlDtEl;    /* 239:240, Floating Datum Elevation */
+         } Hdr;
+      } Spare1;
+      SAMPLE_TYPE Samples[axis_size(1)]; /* time series */
+      unsigned1 segy_trace_pad[SEGY_TRACE_PAD];
+      GREEN_SUFFIX green_suffix;
+   } SEGY1_TRACE;
+
+comment= default sort field translation
+
+sort:usp.PrRcNm:segy1= FieldRecNum
+sort:usp.FlReFN:segy1= Spare1.Hdr.FlReFN
+sort:usp.RecNum:segy1= Spare1.Hdr.RecNum
+sort:usp.SrcPnt:segy1= Spare1.Hdr.SrcPnt
+sort:usp.SoPtNm:segy1= Spare1.Hdr.SoPtNm
+sort:usp.RecInd:segy1= Spare1.Hdr.RecInd
+sort:usp.LinInd:segy1= LinInd
+sort:usp.SrcLoc:segy1= SrcLoc
+sort:usp.DphInd:segy1= CdpNum
+sort:usp.TrcNum:segy1= CdpTrcNum
+sort:usp.PrTrNm:segy1= FieldTrcNum
+sort:usp.SrPtXC:segy1= SrcX
+sort:usp.SrPtYC:segy1= SrcY
+sort:usp.RcPtXC:segy1= GrpX
+sort:usp.RcPtYC:segy1= GrpY
+
+sort:asp.PrRcNm:segy1= FieldRecNum
+sort:asp.FlReFN:segy1= Spare1.Hdr.FlReFN
+sort:asp.RecNum:segy1= Spare1.Hdr.RecNum
+sort:asp.SrcPnt:segy1= Spare1.Hdr.SrcPnt
+sort:asp.SoPtNm:segy1= Spare1.Hdr.SoPtNm
+sort:asp.RecInd:segy1= Spare1.Hdr.RecInd
+sort:asp.LinInd:segy1= LinInd
+sort:asp.SrcLoc:segy1= SrcLoc
+sort:asp.DphInd:segy1= CdpNum
+sort:asp.TrcNum:segy1= CdpTrcNum
+sort:asp.PrTrNm:segy1= FieldTrcNum
+sort:asp.SrPtXC:segy1= SrcX
+sort:asp.SrPtYC:segy1= SrcY
+sort:asp.RcPtXC:segy1= GrpX
+sort:asp.RcPtYC:segy1= GrpY
+
+sort:segy.Spare.Hdr.LinInd:segy1= LinInd
+sort:segy.Spare.Hdr.SrcLoc:segy1= SrcLoc
+
+comment= the following are created explicitly by "open".
+  
+xfmt:*:segy.SEGY_ADJUST= /* SEGY format adjustments */
+   typedef enum {
+      SEGY_CARD_PAD \= 0,      /* byte size of card header pad */
+      SEGY_BINARY_PAD \= 0,    /* byte size of binary header pad */
+      SEGY_TRACE_PAD \= 0,     /* byte size of trace pad */
+   } SEGY_ADJUST;
+
+fmt:SEGY_CHAR=   typedef ascii1 SEGY_CHAR;
+fmt:SEGY_SHORT=  typedef integer2 SEGY_SHORT;
+fmt:SEGY_INT=    typedef integer4 SEGY_INT;
+fmt:SEGY_FLOAT=  typedef float4 SEGY_FLOAT;
+fmt:SAMPLE_TYPE= typedef float4ibm SAMPLE_TYPE;

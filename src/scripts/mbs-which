@@ -1,0 +1,29 @@
+#!/bin/sh
+# Script to show which binary will be executed
+#
+# Maintained by Jerry Ehlers under DDS
+#
+
+if ( test $# -eq 0 ); then
+   echo
+   echo "mbs-which reveals which mbs binary will"
+   echo "be executed for a particular program."
+   echo
+   echo "Usage: mbs-which <mbs-program-name>"
+   echo
+   exit
+fi
+
+DDS_APP=`basename $1`
+
+DDS_APPDIR=`which $0`
+DDS_APPDIR=`dirname $DDS_APPDIR 2> /dev/null` 
+if [ "${DDS_APPDIR}" = "." ]; then
+   DDS_APPDIR=`pwd`
+fi
+DDS_APPDIR=`echo ${DDS_APPDIR} | sed 's/[/][^/]*$//'`
+
+. dds-set-path
+
+ls -Fal ${APP}
+echo

@@ -1,0 +1,36 @@
+'\" t
+.TH makedict 1 "$Date: 2009-01-06 10:56:43 -0600 (Tue, 06 Jan 2009) $" "DDS Utility"
+.ad b
+.SH NAME
+makedict \ - Utility to make a sliced dictionary (DDS).
+.SH SYNOPSIS
+\fBmakedict <dict> <par> <file1> [<file2> ... <fileN>]
+.PP
+\fBmakedict <dict> <par> list|single <listfile>
+.SH DESCRIPTION
+\fBmakedict\fR can be used to either 1) create a sliced dictionary from 
+one or more datasets; or 2) create single dictionaries, one for each
+file.  
+.PP
+The first form will create a sliced dictionary, (<dict>), given
+a par file, (<par>), and input datasets, (<file1> ... <fileN>).  The
+par file provides extra definitions and should contain such definitions
+as:
+.PP
+.RS 5
+.TS
+tab(|);
+lb lb.
+newaxis= z h x y|Required to specify the new axis creating
+                |multiple files as slice axis "h"
+delta.h         |To specify the slice axis delta (size.h
+                |is created by the script from # of files)
+origin.h        |To specify the slice axis origin
+.TE
+.RE
+.PP
+The second form will create a sliced dictionary (if "list" is specified)
+from a file, (listfile>), containing a list of dataset filenames, or
+multiple, dictionaries (if "single" is specified), one for each dataset.
+.SH AUTHOR
+ Jerry Ehlers, \fBEPTG\fR

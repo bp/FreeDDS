@@ -1,0 +1,83 @@
+########################################################################
+#                      copyright 2008, BP America                      #
+#                          All Rights Reserved                         #
+########################################################################
+# $Id: MakeSrcMacro 230 2011-07-05 23:53:12Z user $
+
+### See $(DDSROOT)/README.makeexamples for more information,
+# Macro definitions in "MakeSrcMacro" are used by "make"
+# only when executing in the source directory.
+
+### VERBOSE is used for displaying verbose makefile information
+#       (should be either ":" (nop) or "echo DEBUG_SRC:")
+VERBOSE=$(if $(verbose),echo DEBUG_SRC):
+
+### DBGEXT is used for modifying directory and library debug names
+#       (should be either "" (nop) or "g")
+DBGEXT=$(if $(debug),g)
+
+### The source directory must hide some environment variables.
+### They may be overridden by make command line arguments.
+TARCH=
+
+### Default value for host, where "l`ocal" is current host.
+host= local
+
+### Default value for command subdirectories, "." if none.
+### Example: cmd1 cmd2 ... cmd
+subdir= .
+
+### List of files concatenated into $(TARCH)/Makefile.
+MAKE_ARCH= \
+   $(DDSROOT)/etc/MakeArchMacro  \
+   ./Makefile2 \
+   $(DDSROOT)/etc/MakeArchRules
+
+### Compile servers for a given architecture.
+###
+### WARNING: Make sure there are no blank spaces after these!!!
+###
+SERVER-sun4u5_8=         rmt.host1
+SERVER-IRIX-IP27=        rmt.host2
+SERVER-LX24i686-6=       rmt.host3
+SERVER-LX24i686-9=       rmt.host3
+SERVER-LX26i686-11=      rmt.host6
+SERVER-LX26x86_64=       rmt.host6
+SERVER-LX26x86_64-4_1_2= rmt.host6
+SERVER-LX26x86_64-4_3_2= rmt.host5
+SERVER-LX26sgiia64=      rmt.host5
+SERVER-LX26ppc64_pwr6=   rmt.host4
+SERVER-i86pc5_10=        rmt.host7
+
+### Default for parallel processing of remote makes.
+### Concurrent if "parallel=&", serial if "parallel=;".
+parallel=&
+
+### Propogate make flags to remote make command.
+RMT_MAKE= $(MAKE) $(MFLAGS)
+
+### Setup for remote host PING.
+### (No longer use ping to determine a host argument 
+###  because is occassionally hangs up on some systems)
+PING= $(PING-$(HARCH))
+   PING-$(HARCH)= ping -c 1
+   PING-sun4u5_8= ping
+
+### CPU time limit for make processing.
+LIMIT_SEC= 6000
+LIMIT_CPU= $(LIMIT_CPU-$(HARCH))
+   LIMIT_CPU-$(HARCH)   = ulimit -s $(LIMIT_SEC)
+   LIMIT_CPU-LX26sgiia64= ulimit -s
+
+### Shell trap for ctrl-c interupt during make.
+TRAP_INT= $(TRAP_INT-$(HARCH))
+   TRAP_INT-$(HARCH)= INT
+
+### Vogue target architecture, given a host architecture,
+### to define the default compiler version for HARCH with
+### the compiler extension. This is the default value for
+### TARCH, if not explicit.
+VARCH= $(VARCH-$(HARCH))
+   VARCH-$(HARCH)= $(HARCH)$(CompExt)
+
+

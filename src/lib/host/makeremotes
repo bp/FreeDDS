@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+# makeremotes: script to do makes on remote machines
+#
+# usage: makeremotes <cmds...>
+#
+
+if [ $# -lt 1 ]; then
+   echo "makeremotes: no command given"
+   exit
+fi
+
+: ${DDSRSH:=ssh}
+TST=`echo $DDSRSH|awk '{print $1}'`
+if [ -x "/usr/bin/${TST}" ]; then
+   DDSRSH="/usr/bin/${DDSRSH}"
+fi
+
+#
+# Determine the remote hosts to use
+#
+if [ ! "${REMOTE_HOSTS}" -a -f ${DDSROOT}/bin/gethosts ]; then
+   REMOTE_HOSTS=`${DDSROOT}/bin/gethosts`
+fi
+
+if [ ! "${REMOTE_HOSTS}" ]; then
+   echo "\"REMOTE_HOSTS\" must be setup manually or thru '${DDSROOT}/bin/gethosts' script" >&2
+   exit
+fi
+
+#
+# Do all the remote makes in parallel
+#
+rm -f mklog* &> /dev/null
+for host in $REMOTE_HOSTS; do 
+   echo "Making with \"${DDSRSH}\" on ${host}: $*"
+   $DDSRSH $host "(cd ${PWD}; $* || echo '***ERROR***' ) < /dev/null" &> mklog.${host} &
+done
+wait
+echo ""; echo "Check mklog files for results:" ; echo ""
+for host in $REMOTE_HOSTS; do 
+    grep '***ERROR***' mklog.${host} > /dev/null 2>&1
+    if [ $? -eq 0 ]; then
+      echo mklog.${host} '( ERRORS detected )'
+    else
+      echo mklog.${host}
+    fi
+done
+echo ""
+

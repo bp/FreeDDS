@@ -1,0 +1,44 @@
+#######################################################################
+#                 copyright 2020, BP America Inc.                     #
+#                        All Rights Reserved                          #
+#######################################################################
+
+File: $DDSROOT/README.macos
+
+NOTE: The default development environment from Apple Xcode does not
+      support either OpenMP or Fortran. Therefore, it is much easier
+      to build DDS with third-party compilers and libraries.
+
+ 1) Install Homebrew - https://brew.sh
+
+ 2) Install gcc and and openmpi from Homebrew.
+
+ 3) Define the following environment variables:
+
+    OMPI_CXX=g++-9
+    OMPI_CC=gcc-9
+    OMPI_FC=gfortran-9
+    COMPILER=gfortran-9
+
+    Use the approriate version suffix according to the gcc version that you
+    installed from Homebrew. The suffix must be present to avoid confusion
+    with Apple's gcc wrapper, which actually points to their version of clang
+    compiler.
+ 
+    DDSROOT and DDS_DIST must be defined as per general DDS installation
+    documentation.
+
+ 4) Using the general build instructions, compile and install libhost, libgio, and libdds3.
+
+ 5) Build and install pre-packaged fftw.
+
+ 6) Build and install libfft using the general build instuctions.
+
+NOTE: Some Fortran DDS applications may refuse to compile with the latest
+      version of gfortran (9.2 at the time of this writing). This is a bug
+      in gcc, which can be addressed by adding the following line in each
+      application's Makefile:
+
+      include ${DDSROOT}/etc/MakeVariables
+      FCFlags := ${FCFlags} -std=legacy
+      include ${DDSROOT}/etc/MakeRules

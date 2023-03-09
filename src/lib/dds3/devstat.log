@@ -1,0 +1,110 @@
+gpss83 sun4cg92-SC3 NOMINAL (opened and ready)
+
+devstat: /dev/rmt/1l
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2780001
+      st_ino= 838018
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840081
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+      st_fstype= 'cachefs'
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x29
+      mt_dsreg= 0x0
+      mt_erreg= 0x0
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Exabyte EXB-8500 8mm Helical Scan'
+      vid= 'EXABYTE EXB-8500'
+      type= 0x29
+      bsize= 0
+      options= 0xce39
+      max_rretries= 5000
+      max_wretries= 5000
+      densities= 0x14 0x15 0x8c 0x8c
+      default_density= 0x8
+      speeds= 0x0 0x0 0x0 0x0
+
+   after unload mt_fileno= -1
+   after reload mt_fileno= 0
+
+   mt_erreg= 0x0 ? or 0x6 ? ... uncertainty
+
+gsul16 sun4u-SC3 NOMINAL (opened and ready)
+
+   same as sun4cg92-SC3
+   except after reload mt_fileno= -1
+
+CONCLUSION, on sun you can't distinguish between
+   an open file descriptor that is loaded or unloaded.
+   Only reliable method is to close the file descriptor
+   and reopen it when unloading and reloading tapes,
+   i.e. you can't access multiple tapes via pre-defined
+   file descriptors (stdin, stdout).
+
+gssgi3
+
+3590
+devstat: /dev/rmt/tps2d5v
+   ioctl STATUS rc= 0, errno= 0, Error 0
+      mt_type= 9
+      mt_dposn= 0x42
+      mt_dsreg= 0x262
+      mt_erreg= 0x2
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+   ioctl CAPABILITY rc= 0, errno= 0, Error 0
+      mtsubtype= 0xe
+      mtcapablity= 0x16cf27
+   ioctl GETBLKINFO rc= 0, errno= 0, Error 0
+      minblksz= 1
+      maxblksz= 2097152
+      curblksz= 3200
+      recblksz= 524288
+
+8mm
+devstat: /dev/rmt/tps0d6v
+   ioctl STATUS rc= 0, errno= 0, Error 0
+      mt_type= 9
+      mt_dposn= 0x46
+      mt_dsreg= 0x266
+      mt_erreg= 0x2
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+   ioctl CAPABILITY rc= 0, errno= 0, Error 0
+      mtsubtype= 0x6
+      mtcapablity= 0x66f63
+   ioctl GETBLKINFO rc= 0, errno= 0, Error 0
+      minblksz= 1
+      maxblksz= 245760
+      curblksz= 10240
+      recblksz= 131072
+
+d2 ids psuedo device driver
+devstat: /dev/pdd0_mpdd0
+   ioctl STATUS rc= 0, errno= 0, Error 0
+      mt_type= 9
+      mt_dposn= 0x42
+      mt_dsreg= 0x0
+      mt_erreg= 0x0
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+   ioctl CAPABILITY rc= -1, errno= 25, Inappropriate I/O control operation
+      mtsubtype= 0x0
+      mtcapablity= 0x0
+   ioctl GETBLKINFO rc= -1, errno= 25, Inappropriate I/O control operation
+      minblksz= 0
+      maxblksz= 0
+      curblksz= 0
+      recblksz= 0
+

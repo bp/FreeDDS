@@ -1,0 +1,135 @@
+########################################################################
+#                 copyright 2003, Amoco Production Company             #
+#                             All Rights Reserved                      #
+#                     an affiliate of BP America Inc.                  #
+########################################################################
+
+ File: README.setup
+
+DDS, setup procedure for a development directory (although somewhat antiquated)
+
+Environment variables needed by DDS gmake.
+These should be set in the .cshrc (or equivalent) on all
+local and remote hosts.
+
+   setenv DEPTROOT /home/trcgp
+   setenv SITE apr
+
+Create directories for DDS development.
+
+   cd ~trcgp/dds/src/lib
+   mkdir ddsa
+   chmod g+w ddsa
+   cd ddsa
+
+Create one or two symbolic links to the shared RCS directory that
+contains the production version of DDS source code.
+The first link is used when the developer's current working
+directory is "ddsa" and they execute RCS commands explicitly.
+The second link (optional) is used by gmake when executing in the
+architecture specific directory to automatically check out source.
+
+   ln -s ../dds3/RCS RCS
+
+Check out the DDS makefiles.
+
+   co RCS/Makefile,v RCS/*mk,v
+
+
+*** IMPORTANT ***
+Edit "version.mk" and change the names of remote directories.
+
+   chmod u+w version.mk
+   vi version.mk
+      :g/dds3/s//ddsa/
+
+NOTE: Axian, this is as far as I've taken "ddsa".
+I'm leaving the remaining procedure for you, so that directories
+and file ownership reflects your user id.
+
+Check out the DDS source.
+The "RCS_CO" target is used to update the "ddsa" source files
+from the "dds3" production copy.
+Only those files that have changed since the last "RCS_CO"
+will be updated.
+
+   gmake RCS_CO
+
+The makefiles automatically creates directories (but not RCS links).
+This includes the TARCH directory and directories on remote hosts.
+
+Example gmake targets...
+
+   gmake                       # default target and default host.
+
+   gmake openbin.o             # specific target (default host).
+
+   gmake target=openbin.o      # ...same thing.
+
+   gmake source                # make indirect source files.
+                               #    This creates some ".c" and ".h"
+                               #    files from other source files.
+                               #    This may only work from "sun4".
+
+   gmake gssgi1                # make specific host (default targets).
+                               #    see sun4/gssgi1.LOG for status.
+                               #    Only works from a "sun4" host
+                               #    at the "apr" site.
+
+   gmake host=gssgi1           # ...same thing.
+
+   gmake host=gssgi1 openbin.o # make specific host and target.
+
+   gmake remotes               # make remote hosts, but not local.
+                               #    see sun4/*.LOG for status.
+
+   gmake world                 # make remote and local hosts.
+
+   gmake clean                 # remove $TARCH/*.o and lib*.a etc.
+
+   gmake host=world clean      # cleanup all hosts
+
+   gmake RCS_CO                # update source from production directory.
+                               #    This only works if the RCS links
+                               #    have already been created.
+
+Other RCS examples...
+
+   co openbin.c                # RCS check out (unlocked read only copy)
+
+   co -l openbin.c             # check out (locked, read-write copy)
+
+   ci openbin.c                # check in (assumes you hold the lock)
+
+   ci -u openbin.c             # check in and retain an unlocked copy
+
+   rcs -l openbin.c            # explicitly lock a file, without over
+                               #    writing your current copy.
+
+   rcs -u openbin.c            # explicitly unlock a file, perhaps
+                               #    breaking someone elses lock.
+
+   rcs -c'c ' *.f              # sets the "comment" prefix used by "Log"
+                               #    as needed for fortran files.
+
+   rlog openbin.c              # display RCS log information.
+
+   rcsdiff openbin.c           # file diff, relative to the RCS version.
+
+   rcsmerge file               # three-way merge of file changes.
+                               #    see man pages for details.
+
+   merge file1 file2 file3     # another variation on merge.
+
+   ident a.out                 # extract "Id" summary symbols.
+                               #    Identifies the version of all modules.
+
+   ~zrls13/bin/cid openbin.c   # check in DDS file.
+                               # Log message provided by file "cid.msg".
+                               # If this is the initial check in, then
+                               # the RCS "file description" is extracted
+                               # from the source's "RCS-t=..." line.
+
+   ~zrls13/bin/cid *.c *.h     # check in multiple files.
+                               #    The "RCS-t=..." makes it easy to do
+                               #    an initial check in with many files.

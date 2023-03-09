@@ -1,0 +1,78 @@
+Yoooooo
+
+I've finally looked over the GIO source changes,
+as provided by Mostyn in ALPHA-07.
+
+First impression... MOST EXCELLENT   8^)
+
+The following are some questions, comments, and suggestions.
+Take them with a grain of salt, because I'm not sure I understand
+all the issues or the problems you were working around.
+Please enlighten me where possible.
+
+1) Regarding CFD (cached file descriptors)...
+   a) If the "media" is pipe or socket then open processing must
+      ignore CFD...  they are not candidates for caching.
+      I didn't see code to prevent this.
+   b) If CFD is not being used (permanent fd) and
+      gio.num_fd_open >= gio.open_max,
+      then GIO_tmp_close_one should be called, i.e.
+      a new permanent fd may steal a cached fd.
+      You might clarify this relationship in the documentation,
+      if indeed this is what we want.
+   c) I'm paranoid about Cray function call overhead in hot spots.
+      You might provide a macro in gio_macro.h to replace GIO_cfd_check.
+         #define GIO_cfd_check(FP)  \
+            ((! (FP)->cfd.really_open && GIO_open((FP)) < 0) ? -1:  \
+            fp->cfd.last_access_count = access_counter++, 0)
+
+      The "access_counter" declaration will need modification too.
+
+2) Regarding gunread and non-bufferred (_IONBF) mode...
+   MRL changes in greadb_non.c line 87 and greadc_non.c line 63
+   may create a problem when reading and unreading tape.
+
+   Unbuffered reads from tape (as I understand it) should move
+   the media from gap to gap.  The requested read size may be
+   different than the actual tape record size.   If the request
+   is smaller, data will be lost.  If larger, a short read byte
+   count is returned.
+
+   GIO unread buffering doesn't understand inter-record gaps.
+   My intention was for unread to simulate only one tape record.
+   Any read request would consume the entire unread buffer.
+   If the request is smaller, data will be lost.   If larger,
+   a short read byte count is returned.
+
+   I'd like to re-examine the original problem the MRL changes
+   were attempting to correct.  Perhaps it only addressed a
+   symptom and not the underlying cause.
+
+3) Regarding rmtio.c and non-buffered support.
+   I think the aggressive read loop in rmt_read line 435 will
+   will cause problems when accessing tapes in non-buffered mode.
+
+   Admittedly, remote tape access still won't work right
+   until rmt io supports architecture independent ioctl etc.
+
+4) Regarding support for append in open logic...
+   Thanks, I needed that...  8^)
+
+Don't get me wrong...  all in all I like what I see   8^)
+
+Thanks... Randy
+
+P.S.  Did you (Terry or Mostyn) have other questions or issues
+regarding GIO that we should revisit ?
+
+=====================================
+
+ggetc test for fifo and sockets not needed,
+assuming un-buffered is the default and is working properly ?
+
+avoid all direct references to file descriptor...
+use gfcntl as needed
+
+activate CFD via "c" prefix to mode
+
+test CFD via small gopenmax value.

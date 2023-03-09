@@ -1,0 +1,229 @@
+#!/bin/sh
+#
+# testdriver: script to control application testing
+#
+# Arguments (defaults overridden by environment variables)
+#    DDS_TEST_DIR=  /local/$USER/testdir
+#    DDS_TEST_DATA= Directory root for test data
+#    DDS_TEST_VER=  svnversion
+#    DDS_TESTS=#'s from `ls tests/test#`
+#
+# Created: Richard Clarke & Jerry Ehlers March 2009
+#
+
+#
+# Fixed variables
+#
+USER=${USER:-`logname`}
+HOST=${HOST:-`hostname`}
+which gmake 2>/dev/null
+if [ $? -eq 0 ]; then
+   MAKE=gmake
+else
+   MAKE=make
+fi
+
+CWD=`pwd`
+MODULE=`echo $CWD | awk -F/ '{print $NF}'`
+PROG=${1:-$MODULE}
+TESTDATA="${2:-$DDS_TEST_DATA}"
+
+#
+# Get SVN Version
+#
+HostName=/tstapps/global/src/subversion/HostName
+TARCH=`$HostName 2>/dev/null`
+# SVNVERSION=/hpc/tstapps/RHEL/2.6/x86_64/subversion/1.8.3/bin/svnversion
+#SVNVERSION=/hpc/apps/RHEL/2.6/x86_64/svn/1.8.3/bin/svnversion
+# - location now is determined by module load
+SVNVERSION=`which svnversion`
+if [ -f "$SVNVERSION" ]; then
+   CURRENT=`$SVNVERSION | awk -F: '{ print $NF }'`
+   PREVIOUS=`echo $CURRENT | sed -e 's/M//g'`
+   if [ -z "$CURRENT" ]; then
+      echo "Unable to find version with \"$SVNVERSION\""
+      exit 1
+   fi
+else
+    CURRENT="exported"
+fi
+
+#
+# Variable parameters
+#
+if [ -w /local ]; then
+   mkdir -p /local/$USER
+fi
+if [ -w /local/$USER ]; then
+   TESTDIR=${DDS_TEST_DIR:-/local/$USER/testdir}
+else
+   if [ -w /data1 ]; then
+      mkdir -p /data1/$USER
+   fi
+   if [ -w /data1/$USER ]; then
+      TESTDIR=${DDS_TEST_DIR:-/data1/$USER/testdir}
+   else 
+      TESTDIR=/tmp/$USER/testdir
+   fi
+fi
+mkdir -p $TESTDIR
+
+VERSIONS=${DDS_TEST_VER:-$CURRENT}
+
+#
+# Assume the tests are in a subdirectory called "tests" and are named 
+# test1, test2, ...
+#
+if [ ! -d "tests" ]; then
+   echo " *** \"tests\" directory does not exist ***"
+   exit 1
+fi
+
+TESTS=`ls tests/test* | grep 'tests/test[0-9]*$'|sed 's/tests\/test\([0-9]*\)/\1/'`
+if [ -z "$TESTS" ]; then
+   echo " *** No \"tests/test#\" files found ***"
+   exit 2
+fi
+TESTS=${DDS_TESTS:-$TESTS}
+
+for N in $TESTS; do
+   if [ ! -x tests/test$N ]; then
+      echo "tests/test$N Not Executable"
+      exit 1
+   fi
+   if [ -z "$Tests" ]; then
+      Tests="test${N}"
+   else
+      Tests="${Tests}, test${N}"
+   fi
+done
+
+#
+# Get the default Version number from svnversion; it is possible that
+# the checked out version is the same as the last checkin version, so
+# we need to avoid running the tests twice in that case.
+#
+if [ "$CURRENT" = "exported" ]; then
+   VERSIONS="exported"
+   PREVIOUS="None"
+fi
+
+#
+# Setup the log files
+#
+TESTLOG=${CWD}/TestLog.${HOST}
+\rm -f TestLog*.${HOST}
+touch  $TESTLOG 
+if [ $? -ne 0 ]; then
+   echo "Could not create log file: \"$TESTLOG\""
+   exit 1
+fi
+
+echo " "                                   | tee -a $TESTLOG
+echo "Running \"$Tests\" for \"$PROG\"..." | tee -a $TESTLOG
+echo " "                                   | tee -a $TESTLOG
+echo "Date of current test(s): "`date +%D` | tee -a $TESTLOG
+echo "Current working module : $MODULE"    | tee -a $TESTLOG
+echo "Current working version: $CURRENT"   | tee -a $TESTLOG
+echo "Last checkin version is: $PREVIOUS"  | tee -a $TESTLOG
+echo "DDS_TEST_DIR           : $TESTDIR"   | tee -a $TESTLOG
+echo "DDS_TEST_DATA          : $TESTDATA"  | tee -a $TESTLOG
+echo "DDS_TEST_VER           : $VERSIONS"  | tee -a $TESTLOG
+t1=`date +%s`
+DISK=0
+   
+\rm -rf ${TESTDIR}/${PROG}_REV*.${HOST} ${CWD}/TestLog_Rev*.${HOST}
+
+for REV in $VERSIONS; do
+#
+#  Setup detailed Run Log for each Revision
+#
+   RUNLOG=${CWD}/TestLog_Rev$REV.${HOST}
+   touch  ${RUNLOG} 
+   if [ $? -ne 0 ]; then
+      echo "Could not create detailed run log file: \"$RUNLOG\""
+      exit 1
+   fi
+
+#
+#  Setup working directory
+#
+   WORKDIR=$TESTDIR/${PROG}_REV${REV}.${HOST}
+   echo | tee -a $RUNLOG
+   echo "Setting up working directory: $WORKDIR" | tee -a $RUNLOG
+   mkdir -p $WORKDIR | tee -a $RUNLOG
+   if [ ! -d $WORKDIR ]; then
+      echo "Could not create working directory: $WORKDIR" | tee -a $RUNLOG | tee -a $TESTLOG
+      exit 1
+   fi
+
+#
+#  Setup code
+#
+   cd $WORKDIR
+   echo | tee -a $RUNLOG
+   if [ $REV = $CURRENT ]; then
+      echo "Copying current code to working directory ..." | tee -a $RUNLOG
+      cp -pr $CWD . | tee -a $RUNLOG
+      if [ $? -ne 0 ]; then
+         echo "unable to copy the current directory to the directory $WORKDIR" |\
+              tee -a $RUNLOG | tee -a $TESTLOG
+         exit 1
+      fi
+   else
+      echo "Checking out Revision $REV from the repository ..." | tee -a $RUNLOG
+      devcode checkout -r $REV $MODULE >> $RUNLOG 2>&1
+      if [ $? -ne 0 ]; then
+         echo "unable to checkout Rev $REV of module $MODULE to directory $WORKDIR" |\
+              tee -a $RUNLOG | tee -a $TESTLOG
+         exit 1
+      fi
+      if [ ! -d $MODULE ]; then
+         echo "unable to checkout module $MODULE" | tee -a $RUNLOG | tee -a $TESTLOG
+         exit 1
+      fi
+   fi
+
+#
+#  Rebuild code
+#
+   echo | tee -a $RUNLOG
+   echo "Rebuilding the local version of the code ..." | tee -a $RUNLOG
+   cd $MODULE
+   ${MAKE} WARN=x CHECK=x >> $RUNLOG 2>&1
+
+#
+#  execute tests
+#
+   for N in $TESTS; do
+      echo | tee -a $TESTLOG | tee -a $RUNLOG
+      OUTDIR=$WORKDIR/TEST$N.${HOST}
+      mkdir -p $OUTDIR | tee -a $RUNLOG
+      if [ ! -d $OUTDIR ]; then
+         echo "Could not create working directory: $OUTDIR" | tee -a $RUNLOG | tee -a $TESTLOG
+         exit 1
+      fi
+
+      echo "Running \"tests/test$N\" in directory \"$OUTDIR\"" |\
+           tee -a $TESTLOG | tee -a $RUNLOG
+      cd $OUTDIR
+      $CWD/tests/test$N exe= $WORKDIR/$MODULE/$PROG inputdir=${TESTDATA} testdir=`pwd` \
+           >> $RUNLOG 2>&1
+      results=`egrep "^TEST$N" $RUNLOG`
+      if [ "$results" = "" ]; then
+         results="TEST$N: NO RESULTS" 
+      fi
+      echo "$results" | tee -a $TESTLOG
+   done
+   disk=`du -sk $WORKDIR |awk '{print $1}'`
+   DISK=`expr $DISK + $disk`
+done
+
+dt=`date +%D`
+echo "DATE: $dt" >> $TESTLOG
+
+t2=`date +%s`
+tm=`expr $t2 - $t1`
+echo "TIME: $tm sec" >> $TESTLOG
+
+echo "DISKSIZE: $DISK Kbytes" >> $TESTLOG

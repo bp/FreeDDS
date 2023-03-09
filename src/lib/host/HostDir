@@ -1,0 +1,138 @@
+#!/bin/sh
+########################################################################
+#                       B P   A M E R I C A                            #
+#                       All Rights Reserved                            #
+#                        COPYRIGHTED 2005                              #
+########################################################################
+# $Id: HostDir 308 2018-12-14 16:55:55Z user $
+# 
+# This script returns the Host subDirectory path for objects/libraries
+# and executables based on the platform.  This is used by the dds gmake
+# rules.
+# 
+# - Jerry Ehlers June 2005
+#
+
+help="false"
+
+if [ "$#" = 0 ]; then
+  help="true"
+else
+
+#arg=$1 ; shift 1
+#
+# check other options
+#
+  for arg do
+   case $arg in
+      -[anbxsrm]) eval option=$arg; shift 1;;
+      LNDMRK) LNDMRK=x; shift 1;; 
+      dist_product=*) eval $arg; shift 1;; 
+      help=*) help="true"; shift 1;; 
+      *=*);;
+      *) case $prev in
+            dist_product=)  eval ${prev}${arg}; shift 1;; 
+         esac
+   esac
+   prev=$arg
+  done
+fi
+
+if [ "${help}" = "true" ]; then
+   echo 
+   echo 'Usage: HostDir [-a|-n|-b|-x|-s|-r|-m] [LNDMRK] [dist_product=(usp|mbs|drtk|..)]'
+   echo 'Where  -a: return all values separated by "^"'
+   echo '       -n: abreviated library path name (eg. "LX24i686")'
+   echo '       -b: binary path (eg. "Linux/2.4/i686")'
+   echo '       -x: install path (eg. "Linux/2.4/mbs/prod/i686")'
+   echo '       -s: system (eg. "Linux")'
+   echo '       -r: release (eg. "2.4")'
+   echo '       -m: machine (eg. "i686")'
+   echo
+   echo '       LNDMRK: Modifications for Landmark'
+   echo
+   echo '       dist_product=: distribution product (default=mbs)'
+   exit
+fi
+
+#
+# Product defaults to mbs if it hasn't already been set
+#
+DIST_PRODUCT=${dist_product:=mbs}
+#
+# Get system info
+# (This must be the same as with dds-set-path)
+#
+system=`uname -s | awk '{print $1}'`
+machine=`uname -m | sed 's/[/]/-/' | awk '{print $1}'`
+release=`uname -r | sed 's/^[0]*//' | sed 's/[^0-9.]/ /g' | sed 's/^[0]*//'`
+major=`echo ${release} | awk -F. '{print $1}'`
+minor=`echo ${release} | awk -F. '{print $2}'`
+release=${major}.${minor:=0}
+if [ "${system}" = "Linux" -a  -f "/etc/sgi-release" -a "${machine}" = "ia64" ]; then
+   release="${release}-sgi"
+elif [ "${machine}" = "ppc64" ]; then
+   cpu=`grep cpu /proc/cpuinfo|head -1|awk '{print $3}'|sed 's/POWER/pwr/'|sed 's/+//'`
+   machine="${machine}_${cpu}"
+fi
+
+# Special case - cross compilation via mingw on Linux for native Windows x86_64
+if [ -f "$COMPILER" ] && [ `basename $COMPILER` == "x86_64-w64-mingw32-gfortran" ]; then
+    system="w64-mingw32"
+    machine="x86_64"
+    release=`$COMPILER -dumpversion`
+fi
+
+if [ ${DIST_PRODUCT} = "usp" ] && [ "${LNDMRK}" != "" ]; then
+  DIST_PRODUCT="usp/SeisWorks"
+fi
+
+if [ "$LNDMRK" = "R5K" ]; then
+  xpath=${system}/${release}/${DIST_PRODUCT}/R5K/${machine}
+else
+  xpath=${system}/${release}/${DIST_PRODUCT}/prod/${machine}
+fi
+bpath=${system}/${release}/${machine}
+
+case "$system" in
+   Sun*)
+      rel=`echo $release | sed 's/\./_/g'`
+      name=${machine}${rel};;
+   IRIX*)
+      if [ -n "$LNDMRK" -a "$LNDMRK" != "R5K" ]; then
+         system=IRIX
+         xpath=${system}/${release}/${DIST_PRODUCT}/prod/${machine}
+         bpath=${system}/${release}/${machine}/n32
+      fi
+      name=${system};;
+   Linux*)
+      if [ -n "$LNDMRK" -a "$LNDMRK" != "R5K" ]; then
+         machine=`echo "$machine" | sed 's/x86_64/i686/g'`
+         bpath=`echo "$bpath" | sed 's/x86_64/i686/g'`
+         xpath=`echo "$xpath" | sed 's/x86_64/i686/g'`
+      fi
+      rel=`echo $release | sed 's/\.//g' | sed 's/-//g'`
+      name=LX${rel}${machine};;
+  *)
+      rel=`echo $release | sed 's/\.//g' | sed 's/-//g'`
+      name=${system}${rel}${machine};;
+esac
+
+case "${option}" in
+  -a)
+   echo "${name}^${bpath}^${xpath}^${system}^${release}^${machine}";;
+  -n)
+   echo $name;;
+  -b)
+   echo $bpath;;
+  -x)
+   echo $xpath;;
+  -s)
+   echo $system;;
+  -r)
+   echo $release;;
+  -m)
+   echo $machine;;
+  *)
+   echo "ERROR(HostDir)";;
+esac

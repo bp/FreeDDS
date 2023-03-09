@@ -1,0 +1,220 @@
+
+###########################################
+devstat: dump status for device= /dev/rmt/0l
+
+DumpStat: initial status of device after open
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2780001
+      st_ino= 596975
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840202
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x29
+      mt_dsreg= 0x0
+      mt_erreg= 0x0
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Exabyte EXB-8500 8mm Helical Scan'
+      vid= 'EXABYTE EXB-8500'
+      type= 0x29
+      bsize= 0
+      options= 0xce39
+      max_rretries= 5000
+      max_wretries= 5000
+      densities= 0x14 0x15 0x8c 0x8c
+      default_density= 0x8
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: immediately after unload ioctl (while flashing)
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2780001
+      st_ino= 596975
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840202
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x29
+      mt_dsreg= 0x0
+      mt_erreg= 0x0
+      mt_resid= 0
+      mt_fileno= -1
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Exabyte EXB-8500 8mm Helical Scan'
+      vid= 'EXABYTE EXB-8500'
+      type= 0x29
+      bsize= 0
+      options= 0xce39
+      max_rretries= 5000
+      max_wretries= 5000
+      densities= 0x14 0x15 0x8c 0x8c
+      default_density= 0x8
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: after ioctl unload has completed
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2780001
+      st_ino= 596975
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840202
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x29
+      mt_dsreg= 0x0
+      mt_erreg= 0x0
+      mt_resid= 0
+      mt_fileno= -1
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Exabyte EXB-8500 8mm Helical Scan'
+      vid= 'EXABYTE EXB-8500'
+      type= 0x29
+      bsize= 0
+      options= 0xce39
+      max_rretries= 5000
+      max_wretries= 5000
+      densities= 0x14 0x15 0x8c 0x8c
+      default_density= 0x8
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: immediately after reloading device (while flashing)
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2780001
+      st_ino= 596975
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840202
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x29
+      mt_dsreg= 0x0
+      mt_erreg= 0x0
+      mt_resid= 0
+      mt_fileno= -1
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Exabyte EXB-8500 8mm Helical Scan'
+      vid= 'EXABYTE EXB-8500'
+      type= 0x29
+      bsize= 0
+      options= 0xce39
+      max_rretries= 5000
+      max_wretries= 5000
+      densities= 0x14 0x15 0x8c 0x8c
+      default_density= 0x8
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: after reload and device ready (flashing stopped)
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2780001
+      st_ino= 596975
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840202
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x29
+      mt_dsreg= 0x0
+      mt_erreg= 0x6
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Exabyte EXB-8500 8mm Helical Scan'
+      vid= 'EXABYTE EXB-8500'
+      type= 0x29
+      bsize= 0
+      options= 0xce39
+      max_rretries= 5000
+      max_wretries= 5000
+      densities= 0x14 0x15 0x8c 0x8c
+      default_density= 0x8
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: immediately after manual unload initiation (while flashing)
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2780001
+      st_ino= 596975
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840202
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x29
+      mt_dsreg= 0x0
+      mt_erreg= 0x0
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Exabyte EXB-8500 8mm Helical Scan'
+      vid= 'EXABYTE EXB-8500'
+      type= 0x29
+      bsize= 0
+      options= 0xce39
+      max_rretries= 5000
+      max_wretries= 5000
+      densities= 0x14 0x15 0x8c 0x8c
+      default_density= 0x8
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: after manual unload has completed
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2780001
+      st_ino= 596975
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840202
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x29
+      mt_dsreg= 0x0
+      mt_erreg= 0x0
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Exabyte EXB-8500 8mm Helical Scan'
+      vid= 'EXABYTE EXB-8500'
+      type= 0x29
+      bsize= 0
+      options= 0xce39
+      max_rretries= 5000
+      max_wretries= 5000
+      densities= 0x14 0x15 0x8c 0x8c
+      default_density= 0x8
+      speeds= 0x0 0x0 0x0 0x0

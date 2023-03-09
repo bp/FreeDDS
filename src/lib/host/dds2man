@@ -1,0 +1,253 @@
+#!/bin/sh 
+#
+# dds2man (taken from Richard Clarke's dds2man.csh)
+#
+# Usage: dds2man <prog> src1 [src2...]
+#
+
+if [ $# -lt 2 ]; then
+	echo " "
+	echo "dds2man create a template man page from dds source files"
+	echo " "
+	echo "Usage: dds2man [-chk] <program name> src1 [src2 ...]"
+	echo " "
+	exit 1
+fi
+
+AUTHOR=$USER
+HOST=`hostname`
+DATE=`date`
+
+if [ "$1" = "-chk" ]; then
+   mode='chk'
+   shift
+   PROG=$1
+   OLD=man1/${PROG}.1
+   OUT=/tmp/Manpage_${PROG}_${HOST}.$$
+else
+   mode='man'
+   PROG=$1
+   OLDMAN=${PROG}.1
+   OUT=man1/${PROG}.1
+   if [ -f "$OUT" ]; then
+      exit
+   elif [ -f "$OLDMAN" ]; then
+      echo
+      echo "*** moved \"$OLDMAN\" to \"$OUT\" ***"
+      echo
+      mv $OLDMAN man1
+      exit
+   fi
+fi
+shift
+SRC="$*"
+if [ "${SRC}" = "" ]; then
+SRC=/dev/null
+fi
+
+if [ `uname -s` = "Linux" -a  -f "/etc/sgi-release" ]; then
+   B="\\fB"
+   I="\\fI"
+   R="\\fR"
+else
+   B="\\\fB"
+   I="\\\fI"
+   R="\\\fR"
+fi
+
+mkdir -p  man1
+
+# find the alias arguments to dds_in
+INALIAS="`egrep 'fdds_in\(' $SRC 2> /dev/null |\
+	sed -e 's/.*fdds_in//' -e \"s/[ '\\\"]//g\" |\
+	awk -F, '{print $2"^"$3}'`"
+INALIAS="$INALIAS `egrep 'cdds_in\(' $SRC 2> /dev/null |\
+	sed -e 's/.*cdds_in(//' -e \"s/[ '\\\"]//g\" |\
+	awk -F, '{print $1"^"$2}'`"
+INALIAS="$INALIAS `egrep 'ddx_in[2h(]' $SRC 2> /dev/null |\
+	sed -e 's/.*ddx_in[2hdr]*(//' -e \"s/[ '\\\"]//g\" |\
+	awk -F, '{print $1"^"$2}'`"
+INALIAS=`echo $INALIAS|sed 's/ /\n/g'|sort -u`
+
+# find the alias arguments to dds_out
+OUTALIAS="`egrep 'fdds_out\(' $SRC 2> /dev/null |\
+	sed -e 's/.*fdds_out(//' -e \"s/[ '\\\"]//g\" |\
+	awk -F, '{printf "%s^%s\n",$2,$3}'`"
+OUTALIAS="$OUTALIAS`egrep 'cdds_out\(' $SRC 2> /dev/null |\
+	sed -e 's/.*cdds_out(//' -e \"s/[ '\\\"]//g\" |\
+	awk -F, '{printf "%s^%s\n",$1,$2}'`"
+OUTALIAS="$OUTALIAS `egrep 'ddx_out[h(]' $SRC 2> /dev/null |\
+	sed -e 's/.*ddx_out[hdr]*(//' -e \"s/[ '\\\"]//g\" |\
+	awk -F, '{print $1"^"$2}'`"
+OUTALIAS=`echo $OUTALIAS|sed 's/ /\n/g'|sort -u`
+
+
+# find the dds_scan parameters
+SCANPAR="`egrep 'dds_scan.*\(' $SRC 2> /dev/null  |\
+	sed 's/.*dds_scan[fktvn]*(//' | sed \"s/'//g\" | sed 's/\"//' |\
+	awk -F, '{ print $1 }' |\
+	grep -v "SAMPLE_TYPE" |\
+	grep -v "DDS_HELP_KEY" |\
+	grep -v '^axis$' |\
+	grep -v "origin[.]" |\
+	grep -v "delta[.]" |\
+	grep -v "size[.]" |\
+	grep -v "base[.]" |\
+	grep -v "step[.]" |\
+	grep -v "units[.]" |\
+	grep -v "sort[.]" |\
+	awk '{ if ( NF >= 1 ) print $1; }' |\
+   sort |\
+	uniq`"
+
+# find the dds_switch parameters
+SWITCHPAR="`egrep 'dds_switch\(' $SRC 2> /dev/null |\
+	sed 's/.*dds_switch(//' | sed \"s/'//g\" | sed 's/\"//' |\
+	awk -F, '{ print $1 }' |\
+	awk '{ if ( NF >= 1 ) print $1; }' |\
+   sort |\
+	uniq`"
+
+#
+# HEADER
+#
+cat > $OUT << EOF
+'\" t
+.TH $PROG 1 "$DATE" "DDS"
+.ad b
+.SH NAME
+$PROG - does some magic (DDS)
+.SH SYNOPSIS
+\fB$PROG
+EOF
+
+#
+# SYNPOSIS
+#
+for F in $INALIAS; do
+   alias=`echo $F|awk -F^ '{print $1}'`
+   echo "[${alias}=\fIdat\fB]" >> $OUT
+   echo "[${alias}_data=\fIbin\fB]" >> $OUT
+   echo "[${alias}_format=\fIfmt\fB]" >> $OUT
+done
+for F in $OUTALIAS ; do
+   alias=`echo $F|awk -F^ '{print $1}'`
+   echo "[${alias}=\fIdict\fB]" >> $OUT
+   echo "[${alias}_data=\fIbin\fB]" >> $OUT
+   echo "[${alias}_format=\fIfmt\fB]" >> $OUT
+done
+
+for F in $SCANPAR; do
+   chk=`echo $F|sed 's/\(^[i-n].*\)/_INT_/'`
+   if [ "$chk" == "_INT_" ]; then
+      echo "[${F}=\fIn\fB]" >> $OUT
+   else     
+      echo "[${F}=\fIf\fB]" >> $OUT
+   fi
+done
+for F in $SWITCHPAR; do
+   echo "[${F}=]" >> $OUT
+done
+
+#
+# OPTIONS
+#
+cat >> $OUT << EOF
+
+.SH DESCRIPTION
+\fB$PROG\fR really is the best thing since sliced bread.
+
+.SH OPTIONS
+EOF
+
+first=1
+for F in $INALIAS; do
+   alias=`echo $F|awk -F^ '{print $1}'`
+   dflt=`echo $F|awk -F^ '{print $2}'`
+   if [ -z "$dflt" ]; then
+      dflt='none'
+   fi
+   if [ $first = 1 ]; then
+      first=0
+   else
+      echo ".PP"             >> $OUT
+   fi
+   echo ".TP 5"              >> $OUT
+   echo "\fB${alias}=\fIdat\fR" >> $OUT
+   echo "Input dataset. (default ${dflt})" >> $OUT
+   echo ".PP"                >> $OUT
+   echo ".TP 5"              >> $OUT
+   echo "\fB${alias}_data=\fIbin\fR" >> $OUT
+   echo "Override input binary." >> $OUT
+   echo ".PP"                >> $OUT
+   echo ".TP 5"              >> $OUT
+   echo "\fB${alias}_format=\fIfmt\fR" >> $OUT
+   echo "Override input format." >> $OUT
+done
+
+for F in $OUTALIAS; do
+   alias=`echo $F|awk -F^ '{print $1}'`
+   dflt=`echo $F|awk -F^ '{print $2}'`
+   if [ -z "$dflt" ]; then
+      dflt='none'
+   fi
+   echo ".PP"                >> $OUT
+   echo ".TP 5"              >> $OUT
+   echo "\fB${alias}=\fIdict\fR" >> $OUT
+   echo "Output dictionary. (default ${dflt})" >> $OUT
+   echo ".PP"                >> $OUT
+   echo ".TP 5"              >> $OUT
+   echo "\fB${alias}_data=\fIbin\fR" >> $OUT
+   echo "Override output binary." >> $OUT
+   echo ".PP"                >> $OUT
+   echo ".TP 5"              >> $OUT
+   echo "\fB${alias}_format=\fIfmt\fR" >> $OUT
+   echo "Override output format." >> $OUT
+done
+
+for F in $SCANPAR; do
+   echo ".PP"                >> $OUT
+   echo ".TP 5"              >> $OUT
+   chk=`echo $F|sed 's/\(^[i-n].*\)/_INT_/'`
+   if [ "$chk" == "_INT_" ]; then
+      echo "\fB${F}=\fIn\fR" >> $OUT
+   else     
+      echo "\fB${F}=\fIf\fR" >> $OUT
+   fi
+   echo "Specify the . (default )" >> $OUT
+done
+
+for F in $SWITCHPAR; do
+   echo ".PP"                >> $OUT
+   echo ".TP 5"              >> $OUT
+   echo "\fB${F}=\fIno|yes\fR or \fIfalse|true\fR" >> $OUT
+   echo "Switch to .  (default no)" >> $OUT
+done
+
+cat >> $OUT << EOF
+
+.SH KNOWN BUGS
+ None, of course.
+ For bug reports or feature requests, refer to FreeDDS user group
+
+.SH SEE ALSO
+Why look anywhere else ? \fB$PROG\fR does it all!
+
+.SH AUTHORS
+ $AUTHOR, \fBEPTG\fR.
+ For bug reports or feature requests, refer to FreeDDS user group
+EOF
+
+#
+# See what we do with it now
+#
+if [ "$mode" = "chk" ]; then
+   cat $OUT|grep -v '.TH ' > ${OUT}1
+   cat $OLD|grep -v '.TH ' > ${OUT}2
+   diff ${OUT}1 ${OUT}2 > /dev/null
+   rtn=$?
+   rm -f $OUT ${OUT}1 ${OUT}2
+   exit $rtn
+else
+   echo "Created man page: $OUT"
+fi

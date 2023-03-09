@@ -1,0 +1,109 @@
+#!/bin/sh
+##################################################################
+#               copyright 2007, BP America Inc.                  #
+#                     All Rights Reserved                        #
+##################################################################
+#
+#	script to copy startup script to installation directory
+#
+if [ "${DDS_DEBUG}" = "TRUE" ]; then
+ set -x
+ echo '*************** ddsbincopy  ***************'
+fi
+
+if [ $# -lt 1 ]; then
+	echo " "
+	echo "ddsbincopy: copy startup script into distribution area"
+	echo " "
+	echo "Usage:"
+	echo "         ddsbincopy <program name>"
+	echo " "
+	exit 1
+fi
+
+if [ -d ${DDSROOT}/FreeDDS ]; then
+  CHPC_HOST=""
+  CAMPUS_HOST=""
+# CAMPUS_HOST=""
+  DIST_ID=""
+#
+# In the CHPC, /hpc/tstapps and /tstapps are the same, but we need to use 
+# /tstapps for DDS_DIST for remote instructions to Houston outside the CHPC
+#
+  if [ -d /hpc/tstapps ]; then 
+    DDS_DIST=${DDS_DIST:-/tstapps/asi}
+  fi
+  unset FreeDDS
+else
+  FreeDDS="TRUE"
+fi
+
+if [ "${DDS_DIST:=not set}" = "not set" ]; then
+  echo DDS_DIST not set
+elif [ ! -d ${DDS_DIST} ]; then
+  echo DDS_DIST directory ${DDS_DIST} not found
+fi
+
+PRG=$1
+TARGET=${DDS_DIST}/bin/$PRG
+SED="sed 's[mbs/prod[usp/SeisWorks/12b['|sed 's./[^/]*$..'"
+
+  
+#
+# If we don't have a script, create one
+#
+if [ ! -f $PRG ]; then
+   echo
+   echo "\"${PRG}\" does not exist; create one!"
+   echo
+   exit 2
+fi
+
+if [ -z ${FreeDDS} ]; then
+#
+# Make sure we have a distribution bin
+#
+  ssh -x -n -l ${DIST_ID} ${CHPC_HOST} \
+    "umask 2; test -d ${DDS_DIST}/bin || mkdir -p ${DDS_DIST}/bin"
+  ssh -x -n -l ${DIST_ID} ${CAMPUS_HOST} \
+    "umask 2; test -d ${DDS_DIST}/bin || mkdir -p ${DDS_DIST}/bin"
+else
+  umask 2
+  test ! -d ${DDS_DIST}/bin && mkdir -p ${DDS_DIST}/bin
+fi
+
+#
+# Check if we even need an update
+#
+if [ -f ${TARGET} ]; then
+   (cmp ${PRG} ${TARGET}) 1> /dev/null 2>&1
+   if [ $? -eq 0 ]; then
+      exit 0
+   fi
+   echo "Updating startup script: ${PRG} ==> ${TARGET}"
+else
+   echo "Installing startup script: ${PRG} ==> ${TARGET}"
+fi
+
+#
+# Make the update
+#
+chmod 775 ${PRG}
+echo "${PRG}" ' =>  ' "${DDS_DIST}:"
+if [ -z ${FreeDDS} ]; then
+  ssh -x -n -l ${DIST_ID} ${CHPC_HOST} "test -f ${TARGET} && rm -f ${TARGET}"
+  scp ${PRG} ${DIST_ID}@${CHPC_HOST}:${TARGET}
+  ssh -x -n -l ${DIST_ID} ${CHPC_HOST} "test -f ${TARGET} && chmod 775 ${TARGET}"
+  echo "${PRG}" ' => campus ' "${DDS_DIST}:"
+  ssh -x -n -l ${DIST_ID} ${CAMPUS_HOST} "test -f ${TARGET} && rm -f ${TARGET}"
+  scp ${PRG} ${DIST_ID}@${CAMPUS_HOST}:${TARGET}
+  ssh -x -n -l ${DIST_ID} ${CAMPUS_HOST} "test -f ${TARGET} && chmod 775 ${TARGET}"
+else
+  rm -f ${TARGET}
+  cp $PRG ${TARGET}
+  chmod 775 ${TARGET}
+fi
+#
+
+
+

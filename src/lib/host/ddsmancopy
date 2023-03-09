@@ -1,0 +1,125 @@
+#! /bin/sh
+##################################################################
+#               copyright 2007, BP America Inc.                  #
+#                     All Rights Reserved                        #
+##################################################################
+#
+#  script to copy man pages to the distribution directory structure
+#
+if [ "${DDS_DEBUG}" = "TRUE" ]; then
+ set -x
+ echo '*************** ddsmancopy  ***************'
+fi
+
+if [ $# -le 1 ]; then
+	echo " "
+	echo "ddsmancopy: copy man page for specified section_# "
+	echo "         into tstapps structure.  The new date is also"
+	echo "         stamped into the man page"
+	echo " "
+	echo "Usage:"
+	echo "         ddsmancopy section_# program name"
+	echo " "
+	exit 1
+fi
+
+# For FreeDDS installations, the ${DDSROOT}/FreeDDS directory will not
+# be present. Using that detail to determine FreeDDS vs BP installations.
+if [ -d ${DDSROOT}/FreeDDS ]; then
+  CHPC_HOST=""
+  CAMPUS_HOST=""
+# CAMPUS_HOST=""
+  DIST_ID=""
+
+# since this only deals with the man pages, go ahead and put the asi
+# subdirectory on the DDS_DIST in the new structure
+#
+# In the CHPC, /hpc/tstapps and /tstapps are the same, but we need to use 
+# /tstapps for DDS_DIST for remote instructions to Houston outside the CHPC
+#
+  if [ -d /hpc/tstapps ]; then 
+    DDS_DIST=${DDS_DIST:-/tstapps}
+    ASI="/asi"
+  fi
+  unset FreeDDS
+else
+  FreeDDS="TRUE"
+fi
+
+if [ "${DDS_DIST:=not set}" = "not set" ]; then
+  echo DDS_DIST not set
+elif [ ! -d ${DDS_DIST} ]; then
+  echo DDS_DIST directory ${DDS_DIST} not found
+fi
+
+: ${DIST_PRODUCT:=mbs}
+suffix=$1
+man=$2
+node="/tmp/ManNode$$"
+section="`echo $suffix | sed s/[a-z].*//`"
+exe="${DDSROOT}/bin/`${DDSROOT}/bin/HostDir -b`"
+MAN=man${suffix}/$man.${suffix}
+# - hook for USP - man structure is slightly different
+if [ "${DIST_PRODUCT}" = "usp" ]
+then
+  : ${USP_DIST:=$DDS_DIST}
+  MANDIR=man/man${suffix}
+  TARGET=${USP_DIST}${ASI}/man/${DIST_PRODUCT}/man/${MAN}
+else
+  MANDIR=man${suffix}
+  TARGET=${DDS_DIST}${ASI}/man/${DIST_PRODUCT}/${MAN}
+fi
+
+if [ -z ${FreeDDS} ]; then
+#
+# Make sure we have a distribution man directory
+#
+
+  ssh -x -l ${DIST_ID} ${CHPC_HOST} "umask 2; test -d ${DDS_DIST}${ASI}/man/${DIST_PRODUCT}/${MANDIR} || mkdir -p ${DDS_DIST}${ASI}/man/${DIST_PRODUCT}/${MANDIR}"
+  ssh -x -l ${DIST_ID} ${CAMPUS_HOST} "umask 2; test -d ${DDS_DIST}${ASI}/man/${DIST_PRODUCT}/${MANDIR} || mkdir -p ${DDS_DIST}${ASI}/man/${DIST_PRODUCT}/${MANDIR}"
+else
+  umask 2
+  test -d ${DDS_DIST}/man/${DIST_PRODUCT}/${MANDIR} || \
+    mkdir -p ${DDS_DIST}/man/${DIST_PRODUCT}/${MANDIR}
+fi
+
+#
+# Check if we need to install man page
+#
+if [ ! -f ${MAN} ]; then
+	exit 0
+elif [ ! -f ${TARGET} ]; then
+   echo "Installing man page: ${MAN} ==> ${TARGET}"
+else
+   rm -f $node
+   mknod $node p
+   fgrep -v '.TH ' $MAN > $node&
+   (fgrep -v '.TH ' $TARGET | cmp - $node) 1> /dev/null 2>&1
+   OK=$?
+   rm -f $node
+   if [ $OK -eq 0 ]; then
+      exit 0
+   fi
+   echo "Updating man page: ${MAN} ==> ${TARGET}"
+fi
+
+#
+# Install man page
+#
+date="`date '+\"%a %h %d 20%y\"' `"
+line=".TH $2 ${suffix}  $date \"DDS\""
+
+if [ -z ${FreeDDS} ]; then
+#
+# installation to tstapps is done as ${DIST_ID} for ownership issues
+#
+  sed "1,$ s/\.TH.*/$line/" ${MAN} | ssh -x -l ${DIST_ID} ${CHPC_HOST} dd of=${TARGET}
+  scp ${TARGET} ${DIST_ID}@${CAMPUS_HOST}:${TARGET}
+  ssh -l ${DIST_ID} localhost chmod 664 ${TARGET} 2> /dev/null
+  ssh -l ${DIST_ID} ${CAMPUS_HOST} chmod 664 ${TARGET} 2> /dev/null
+else
+  sed "1,$ s/\.TH.*/$line/" ${MAN} > ${TARGET}
+  chmod 664 ${TARGET} 2> /dev/null
+fi
+exit 0
+

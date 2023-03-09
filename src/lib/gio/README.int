@@ -1,0 +1,69 @@
+$DDSROOT/src/lib/gio/README.int
+
+14 Feb 2005 Randy Selzler
+
+Low level I/O routines, similar to standard C I/O.
+These routines are used by DDS for nearly all I/O calls to the kernel.
+
+Many of these routines are very similar to those found in standard C I/O.
+The standard routine names begin with "f" and these begin with "g".
+Example include (fopen/gopen), (fread/gread), etc.
+
+Rationale:  Why did I create/duplicate this functionality?
+
+  I patterned these routines after Standard C I/O for three reasons.
+    1) smaller learning curve.  Anyone familiar with the standard
+       will have an intuitive knowledge of these routines.
+    2) proven functionality.  This collection of routines is known
+       to provide most of the functionality that is needed.
+    3) Dynamic file descriptor cache.
+
+  I created new routines in an attempt to achieve higher performance.
+  gio is indeed faster than standard C I/O, but only marginally,
+  perhaps 0-20% (???) depending upon architecture and scenario.
+  In hind sight, gio development and maintenance costs did not justify it.
+
+What happens when a large file is read with Standard C I/O?
+  1) Kernel drivers transfer data into kernel buffers.
+  2) Kernel calls copy data into Standard C I/O buffers.
+  3) Standard C I/O copies data into application buffers.
+  4) Applications often copy the data somewhere else.
+
+  Question: is all of this copying *really* needed?  What is the cost?
+
+  The following article suggested a better way.
+    Reference: "The Alloc Stream Facility"
+      A Redesign of Application-Level Stream I/O
+      Orran Krieger and Michael Stumm, University of Toronto
+      Ron Unrau, IBM Canada
+      IEEE Computer, March 1994, Volume 27 Number 3
+
+  Traditional applications issue a Std I/O "read" and specify a buffer
+  where the data should be placed.  This requires data to be copied
+  from a buffer managed by Standard C I/O into the application buffer.
+  CPU cycles are needed to move the bytes and buffers are needed for
+  both the source and destination (increase memory requirements).
+  GIO provides an alternative.  The "read" can return a pointer
+  into the gio buffer that already contains the data...  without any
+  byte shuffling or buffer duplication.  Cool... reduce CPU and memory.
+
+  POSIX Unix Kernels provide a memory mapped (mmap) I/O interface, in
+  addition to the traditional read and write.  This eliminated the
+  copying of data from Kernel space to Standard C I/O buffers.
+  Virtual memory hardware is used to map memory pages containing
+  Kernel buffers into the application address space.  Double Cool !!!
+
+  Combining both these ideas eliminates two copies and two buffers.
+  Applications also avoid having to explicitly malloc and free buffers,
+  which makes them simpler.
+
+  Similar problems and solutions exist for "write".  Traditionally
+  write is called with a buffer that is already loaded with data.
+  The faster alternative is to call write and ask for a pointer
+  into a GIO buffer and then assemble the data directly in it.
+
+THIS IS WHY GIO WAS WRITTEN...  These ideas appeared very attractive.
+In practice, they are more efficient, but only marginally, when compared
+to Standard C I/O, using traditional "read" and "write" semantics.
+The only way to know how well they worked in real life was to try it...
+so I did.

@@ -1,0 +1,536 @@
+#!/bin/ksh
+#
+
+APPS=/tstapps/asi
+SERVER=localhost
+
+: ${DIST_PRODUCT:=mbs}
+dist_product=${DIST_PRODUCT}
+
+if [ $# -gt 0  ]; then
+if [ "$1" = "-h" ] || [ "$1" = "help=" ]; then
+   echo " "
+   echo "Push_DDS_Distro: push/remove a single file ( file=/rmfile= ) or list"
+   echo "             of files (list=/rmlist= ) from ${APPS} testing area"
+   echo "             out for global distribution to remote sites "
+   echo "             After vi'ing the Control file, you will be prompted"
+   echo "             for a reason and a query if you want Distribution requests"
+   echo "             sent out.  Entries in the list should be relative"
+   echo "             to the $APPS root tree, ie. bin/prgm, ./Linux/2.6/ "
+   echo "             mbs/prod/x86_64/prgm, etc. If note is not sent to"
+   echo "             users, it is saved for later use."
+   echo " "
+   echo "Usage: Push_DDS_Distro [file=filename|rmfile=file] [list=filelist|rmlist=filelist] [subj= Subject Line] [silent=] [dist=distfile] [rsync=rsyncfile] [dist_product=product (default=mbs)] [prgm=program_name] [-h | help=]"
+   echo " "
+   exit 1
+fi
+else
+   echo " "
+   echo "Usage: Push_DDS_Distro [file=filename] [rmfile=filename] [list=filelist] [rmlist=filelist] [subj= Subject Line] [silent=] [dist=distfile]  [rsync=rsyncfile] [dist_product=product] [prgm=program_name] [-h | help=]"
+   echo "       (default subj= CATEGORY(ie. DDS,USP) Update)"
+   echo "       (default dist_product= mbs (DDS))"
+   echo " "
+   exit 1
+fi
+
+prev=
+newargs=
+for arg do
+   arg=`echo $arg | sed 's/=\([^ ].*$\)/=\"\1\"/'`
+   case $arg in
+      silent=*)
+	SILENT="TRUE";;
+      dist=*)
+	eval $arg;;
+      rsync=*)
+	eval $arg;;
+      dist_product=*)
+	eval $arg;;
+      file=*)
+	eval $arg;;
+      rmfile=*)
+	eval $arg;;
+      list=*)
+	eval $arg;;
+      rmlist=*)
+	eval $arg;;
+      subj=*) 
+	eval $arg;;
+      prgm=*) 
+	eval $arg;;
+      *=*) 
+	newargs="${newargs} ${prev}";;
+      *) case $prev in
+            silent=)
+		silent="SILENT";
+		arg= ;;
+            dist=)
+		dist=$arg;
+		arg= ;;
+            rsync=)
+		rsync=$arg;
+		arg= ;;
+            dist_product=)
+		dist_product=$arg;
+		arg= ;;
+            file=)
+		file=$arg;
+		arg= ;;
+            rmfile=)
+		rmfile=$arg;
+		arg= ;;
+            list=)
+		list=$arg;
+		arg= ;;
+            rmlist=)
+		rmlist=$arg;
+		arg= ;;
+            subj=*)
+		subj="$subj $arg ";
+		arg="${prev}";;
+            prgm=*)
+		prgm="$prgm $arg";
+		arg="${prev}";;
+            *)
+                newargs="${newargs} ${prev}";;
+         esac
+   esac
+   prev=$arg
+done
+
+DIST_PRODUCT=${dist_product:=mbs}
+
+if [ "${DIST_PRODUCT}" = "usp" ]; then
+CATEGORY="USP"
+USERS="gddsusers@localhost"
+elif [ "${DIST_PRODUCT}" = "mbs" ]; then
+CATEGORY="DDS"
+USERS="gddsusers@localhost"
+USERSALIAS="DDS Users"
+else
+CATEGORY=`echo ${DIST_PRODUCT} | tr 'a-z' 'A-Z'`
+USERS="gddsusers@localhost"
+fi
+
+subj=${subj:-${prgm:+"${CATEGORY} Update: "$prgm}}
+subj=${subj:-"${CATEGORY} Update"}
+#
+# Make sure we've got a full path since we'll be changing directories
+#
+if [ "${list}" != "" ]; then
+  PTHCHK=`echo ${list} | cut -c1`
+  if [ "${PTHCHK}" != "/" ]; then
+    list="${PWD}/${list}"
+  fi
+  if [ -f ${list} ]; then
+    ERRKNT=0
+    for listfile in `cat $list`
+    do
+      if [ ! -e ${APPS}/$listfile ]; then
+        listfile=`echo $listfile | sed 's/^[/]//'`
+        ERRKNT=`expr $ERRKNT + 1`
+        echo ERROR: ${APPS}/${listfile} not found 
+      fi
+    done
+    if [ $ERRKNT -ne 0 ]; then
+      echo ' '
+      echo $ERRKNT 'errors found; file names in list should be relative to' $APPS
+      echo Please repair and resubmit
+      exit 1
+    fi
+  else
+    echo " "
+    echo "Specified list file ( " $list " ) not found."
+    echo " "
+    exit
+  fi
+fi
+
+if [ "${file}" != "" ]; then
+  if [ ! -e ${APPS}/$file ]; then
+    file=`echo $file | sed 's/^[/]//'`
+    echo ERROR: ${APPS}/${file} not found 
+    echo 'File name specified using file= should be relative to' $APPS
+    exit 
+  fi
+fi
+
+########################################################################
+#
+#   Initialize parameters
+#
+########################################################################
+
+OS=`uname -s`
+DIST_LIST=${DDSROOT}/Distributions/distribution_list
+RECIPIENTS=`grep '^[^#].*[@]' $DIST_LIST | awk '{printf("%s ",$2)}' `
+RECIPIENTS="${RECIPIENTS} ${USER}@localhost"
+if [ "${SILENT}" = "TRUE" ]; then
+USERS=""
+fi
+
+echo " "
+echo Recipients:
+for x in $RECIPIENTS; do
+   echo "            $x"
+done
+for x in $USERS; do
+   echo "            $x"
+done
+echo " "
+
+if [ "$#" -gt 0 -a "$1" = "maillist" ]; then
+   exit 0
+fi
+
+DIST_DIR=${DDSROOT}/Distributions
+if [ ! -d ${DIST_DIR} ]; then
+   mkdir ${DIST_DIR}
+fi
+
+DATESTAMP=`date +%h_%d_%Y_%H:%M:%S`
+CONTROLFILE=${DIST_DIR}/updates_${USER}_${prgm:+"${prgm}_"}${DATESTAMP}.dist
+RSYNCFILE=${DIST_DIR}/updates_${USER}_${prgm:+"${prgm}_"}${DATESTAMP}.rsync
+DIST_MAIL=${DIST_DIR}/DIST_MAIL_${USER}_${prgm:+"${prgm}_"}${DATESTAMP}
+USER_MAIL=${DIST_MAIL}_users
+SEDARG1='s{^\([^/]*\)/\([^/]*\)/.*{\1{'
+SEDARG2='s{^\([^/]*\)/\([^/]*\)/.*{\2{'
+in=0
+
+########################################################################
+#
+#   Check if just re-issuing a previous distribution
+#
+########################################################################
+
+if [ "${dist}" != "" ]; then
+   if [ -f ${dist} ]; then
+      CONTROLFILE=$dist
+   else
+      echo Not a file: $dist
+      exit
+   fi
+fi
+if [ "${rsync}" != "" ]; then
+   if [ -f ${dist} ]; then
+      RSYNCFILE=$rsync
+   else
+      echo Not a file: $rsync
+      exit
+   fi
+fi
+
+########################################################################
+#
+#   Build cleanup script if necessary
+#
+########################################################################
+
+if [ "${rmfile}${rmlist}" != "" ]; then
+DAY=`date '+%y%j'`
+TIME=`date '+%H%M%S'`
+
+CLEANUPFILE=${DIST_DIR}/cleanup.${DAY}.${TIME}
+cat > ${CLEANUPFILE} << EOF_C1
+#!/bin/sh
+
+PATH=/apps/asi/bin:/tstapps/asi/bin:\${PATH}
+
+if test \${APPDIR:-"not set"} = "not set"
+then
+  APPDIR=\`app-path \$0 | sed 's/\(.*\)\/common\/${dist_product}/\1/' \`
+fi
+
+for ITEM in \\
+EOF_C1
+# scp geodev@$HOST $CLEANUPFILE /tstapps/asi/common/${dist_product}/
+  if [ "${rmfile}" != "" ]; then
+    echo ${rmfile} '\' >> ${CLEANUPFILE}
+  fi
+  if [ "${rmlist}" != "" ]; then
+    cat ${rmlist} | sed 's/.$/& \\/' >> ${CLEANUPFILE}
+  fi
+cat >> ${CLEANUPFILE} << EOF_C2
+
+do
+
+( test -f \${APPDIR}/\${ITEM} && \\
+  rm -f \${APPDIR}/\${ITEM} ) && \\
+  echo \${APPDIR}/\${ITEM} removed
+
+done
+
+exit 0
+EOF_C2
+  chmod ugo+x $CLEANUPFILE
+  echo $CLEANUPFILE >> $list
+  echo Cleanup file created in $CLEANUPFILE
+fi
+
+if [ ! -f ${CONTROLFILE} ]; then
+########################################################################
+#
+#   Build Control Files (one for rdist, one for rsync)
+#   rdist is old method, replaced by rsync 11/2018
+#
+########################################################################
+
+cd $APPS
+
+cat > ${CONTROLFILE} << EOF1A
+#
+#      To send:  rdist -f filename
+#
+#      CD to the source parent directory  before rdist'ing
+#
+#      TARGET is location of parent directory to receive update
+#
+TARGET=DESTINATION
+#
+#       MOD is "list" of child subdirectories and/or files to be updated
+#
+MOD= (
+EOF1A
+cat > ${RSYNCFILE} << EOF1B
+#!/bin/sh
+
+cd APPS
+
+/usr/bin/rsync -e "ssh -x" --bwlimit=250 --relative --recursive --update \\
+     --perms --owner --group --omit-dir-times \\
+     --times --verbose --links --compress --ignore-errors \\
+EOF1B
+
+if [ "${CLEANUPFILE}" != "" ]; then
+    file="${APPS}/common/${dist_product}/prod/cleanup.${DAY}.${TIME}"
+fi
+
+if [ "${file}" != "" ]; then
+    echo ${file} >> ${CONTROLFILE}
+    echo ${file} | sed 's/asi[/]/&.\//' | sed 's/^./  &/' | sed 's/.$/& \\/' >> ${RSYNCFILE}
+fi
+
+if [ "${list}" != "" ]; then
+    cat ${list} >> ${CONTROLFILE}
+    cat ${list} | sed 's/asi[/]/&.\//' | sed 's/^./  &/' | sed 's/.$/& \\/' >> ${RSYNCFILE}
+fi
+
+cat >> ${CONTROLFILE} << EOF2
+)
+#       HOSTS is a list of hostnames (systems) to receive the updates
+#	do not change the string "RECIPIENT" it is used by the appspull script
+#
+HOSTS=( RECIPIENT )
+#
+#
+#       FILES uses MOD from above to determine which files to consider
+#
+FILES=(
+        \${MOD}
+)
+
+\${FILES} -> \${HOSTS}
+EOF2
+cat >> ${RSYNCFILE} << EOF2B
+  RECIPIENT:TARGET
+EOF2B
+
+if [ "${CLEANUPFILE}" != "" ]; then
+    wait
+    (echo ' ' ; echo ssh RECIPIENT TARGET/common/${dist_product}/prod/cleanup.${DAY}.${TIME})  >> ${RSYNCFILE}
+fi
+
+if [ "${list}" != "" ]; then
+  grep 'cleanup[.][0-9][0-9][0-9][0-9][0-9][.][0-9][0-9][0-9][0-9][0-9][0-9]' ${list} |\
+  awk '{printf("       special %s \"DESTINATION/%s\";\n",$1,$1)}' >> ${CONTROLFILE}
+fi
+cat >> ${CONTROLFILE} << EOF3
+        install -y -w \${TARGET} ;
+
+EOF3
+
+vi ${RSYNCFILE}
+fi
+
+########################################################################
+#
+#   Push files to repository
+#
+########################################################################
+
+response=none
+while [ "${response}." != "y." ]; do
+   echo " "
+   echo "Do you want to push files to repository now (y|n)?"
+   read response
+   if [ "${response}." = "n." ]; then
+      echo " "
+      echo "Control files are:"
+      echo " "
+      echo ${CONTROLFILE}
+      echo ${RSYNCFILE}
+      if [ "${CLEANUPFILE}" != "" ]; then
+        echo ${CLEANUPFILE}
+      fi
+      echo " "
+      exit; 
+   fi
+done
+
+if [ "${CLEANUPFILE}" != "" ]; then
+    scp ${CLEANUPFILE} geodev@${HOST}:${file}
+    if [ $? -ne 0 ]; then
+      echo "$0: ERROR - unable to install ${CLEANUPFILE} to ${file}; Aborting"
+      exit 1
+    fi
+fi
+
+########################################################################
+#
+#   Setup distribution request Email
+#
+########################################################################
+
+rm -f ${DIST_MAIL}
+cat > ${DIST_MAIL} << EOF21
+HELO localhost
+MAIL FROM: ${USER}@localhost
+EOF21
+
+for admin in ${RECIPIENTS}; do
+   echo  "RCPT TO: ${admin}" >> ${DIST_MAIL}
+done
+
+cat >> ${DIST_MAIL} << EOF22
+DATA
+To: "Site Admin List" <USP_site_admin_list@localhost>
+Subject: ${CATEGORY} Distribution Request
+
+An update has been placed on the Houston repository server [$SERVER] 
+for ${CATEGORY} programs. 
+
+------------------------------------------------------------------------
+
+If you have /apps/asi at your site please sync from the ${APPS}
+structure on $SERVER to your /apps/asi structure as soon as possible.
+
+EOF22
+
+cat >> ${DIST_MAIL} << EOF23
+
+If you are NOT running /apps/asi at your site then you will need to 
+sftp the files listed in the 
+
+   "${RSYNCFILE}"
+ 
+file from the ${APPS} location on $SERVER to the appropriate 
+location on your system.  
+
+------------------------------------------------------------------------
+
+Update for ${CATEGORY} programs:
+EOF23
+
+########################################################################
+#
+#   Setup Updates to Users Email
+#
+########################################################################
+
+rm -f ${USER_MAIL}
+cat > ${USER_MAIL} << EOF31
+HELO localhost
+MAIL FROM: ${USER}@localhost
+EOF31
+
+for user in ${USERS}; do
+   echo  "RCPT TO: ${user}" >> ${USER_MAIL}
+done
+
+cat >> ${USER_MAIL} << EOF33
+DATA
+To: "DDS Users" <${USERS}>
+Subject: ${subj}
+
+DDS programs have been pushed to /apps/asi.
+The update reason:
+EOF33
+
+########################################################################
+#
+#   Add Reasons to Email
+#
+########################################################################
+
+echo
+echo "Enter your reason for updating DDS Programs (end with \".\"): "
+
+response='none'
+any=n
+while [ "${response}." != '..' ]; do
+   if [ "${response}." != 'none.' ]; then
+      any=y
+      echo $response >> ${DIST_MAIL}
+      echo $response >> ${USER_MAIL}
+   fi
+
+   read response
+
+   if [ $any = 'n' ]; then
+      if [ "${response}." = '..' ]; then 
+         response='none'
+      fi
+   fi
+done
+
+cat >> ${USER_MAIL} << EOF34
+
+NOTE: You have been added to this mailing list because of your interest
+in or usage of DDS.
+EOF34
+
+echo  >> ${DIST_MAIL}
+echo  >> ${USER_MAIL}
+echo "." >> ${DIST_MAIL}
+echo "." >> ${USER_MAIL}
+
+########################################################################
+#
+#   Check whether to mail requests now or save for later
+#
+########################################################################
+
+echo " "
+echo Recipients:
+for recipient in $RECIPIENTS ; do
+   echo "   ${recipient}"
+done
+for recipient in $USERS ; do
+   echo "   ${recipient}"
+done
+
+echo " "
+response=none
+while [ "${response}." != "y." ]; do
+   echo "Do you want to mail requests now (y|n)?"
+   read response
+   if [ "${response}." = "n." ]; then
+      break 
+   fi
+done
+
+if [ "${response}." = "y." ]; then
+   echo Mailing ${DIST_MAIL}
+   ${DDSROOT}/bin/dds-mailer.cgi < ${DIST_MAIL}
+   ${DDSROOT}/bin/dds-mailer.cgi < ${USER_MAIL}
+   echo Distribution Request has been sent
+   rm -f ${DIST_MAIL} ${USER_MAIL}
+
+else
+   echo " "
+   echo "To mail, use:"
+   echo " "
+   echo "   ${DDSROOT}/bin/dds-mailer.cgi < ${DIST_MAIL}"
+   echo " "
+fi
+

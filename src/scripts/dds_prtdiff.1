@@ -1,0 +1,27 @@
+'\" t
+.TH dds_prtdiff 1 "Tue Dec 12 11:45:52 CST 2017" "DDS"
+.ad b
+.SH NAME
+dds_prtdiff \- DDS print file comparison tool(DDS)
+.SH SYNOPSIS
+\fBdds_prtdiff\fR \fB[diff=<diff_prgm>]\fR \fBprtfile1 prtfile2\fR
+
+.SH DESCRIPTION
+\fBdds_prtdiff\fR is used to compare DDS printfiles, automatically removing the execution timestamps within to aid in comparison. By default, the DDS_TIMESTAMP is set to '0' for most programs, which adds a timestamp before every program printout message. This behavior may be modified by setting DDS_TIMESTAMP to '-1' in your script or environment before DDS program execution.
+
+.SH OPTIONS
+.TP 5
+\fBdiff=\fIdiff_prgm\fR
+This may be used to specify the program to be used for file comparison, ie. \fBmgdiff\fR, \fBgvimdiff\fR, etc. [default: \fBdiff\fR]
+
+.SH SEE ALSO
+.TP 5
+\fBdiff(1), mgdiff(1), gvimdiff(1)\fR
+
+.SH BUGS
+ None known.
+ For bug reports or feature requests, refer to FreeDDS user group
+
+.SH AUTHORS
+ Joe M. Wade, \fBHPC\fR.
+ For bug reports or feature requests, refer to FreeDDS user group

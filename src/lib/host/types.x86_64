@@ -1,0 +1,10 @@
+cd LX26x86_64-6; gmake  test_ctypes
+gmake[1]: Entering directory `/tstapps/global/src/dds/src/lib/host/LX26x86_64-6'
+pgcc -mcmodel=medium -Mvect=nosizelimit  -DX86_64 -D__x86_64__ -c -O2 -I.. -o ctypes.o ../ctypes.c
+pgcc-linux86-64: LICENSE MANAGER PROBLEM: your evaluation period has expired; please contact PGI
+	or an authorized PGI distributor
+gmake[1]: *** [ctypes.o] Error 2
+gmake[1]: Leaving directory `/tstapps/global/src/dds/src/lib/host/LX26x86_64-6'
+MAKE_TIMES
+0m0.005s 0m0.008s
+0m0.578s 0m0.916s

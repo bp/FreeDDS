@@ -1,0 +1,514 @@
+##############################################
+###   Copyright (C) 2008                   ###
+###   BP America, Inc, Houston, TX         ###
+###   Jerry Ehlers, June 2008              ###
+##############################################
+#RCS-t=HOST, Makefile2
+
+MKLIBS= libdds_r3$(DBGEXT).a 
+
+CLIBS= -L. -ldds_r3$(DBGEXT) $(.gio) $(.chost) $(SYSLIBS.c) -lm $(SYSLIBS)
+
+FLIBS= -L. -ldds_r3$(DBGEXT) $(.gio) $(.fhost) $(SYSLIBS.f) $(SYSLIBS)
+
+### Bison only needs to exist on one platform in order to build the
+### parser source code for the dds compiler whenever parser.y is modified
+BISON= $(BISON-$(HARCH)) bison
+   BISON-sun4u5_6=  ${DDSROOT}/net/bison/bin/bison
+   BISON-sun4u5_8=  ${DDSROOT}/net/bison/bin/bison
+   BISON-sun4u5_9=  ${DDSROOT}/net/bison/bin/bison
+
+### Flex only need to exist on one platform in order to build the
+### scanner source code for the dds compiler whenever scanner.l is modified
+FLEX= $(FLEX-$(HARCH)) flex
+   FLEX-sun4u5_6=  ${DDSROOT}/net/flex/bin/flex
+   FLEX-sun4u5_8=  ${DDSROOT}/net/flex/bin/flex
+   FLEX-sun4u5_9=  ${DDSROOT}/net/flex/bin/flex
+
+CPPFLAGS= -I. -I.. $(I.gio) $(I.chost)
+
+##################
+###  commands  ###
+##################
+
+cmd.c=
+
+test.c= ctest1.c ctest2.c ctest3.c ctest4.c ieeetest.c test_fast.c dds_getpar.c
+
+test2.c= testcomp1.c testcomp2.c testcomp3.c \
+   testdds4.c testdds5.c \
+   testcomp5.c testcomp6.c testcomp7.c hello.c \
+   test100x.c testasp.c readtape.c writetape.c
+
+test.f= ftest1a.f ftest1.f ftest2.f
+
+#########################
+###  library members  ###
+#########################
+
+# Attempt to minimize text page faults by grouping related functions.
+# For example, f_in calls c_in, which calls c_dict, etc.
+# This assumes that the sequential order of names are preserved
+# in the library and executeable (and hence memory pages).
+
+lib_init.c= f_init.c c_init.c primetypes.c global.c
+
+lib_dict.c= f_in.c c_in.c f_out.c c_out.c f_mod.c c_mod.c \
+            f_dict.c c_dict.c f_copy.c c_copy.c f_history.c c_history.c \
+            f_addaxis.c c_addaxis.c f_rmaxis.c c_rmaxis.c \
+            history.c title.c tmpdict.c dictnew.c dictinit.c \
+            dictcmd.c dictpar.c dictenv.c dictfd.c dictfile.c \
+            dictstdin.c dictstdout.c dictstderr.c dictlog.c dicttmp.c \
+            parload.c dictdevice.c dictaspfmt.c dictuspfmt.c dictsegyfmt.c \
+            dictsegy1fmt.c dictaspmap.c dictuspmap.c dictsegymap.c dictsegy1map.c \
+            dictdelete.c dictload.c
+
+lib_scan.c= f_scanv.c c_scanv.c f_scant.c c_scant.c f_scantn.c c_scantn.c \
+            f_scank.c c_scank.c f_scanf.c f_sscanf.c c_scanf.c f_newer.c c_newer.c \
+            f_axis_prod.c c_axis_prod.c f_switch.c c_switch.c \
+            f_key.c c_key.c key.c partag.c defnfind.c defnaxis.c \
+            aliasadd.c aliasdone.c aliasdrop.c aliaslist.c \
+            aliasname2.c aliasname3.c scanfc.c scanff.c scandone.c defnnewer.c
+
+lib_print.c= f_print.c c_print.c f_printv.c c_printv.c f_printt.c c_printt.c \
+             f_printf.c c_printf.c defnnew.c printfc.c printff.c \
+             printdone.c readlog.c scanlog.c printlog.c vsmprintf.c
+
+lib_open.c= f_open.c c_open.c f_datadefn.c c_datadefn.c openbin.c autofmt.c \
+            opennametest.c opennamemake.c openslice.c opennew.c openold.c \
+            opennewusp.c openoldusp.c opennewsegy.c openoldsegy.c \
+            opennewgen.c openoldgen.c f_ptr.c cubelinker.c cubeprint.c \
+            cubescaninit.c cubescanbin.c cubescanaxis.c reformname.c cubeinc.c \
+            hdrdefchar.c hdrdeffloat.c hdrdefint.c hdrgetchar.c hdrgetfloat.c \
+            hdrgetint.c hdrmodchar.c hdrmodfloat.c hdrmodint.c hdrputchar.c \
+            hdrputfloat.c hdrputint.c linkmember.c tracetag.c binfreeze.c \
+            objecttag.c linkobject.c linkobjectsu.c linkobjectsu2.c \
+            compilefmt.c uncompilefmt.c
+
+lib_media.c= pathclean.c pathfast.c mediafind.c medianew.c mediascan.c \
+             mediadelete.c mediafirst.c mediachain.c mediaload.c mediaunload.c \
+             openestimate.c opennext.c openblock.c devicecode.c statgenus.c \
+             findddsfile.c fstatgenus.c fstatsize.c statid.c fstatid.c
+
+lib_mt.c= mtbsf.c mteof.c mteom.c mtfsf.c mtrew.c mtstatus.c mtload.c mtunload.c mtweof.c
+
+lib_sym.c= parser.tab.c  scanner.yy.c symconst.c symblockbegin.c symblockend.c \
+           symconsttype.c symdeclare.c symenumname.c symenumvalue.c symexpr0a.c \
+           symexpr1a.c symexpr1a1.c symexpr1a2.c symexpr1a3.c symexpr1a4.c \
+           symexpr2a.c symexpr2b.c symexpr2c.c symexpr2d.c symexpr3a.c \
+           symexprdone.c symlookup.c symlookupmem.c symmember.c symmemberbit.c \
+           symmemberedit.c symnullvalue.c symobjectlit.c symrelocvalue.c \
+           symsametype.c symtypearray.c symtypecast.c symtypecopy.c \
+           symtypedefeb.c symtypedefee.c symtypedefev.c symtypedefobj.c \
+           symtypedefsb.c symtypedefse.c symtypedefsm.c symtypemerge.c \
+           symtypequal.c symtypeshape.c symtypeshape2.c symtypespec.c \
+           symtypestore.c symtypesue.c symvalueptr.c symident.c
+
+lib_close.c= f_close.c c_close.c closebin.c closeflush.c
+
+lib_map.c= f_map.c c_map.c f_openm.c c_openm.c openmap.c mapcompile.c \
+           mapcompilesu.c mapcompilesu2.c mapassign.c evaluate.c dateconv.c
+
+lib_read.c= f_readm.c c_readm.c f_read.c c_read.c readslicet.c readslice.c \
+            readgent.c readgen.c readuspl.c readuspt.c readsegyc.c \
+            readsegyb.c readsegyt.c readcheck.c readpreamble.c
+
+lib_write.c= f_writem.c c_writem.c f_write.c c_write.c writeslicet.c writeslice.c \
+             writegent.c writegen.c writeuspl.c writeuspt.c writesegyc.c \
+             writesegyb.c writesegyt.c writecheck.c writepreamble.c
+
+lib_seek.c= f_isreg.c c_isreg.c f_lseek.c c_lseek.c f_lseek8.c c_lseek8.c \
+            f_fflush.c c_fflush.c seekslice.c seekheader.c seektype.c \
+            seekset.c seekcur.c seekend.c edittrace.c editfinal.c 
+
+lib_field.c= f_align.c c_align.c f_count.c c_count.c f_genus.c c_genus.c \
+             f_index.c c_index.c f_member.c c_member.c f_object.c c_object.c \
+             f_name.c c_name.c f_next.c c_next.c f_offset.c c_offset.c f_parent.c \
+             c_parent.c f_prec.c c_prec.c f_prev.c c_prev.c f_prime.c c_prime.c
+
+lib_get.c= c_get.c c_getc.c c_getcb.c c_getcs.c c_getd.c c_getf.c c_getff.c \
+           c_geti.c c_getl.c c_gets.c c_getu.c c_getul.c c_getus.c f_get.c \
+           f_getc.c f_getcb.c f_getd.c f_getr.c f_getff.c f_geti.c f_geti2.c
+
+lib_put.c= c_put.c c_putcb.c c_putcs.c c_putd.c c_putf.c c_putff.c c_puti.c \
+           c_putl.c c_puts.c c_putu.c c_putul.c c_putus.c f_put.c f_putc.c \
+           f_putcb.c f_putd.c f_putr.c f_putff.c f_puti.c f_puti2.c
+
+lib_convenience.c= cx_in.c cx_in2.c cx_inhdr.c cx_index.c cx_out.c cx_outhdr.c \
+                   cx_mod.c cx_mod2.c cx_dict.c cx_getdict.c cx_read.c \
+                   cx_readfrom.c cx_readall.c cx_write.c cx_writeto.c cx_getbin.c \
+                   cx_addaxis.c cx_rmaxis.c cx_wtime.c fx_in.c fx_in2.c fx_inhdr.c \
+                   fx_index.c fx_out.c fx_outhdr.c fx_mod.c fx_mod2.c fx_dict.c \
+                   fx_getdict.c fx_read.c fx_readfrom.c fx_readall.c fx_write.c \
+                   fx_writeto.c fx_getbin.c fx_addaxis.c fx_rmaxis.c fx_wtime.c \
+                   reservebin.c delayedopen.c
+
+lib_mem.c= f_malloc8.c f_malloc.c c_malloc.c f_realloc8.c f_realloc.c c_realloc.c \
+           f_calloc8.c f_calloc.c c_calloc.c f_free.c c_free.c f_memuse.c c_memuse.c \
+           zalloc.c malloc.c realloc.c free.c heapcheck.c alloca.c
+
+lib_util.c= f_scale.c c_scale.c f_check.c c_check.c f_binfd.c c_binfd.c \
+            cmpdbl.c fake2float.c float2fake.c ieeeibm.c
+
+lib_stack.c= stackinit.c stackpop.c stackptr.c stackpush.c stackpushchar.c \
+             stackpushptr.c stackset.c stackstr.c stackchar.c stackterm.c
+
+lib_table.c= tablepushitem.c tableinit.c tablelookup.c tablepush.c tablepushstr.c \
+             tablepushchar.c tablerehash.c tableterm.c tableunhash.c hash.c primeup.c
+
+lib_str.c= ftncpy.c strcat.c strcat2.c strcat3.c strcat4.c strcat5.c strcatn.c \
+           strcpy.c strcpyF.c strcpymin.c strcpycat2.c strcpycat3.c strcpycat4.c \
+           strcpycat5.c strcpycat6.c strcpycat7.c strcpycat8.c strcpyn.c strcpynb.c \
+           strfree.c string.c stringn.c strset.c strsetmin.c strsetn.c token.c
+
+lib_msg.c= hint.c hinttype.c operator.c verbose.c warn.c error.c debug.c \
+           abort.c panic.c printstr.c binmessage.c
+
+lib_dump.c= dumpdatabuf.c dumpdatatype.c dumpdatablock.c dumpdataarray.c \
+            dumpdatadiff.c dumpdatavalue.c dumpdataopen.c dumpdatalist.c \
+            dumpglobal.c dumpblock.c dumpblockr.c dumpblockrs.c dumpexpr.c \
+            dumpitem.c dumpmember.c dumpobject.c dumpstack.c dumps.c dumpsym.c \
+            dumpsymbol.c dumpsymflag.c dumptable.c dumpdeclare.c dumppage.c dumptype.c \
+            dumpreloc.c dumpbinary.c dumpbinsym.c dumpmapin.c dumpmapout.c 
+
+lib_ftn.f= ftnprt.f
+
+lib_mp.c= f_initopenmp.c c_initopenmp.c f_initmpi.c c_initmpi.c
+
+lib_svn.c= dmy_version.c
+
+lib_f90.c= f_print2.c f_printf2.c f_scanf2.c
+
+lib_f90.F90= dds.F90
+
+LIBDDS.o= \
+   $(lib_init.c:.c=.o) $(lib_convenience.c:.c=.o)  \
+   $(lib_dict.c:.c=.o) $(lib_scan.c:.c=.o)  $(lib_print.c:.c=.o) \
+   $(lib_open.c:.c=.o) $(lib_close.c:.c=.o) \
+   $(lib_media.c:.c=.o)  $(lib_mt.c:.c=.o) \
+   $(lib_sym.c:.c=.o) $(lib_map.c:.c=.o) \
+   $(lib_read.c:.c=.o) $(lib_write.c:.c=.o) $(lib_seek.c:.c=.o) \
+   $(lib_field.c:.c=.o) $(lib_get.c:.c=.o)  $(lib_put.c:.c=.o) \
+   $(lib_mem.c:.c=.o) $(lib_util.c:.c=.o) \
+   $(lib_stack.c:.c=.o) $(lib_table.c:.c=.o) $(lib_str.c:.c=.o) \
+   $(lib_msg.c:.c=.o) $(lib_dump.c:.c=.o) $(lib_ftn.f:.f=.o) \
+   $(lib_mp.c:.c=.o) $(lib_svn.c:.c=.o) \
+   $(lib_f90.c:.c=.o) $(lib_f90.F90:.F90=.o)
+
+
+#######################
+###  install files  ###
+#######################
+
+INSTALL_ARCH_LIB.a= $(MKLIBS)
+
+INSTALL_ARCH_INC.h= fdds.h f90dds.h dds.mod 
+
+INSTALL_SRC_INC.h= cdds.h
+
+##########################
+###  header Dependancy ###
+##########################
+
+DDS_SYS.H=cdds.h dds_config.h dds_api.h dds_stack.h dds_util.h \
+          dds_string.h dds_table.h dds_state.h dds_ptype.h dds_media.h \
+          dds_dict.h dds_message.h dds_symbol.h dds_hdr.h dds_binary.h
+
+#
+# get the mpi compiler for this machine (on Altix use icc)
+#
+TMPCC=$(if $(DMPI),$(if $(filter %icc,$(CC)),mpiicc,mpicc),$(CC)) 
+MPICC=$(shell if [ -f /etc/sgi-release -a "$(Machine)" = "ia64" ]; then echo $(CC); else echo $(TMPCC);fi ) $(TARCHFLAGS.c) -c
+
+######################################################
+###  END OF MACRO DEFINITIONS, BEGINNING OF RULES  ###
+######################################################
+
+default: fdds.h f90dds.h dds.mod $(MKLIBS) \
+   $(cmd.c:.c=)  $(test.c:.c=)  $(test.f:.f=)
+
+$(MKLIBS): $(LIBDDS.o)
+	$(AR) $(ARFLAGS) $(@F) $?; $(RANLIB) $(MKLIBS)
+
+$(LIBDDS.o): $(DDS_SYS.H)
+
+c_init.o: ../dds_version.h 
+
+c_read.o c_write.o ieeeibm.o: ../dds_swap.h
+
+c_write.o mediafirst.o mediaunload.o opennext.o readcheck.o seekset.o writecheck.c \
+   devicecode.o devstat.o mediaload.o mtbsf.o mteof.o mteom.o mtfsf.o mtload.o \
+   mtrew.o mtstatus.o mtunload.o mtweof.o \
+   : ../dds_mtio.h ../dds_magtape.h
+
+c_init.o evaluate.o global.o linkobjectsu2.o mapassign.o mapcompilesu2.o \
+   parser.tab.o symexpr0a.o symexpr1a.o symexpr1a1.o symexpr1a2.o symexpr1a3.o \
+   symexpr1a4.o symexpr2a.o symexpr2b.o symexpr2c.o symexpr2d.o symexpr3a.o \
+   symtypecast.o symtypedefsm.o symvalueptr.o \
+   : ../dds_opcode.h
+
+global.o  c_init.o  evaluate.o  \
+   linkobjectsu2.o  mapassign.o  mapcompilesu2.o  parser.tab.o  \
+   symexpr0a.o  symexpr1a.o  symexpr1a1.o  symexpr1a2.o  symexpr1a3.o  \
+   symexpr1a4.o  symexpr2a.o  symexpr2b.o  symexpr2c.o  symexpr2d.o  \
+   symexpr3a.o  symtypecast.o  symtypedefsm.o  symvalueptr.o  \
+   :  ../dds_oplist.h
+
+c_init.c dumpbinary.c dumpbinsym.c dumpblock.c dumpblockr.c dumpblockrs.c \
+   dumpdataarray.c dumpdatablock.c dumpdatabuf.c dumpdatadiff.c dumpdatalist.c \
+   dumpdataopen.c dumpdatatype.c dumpdatavalue.c dumpdeclare.c dumpexpr.c \
+   dumpglobal.c dumpitem.c dumpmapin.c dumpmapout.c dumpmember.c dumpobject.c \
+   dumppage.c dumpreloc.c dumps.c dumpstack.c dumpsym.c dumpsymbol.c dumpsymflag.c \
+   dumptable.c dumptype.c global.c opennew.c openold.c openoldsegy.c openoldusp.c \
+   panic.c readgen.c readgent.c readsegyb.c readsegyc.c readsegyt.c readuspl.c \
+   readuspt.c scanner.yy.c writegen.c writegent.c writesegyb.c writesegyc.c \
+   writesegyt.c writeuspl.c writeuspt.c writepreamble.c readpreamble.c \
+   :../dds_dump.h 
+
+### dependent upon host type conversion macros
+global.o: dds_con2.h 
+
+evaluate.o: dds_con2.h ../dds_con3.h ../dds_con4.h ../dds_con5.h
+
+### initialization is dependent upon ...
+c_init.o:  ../scanner.yy.c  ../parser.tab.h
+
+### memory allocation is dependent upon DDS_HEAP_CHECK
+malloc.o  zalloc.o  realloc.o: ../dds_config.h
+
+### scanner is dependent upon the parser
+scanner.yy.o: ../parser.tab.h
+
+#####################################################
+### special rules to compile selected routines
+#####################################################
+
+c_initopenmp.o: ../c_initopenmp.c
+	$(COMPILE.c) $(CFLAGS) $(CPPFLAGS) $(DOMP) $(DMLIB) -o $(@F) ../c_initopenmp.c
+
+c_initmpi.o: ../c_initmpi.c
+	$(MPICC) $(CFLAGS) $(CPPFLAGS) $(DMPI) $(MPICFlags) -o $(@F) ../c_initmpi.c
+
+global.o: ../global.c
+	@ echo CLEAR_LINE
+	$(COMPILE.c) $(CFLAGS) $(CPPFLAGS) -o $(@F) ../global.c; \
+      echo COMPILE_TIMES; times
+
+# CFLAGS.evaluate is normally just $(CFLAGS),
+# except where dds3 optimization fails
+CFLAGS.evaluate= $(CFLAGS.evaluate-$(TARCH))
+   CFLAGS.evaluate-$(TARCH)=        $(CFLAGS)
+   CFLAGS.evaluate-sun4u5_6-SC6=    
+#  CFLAGS.evaluate-sun4u5_8-SC6=    -xO2
+#  CFLAGS.evaluate-IRIX32-IP27=     $(OPTIMIZE.c) -Olimit 12000
+#  CFLAGS.evaluate-IRIX32-IP27-n32= $(OPTIMIZE.c) -OPT:Olimit=0
+   CFLAGS.evaluate-IRIX32-IP27=     -Olimit 12000
+   CFLAGS.evaluate-IRIX32-IP27-n32= -OPT:Olimit=0
+   CFLAGS.evaluate-IRIX64-IP27=     -O0 -OPT:Olimit=0 -Wba,-CG:longbranch_limit=30000
+   CFLAGS.evaluate-LX24i686=        -O0
+   CFLAGS.evaluate-LX24ia64=        -O0
+
+evaluate.o: ../evaluate.c
+	@ echo CLEAR_LINE
+	$(COMPILE.c) $(CFLAGS.evaluate) $(CPPFLAGS) -o $(@F) ../evaluate.c; \
+      echo COMPILE_TIMES; times
+
+symexpr2a.o: ../symexpr2a.c
+	@ echo CLEAR_LINE
+	$(COMPILE.c) $(CFLAGS) $(CPPFLAGS) -o $(@F) ../symexpr2a.c; \
+      echo COMPILE_TIMES; times
+
+parser.tab.o: ../parser.tab.c
+	@ echo CLEAR_LINE
+	$(COMPILE.c) $(CFLAGS) $(CPPFLAGS) -o $(@F) ../parser.tab.c; \
+      echo COMPILE_TIMES; times
+
+PARSER= $(PARSER-$(HARCH))
+#  PARSER-$(HARCH)=  echo WARNING: $@ is stale
+   PARSER-$(HARCH)=  $(BISON) -d -l -p ddsYY -v ../parser.y -o ../parser.tab.c
+
+### bison -l ... (don't put in #line commands in parser file.)
+### bison -t ... (debug mode, #define YYDEBUG)
+### bison -d ... (create parser.tab.h)
+### bison -p xxx ... (prefix for external names, instead of "yy")
+### bison -v ... (verbose mode, see parser.output)
+#
+#*** UNCOMMENT OUT FOLLOWING TWO LINES TO REBUILD THE PARSER (gmake compiler)
+#../parser.tab.c  ../parser.tab.h:  ../parser.y
+#	$(PARSER)
+
+SCANNER= $(SCANNER-$(HARCH))
+#  SCANNER-$(HARCH)=  echo WARNING: $@ is stale
+   SCANNER-$(HARCH)=  $(FLEX) -t -L -d ../scanner.l > ../scanner.yy.c
+
+### flex -L ... (don't put in #line commands in scanner file.)
+### flex -d ... (debug mode, via yy_flex_debug)
+### flex -v ... (write scanner statistics to stderr)
+### flex -t ... (write scanner source code to stdout)
+#
+#*** UNCOMMENT OUT FOLLOWING TWO LINES TO REBUILD THE SCANNER (gmake compiler)
+#../scanner.yy.c: ../scanner.l
+#	$(SCANNER)
+
+#######################################################
+### auxiliary rules
+#######################################################
+
+../testasp.c:
+	@ $(CD) ..; ln -s ../../cmd/testasp/testasp.c
+
+testasp.fmt.dds:
+	@ ln -s ../../../cmd/testasp/testasp.fmt.dds
+
+test_input:
+	@ ln -s ../../../cmd/testasp/test_input
+
+$(test.f:.f=.o): fdds.h
+
+testcomp1.o:  ../scanner.yy.c  ../parser.tab.h
+
+$(test.c:.c=) $(test2.c:.c=) $(cmd.c:.c=): %:%.o $(MKLIBS) $(gio.a) $(chost.a)
+	$(LINK.c) $(CFLAGS) $(CPPFLAGS) -o $(@F) $(@F).o $(CLIBS)
+
+$(test.f:.f=): %:%.o $(MKLIBS) $(gio.a) $(fhost.a)
+	$(LINK.f) $(FFLAGS) -o $(@F) $(@F).o $(FLIBS)
+
+t2: %:%.o $(MKLIBS)
+	$(LINK.c) $(CFLAGS) $(CPPFLAGS) -o $(@F) $(@F).o $(CLIBS)
+
+devstat: devstat.o
+	$(LINK.c) $(CFLAGS) $(CPPFLAGS) -o $(@F) $(@F).o $(SYSLIBS)
+
+############################################
+###  fdds.h, f90dds.h & module rules     ###
+############################################
+
+APPEXECPREFIX :=
+COPYPREBUILT :=
+POSTCOPYPROC := "touch"
+
+ifneq (,$(findstring w64-mingw32,$(LINK.c)))
+   APPEXECPREFIX := $(shell which wine64 2>/dev/null)
+   ifneq (,$(findstring wine64,$(APPEXECPREFIX)))
+      POSTCOPYPROC := "dos2unix"
+   else
+      COPYPREBUILT := "prebuilt_w64-mingw32"
+   endif
+else
+endif
+
+fdds.h:  makefdds  ../f_com.h
+	if [ "${COPYPREBUILT}x" != "x" ]; then cp -f ../${COPYPREBUILT}/$@ $@; \
+        else rm -f $@; cp ../f_com.h $@; chmod +w $@; $(APPEXECPREFIX) ./makefdds -f >> $@; $(POSTCOPYPROC) $@; \
+        fi
+
+f90dds.h:  makefdds  ../f90_com.h
+	if [ "${COPYPREBUILT}x" != "x" ]; then cp -f ../${COPYPREBUILT}/$@ $@; \
+        else rm -f $@; cp ../f90_com.h $@; chmod +w $@; $(APPEXECPREFIX) ./makefdds -f >> $@; $(POSTCOPYPROC) $@; \
+        fi
+
+dds.mod dds.o: ../dds.F90
+	rm -f $@
+	@ if [ "$(firstword $(FC))" = "xlf_r" ]; then $(FC) -c ../dds.F90; \
+        elif [ "$(firstword $(FC))" = "gfortran" ]; then $(FC) -c ../dds.F90; \
+        elif [ "$(firstword $(FC))" = "pgf77" ]; then $(subst pgf77,pgf90,$(FC)) -c ../dds.F90; \
+        elif [ "$(firstword $(FC))" = "pgfortran" ]; then $(subst pgf77,pgf90,$(FC)) -c ../dds.F90; \
+        elif [ "$(findstring w64-mingw32,$(FC))" = "w64-mingw32" ]; then $(FC) -c ../dds.F90; \
+        else $(FC) -c ../dds.F90; fi
+
+makefdds: makefdds.c
+	@ $(RM) -f $(@F)
+	$(LINK.c) $(CFLAGS) $(CPPFLAGS) -o $(@F) $? 
+
+####################################
+###  .o and .h dictionary rules  ###
+####################################
+
+### Intrinsic dictionaries are compiled into the library.
+### For example, the "usp.fmt.dds" dictionary is converted into
+### a huge string in "usp.fmt.h" by the "makedict" command.
+### The "usp.fmt.h" file is included by "dictuspfmt.c" which
+### is a module in the dds library.
+
+intrinsic_dict: device.h  \
+   asp.fmt.h  asp.map.h  \
+   usp.fmt.h  usp.map.h  \
+   segy.fmt.h  segy.map.h \
+   segy1.fmt.h  segy1.map.h 
+
+device.h  asp.fmt.h  asp.map.h  usp.fmt.h  usp.map.h \
+   segy.fmt.h  segy.map.h segy1.fmt.h  segy1.map.h:  makedict
+
+makedict: makedict.c
+	@ $(RM) -f $(@F)
+	$(LINK.c) $(CFLAGS) $(CPPFLAGS) -o $(@F) $? 
+
+# implicit rule to convert dictionaries into "C" include files
+.SUFFIXES: .dds
+
+.dds.h:
+	if [ "${COPYPREBUILT}x" != "x" ]; then cp -f ../${COPYPREBUILT}/$@ $@; \
+        else $(APPEXECPREFIX) ./makedict < $< > $(@F); $(POSTCOPYPROC) $@; \
+        fi
+
+dictdevice.o:    dictdevice.c    device.h
+
+dictaspfmt.o:  dictaspfmt.c  asp.fmt.h
+dictuspfmt.o:    dictuspfmt.c    usp.fmt.h
+dictsegyfmt.o:   dictsegyfmt.c   segy.fmt.h
+dictsegy1fmt.o:   dictsegy1fmt.c   segy1.fmt.h
+
+dictaspmap.o:  dictaspmap.c  asp.map.h
+dictuspmap.o:    dictuspmap.c    usp.map.h
+dictsegymap.o:   dictsegymap.c   segy.map.h
+dictsegy1map.o:   dictsegy1map.c   segy1.map.h
+
+device.h:     device.dds
+
+asp.fmt.h:  asp.fmt.dds
+usp.fmt.h:    usp.fmt.dds
+segy.fmt.h:   segy.fmt.dds
+segy1.fmt.h:   segy1.fmt.dds
+
+asp.map.h:  asp.map.dds
+usp.map.h:    usp.map.dds
+segy.map.h:   segy.map.dds
+segy1.map.h:   segy1.map.dds
+
+####################
+###  misc rules  ###
+####################
+
+### create all source files as needed for distribution
+source: scanner.yy.c  marser.tab.c  parser.tab.h  intrinsic_dict
+
+### create compiler from flex and bison source
+compiler: scanner.yy.o parser.tab.o
+
+### stress test the host compiler on nasty functions
+stress_test: compiler  \
+   c_init.o global.o \
+   evaluate.o symexpr2a.o autofmt.o
+
+### create dds_con2.h, host dependent type conversion macros.
+
+makecon2: makecon2.c primetypes.o dds_ptype.h cdds.h
+	@ $(RM) -f $(@F)
+	$(LINK.c) $(CFLAGS) $(CPPFLAGS) -o $(@F) ../makecon2.c primetypes.o $(SYSLIBS)
+
+dds_con2.h: makecon2
+	if [ "${COPYPREBUILT}x" != "x" ]; then cp -f ../${COPYPREBUILT}/$@ $@; \
+        else $(APPEXECPREFIX) ./makecon2; $(POSTCOPYPROC) $@; \
+        fi
+
+#######################
+###  install rules  ###
+#######################
+
+show_arch_libs:
+	@- echo API_LIB.a= $(API_LIB.a)
+	@- ls $(API_LIB.a)/libdds* 
+
+kill_arch_libs:
+	@- rm -f $(API_LIB.a)/libdds*
+

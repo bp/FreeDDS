@@ -1,0 +1,227 @@
+
+###########################################
+devstat: dump status for device= /dev/rmt/1l
+
+DumpStat: initial status of device after open
+   ioctl MTNOP rc= 0, errno= 0, Error 0
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2b80001
+      st_ino= 1658915
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840081
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x38
+      mt_dsreg= 0x0
+      mt_erreg= 0x0
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Quantum DLT4000'
+      vid= 'Quantum DLT4000'
+      type= 0x38
+      bsize= 0
+      options= 0xd639
+      max_rretries= 400
+      max_wretries= 400
+      densities= 0x80 0x81 0x82 0x83
+      default_density= 0x10
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: immediately after unload ioctl (while flashing)
+   ioctl MTNOP rc= -1, errno= 5, I/O error
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2b80001
+      st_ino= 1658915
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840081
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x38
+      mt_dsreg= 0x14
+      mt_erreg= 0x2
+      mt_resid= 0
+      mt_fileno= -1
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Quantum DLT4000'
+      vid= 'Quantum DLT4000'
+      type= 0x38
+      bsize= 0
+      options= 0xd639
+      max_rretries= 400
+      max_wretries= 400
+      densities= 0x80 0x81 0x82 0x83
+      default_density= 0x10
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: after ioctl unload has completed
+   ioctl MTNOP rc= -1, errno= 5, I/O error
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2b80001
+      st_ino= 1658915
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840081
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x38
+      mt_dsreg= 0x14
+      mt_erreg= 0x2
+      mt_resid= 0
+      mt_fileno= -1
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Quantum DLT4000'
+      vid= 'Quantum DLT4000'
+      type= 0x38
+      bsize= 0
+      options= 0xd639
+      max_rretries= 400
+      max_wretries= 400
+      densities= 0x80 0x81 0x82 0x83
+      default_density= 0x10
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: immediately after reloading device (while flashing)
+   ioctl MTNOP rc= -1, errno= 5, I/O error
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2b80001
+      st_ino= 1658915
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840081
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x38
+      mt_dsreg= 0x14
+      mt_erreg= 0x2
+      mt_resid= 0
+      mt_fileno= -1
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Quantum DLT4000'
+      vid= 'Quantum DLT4000'
+      type= 0x38
+      bsize= 0
+      options= 0xd639
+      max_rretries= 400
+      max_wretries= 400
+      densities= 0x80 0x81 0x82 0x83
+      default_density= 0x10
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: after reload and device ready (flashing stopped)
+   ioctl MTNOP rc= 0, errno= 0, Error 0
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2b80001
+      st_ino= 1658915
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840081
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x38
+      mt_dsreg= 0x0
+      mt_erreg= 0x6
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Quantum DLT4000'
+      vid= 'Quantum DLT4000'
+      type= 0x38
+      bsize= 0
+      options= 0xd639
+      max_rretries= 400
+      max_wretries= 400
+      densities= 0x80 0x81 0x82 0x83
+      default_density= 0x10
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: immediately after manual unload initiation (while flashing)
+   ioctl MTNOP rc= -1, errno= 5, I/O error
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2b80001
+      st_ino= 1658915
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840081
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x38
+      mt_dsreg= 0x14
+      mt_erreg= 0x2
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Quantum DLT4000'
+      vid= 'Quantum DLT4000'
+      type= 0x38
+      bsize= 0
+      options= 0xd639
+      max_rretries= 400
+      max_wretries= 400
+      densities= 0x80 0x81 0x82 0x83
+      default_density= 0x10
+      speeds= 0x0 0x0 0x0 0x0
+
+DumpStat: after manual unload has completed
+   ioctl MTNOP rc= -1, errno= 5, I/O error
+   fstat rc= 0, errno= 0, Error 0
+      st_dev= 0x2b80001
+      st_ino= 1658915
+      st_mode= 0x21b6
+      st_nlink= 1
+      st_rdev= 0x840081
+      st_size= 0
+      st_blksize= 8192
+      st_blocks= 0
+   ioctl MTIOCGET rc= 0, errno= 0, Error 0
+      mt_type= 0x38
+      mt_dsreg= 0x14
+      mt_erreg= 0x2
+      mt_resid= 0
+      mt_fileno= 0
+      mt_blkno= 0
+      mt_flags= 0x5
+      mt_bf= 126
+   ioctl MTIOCGETDRIVETYPE rc= 0, errno= 0, Error 0
+      name= 'Quantum DLT4000'
+      vid= 'Quantum DLT4000'
+      type= 0x38
+      bsize= 0
+      options= 0xd639
+      max_rretries= 400
+      max_wretries= 400
+      densities= 0x80 0x81 0x82 0x83
+      default_density= 0x10
+      speeds= 0x0 0x0 0x0 0x0

@@ -1,0 +1,17 @@
+#!/bin/sh
+# RCS-t=DDS script, print history of who, what, when, where, why
+#
+# Maintained by Jerry Ehlers under DDS
+#
+
+if [ "$1" = -h -o "$1" = h -o "$1" = -help -o "$1" = help ]; then
+   echo 'dds_www:' history of who, what, when, where
+   echo 'Example:' dds_www '<' dictionary
+   exit 1
+fi
+
+egrep '(cmd_title=|cmd_user=|cmd_name=|cmd_date=|cmd_host=|cmd_cwd=)' $1
+status=$?
+if [ "$status" != 0 ]; then
+   echo "Nothing found!"
+fi
